@@ -43,6 +43,11 @@ select,.btn{background:var(--panel);border:1px solid var(--line);border-radius:8
 .tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .lesson{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:6px 24px}
 .lesson h1{font-family:var(--f-display);font-size:16px;margin:0 0 2px;grid-column:1/-1;letter-spacing:-.01em}
+.lesson h1{cursor:pointer;user-select:none}
+.lesson h1::after{content:' \25BE';color:var(--ink2);font-size:13px}
+.lesson.fold h1::after{content:' \25B8'}
+.lesson.fold>*:not(h1){display:none}
+.lesson.fold{padding-top:8px;padding-bottom:8px}
 .lesson p{margin:0;color:var(--ink2);line-height:1.5;max-width:70ch}
 .lesson p.try{color:var(--ink)}
 .lesson p.try b{color:var(--accent)}
@@ -136,9 +141,6 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.02fr) min
   html{height:auto}
   .tabs{display:flex}.brand span{display:none}
   .lesson{grid-template-columns:1fr;cursor:default}
-  .lesson h1{cursor:pointer}
-  .lesson h1::after{content:' \25BE';color:var(--ink2)}
-  .lesson:not(.open) p{display:none}
   main{display:block}
   .pane{height:calc(100dvh - 140px);min-height:560px}
   main[data-tab="canvas"] #paneCode,main[data-tab="code"] #paneCanvas{display:none}
@@ -175,6 +177,14 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.02fr) min
   main{flex:none;height:max(620px,calc(100vh - 210px))}
   .lesson{max-height:32vh;overflow:auto}
 }
+.screen .dis{opacity:.45;filter:grayscale(.4)}
+.dspin{width:36px;height:36px;border-radius:50%;border:4px solid color-mix(in srgb,var(--act,var(--d-primary,#6750a4)) 22%,transparent);border-top-color:var(--act,var(--d-primary,#6750a4));animation:spin .9s linear infinite;align-self:center}
+.dlin{height:4px;background:color-mix(in srgb,var(--act,var(--d-primary,#6750a4)) 22%,transparent);border-radius:2px;overflow:hidden;align-self:stretch;position:relative}
+.dlin i{display:block;height:100%;background:var(--act,var(--d-primary,#6750a4));border-radius:2px}
+.dlin i.ind{width:35%;position:absolute;animation:slideInd 1.3s ease-in-out infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes slideInd{0%{left:-35%}100%{left:100%}}
+@media (prefers-reduced-motion:reduce){.dspin,.dlin i.ind{animation-duration:3s}}
 .pdd{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:5px 9px;font-size:12.5px}
 .pdd b{font-weight:600}
 .pdd .n{font-size:10.5px;color:var(--ink2);background:var(--panel2);border-radius:999px;padding:0 6px}
@@ -382,6 +392,8 @@ var W={
  GestureDetector:{cat:'box',slots:{child:'one'},desc:'Detecta toques no filho (onTap) sem mudar o visual.'},
  InkWell:{cat:'box',slots:{child:'one'},desc:'Detecta toques no filho (onTap) e faz uma ondulação no toque.'},
  CircleAvatar:{cat:'content',slots:{child:'one'},desc:'Círculo para foto ou iniciais. radius define o tamanho; o child costuma ser um Text com as iniciais.'},
+ CircularProgressIndicator:{cat:'content',slots:{},desc:'Círculo girando que indica que algo está carregando. Costuma aparecer enquanto o app espera uma resposta (await).'},
+ LinearProgressIndicator:{cat:'content',slots:{},desc:'Barra de progresso. Sem value ela fica correndo; com value (de 0 a 1) mostra quanto já foi feito.'},
  Chip:{cat:'content',slots:{label:'one',avatar:'one'},desc:'Etiqueta compacta, com label e um avatar opcional.'},
  Checkbox:{cat:'content',slots:{},desc:'Caixa de seleção. value indica se está marcada; onChanged recebe a mudança.'},
  Switch:{cat:'content',slots:{},desc:'Interruptor liga/desliga. value indica o estado; onChanged recebe a mudança.'},
@@ -433,7 +445,7 @@ var W={
  'Image.network':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem baixada de uma URL. Aqui o canvas desenha um quadro no lugar da imagem. fit controla como ela preenche o espaço.'},
  'Image.asset':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem guardada no projeto (pasta assets). Aqui o canvas desenha um quadro no lugar da imagem.'}
 };
-var GROUPS=[['Estrutura',['Scaffold','AppBar','FloatingActionButton','Drawer','BottomNavigationBar','BottomNavigationBarItem']],['Abas',['DefaultTabController','TabBar','Tab','TabBarView']],['Layout',['Center','Align','Column','Row','Stack','Positioned','Expanded','Flexible','Spacer','Wrap','ListView','GridView.count','SingleChildScrollView','SafeArea','PageView','LayoutBuilder','Builder']],['Listas e tabelas',['ListView.builder','ListView.separated','GridView.builder','Table','TableRow','DataTable','DataColumn','DataRow','DataCell']],['Caixas',['Container','Padding','SizedBox','Card','Divider','ClipRRect','Opacity','AnimatedContainer','Hero']],['Conteúdo',['Text','Icon','Image.network','CircleAvatar','Chip','ListTile']],['Botões e campos',['ElevatedButton','TextButton','OutlinedButton','IconButton','TextField','Checkbox','Switch','Slider','Radio','DropdownButton','DropdownMenuItem','SwitchListTile','CheckboxListTile','RadioListTile']],['Interação',['GestureDetector','InkWell']],['Janelas',['AlertDialog','SnackBar','SnackBarAction']]];
+var GROUPS=[['Estrutura',['Scaffold','AppBar','FloatingActionButton','Drawer','BottomNavigationBar','BottomNavigationBarItem']],['Abas',['DefaultTabController','TabBar','Tab','TabBarView']],['Layout',['Center','Align','Column','Row','Stack','Positioned','Expanded','Flexible','Spacer','Wrap','ListView','GridView.count','SingleChildScrollView','SafeArea','PageView','LayoutBuilder','Builder']],['Listas e tabelas',['ListView.builder','ListView.separated','GridView.builder','Table','TableRow','DataTable','DataColumn','DataRow','DataCell']],['Caixas',['Container','Padding','SizedBox','Card','Divider','ClipRRect','Opacity','AnimatedContainer','Hero']],['Conteúdo',['Text','Icon','Image.network','CircleAvatar','Chip','ListTile','CircularProgressIndicator','LinearProgressIndicator']],['Botões e campos',['ElevatedButton','TextButton','OutlinedButton','IconButton','TextField','Checkbox','Switch','Slider','Radio','DropdownButton','DropdownMenuItem','SwitchListTile','CheckboxListTile','RadioListTile']],['Interação',['GestureDetector','InkWell']],['Janelas',['AlertDialog','SnackBar','SnackBarAction']]];
 var CATVAR={struct:'var(--c-struct)',layout:'var(--c-layout)',box:'var(--c-box)',content:'var(--c-content)'};
 var warns=[];
 
@@ -664,6 +676,9 @@ var DEF={
  IconButton:function(){return N('IconButton',[A('onPressed','() {}'),SL('icon')],{icon:N('Icon',[PO('icon','Icons.favorite')])})},
  ListTile:function(){return N('ListTile',[SL('leading'),SL('title'),SL('subtitle')],{leading:N('Icon',[PO('icon','Icons.person')]),title:txt('Título'),subtitle:txt('Subtítulo')})},
  TextField:function(){return N('TextField',[A('decoration',"InputDecoration(labelText: 'Nome', border: OutlineInputBorder())")])},
+ 'Image.asset':function(){return N('Image.asset',[PO('src',q('assets/foto.png')),A('width','120'),A('height','80'),A('fit','BoxFit.cover')])},
+ CircularProgressIndicator:function(){return N('CircularProgressIndicator',[])},
+ LinearProgressIndicator:function(){return N('LinearProgressIndicator',[])},
  'Image.network':function(){return N('Image.network',[PO('src',q('https://picsum.photos/200')),A('width','120'),A('height','80'),A('fit','BoxFit.cover')])},
  Wrap:function(){return N('Wrap',[A('spacing','8'),A('runSpacing','8'),SL('children')],{children:['Flutter','Dart','Widgets'].map(function(t){return N('Chip',[SL('label')],{label:txt(t)})})})},
  SingleChildScrollView:function(){return N('SingleChildScrollView')},
@@ -1198,7 +1213,74 @@ function skipToEnd(p){var d=0;while(p.pk()){var k=p.pk();if(k.k==='p'){if('([{'.
 
 /* ---- efeitos de navegação: Navigator, diálogos, SnackBar, BottomSheet ---- */
 ST.fx=[];
-var FXSTART={showDialog:1,showModalBottomSheet:1,showBottomSheet:1,Navigator:1,ScaffoldMessenger:1};
+var FXSTART={showDialog:1,showModalBottomSheet:1,showBottomSheet:1,Navigator:1,ScaffoldMessenger:1,Future:1};
+var lastSusp=null;
+function clonePs(p){var q=new Ps('');q.src=p.src;q.t=p.t;q.i=p.i;return q}
+function bindDecl(env,name,val){
+  if(!hasOwn(env.locals,name)&&ST.fields[name]){ST.fields[name].value=coerce(ST.fields[name].type,val);mutated=true}
+  else env.locals[name]=val}
+function grabStmt(p){
+  var t=p.t,st=p.i,j=st,d=0;
+  for(;j<t.length;j++){var v=t[j];
+    if(v.k==='p'){
+      if('([{'.indexOf(v.v)>=0)d++;
+      else if(')]}'.indexOf(v.v)>=0){if(d===0)break;d--}
+      else if(v.v===';'&&d===0)break}}
+  var txt=p.src.slice(t[st].s,j>st?t[j-1].e:t[st].e);
+  p.i=j;if(p.is(';'))p.i++;
+  return txt}
+function thenCb(txt){var tm=/\.then\s*\(/.exec(txt);return tm?grabArg(txt,tm.index+tm[0].length):null}
+function mkDelay(txt,env){
+  var dm=/Duration\s*\(([^)]*)\)/.exec(txt),ms=0;
+  if(dm)dm[1].split(',').forEach(function(a){var m=/^\s*(\w+)\s*:\s*([\s\S]+?)\s*$/.exec(a);if(!m)return;
+    var v=nn(ev(pTern(new Ps(m[2])),env)),u={days:864e5,hours:36e5,minutes:6e4,seconds:1e3,milliseconds:1}[m[1]];if(u)ms+=v*u});
+  var fx={k:'delay',ms:ms,cb:thenCb(txt)};
+  if(!fx.cb&&dm){var rs=txt.slice(dm.index+dm[0].length),cm=/^\s*,/.exec(rs);if(cm){var a2=grabArg(rs,cm[0].length);if(a2&&/^\(.*\)\s*(async\s*)?(=>|\{)/.test(a2))fx.cb=a2}}
+  return fx}
+function awaitHead(p){var t=p.t,i=p.i;
+  if(t[i]&&t[i].k==='id'&&t[i].v==='await')return{name:null,at:i+1};
+  var j=i,n=0;
+  while(t[j]&&t[j].k==='id'&&n<3&&!(t[j+1]&&t[j+1].k==='p'&&t[j+1].v==='=')){j++;n++}
+  if(t[j]&&t[j].k==='id'&&t[j+1]&&t[j+1].k==='p'&&t[j+1].v==='='&&t[j+2]&&t[j+2].k==='id'&&t[j+2].v==='await')return{name:t[j].v,at:j+3};
+  return null}
+function awaitStmt(p,env,run,aw){
+  if(!run){skipToEnd(p);p.eat(';');return}
+  if(env.lp>0)throw new Error('await dentro de for/while ainda não é simulado: use setState e botões, ou mova o await para fora do laço');
+  p.i=aw.at;lastSusp=null;
+  var h=p.pk(),hd=h&&h.k==='id'?h.v:'',val=null,fx=null;
+  if(hd==='Future'&&p.is('.',1)&&p.pk(2)&&p.pk(2).v==='delayed'){
+    fx=mkDelay(grabStmt(p),env);fx.cb=null;ST.fx.push(fx)}
+  else if(hd==='Navigator'||hd==='showDialog'||hd==='showModalBottomSheet'){
+    var n0=ST.fx.length;fxStmt(p,env,true);var f=ST.fx[ST.fx.length-1];
+    if(ST.fx.length>n0&&(f.k==='push'||f.k==='dialog'||f.k==='sheet')){fx=f;fx.cb=null}}
+  else{var ast=pTern(p);p.eat(';');val=ev(ast,env);if(lastSusp)fx=lastSusp}
+  if(fx){
+    var c={p:clonePs(p),env:env,decl:aw.name,tail:null,sd:env.bd||0};
+    if(fx.cont){fx.last.tail=c;fx.last=c}else{fx.cont=c;fx.last=c}
+    env.pend=fx;env.susp=true;env.returned=true;return}
+  if(aw.name)bindDecl(env,aw.name,val)}
+function skipClauses(p,env){
+  while(true){
+    if(p.isId('else')){p.i++;stmt(p,env,false);continue}
+    if(p.isId('on')||p.isId('catch')){if(p.isId('on'))p.i+=2;if(p.isId('catch')){p.i++;p.need('(');while(!p.is(')')&&!p.end())p.i++;p.need(')')}block(p,env,false);continue}
+    if(p.isId('finally')){p.i++;block(p,env,true);continue}
+    break}}
+function runCont(c,val){
+  var prev=null;
+  while(c){
+    var env=c.env;
+    if(prev&&prev.env===env&&env.returned){prev=c;c=c.tail;continue}
+    var v=(prev&&prev.env!==env)?prev.env.ret:val;
+    env.returned=false;env.susp=false;env.pend=null;env.bd=c.sd;
+    if(c.decl)bindDecl(env,c.decl,v);
+    var q=c.p;skipClauses(q,env);
+    while(!q.is('}')&&!q.end()&&!env.returned)stmt(q,env,true);
+    if(env.susp){env.pend.last.tail=c.tail;return}
+    prev=c;c=c.tail}}
+ST.resume=function(cont,val){
+  dirty=false;mutated=false;depth=0;steps=0;ST.fx=[];var err=null,isExc=false;
+  try{runCont(cont,val)}catch(e){err=e.message;isExc=!!e.dartExc}
+  return{dirty:dirty,mutated:mutated,err:err,exc:isExc,fx:ST.fx.slice()}};
 function grabArg(txt,i){
   while(i<txt.length&&/\s/.test(txt[i]))i++;
   var st=i,d=0,q=null;
@@ -1235,15 +1317,22 @@ function fxStmt(p,env,run){
   p.i=j;if(p.is(';'))p.i++;
   if(!run)return true;
   var m;
-  if(/^showDialog\b/.test(txt)){ST.fx.push({k:'dialog',src:bindEnv(builderBody(txt),env)});return true}
-  if(/^show(Modal)?BottomSheet\b/.test(txt)){ST.fx.push({k:'sheet',src:bindEnv(builderBody(txt),env)});return true}
+  if(/^Future\s*\.\s*delayed\b/.test(txt)){ST.fx.push(mkDelay(txt,env));return true}
+  if(/^Future\b/.test(txt))return true;
+  if(/^showDialog\b/.test(txt)){ST.fx.push({k:'dialog',src:bindEnv(builderBody(txt),env),cb:thenCb(txt)});return true}
+  if(/^show(Modal)?BottomSheet\b/.test(txt)){ST.fx.push({k:'sheet',src:bindEnv(builderBody(txt),env),cb:thenCb(txt)});return true}
   if(/^ScaffoldMessenger\b/.test(txt)){
     if(/\.showSnackBar\s*\(/.test(txt)){var sb=grabCall(txt,'SnackBar');if(!sb)throw new Error('showSnackBar sem SnackBar(...)');ST.fx.push({k:'snack',src:bindEnv(sb,env)})}
     else ST.fx.push({k:'hidesnack'});
     return true}
   if(/^Navigator\b/.test(txt)){
-    if(/\.pop\s*\(/.test(txt)||/\.maybePop\s*\(/.test(txt)){ST.fx.push({k:'pop'});return true}
-    if(/\.(push|pushReplacement)\s*\(/.test(txt)){ST.fx.push({k:'push',replace:/pushReplacement/.test(txt),src:bindEnv(builderBody(txt),env)});return true}
+    if(/\.pop\s*\(/.test(txt)||/\.maybePop\s*\(/.test(txt)){
+      var pm=/\.pop\s*\(/.exec(txt),pv=null;
+      if(pm){var i0=pm.index+pm[0].length,a1=grabArg(txt,i0),isOf=/^Navigator\s*\.\s*of\s*\(/.test(txt),av=a1;
+        if(!isOf){var rest=txt.slice(i0+a1.length),cm=/^\s*,/.exec(rest);av=cm?grabArg(txt,i0+a1.length+cm[0].length):''}
+        if(av&&av.trim())pv=ev(pTern(new Ps(av)),env)}
+      ST.fx.push({k:'pop',val:pv});return true}
+    if(/\.(push|pushReplacement)\s*\(/.test(txt)){ST.fx.push({k:'push',replace:/pushReplacement/.test(txt),src:bindEnv(builderBody(txt),env),cb:thenCb(txt)});return true}
     throw new Error('Navigator.'+((/Navigator(?:\.of\([^)]*\))?\.(\w+)/.exec(txt)||[])[1]||'?')+' (só push, pushReplacement e pop são simulados)')}
   return false}
 function simple(p,env,run){
@@ -1275,9 +1364,10 @@ function tryDecl(p,env,run){
   if(p.eat('=')){var ie=pTern(p);if(run)env.locals[name]=ev(ie,env)}else if(run)env.locals[name]=null;
   return true}
 function block(p,env,run){
-  p.need('{');
+  p.need('{');var s0=env.susp;env.bd=(env.bd||0)+1;
   while(!p.is('}')){if(p.end())throw new Error('fim inesperado');stmt(p,env,run&&!env.returned&&!env.brk&&!env.cont)}
-  p.i++}
+  p.i++;env.bd--;
+  if(run&&!s0&&env.susp&&env.bd>0&&env.pend){var c={p:clonePs(p),env:env,decl:null,tail:null,sd:env.bd};env.pend.last.tail=c;env.pend.last=c}}
 function toIter(v){
   if(Array.isArray(v))return v.slice();
   if(v&&v.isMap)return Array.from(v.m.entries()).map(function(e){return{entry:true,key:e[0],value:e[1]}});
@@ -1288,6 +1378,7 @@ function stmt(p,env,run){
   if(p.eat(';'))return;
   if(p.is('{')){block(p,env,run);return}
   if(k.k==='id'){
+    var aw=awaitHead(p);if(aw){awaitStmt(p,env,run,aw);return}
     switch(k.v){
       case 'if':{p.i++;p.need('(');var c=pTern(p);p.need(')');var ok=run&&!!ev(c,env);stmt(p,env,ok);if(p.isId('else')){p.i++;stmt(p,env,run&&!ok)}return}
       case 'return':{p.i++;if(!p.is(';')&&!p.is('}')&&!p.end()){var ra=pTern(p);if(run)env.ret=ev(ra,env)}if(run)env.returned=true;p.eat(';');return}
@@ -1300,7 +1391,7 @@ function stmt(p,env,run){
       case 'while':{
         p.i++;p.need('(');var cs=p.i;pTern(p);p.need(')');var bs=p.i;
         if(run){
-          while(true){p.i=cs;var cv=ev(pTern(p),env);p.need(')');if(!cv)break;tick();p.i=bs;stmt(p,env,true);if(env.brk||env.returned)break;env.cont=false}
+          while(true){p.i=cs;var cv=ev(pTern(p),env);p.need(')');if(!cv)break;tick();p.i=bs;env.lp=(env.lp||0)+1;try{stmt(p,env,true)}finally{env.lp--}if(env.brk||env.returned)break;env.cont=false}
           env.brk=false;env.cont=false}
         p.i=bs;stmt(p,env,false);return}
       case 'for':{
@@ -1315,7 +1406,7 @@ function stmt(p,env,run){
           var nm=p.t[inAt-1].v;p.i=inAt+1;var la=pTern(p);p.need(')');var fb=p.i;
           if(run){
             var items=toIter(ev(la,env));
-            for(var ii=0;ii<items.length;ii++){tick();env.locals[nm]=items[ii];p.i=fb;stmt(p,env,true);if(env.brk||env.returned)break;env.cont=false}
+            for(var ii=0;ii<items.length;ii++){tick();env.locals[nm]=items[ii];p.i=fb;env.lp=(env.lp||0)+1;try{stmt(p,env,true)}finally{env.lp--}if(env.brk||env.returned)break;env.cont=false}
             env.brk=false;env.cont=false}
           p.i=fb;stmt(p,env,false);return}
         if(!p.is(';')){if(!tryDecl(p,env,run))simple(p,env,run)}
@@ -1323,7 +1414,7 @@ function stmt(p,env,run){
         if(run){
           while(true){
             p.i=cs2;var ok2=p.is(';')?true:!!ev(pTern(p),env);if(!ok2)break;
-            tick();p.i=fb2;stmt(p,env,true);if(env.brk||env.returned)break;env.cont=false;
+            tick();p.i=fb2;env.lp=(env.lp||0)+1;try{stmt(p,env,true)}finally{env.lp--}if(env.brk||env.returned)break;env.cont=false;
             p.i=ss;if(!p.is(')'))simple(p,env,true)}
           env.brk=false;env.cont=false}
         p.i=fb2;stmt(p,env,false);return}
@@ -1369,8 +1460,8 @@ function runMethod(m,args,self){
   try{
     var env=mkEnv({});env.self=self||null;paramNames(m.params).forEach(function(n,i){env.params[n]=args[i]});
     var p=new Ps(m.body);
-    if(m.arrow){return ev(pTern(p),env)}
-    stmt(p,env,true);return env.ret}
+    if(m.arrow){lastSusp=null;return ev(pTern(p),env)}
+    stmt(p,env,true);lastSusp=env.susp?env.pend:null;return env.ret}
   finally{depth--}}
 function callMethod(name,args){var m=ST.methods[name];if(!m)throw new Error('método '+name);return runMethod(m,args,null)}
 
@@ -1384,6 +1475,8 @@ ST.subst=function(raw){
   cache[raw]=out;return out};
 ST.begin=function(){cache={}};
 ST.run=function(raw,args){
+  if(raw&&/\?/.test(raw)&&!/^\s*\(/.test(raw)){try{var pk=ST.pick(raw);if(pk!==null)raw=pk}catch(e){}}
+  if(raw&&raw.trim()==='null')return{dirty:false,mutated:false,err:null,exc:false,fx:[]};
   dirty=false;mutated=false;depth=0;steps=0;ST.fx=[];var err=null,isExc=false;
   try{
     var p=new Ps(raw),env=mkEnv({});
@@ -1411,8 +1504,10 @@ function initOf(f){
   else v=null;
   return coerce(f.type,v)}
 ST.load=function(info){
-  var old=ST.fields;ST.fields={};ST.order=[];ST.methods={};ST.locals={};ST.dataClasses={};ST.userWidgets={};ST.widgetVals={};cache={};ST.initState=null;
+  var old=ST.fields;ST.fields={};ST.order=[];ST.methods={};ST.locals={};ST.dataClasses={};ST.userWidgets={};ST.widgetVals={};cache={};ST.initState=null;ST.statefuls={};ST.funcs={};
   if(!info){ST.active=false;ST.re=null;return}
+  (info.states||[]).forEach(function(sx){var wc=info.classes[sx.of];if(wc&&wc.kind==='StatefulWidget'&&sx.ci.build&&sx.ci.build.body){ST.statefuls[sx.of]={state:sx.ci,widget:wc.ci};ST.userWidgets[sx.of]={params:wc.ci.params,build:sx.ci.build,stateful:true}}});
+  info.funcs.forEach(function(f){ST.funcs[f.name]=f});
   Object.keys(info.classes).forEach(function(n){var c=info.classes[n];if(c.kind==='data')ST.dataClasses[n]=c.ci;else if(c.kind==='StatelessWidget'&&c.ci.build&&c.ci.build.body)ST.userWidgets[n]=c.ci});
   info.funcs.forEach(function(f){ST.methods[f.name]=f});
   info.methods.forEach(function(m){ST.methods[m.name]=m});
@@ -1494,7 +1589,7 @@ ST.pickAll=function(raw){
     if(cl===tt.length-1)raw=raw.slice(1,-1).trim();else break}
   var t=lex(raw),out=[],i,d;
   var um=/^(?:const\s+|new\s+)?([A-Z]\w*)\s*\(/.exec(raw);
-  if(um&&ST.userWidgets[um[1]]){var ut=ST.expandUser(raw);if(ut)expandText(ut,out);return out}
+  if(um&&ST.userWidgets[um[1]]&&(!ST.userWidgets[um[1]].stateful||(ST.cur&&ST.cur.cls===um[1]))){var ut=ST.expandUser(raw);if(ut)expandText(ut,out);return out}
   if(t[0]&&t[0].k==='id'&&t[0].v==='for'&&t[1]&&t[1].v==='('){
     i=2;d=1;while(i<t.length&&d>0){if(t[i].k==='p'&&t[i].v==='(')d++;else if(t[i].k==='p'&&t[i].v===')')d--;i++}
     var head=raw.slice(t[2].s,t[i-1].s),body=raw.slice(t[i].s).trim(),inM=/^(?:(?:final|var|const)\s+)?(?:\w+\s+)?(\w+)\s+in\s+([\s\S]+)$/.exec(head);
@@ -1648,6 +1743,7 @@ ST.extract=function(src){src=stripComments(src);
     if(/^(import|export|part|library|typedef|enum|mixin|extension)\b/.test(ch))return;
     var a=MARROW.exec(ch);if(a){if(a[1]!=='main')info.funcs.push({name:a[1],params:a[2],body:a[3],arrow:true});return}
     var bl=MBLOCK.exec(ch);if(bl&&bl[1]!=='main'&&bl[1]!=='runApp')info.funcs.push({name:bl[1],params:bl[2],body:bl[3],arrow:false})});
+  info.states=states;
   var hm=(/home:\s*(?:const\s+)?(\w+)\s*\(/.exec(src)||/runApp\(\s*(?:const\s+)?(?!MaterialApp|CupertinoApp)(\w+)\s*\(/.exec(src)||[]),home=hm[1]||hm[2],pickS=states.filter(function(x){return x.of===home})[0]||states[0];
   if(pickS){
     var ci2=pickS.ci;info.stateOf=pickS.of;info.fields=ci2.fields;
@@ -1661,6 +1757,7 @@ ST.extract=function(src){src=stripComments(src);
 ST.expandUser=function(raw){
   var p=new Ps(raw),c=pPrim(p);if(c.t!=='ctor'||!c.args)return null;
   var uw=ST.userWidgets[c.name];if(!uw)return null;
+  if(uw.stateful)return(ST.cur&&ST.cur.cls===c.name)?uw.build.body:null;
   var vals=bindArgs(uw.params,evalArgs(c,mkEnv())),order=Object.keys(vals),body=uw.build.body;
   uw.build.locals.forEach(function(l){
     var e2=l.expr;order.forEach(function(k){e2=bindVar(e2,k,vals[k])});
@@ -1668,6 +1765,34 @@ ST.expandUser=function(raw){
     order.push(l.name)});
   order.forEach(function(k){body=bindVar(body,k,vals[k])});
   return body};
+/* ---- escopos: cada tela StatefulWidget aberta por Navigator tem o seu próprio estado ---- */
+var scopeStack=[],scopeSeq=0;ST.cur=null;ST.statefuls={};ST.funcs={};
+ST.enter=function(inst){
+  scopeStack.push({cur:ST.cur,fields:ST.fields,order:ST.order,methods:ST.methods,locals:ST.locals,widgetVals:ST.widgetVals,re:ST.re,initState:ST.initState,active:ST.active,cache:cache});
+  if(inst){ST.cur=inst;ST.fields=inst.fields;ST.order=inst.order;ST.methods=inst.methods;ST.locals=inst.locals;ST.widgetVals=inst.widgetVals;ST.re=inst.re;ST.initState=inst.initState;ST.active=true}
+  cache={}};
+ST.leave=function(){var s=scopeStack.pop();if(!s)return;ST.cur=s.cur;ST.fields=s.fields;ST.order=s.order;ST.methods=s.methods;ST.locals=s.locals;ST.widgetVals=s.widgetVals;ST.re=s.re;ST.initState=s.initState;ST.active=s.active;cache=s.cache};
+ST.makeScope=function(src,old){
+  var m=/^\s*(?:const\s+|new\s+)?([A-Z]\w*)\s*\(/.exec(src||''),sf=m&&ST.statefuls[m[1]];if(!sf)return null;
+  var inst=(old&&old.cls===m[1])?old:{id:'s'+(++scopeSeq),cls:m[1],src:src,fields:{},order:[],fresh:true};
+  var oldF=inst.fields,fresh=!!inst.fresh;inst.fields={};inst.order=[];inst.src=src;
+  inst.methods={};Object.keys(ST.funcs).forEach(function(k){inst.methods[k]=ST.funcs[k]});
+  Object.keys(sf.state.methods).forEach(function(k){if(!/^(createState|dispose|build|initState)$/.test(k))inst.methods[k]=sf.state.methods[k]});
+  inst.initState=sf.state.methods.initState||null;
+  inst.locals={};(sf.state.build.locals||[]).forEach(function(l){inst.locals[l.name]=l.expr});
+  inst.widgetVals={};try{var cp=pPrim(new Ps(src));inst.widgetVals=bindArgs(sf.widget.params,evalArgs(cp,mkEnv()))}catch(e){}
+  ST.enter(inst);
+  try{
+    sf.state.fields.forEach(function(f){
+      var o=oldF[f.name],fl={name:f.name,type:f.type,init:f.init,value:null};
+      inst.fields[f.name]=fl;inst.order.push(f.name);
+      if(o&&o.init===f.init&&o.type===f.type)fl.value=o.value;else{fl.value=initOf(fl);fresh=true}});
+    var names=inst.order.concat(Object.keys(inst.locals)).map(function(n){return n.replace(/\$/g,'\\$')});
+    inst.re=names.length?new RegExp('\\$|(?:^|[^\\w.$])(?:'+names.join('|')+')(?!\\w)'):null;
+    ST.re=inst.re;
+    if(inst.fresh||fresh){if(inst.initState)ST.runInit()}
+  }finally{ST.leave()}
+  inst.fresh=false;return inst};
 ST.fromSource=function(src){
   var info=null;try{info=ST.extract(src)}catch(e){info=null}
   ST.load(info);ST.fxOn=/\b(Navigator|showDialog|showModalBottomSheet|ScaffoldMessenger|TabBar)\b/.test(src);if(ST.fxOn)ST.active=true;return ST.active};
@@ -1851,7 +1976,7 @@ function build(n,path,pt,ppt,sel){
     if(!texts.length){d.appendChild(ph('lista vazia'));return}
     texts.forEach(function(tx,i){var nd=OF.parseWidgetText(tx);if(nd)d.appendChild(build(nd,path.concat('@'+i),mode,null,sel))})}
   function kids(slot,mode){var arr=n.slots[slot];if(!arr){var rw=M.rawProp(n,slot);if(rw&&/\.map\s*\(/.test(rw))arr=[{type:'expressão',unknown:true,raw:rw}]}(arr||[]).forEach(function(c,i){d.appendChild(child(c,slot+':'+i,mode))})}
-  if(n.unknown&&(n.type==='expressão'||(OF.ST.userWidgets&&OF.ST.userWidgets[n.type]))&&R_opts.depth<40){R_opts.depth++;var rc;try{rc=resolveCond(n,path,pt,ppt,sel)}finally{R_opts.depth--}if(rc)return rc}
+  if(n.unknown&&(n.type==='expressão'||(OF.ST.userWidgets&&OF.ST.userWidgets[n.type]&&(!OF.ST.userWidgets[n.type].stateful||(OF.ST.cur&&OF.ST.cur.cls===n.type))))&&R_opts.depth<40){R_opts.depth++;var rc;try{rc=resolveCond(n,path,pt,ppt,sel)}finally{R_opts.depth--}if(rc)return rc}
   if(n.unknown){d.className+=' unk';d.textContent=n.type==='expressão'?'{ '+n.raw.replace(/\s+/g,' ').slice(0,40)+' }':n.type+'(…)';lbl(d,n);d.dataset.path=path.join('>');place(d,n,pt,ppt);return d}
   switch(ALIAS[n.type]||n.type){
     case 'Scaffold':{
@@ -2041,6 +2166,9 @@ function build(n,path,pt,ppt,sel){
       if(n.slots.action)d.appendChild(child(n.slots.action,'action','#none'));break}
     case 'SnackBarAction':{
       d.className+=' sna';var sl=M.getProp(n,'label');d.textContent=sl?strVal(sl):'AÇÃO';break}
+    case 'CircularProgressIndicator':{d.className+=' dspin';d.style.flex='none';var pc=colorVal(M.getProp(n,'color'));if(pc)d.style.setProperty('--act',pc);break}
+    case 'LinearProgressIndicator':{d.className+=' dlin';var lv=numVal(M.getProp(n,'value')),lc=colorVal(M.getProp(n,'color'));if(lc)d.style.setProperty('--act',lc);
+      d.innerHTML='<i'+(lv==null?' class="ind"':' style="width:'+Math.max(0,Math.min(1,lv))*100+'%"')+'></i>';break}
     case 'Chip':{
       d.className+=' dchip';d.style.flex='none';var cbg=colorVal(M.getProp(n,'backgroundColor'));if(cbg)d.style.background=cbg;
       if(n.slots.avatar)d.appendChild(child(n.slots.avatar,'avatar','#none'));
@@ -2066,7 +2194,7 @@ function build(n,path,pt,ppt,sel){
   if(R_opts.run)bindRun(d,n);
   return d;
 }
-var R_opts={run:false,xray:false,typed:{},page:{},depth:0,nav:[],over:[],tab:{},tabCtl:null};
+var R_opts={run:false,xray:false,typed:{},page:{},depth:0,nav:[],navSc:[],over:[],tab:{},tabCtl:null};
 var HANDLERS=['onPressed','onTap','onLongPress','onDoubleTap','onChanged'];
 function bindRun(d,n){
   if(n.type==='TextField'){
@@ -2075,7 +2203,10 @@ function bindRun(d,n){
     inp.value=cf?cf.text:(R_opts.typed[key]||'');inp.setAttribute('aria-label','Campo de texto');d.classList.toggle('typed',!!inp.value);d.appendChild(inp);d._n=n;d.classList.add('hh')}
   d._n=n;
   var h=null;
-  HANDLERS.forEach(function(k){if(!h){var v=M.rawProp(n,k);if(v!=null&&v.trim()!=='null')h=k}});
+  HANDLERS.forEach(function(k){if(!h){var v=M.rawProp(n,k);
+    if(v!=null&&/\?/.test(v)&&!/^\s*\(/.test(v)){try{var pk=OF.ST.pick(v);if(pk!==null)v=pk}catch(e){}}
+    if(v!=null&&v.trim()==='null'&&k==='onPressed')d.classList.add('dis');
+    else if(v!=null&&v.trim()!=='null')h=k}});
   if(!h)return;
   d.classList.add('hh');d.dataset.h=h;
 }
@@ -2107,8 +2238,11 @@ function renderScreen(root,selKey,xray,screen){
 function renderInner(root,selKey,screen){
   var sb=document.createElement('div');sb.className='sbar';sb.innerHTML='<span>9:41</span><span>●●● 100%</span>';screen.appendChild(sb);
   if(!root){var e=document.createElement('div');e.className='empty';e.textContent='Arraste um Scaffold da paleta para começar.';screen.appendChild(e);return}
-  if(R_opts.nav.length){var top=OF.parseWidgetText(R_opts.nav[R_opts.nav.length-1]);if(top){root=top;selKey=null}}
-  var el=build(root,[],null,null,selKey);
+  var nsc=null;
+  if(R_opts.nav.length){var top=OF.parseWidgetText(R_opts.nav[R_opts.nav.length-1]);if(top){root=top;selKey=null}nsc=(R_opts.navSc||[])[R_opts.nav.length-1]||null}
+  var el;OF.ST.enter(nsc);
+  try{el=build(root,[],null,null,selKey)}finally{OF.ST.leave()}
+  el.dataset.sc=nsc?nsc.id:'';
   var scf=root;while(scf&&scf.type!=='Scaffold'&&scf.slots&&scf.slots.child)scf=scf.slots.child;
   if(scf&&scf.type==='Scaffold'){el.style.flex='1 1 0';
     var ab=scf.slots.appBar;if(ab){var bg=colorVal(M.getProp(ab,'backgroundColor'));if(bg){sb.style.background=bg;var f=colorVal(M.getProp(ab,'foregroundColor'));if(f)sb.style.color=f}}}
@@ -2119,7 +2253,8 @@ function renderInner(root,selKey,screen){
     if(o.k!=='snack'){var sc=document.createElement('div');sc.className='ovs';screen.appendChild(sc)}
     var w=document.createElement('div');w.className=o.k==='dialog'?'ovl dlg':o.k==='sheet'?'ovl sht':'ovl snw';
     var h=R_opts.depth;R_opts.depth=0;
-    try{w.appendChild(build(nd,['@ov'+i],null,null,null))}finally{R_opts.depth=h}
+    OF.ST.enter(o.sc||null);w.dataset.sc=o.sc?o.sc.id:'';
+    try{w.appendChild(build(nd,['@ov'+i],null,null,null))}finally{R_opts.depth=h;OF.ST.leave()}
     screen.appendChild(w)});
 }
 OF.R={opts:R_opts,renderScreen:renderScreen,colorVal:colorVal,numVal:numVal,strVal:strVal,enumName:enumName,SWATCH:SWATCH,ICONNAMES:ICONNAMES,styleParts:styleParts,callParts:callParts,insets:insets,pv:pv};
@@ -3593,6 +3728,238 @@ class _TelaState extends State<Tela> {
                 });
               },
               child: const Text('Mais 1'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+`},
+{t:'x. Tela com estado próprio',
+ text:'Uma tela aberta pelo Navigator pode ser um StatefulWidget, com variáveis e setState só dela. Cada vez que você faz push, nasce uma nova tela com um State novo: o initState roda de novo e o valor inicial vem do construtor, lido com widget.inicio. Aqui as duas telas abertas contam sozinhas, uma não interfere na outra.',
+ tryit:'Em ▶ Testar, abra o contador a partir de 0, some alguns pontos e volte. Abra o de 10: ele começa do zero de novo, porque é uma tela nova. A barra de estado mostra as variáveis da tela que está no topo.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Inicio()));
+
+class Inicio extends StatelessWidget {
+  const Inicio({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Início')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Contador(inicio: 0)),
+                );
+              },
+              child: const Text('Contar a partir de 0'),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Contador(inicio: 10)),
+                );
+              },
+              child: const Text('Contar a partir de 10'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class Contador extends StatefulWidget {
+  final int inicio;
+  const Contador({super.key, required this.inicio});
+
+  @override
+  State<Contador> createState() => _ContadorState();
+}
+
+class _ContadorState extends State<Contador> {
+  int n = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    n = widget.inicio;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Contador')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('$n', style: const TextStyle(fontSize: 48)),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  n++;
+                });
+              },
+              child: const Text('+1'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+`},
+{t:'x. Esperando a resposta de outra tela',
+ text:'Navigator.push devolve um Future: o app continua de onde parou quando a outra tela fecha. Com await, a linha seguinte só roda depois do pop, e o valor passado em Navigator.pop(context, valor) chega na variável. Se a pessoa voltar pela seta, o valor é null, por isso o if (resposta != null). Um método que usa await precisa ser marcado com async.',
+ tryit:'Em ▶ Testar, toque em Escolher, escolha uma opção e veja o texto da tela inicial mudar. Depois volte pela seta, sem escolher: a escolha anterior continua, porque a resposta veio null. Acrescente uma terceira opção.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Inicio()));
+
+class Inicio extends StatefulWidget {
+  const Inicio({super.key});
+
+  @override
+  State<Inicio> createState() => _InicioState();
+}
+
+class _InicioState extends State<Inicio> {
+  String escolha = 'nenhuma';
+
+  Future<void> _escolher() async {
+    final resposta = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const Escolha()),
+    );
+    if (resposta != null) {
+      setState(() {
+        escolha = resposta;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Pedido')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Sua escolha: $escolha', style: const TextStyle(fontSize: 22)),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _escolher,
+              child: const Text('Escolher'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class Escolha extends StatelessWidget {
+  const Escolha({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Escolha uma opção')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, 'Pizza'),
+              child: const Text('Pizza'),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, 'Salada'),
+              child: const Text('Salada'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+`},
+{t:'x. Esperando com Future e async',
+ text:'Muita coisa leva tempo: baixar dados, gravar um arquivo, esperar um sensor. Um Future representa um resultado que ainda vai chegar. Em um método async, await pausa o método até o Future terminar, sem travar a tela. Future.delayed simula essa espera. O padrão é: liga carregando com setState, faz o await, desliga carregando e mostra o resultado.',
+ tryit:'Em ▶ Testar, toque em Buscar: o círculo gira por 2 segundos e a mensagem muda. Mude Duration(seconds: 2) para 4. Depois use o segundo botão, que faz o mesmo com .then em vez de await.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Tela()));
+
+class Tela extends StatefulWidget {
+  const Tela({super.key});
+
+  @override
+  State<Tela> createState() => _TelaState();
+}
+
+class _TelaState extends State<Tela> {
+  bool carregando = false;
+  String mensagem = 'Toque para buscar';
+
+  Future<void> _buscar() async {
+    setState(() {
+      carregando = true;
+    });
+    await Future.delayed(const Duration(seconds: 2));
+    setState(() {
+      carregando = false;
+      mensagem = 'Dados chegaram!';
+    });
+  }
+
+  void _buscarComThen() {
+    setState(() {
+      carregando = true;
+    });
+    Future.delayed(const Duration(seconds: 1)).then((_) {
+      setState(() {
+        carregando = false;
+        mensagem = 'Chegou com then!';
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Future e async')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            carregando
+                ? const CircularProgressIndicator()
+                : Text(mensagem, style: const TextStyle(fontSize: 22)),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: carregando ? null : _buscar,
+              child: const Text('Buscar'),
+            ),
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: carregando ? null : _buscarComThen,
+              child: const Text('Buscar com then'),
             ),
           ],
         ),
@@ -5779,6 +6146,8 @@ var FIELDS={
  Flexible:[['flex','num','flex (proporção)'],['fit','enum','fit',{prefix:'FlexFit',list:['loose','tight']}]],
  ListView:[['padding','inset','Padding (todos os lados)']],
  'GridView.count':[['crossAxisCount','num','Colunas'],['mainAxisSpacing','num','Espaço vertical'],['crossAxisSpacing','num','Espaço horizontal'],['padding','inset','Padding (todos os lados)']],
+ CircularProgressIndicator:[['color','color','Cor']],
+ LinearProgressIndicator:[['value','num','Progresso (0 a 1; vazio = correndo)'],['color','color','Cor']],
  Divider:[['height','num','Espaço total (height)'],['thickness','num','Espessura'],['color','color','Cor']],
  TextField:[['deco.labelText','str','Rótulo'],['deco.hintText','str','Dica'],['deco.outline','bool','Borda contornada'],['obscureText','bool','Esconder texto']],
  'Image.network':[['src','str','Endereço (URL)'],['width','num','Largura'],['height','num','Altura'],['fit','enum','fit',{prefix:'BoxFit',list:['cover','contain','fill','fitWidth']}]],
@@ -5915,12 +6284,12 @@ screen.addEventListener('input',function(e){
   var i=e.target;if(!i.classList||!i.classList.contains('tfi'))return;
   var n=i.parentNode._n;if(i.parentNode._ctl)i.parentNode._ctl.text=i.value;else R.opts.typed[i.dataset.key]=i.value;renderStateBar();i.parentNode.classList.toggle('typed',!!i.value);
   var raw=n&&M.rawProp(n,'onChanged');
-  if(raw&&raw.trim()!=='null'){refocus={key:i.dataset.key,pos:i.selectionStart};afterRun(OF.ST.run(raw,[i.value]));refocus=null}
+  if(raw&&raw.trim()!=='null'){refocus={key:i.dataset.key,pos:i.selectionStart};afterRun(runAt(i,raw,[i.value]));refocus=null}
 });
 screen.addEventListener('keydown',function(e){
   var i=e.target;if(e.key!=='Enter'||!i.classList||!i.classList.contains('tfi'))return;
   var n=i.parentNode._n,raw=n&&(M.rawProp(n,'onSubmitted')||M.rawProp(n,'onFieldSubmitted'));
-  if(raw){refocus={key:i.dataset.key,pos:i.selectionStart};afterRun(OF.ST.run(raw,[i.value]));refocus=null}
+  if(raw){refocus={key:i.dataset.key,pos:i.selectionStart};afterRun(runAt(i,raw,[i.value]));refocus=null}
 });
 function renderAll(keepProps){
   if(!OF.ST.active)S.run=false;R.opts.run=S.run;
@@ -5937,7 +6306,8 @@ function renderStateBar(){
   var bar=$('stBar');
   if(!ST.active){bar.hidden=true;bar.innerHTML='';return}
   bar.hidden=false;
-  bar.innerHTML='<b>'+(ST.order.length?'Estado':'Modo interativo')+'</b>'+ST.list().map(function(v){return '<span class="sv"><i>'+esc(v.type)+'</i> '+esc(v.name)+' = <b>'+esc(v.text)+'</b></span>'}).join('')+
+  var tsc=topScope(),lst=runIn(tsc,function(){return ST.list()}),hasSt=runIn(tsc,function(){return ST.order.length});
+  bar.innerHTML='<b>'+(hasSt?'Estado':'Modo interativo')+(tsc?' · '+esc(tsc.cls):'')+'</b>'+lst.map(function(v){return '<span class="sv"><i>'+esc(v.type)+'</i> '+esc(v.name)+' = <b>'+esc(v.text)+'</b></span>'}).join('')+
     '<span class="sp"></span><div class="seg" role="group" aria-label="Modo"><button data-a="test" aria-pressed="'+!!S.run+'">▶ Testar</button><button data-a="edit" aria-pressed="'+!S.run+'">✎ Editar</button></div><button class="btn" data-a="reset" title="Volta as variáveis aos valores iniciais">↺ Reiniciar</button>';
 }
 function setRun(x){if(!x)clearFx();S.run=!!x&&ST.active;R.opts.run=S.run;renderStateBar();renderCanvas()}
@@ -5947,21 +6317,40 @@ $('stBar').addEventListener('click',function(e){
   else if(b.dataset.a==='edit')setRun(false);
   else if(b.dataset.a==='reset'){clearFx();R.opts.typed={};ST.reset();renderStateBar();renderCanvas()}
 });
-function clearFx(){R.opts.nav=[];R.opts.over=[];R.opts.tab={};clearTimeout(snackT)}
+var timers=[];
+function clearFx(){R.opts.nav=[];R.opts.navSc=[];R.opts.navRes=[];R.opts.over=[];R.opts.tab={};clearTimeout(snackT);timers.forEach(clearTimeout);timers=[]}
 var snackT=null;
+function runIn(inst,fn){if(!inst)return fn();ST.enter(inst);try{return fn()}finally{ST.leave()}}
+function scopeOfEl(el){var h=el&&el.closest&&el.closest('[data-sc]');if(!h||!h.dataset.sc)return null;var all=R.opts.navSc.concat(R.opts.over.map(function(o){return o.sc}));for(var i=0;i<all.length;i++)if(all[i]&&all[i].id===h.dataset.sc)return all[i];return null}
+function runAt(el,raw,args){var inst=scopeOfEl(el),r=runIn(inst,function(){return ST.run(raw,args)});r.sc=inst;return r}
+function valAt(el,raw){return runIn(scopeOfEl(el),function(){return ST.value(raw)})}
 function topOverlay(){for(var i=R.opts.over.length-1;i>=0;i--)if(R.opts.over[i].k!=='snack')return i;return -1}
-function popTop(){var i=topOverlay();if(i>=0)R.opts.over.splice(i,1);else if(R.opts.nav.length)R.opts.nav.pop()}
-function applyFx(fx){
+function topScope(){var i=topOverlay();if(i>=0)return R.opts.over[i].sc||null;var n=R.opts.nav.length;return n?(R.opts.navSc[n-1]||null):null}
+function resolve(res,val){
+  if(!res||!res.fx||!(res.fx.cont||res.fx.cb))return;
+  setTimeout(function(){
+    var f=res.fx,r=runIn(res.sc,function(){return f.cont?ST.resume(f.cont,val):ST.run(f.cb,[val])});
+    r.sc=res.sc;afterRun(r)},0)}
+function popTop(val){
+  var i=topOverlay();
+  if(i>=0){var o=R.opts.over.splice(i,1)[0];resolve(o.res,val===undefined?null:val)}
+  else if(R.opts.nav.length){R.opts.nav.pop();R.opts.navSc.pop();var rs=R.opts.navRes.pop();resolve(rs,val===undefined?null:val)}}
+function applyFx(fx,sc){
+  sc=sc||null;
   fx.forEach(function(f){
-    if(f.k==='dialog'||f.k==='sheet')R.opts.over.push({k:f.k,src:f.src});
+    var res={fx:f,sc:sc};
+    if(f.k==='dialog'||f.k==='sheet')R.opts.over.push({k:f.k,src:f.src,sc:sc,res:res});
     else if(f.k==='snack'){
-      R.opts.over=R.opts.over.filter(function(o){return o.k!=='snack'});R.opts.over.push({k:'snack',src:f.src});
+      R.opts.over=R.opts.over.filter(function(o){return o.k!=='snack'});R.opts.over.push({k:'snack',src:f.src,sc:sc});
       clearTimeout(snackT);snackT=setTimeout(function(){R.opts.over=R.opts.over.filter(function(o){return o.k!=='snack'});renderCanvas()},4000)}
     else if(f.k==='hidesnack')R.opts.over=R.opts.over.filter(function(o){return o.k!=='snack'});
-    else if(f.k==='push'){if(f.replace)popTop();R.opts.nav.push(f.src);R.opts.over=R.opts.over.filter(function(o){return o.k==='snack'})}
-    else if(f.k==='pop')popTop()})}
+    else if(f.k==='push'){
+      if(f.replace){var i0=topOverlay();if(i0>=0)R.opts.over.splice(i0,1);else if(R.opts.nav.length){R.opts.nav.pop();R.opts.navSc.pop();R.opts.navRes.pop()}}
+      R.opts.nav.push(f.src);R.opts.navSc.push(ST.makeScope(f.src));R.opts.navRes.push(res);R.opts.over=R.opts.over.filter(function(o){return o.k==='snack'})}
+    else if(f.k==='delay'){var tm=setTimeout(function(){resolve(res,null);setTimeout(function(){},0)},Math.min(f.ms,8000));timers.push(tm)}
+    else if(f.k==='pop')popTop(f.val)})}
 function afterRun(r){
-  if(r.fx&&r.fx.length){applyFx(r.fx);r.dirty=true}
+  if(r.fx&&r.fx.length){applyFx(r.fx,r.sc);r.dirty=true}
   var dl=OF.LESSONS[S.lesson];
   if(r.err&&dl&&dl.demo&&!r.exc)toast('Aqui o simulador não tem sensores, som, câmera nem GPS: este botão só funciona no celular de verdade.');
   else if(r.err)toast(r.exc?'Exceção não tratada: '+r.err:'Este comando ainda não é suportado no simulador: '+r.err);
@@ -5977,7 +6366,7 @@ function openMenu(t,n){
   (n.slots.items||[]).forEach(function(it){
     var lab='?';M.walk(it,[],function(x){if(lab==='?'&&x.type==='Text')lab=R.strVal(M.evalProp(x,'data'))});
     var o=document.createElement('div');o.textContent=lab;
-    o.addEventListener('click',function(e){e.stopPropagation();m.remove();try{afterRun(OF.ST.run(M.rawProp(n,'onChanged'),[OF.ST.value(M.rawProp(it,'value'))]))}catch(x){afterRun({err:'valor do item'})}});
+    o.addEventListener('click',function(e){e.stopPropagation();m.remove();try{afterRun(runAt(t,M.rawProp(n,'onChanged'),[valAt(t,M.rawProp(it,'value'))]))}catch(x){afterRun({err:'valor do item'})}});
     m.appendChild(o)});
   screen.appendChild(m)}
 function fire(t){
@@ -5989,10 +6378,10 @@ function fire(t){
     if(n.type==='Checkbox')args=[!t.querySelector('.bx.on')];
     else if(n.type==='Switch')args=[!t.classList.contains('on')];
     else if(n.type==='SwitchListTile'||n.type==='CheckboxListTile')args=[!(t.querySelector('.dsw.on,.bx.on'))];
-    else if(n.type==='Radio'||n.type==='RadioListTile'){try{args=[OF.ST.value(M.rawProp(n,'value'))]}catch(e){return}}
+    else if(n.type==='Radio'||n.type==='RadioListTile'){try{args=[valAt(t,M.rawProp(n,'value'))]}catch(e){return}}
     else if(n.type==='DropdownButton'){openMenu(t,n);return}
     else return}
-  afterRun(ST.run(raw,args));
+  afterRun(runAt(t,raw,args));
 }
 
 /* gestos: toque duplo e toque longo */
@@ -6002,11 +6391,11 @@ function gestureRaw(el,name){
     var raw=el._n&&M.rawProp(el._n,name);if(raw&&raw.trim()!=='null')return raw}
   return null}
 screen.addEventListener('dblclick',function(e){
-  if(!(S.run&&ST.active))return;var raw=gestureRaw(e.target,'onDoubleTap');if(raw)afterRun(ST.run(raw,[]))});
+  if(!(S.run&&ST.active))return;var raw=gestureRaw(e.target,'onDoubleTap');if(raw)afterRun(runAt(e.target,raw,[]))});
 screen.addEventListener('pointerdown',function(e){
   lpFired=false;clearTimeout(lpTimer);
   if(!(S.run&&ST.active))return;var raw=gestureRaw(e.target,'onLongPress');if(!raw)return;
-  lpTimer=setTimeout(function(){lpFired=true;afterRun(ST.run(raw,[]))},550)});
+  var lpEl=e.target;lpTimer=setTimeout(function(){lpFired=true;afterRun(runAt(lpEl,raw,[]))},550)});
 ['pointerup','pointerleave','pointercancel'].forEach(function(n){screen.addEventListener(n,function(){clearTimeout(lpTimer)})});
 var drag=null;
 function slide(e){
@@ -6018,7 +6407,7 @@ function slide(e){
   var f=Math.max(0,Math.min(1,(e.clientX-rc.left)/rc.width));
   if(dv)f=Math.round(f*dv)/dv;
   var v=mn+f*(mx-mn);v=Math.round(v*1e6)/1e6;
-  afterRun(ST.run(M.rawProp(n,'onChanged'),[new Dbl(v)]));
+  afterRun(runAt(el,M.rawProp(n,'onChanged'),[new Dbl(v)]));
 }
 screen.addEventListener('pointerdown',function(e){
   if(!(S.run&&ST.active))return;
@@ -6092,6 +6481,7 @@ document.addEventListener('keydown',function(e){
   if(k==='z'&&!e.shiftKey){e.preventDefault();histGo(-1)}
   else if((k==='z'&&e.shiftKey)||k==='y'){e.preventDefault();histGo(1)}});
 A.onChange=function(){
+  if(R.opts.navSc&&R.opts.navSc.length)R.opts.navSc=R.opts.navSc.map(function(sc,i){return sc?(ST.makeScope(R.opts.nav[i],sc)||null):null});
   var L=OF.LESSONS[S.lesson];if(!L||S.loading)return;
   histPush();
   if(S.src===L.code)LS.del(lkey(L));else LS.set(lkey(L),S.src);
@@ -6102,6 +6492,7 @@ function loadLesson(i,fresh){
   if(fresh)LS.del(lkey(L));
   A.setCode(saved&&saved!==L.code?saved:L.code);A.analyze();OF.ST.reset();S.loading=false;S.run=OF.ST.active;R.opts.typed={};goalsDone=false;
   $('lessonBox').innerHTML='<h1>'+esc(L.t)+'</h1><p>'+esc(L.text)+'</p><p class="try"><b>Experimente:</b> '+esc(L.tryit)+'</p>'+(L.demo?'<p class="demo">📱 Lição demonstrativa: o código é real e funciona no celular, mas o simulador não tem sensores, som nem câmera.</p>':'')+(L.setup?'<details class="setup"><summary>Como instalar e quais permissões pedir</summary><pre>'+esc(L.setup)+'</pre></details>':'')+'<div id="goalBox" class="goals"></div>';
+  applyFold();
   goalsDone=!!(L.goals&&doneSet().indexOf(L.t.replace(/^\d+\.\s*/,''))>=0);
   updateGoals();goalsDone=goalsDone&&true;
   histReset();
@@ -6139,7 +6530,12 @@ $('profLoad').addEventListener('click',renderClass);
 $('profClear').addEventListener('click',function(){$('profIn').value='';renderClass()});
 refreshOptions();
 $('lessonSel').addEventListener('change',function(){loadLesson(+this.value)});
-$('lessonBox').addEventListener('click',function(e){if(e.target.closest('h1'))this.classList.toggle('open')});
+var foldMq=window.matchMedia?window.matchMedia('(max-width:900px)'):{matches:false};
+function isFolded(){var v=LS.get('oficina:fold');return v===null?foldMq.matches:v==='1'}
+function applyFold(){var f=isFolded(),b=$('lessonBox');b.classList.toggle('fold',f);b.classList.toggle('open',!f);var h=b.querySelector('h1');if(h){h.setAttribute('role','button');h.setAttribute('tabindex','0');h.setAttribute('aria-expanded',String(!f));h.title=f?'Mostrar a lição':'Recolher a lição'}}
+function toggleFold(){LS.set('oficina:fold',isFolded()?'0':'1');applyFold();fit()}
+$('lessonBox').addEventListener('click',function(e){if(e.target.closest('h1'))toggleFold()});
+$('lessonBox').addEventListener('keydown',function(e){if((e.key==='Enter'||e.key===' ')&&e.target.closest&&e.target.closest('h1')){e.preventDefault();toggleFold()}});
 $('resetBtn').addEventListener('click',function(){loadLesson(S.lesson,true);toast('Aula restaurada.')});
 function tab(which){
   $('main').dataset.tab=which;$('tabCanvas').setAttribute('aria-selected',which==='canvas');$('tabCode').setAttribute('aria-selected',which==='code');
