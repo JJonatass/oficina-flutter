@@ -34,7 +34,10 @@ button{cursor:pointer}
 .brand b{font-family:var(--f-display);font-size:20px;letter-spacing:-.01em}
 .brand span{color:var(--ink2);font-size:13px}
 .top .sp{flex:1}
-.ctl{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2)}
+.ctl{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2);min-width:0;max-width:100%}
+.ctl select{min-width:0;max-width:100%;text-overflow:ellipsis}
+@media (max-width:1500px){.brand span{display:none}}
+@media (max-width:900px){.top{gap:8px}.ctl{flex:1 1 100%}.ctl select{flex:1}}
 select,.btn{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 10px;min-height:34px}
 .btn:hover,select:hover{border-color:var(--accent)}
 .btn.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
@@ -66,6 +69,8 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.02fr) min
 .chip:active{cursor:grabbing}
 .stbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:6px 12px;border-bottom:1px solid var(--line);background:var(--panel);font-size:12.5px}
 .stbar[hidden]{display:none}
+.senspop{padding:8px 12px;border-bottom:1px solid var(--line);background:var(--panel);font-size:12.5px;display:flex;flex-direction:column;gap:6px}
+.senspop[hidden]{display:none}.senspop .sg{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}.senspop label{display:flex;align-items:center;gap:5px}.senspop input[type=number]{width:84px}.senspop .sh{margin:0;color:var(--mute,#667);font-size:11.5px}
 .stbar>b{font-family:var(--f-display);font-size:13px}
 .stbar .sp{flex:1}
 .sv{font-family:var(--f-mono);font-size:11.5px;border:1px solid var(--line);border-radius:6px;padding:2px 7px;background:var(--bg);white-space:nowrap}
@@ -178,6 +183,16 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.02fr) min
   .lesson{max-height:32vh;overflow:auto}
 }
 .screen .dis{opacity:.45;filter:grayscale(.4)}
+.screen .nd.btn.fbtn{background:var(--d-primary,#6750A4);color:#fff}
+.screen .nd.dchip.chsel{background:var(--d-btn,#E8DEF8);box-shadow:inset 0 0 0 1.5px var(--d-primary,#6750A4)}
+.screen .badge{position:relative;display:inline-flex;flex:none;align-self:center}
+.screen .badge .bdg{position:absolute;top:-5px;right:-8px;min-width:16px;height:16px;border-radius:999px;background:#B3261E;color:#fff;display:grid;place-items:center;padding:0 4px;font-size:10px}
+.screen .badge .bdg .txt,.screen .badge .bdg{color:#fff;font-size:10px}
+.screen .badge .bdg.dot{min-width:8px;width:8px;height:8px;padding:0;top:-2px;right:-2px}
+.screen .exp{display:flex;flex-direction:column;align-items:stretch}
+.screen .exh .chev{margin-left:auto;color:var(--ink2,#555);font-size:12px;flex:none}
+.screen .exh.hh{cursor:pointer}
+.screen .exb{padding:0 0 4px 16px;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
 .dspin{width:36px;height:36px;border-radius:50%;border:4px solid color-mix(in srgb,var(--act,var(--d-primary,#6750a4)) 22%,transparent);border-top-color:var(--act,var(--d-primary,#6750a4));animation:spin .9s linear infinite;align-self:center}
 .dlin{height:4px;background:color-mix(in srgb,var(--act,var(--d-primary,#6750a4)) 22%,transparent);border-radius:2px;overflow:hidden;align-self:stretch;position:relative}
 .dlin i{display:block;height:100%;background:var(--act,var(--d-primary,#6750a4));border-radius:2px}
@@ -185,6 +200,39 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.02fr) min
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes slideInd{0%{left:-35%}100%{left:100%}}
 @media (prefers-reduced-motion:reduce){.dspin,.dlin i.ind{animation-duration:3s}}
+#paneRef{display:none;grid-column:1/-1}
+main[data-tab="ref"] #paneCanvas,main[data-tab="ref"] #paneCode{display:none}
+main[data-tab="ref"] #paneRef{display:flex}
+body:has(main[data-tab="ref"]) .lesson{display:none}
+#refBtn[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.rfilter{display:flex;flex-wrap:wrap;gap:6px;padding:8px 14px;border-bottom:1px solid var(--line)}
+.rfilter button{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:3px 11px;font-size:12.5px}
+.rfilter button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.rlist{flex:1;min-height:0;overflow:auto;padding:6px 14px 18px;display:block}
+.rlist h3{font-family:var(--f-display);font-size:14px;margin:18px 0 6px;color:var(--ink2);text-transform:uppercase;letter-spacing:.06em}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr));gap:8px;align-items:start}
+.wcard{border:1px solid var(--line);border-radius:10px;background:var(--panel2);overflow:hidden}
+.wcard[open]{grid-column:1/-1;background:var(--panel)}
+.wcard summary{cursor:pointer;padding:9px 12px;display:flex;gap:10px;align-items:baseline;list-style:none}
+.wcard summary::-webkit-details-marker{display:none}
+.wcard summary::before{content:'';width:9px;height:9px;border-radius:3px;background:var(--cc,var(--accent));flex:none;align-self:center}
+.wcard summary b{font:600 13.5px 'JetBrains Mono',ui-monospace,monospace;white-space:nowrap}
+.wcard summary span{color:var(--ink2);font-size:12.5px;line-height:1.35;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.wcard[open] summary span{display:none}
+.wb{padding:2px 14px 14px;display:grid;gap:10px}
+.wb p{margin:0;line-height:1.55;color:var(--ink)}
+.wb .acc{color:var(--ink2);font-size:13px}
+.wb table{border-collapse:collapse;width:100%;font-size:13px}
+.wb th{text-align:left;color:var(--ink2);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;padding:4px 8px;border-bottom:1px solid var(--line)}
+.wb td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.45}
+.wb td:first-child{font:600 12.5px 'JetBrains Mono',ui-monospace,monospace;white-space:nowrap;color:var(--accent)}
+.wb td:nth-child(2){font:12px 'JetBrains Mono',ui-monospace,monospace;color:var(--ink2)}
+.wb pre{margin:0;padding:10px 12px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;font:12.5px/1.5 'JetBrains Mono',ui-monospace,monospace;overflow:auto;user-select:text;white-space:pre}
+.wb .wact{display:flex;flex-wrap:wrap;gap:6px}
+.wb .wact .btn{min-height:30px;padding:3px 11px;font-size:12.5px}
+.rempty{padding:30px 10px;color:var(--ink2);text-align:center}
+.btn.lnk{margin-top:8px;min-height:28px;padding:3px 10px;font-size:12px}
+@media (max-width:900px){.wb td:first-child{white-space:normal}.wb table{display:block;overflow:auto}}
 .pdd{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:5px 9px;font-size:12.5px}
 .pdd b{font-weight:600}
 .pdd .n{font-size:10.5px;color:var(--ink2);background:var(--panel2);border-radius:999px;padding:0 6px}
@@ -294,6 +342,33 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.02fr) min
 .screen.run .nd.sna{cursor:pointer}
 .bkb{margin-right:16px;font-size:22px;line-height:1;cursor:pointer;flex:none}
 .screen.run .nd.tabi{cursor:pointer}
+.pkov{position:absolute;inset:0;z-index:30;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center}
+.pkb{background:#F3EDF7;color:#1D1B20;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:260px;font-size:16px}
+.pkb input{font:inherit;padding:8px;border:1px solid #79747E;border-radius:8px}
+.pka{display:flex;justify-content:flex-end;gap:8px}.pka button{border:0;background:none;color:#6750A4;font:600 14px/1 inherit;padding:10px 12px;cursor:pointer;border-radius:20px}.pka button:hover{background:rgba(103,80,164,.12)}
+
+.screen .nd.sgb{display:flex;align-items:center;justify-content:center;gap:6px;padding:0 12px;height:40px;border:1px solid #79747E;font-size:14px;font-weight:500;color:#1D1B20;flex:1 1 0;min-width:0;box-sizing:border-box}
+.screen .nd.seg2{display:flex;flex-direction:row;align-self:flex-start}
+.screen .seg2>.sgb{border-radius:0;margin-left:-1px}.screen .seg2>.sgb:first-child{border-radius:20px 0 0 20px;margin-left:0}.screen .seg2>.sgb:last-child{border-radius:0 20px 20px 0}
+.screen .seg2>.sgb.on{background:var(--d-btn,#E8DEF8)}.screen .seg2>.sgb.on::before{content:'\2713';margin-right:2px}
+.screen .nd.pmb{display:inline-flex;align-items:center;justify-content:center;min-width:48px;min-height:48px;border-radius:24px;flex:none}
+.screen .nd.dism{position:relative;overflow:hidden;touch-action:pan-y;display:block}
+.screen .dism .dbg{position:absolute;left:0;top:0;right:0;bottom:0}
+.screen .dism .dfg{position:relative;background:var(--d-surface,#FEF7FF);transition:transform .15s}
+.screen .dism .dhint{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:14px;opacity:.45;pointer-events:none}
+.screen .nd.csv{display:flex;flex-direction:column;overflow-y:auto;flex:1 1 0;min-height:0;align-items:stretch}
+.screen .nd.sab{display:flex;align-items:flex-end;padding:0 16px 18px;box-sizing:border-box}
+.screen .nd.sab>.txt,.screen .nd.sab .txt{font-size:22px}
+.screen .nd.fmap{position:relative;overflow:hidden;flex:1 1 0;min-height:220px;align-self:stretch;display:block;background-color:#e6e2d6;background-image:repeating-linear-gradient(0deg,transparent 0 31px,rgba(0,0,0,.06) 31px 32px),repeating-linear-gradient(90deg,transparent 0 31px,rgba(0,0,0,.06) 31px 32px)}
+.screen .nd.fmap.mtap{cursor:crosshair}
+.screen .nd.fmap.notiles::after{content:'Mapa ilustrativo: as imagens do OpenStreetMap n\00e3o carregaram aqui';position:absolute;left:8px;top:8px;right:8px;font-size:11px;color:#555;background:rgba(255,255,255,.8);padding:3px 6px;border-radius:4px;pointer-events:none;z-index:5}
+.screen .nd.mly{position:absolute;left:0;top:0;right:0;bottom:0;pointer-events:none;display:block}
+.screen .mly .nd{pointer-events:auto}
+.screen .mly img.tile{position:absolute;width:256px;height:256px;max-width:none}
+.screen .nd.mk{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;z-index:2}
+.screen .nd.mcir{position:absolute;transform:translate(-50%,-50%);border-radius:50%;box-sizing:border-box}
+.screen .nd.mpl{position:absolute;left:0;top:0;right:0;bottom:0;pointer-events:none}
+.screen .nd.mattr{position:absolute;right:0;bottom:0;font-size:10px;background:rgba(255,255,255,.8);padding:2px 5px;color:#333;z-index:4;pointer-events:none}
 </style>
 </head><body><header class="top">
   <div class="brand">
@@ -306,6 +381,7 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.02fr) min
     <button role="tab" id="tabCanvas" aria-selected="true">Canvas</button>
     <button role="tab" id="tabCode" aria-selected="false">Código</button>
   </div>
+  <button class="btn" id="refBtn" title="Catálogo de widgets: o que cada um faz e seus atributos" aria-pressed="false">📖 Widgets</button>
   <button class="btn" id="undoBtn" title="Desfazer (Ctrl+Z)" aria-label="Desfazer" disabled>↶ Desfazer</button>
   <button class="btn" id="redoBtn" title="Refazer (Ctrl+Shift+Z)" aria-label="Refazer" disabled>↷ Refazer</button>
   <button class="btn" id="profBtn" title="Progresso da turma">Professor</button>
@@ -324,6 +400,7 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.02fr) min
     </div>
     <div class="palette" id="palette"></div>
     <div class="stbar" id="stBar" hidden></div>
+    <div class="senspop" id="sensPop" hidden></div>
     <div class="cbody"><div class="stage" id="stage">
       <div class="phoneWrap" id="phoneWrap">
         <div class="phone" id="phone"><div class="screen" id="screen"></div></div>
@@ -351,6 +428,17 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.02fr) min
       </div>
     </div>
     <div class="status ok" id="status"></div>
+  </section>
+  <section class="pane" id="paneRef" aria-label="Referência de widgets">
+    <div class="phead">
+      <h2>Widgets do Flutter</h2>
+      <span id="refCount" style="color:var(--ink2);font-size:12.5px"></span>
+      <div class="sp"></div>
+      <input class="psearch" id="refSearch" type="search" placeholder="Buscar widget ou atributo..." aria-label="Buscar na referência">
+      <button class="btn" id="refBack">← Voltar</button>
+    </div>
+    <div class="rfilter" id="refFilter" role="group" aria-label="Filtrar por grupo"></div>
+    <div class="rlist" id="refList"></div>
   </section>
 </main>
 <div class="modal" id="profModal" hidden role="dialog" aria-modal="true" aria-label="Painel do professor"><div class="mbox">
@@ -389,11 +477,54 @@ var W={
  SafeArea:{cat:'layout',slots:{child:'one'},desc:'Afasta o conteúdo de áreas do aparelho, como o entalhe da câmera e a barra de status. No canvas não muda o desenho.'},
  ClipRRect:{cat:'box',slots:{child:'one'},desc:'Recorta o filho com cantos arredondados (borderRadius). Bom para imagens.'},
  Opacity:{cat:'box',slots:{child:'one'},desc:'Deixa o filho mais transparente. opacity vai de 0 (invisível) a 1 (opaco).'},
+ 'Transform.rotate':{cat:'box',slots:{child:'one'},desc:'Gira o filho. angle é em radianos: 3.14159 é meia volta, 1.5708 é um quarto de volta (use math.pi de dart:math).'},
+ 'Transform.scale':{cat:'box',slots:{child:'one'},desc:'Aumenta ou diminui o filho sem mudar o layout em volta. scale 1.5 deixa 50% maior; 0.5, pela metade.'},
+ 'Transform.translate':{cat:'box',slots:{child:'one'},desc:'Desloca o filho na tela sem mexer nos vizinhos. offset: Offset(dx, dy), em pixels lógicos.'},
+ 'Text.rich':{cat:'content',pos:['textSpan'],slots:{},desc:'Texto com trechos de estilos diferentes. Recebe um TextSpan, e cada trecho vai em children: [TextSpan(text: ..., style: ...)].'},
+ RichText:{cat:'content',slots:{},desc:'Parecido com Text.rich: o parâmetro text recebe um TextSpan. O estilo padrão vem do TextSpan, então marque a cor no style.'},
+ SegmentedButton:{cat:'content',slots:{segments:'many'},desc:'Escolha entre poucas opções lado a lado. segments lista os ButtonSegment, selected diz quais estão marcados ({valor}) e onSelectionChanged recebe o novo conjunto.'},
+ ButtonSegment:{cat:'content',slots:{label:'one',icon:'one'},desc:'Uma opção do SegmentedButton. value identifica a opção; label e icon aparecem no botão.'},
+ PopupMenuButton:{cat:'content',slots:{icon:'one',child:'one'},desc:'Botão de três pontinhos que abre um menu. itemBuilder devolve a lista de PopupMenuItem e onSelected recebe o value do item escolhido.'},
+ Dismissible:{cat:'box',slots:{child:'one',background:'one'},desc:'Deixa o filho sair da tela ao deslizar. Precisa de uma key única; onDismissed roda depois do deslize e deve remover o item da lista. No simulador, arraste o item para o lado.'},
+ CustomScrollView:{cat:'layout',slots:{slivers:'many'},desc:'Rolagem feita de pedaços chamados slivers (SliverAppBar, SliverList...). Permite um cabeçalho que encolhe e some junto com a lista.'},
+ SliverAppBar:{cat:'layout',slots:{title:'one'},desc:'AppBar que participa da rolagem. expandedHeight é a altura aberta; com pinned: true ela encolhe e fica presa no topo.'},
+ SliverToBoxAdapter:{cat:'layout',slots:{child:'one'},desc:'Coloca um widget comum (um Card, um Text) dentro de um CustomScrollView.'},
+ 'SliverList.list':{cat:'layout',slots:{children:'many'},desc:'Lista de widgets dentro de um CustomScrollView, como a ListView(children: ...).'},
+ 'SliverList.builder':{cat:'layout',slots:{},desc:'Lista sob demanda dentro de um CustomScrollView. itemCount e itemBuilder funcionam como no ListView.builder.'},
+ FutureBuilder:{cat:'layout',slots:{},desc:'Desenha a tela conforme o andamento de um Future: esperando, com erro ou com dados. O builder recebe o snapshot (connectionState, hasError, hasData, data).'},
+ FlutterMap:{cat:'layout',slots:{children:'many'},desc:'Mapa do pacote flutter_map (gratuito, com dados do OpenStreetMap). options define o centro e o zoom; children são as camadas: TileLayer, MarkerLayer...'},
+ TileLayer:{cat:'content',slots:{},desc:'Camada com as imagens do mapa. urlTemplate aponta para o servidor de tiles (o do OpenStreetMap é gratuito) e userAgentPackageName identifica o seu app.'},
+ MarkerLayer:{cat:'layout',slots:{markers:'many'},desc:'Camada que desenha marcadores (Marker) sobre o mapa.'},
+ Marker:{cat:'box',slots:{child:'one'},desc:'Um marcador preso a uma coordenada. point é um LatLng; child é o widget desenhado ali, em geral um Icon.'},
+ CircleLayer:{cat:'layout',slots:{circles:'many'},desc:'Camada que desenha círculos (CircleMarker) sobre o mapa.'},
+ CircleMarker:{cat:'content',slots:{},desc:'Círculo preso a uma coordenada. radius é em pixels, ou em metros se useRadiusInMeter for true.'},
+ PolylineLayer:{cat:'layout',slots:{polylines:'many'},desc:'Camada que desenha linhas (Polyline) ligando pontos, como uma rota.'},
+ Polyline:{cat:'content',slots:{},desc:'Linha que passa por uma lista de pontos LatLng. strokeWidth é a espessura e color, a cor.'},
+ RichAttributionWidget:{cat:'content',slots:{},desc:'Créditos do mapa. O OpenStreetMap exige que você mostre "© OpenStreetMap contributors" no mapa.'},
  GestureDetector:{cat:'box',slots:{child:'one'},desc:'Detecta toques no filho (onTap) sem mudar o visual.'},
  InkWell:{cat:'box',slots:{child:'one'},desc:'Detecta toques no filho (onTap) e faz uma ondulação no toque.'},
  CircleAvatar:{cat:'content',slots:{child:'one'},desc:'Círculo para foto ou iniciais. radius define o tamanho; o child costuma ser um Text com as iniciais.'},
  CircularProgressIndicator:{cat:'content',slots:{},desc:'Círculo girando que indica que algo está carregando. Costuma aparecer enquanto o app espera uma resposta (await).'},
  LinearProgressIndicator:{cat:'content',slots:{},desc:'Barra de progresso. Sem value ela fica correndo; com value (de 0 a 1) mostra quanto já foi feito.'},
+ ColoredBox:{cat:'box',slots:{child:'one'},desc:'Pinta o fundo do filho com uma cor. É um Container simplificado, só com color.'},
+ AspectRatio:{cat:'box',slots:{child:'one'},desc:'Força o filho a manter uma proporção largura/altura. aspectRatio 1.5 deixa a largura 1,5 vez a altura (16/9 é 1.78).'},
+ ConstrainedBox:{cat:'box',slots:{child:'one'},desc:'Limita o tamanho do filho com constraints: BoxConstraints(minWidth, maxWidth, minHeight, maxHeight).'},
+ FittedBox:{cat:'box',slots:{child:'one'},desc:'Encolhe ou estica o filho para caber no espaço, conforme fit (contain, cover, fill...). Muito usado para texto que não pode quebrar.'},
+ FractionallySizedBox:{cat:'box',slots:{child:'one'},desc:'Dá ao filho uma fração do espaço do pai: widthFactor 0.5 é metade da largura.'},
+ Visibility:{cat:'box',slots:{child:'one'},desc:'Mostra ou esconde o filho conforme visible (true ou false). Escondido, ele não ocupa espaço.'},
+ Tooltip:{cat:'box',slots:{child:'one'},desc:'Mostra uma dica de texto (message) quando a pessoa segura o dedo ou passa o mouse sobre o filho.'},
+ Badge:{cat:'box',slots:{label:'one',child:'one'},desc:'Coloca uma bolinha de aviso sobre o filho, como o número de notificações. label é o conteúdo da bolinha.'},
+ AnimatedOpacity:{cat:'box',slots:{child:'one'},desc:'Como Opacity, mas anima a mudança de opacity durante duration. Troque o valor em um setState.'},
+ Form:{cat:'layout',slots:{child:'one'},desc:'Agrupa campos de formulário (TextFormField) para validar e limpar todos de uma vez, com uma GlobalKey.'},
+ VerticalDivider:{cat:'box',slots:{},desc:'Linha fina vertical que separa itens de uma Row. width é o espaço total; thickness é a espessura.'},
+ FilledButton:{cat:'content',slots:{child:'one'},desc:'Botão preenchido com a cor principal, o mais forte do Material 3. onPressed define o que acontece ao tocar.'},
+ TextFormField:{cat:'content',slots:{},desc:'Campo de texto para formulários. Funciona como o TextField e aceita validator, que devolve uma mensagem de erro ou null.'},
+ ChoiceChip:{cat:'content',slots:{label:'one',avatar:'one'},desc:'Etiqueta de escolha única. selected diz se está marcada e onSelected recebe true ao tocar.'},
+ FilterChip:{cat:'content',slots:{label:'one',avatar:'one'},desc:'Etiqueta de filtro que liga e desliga. selected diz se está marcada e onSelected recebe o novo valor.'},
+ ActionChip:{cat:'content',slots:{label:'one',avatar:'one'},desc:'Etiqueta que dispara uma ação ao tocar, em onPressed (como um botão pequeno).'},
+ ExpansionTile:{cat:'content',slots:{title:'one',subtitle:'one',leading:'one',children:'many'},desc:'Linha que expande e recolhe ao tocar, mostrando os children. initiallyExpanded define se já abre aberta.'},
+ NavigationBar:{cat:'struct',slots:{destinations:'many'},desc:'Barra de navegação inferior do Material 3. selectedIndex marca o destino atual e onDestinationSelected recebe o índice tocado.'},
+ NavigationDestination:{cat:'struct',slots:{icon:'one'},desc:'Um destino da NavigationBar, com icon e label.'},
  Chip:{cat:'content',slots:{label:'one',avatar:'one'},desc:'Etiqueta compacta, com label e um avatar opcional.'},
  Checkbox:{cat:'content',slots:{},desc:'Caixa de seleção. value indica se está marcada; onChanged recebe a mudança.'},
  Switch:{cat:'content',slots:{},desc:'Interruptor liga/desliga. value indica o estado; onChanged recebe a mudança.'},
@@ -445,7 +576,7 @@ var W={
  'Image.network':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem baixada de uma URL. Aqui o canvas desenha um quadro no lugar da imagem. fit controla como ela preenche o espaço.'},
  'Image.asset':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem guardada no projeto (pasta assets). Aqui o canvas desenha um quadro no lugar da imagem.'}
 };
-var GROUPS=[['Estrutura',['Scaffold','AppBar','FloatingActionButton','Drawer','BottomNavigationBar','BottomNavigationBarItem']],['Abas',['DefaultTabController','TabBar','Tab','TabBarView']],['Layout',['Center','Align','Column','Row','Stack','Positioned','Expanded','Flexible','Spacer','Wrap','ListView','GridView.count','SingleChildScrollView','SafeArea','PageView','LayoutBuilder','Builder']],['Listas e tabelas',['ListView.builder','ListView.separated','GridView.builder','Table','TableRow','DataTable','DataColumn','DataRow','DataCell']],['Caixas',['Container','Padding','SizedBox','Card','Divider','ClipRRect','Opacity','AnimatedContainer','Hero']],['Conteúdo',['Text','Icon','Image.network','CircleAvatar','Chip','ListTile','CircularProgressIndicator','LinearProgressIndicator']],['Botões e campos',['ElevatedButton','TextButton','OutlinedButton','IconButton','TextField','Checkbox','Switch','Slider','Radio','DropdownButton','DropdownMenuItem','SwitchListTile','CheckboxListTile','RadioListTile']],['Interação',['GestureDetector','InkWell']],['Janelas',['AlertDialog','SnackBar','SnackBarAction']]];
+var GROUPS=[['Estrutura',['Scaffold','AppBar','FloatingActionButton','Drawer','BottomNavigationBar','BottomNavigationBarItem','NavigationBar','NavigationDestination']],['Abas',['DefaultTabController','TabBar','Tab','TabBarView']],['Layout',['Center','Align','Column','Row','Stack','Positioned','Expanded','Flexible','Spacer','Wrap','Form','ListView','GridView.count','SingleChildScrollView','SafeArea','PageView','LayoutBuilder','Builder','FutureBuilder','CustomScrollView','SliverAppBar','SliverToBoxAdapter','SliverList.list','SliverList.builder']],['Listas e tabelas',['ListView.builder','ListView.separated','GridView.builder','Table','TableRow','DataTable','DataColumn','DataRow','DataCell']],['Caixas',['Container','ColoredBox','Padding','SizedBox','AspectRatio','ConstrainedBox','FractionallySizedBox','FittedBox','Card','Divider','VerticalDivider','ClipRRect','Opacity','AnimatedOpacity','AnimatedContainer','Visibility','Tooltip','Badge','Hero','Transform.rotate','Transform.scale','Transform.translate','Dismissible']],['Conteúdo',['Text','Text.rich','RichText','Icon','Image.network','CircleAvatar','Chip','ChoiceChip','FilterChip','ActionChip','ListTile','ExpansionTile','Image.asset','CircularProgressIndicator','LinearProgressIndicator','SegmentedButton','ButtonSegment','PopupMenuButton']],['Botões e campos',['ElevatedButton','FilledButton','TextButton','OutlinedButton','IconButton','TextField','TextFormField','Checkbox','Switch','Slider','Radio','DropdownButton','DropdownMenuItem','SwitchListTile','CheckboxListTile','RadioListTile']],['Interação',['GestureDetector','InkWell']],['Mapas (flutter_map)',['FlutterMap','TileLayer','MarkerLayer','Marker','CircleLayer','CircleMarker','PolylineLayer','Polyline','RichAttributionWidget']],['Janelas',['AlertDialog','SnackBar','SnackBarAction']]];
 var CATVAR={struct:'var(--c-struct)',layout:'var(--c-layout)',box:'var(--c-box)',content:'var(--c-content)'};
 var warns=[];
 
@@ -703,6 +834,49 @@ var DEF={
  Stack:function(){return N('Stack',[SL('children')],{children:[]})},
  Positioned:function(){return N('Positioned',[A('top','16'),A('left','16'),SL('child')],{child:N('Container',[A('width','64'),A('height','64'),A('color','Colors.pink')])})},
  Flexible:function(){return N('Flexible')},
+ ColoredBox:function(){return N('ColoredBox',[A('color','Colors.amber')])},
+ AspectRatio:function(){return N('AspectRatio',[A('aspectRatio','1.5')])},
+ ConstrainedBox:function(){return N('ConstrainedBox',[A('constraints','BoxConstraints(maxWidth: 200)')])},
+ FittedBox:function(){return N('FittedBox',[A('fit','BoxFit.contain')])},
+ FractionallySizedBox:function(){return N('FractionallySizedBox',[A('widthFactor','0.5')])},
+ Visibility:function(){return N('Visibility',[A('visible','true')])},
+ Tooltip:function(){return N('Tooltip',[A('message',q('Dica'))])},
+ 'Transform.rotate':function(){return N('Transform.rotate',[A('angle','0.4'),SL('child')],{child:N('Icon',[PO('icon','Icons.navigation'),A('size','48')])})},
+ 'Transform.scale':function(){return N('Transform.scale',[A('scale','1.5'),SL('child')],{child:N('Icon',[PO('icon','Icons.favorite'),A('size','32'),A('color','Colors.red')])})},
+ 'Transform.translate':function(){return N('Transform.translate',[A('offset','const Offset(20, 10)'),SL('child')],{child:N('Icon',[PO('icon','Icons.star'),A('size','32')])})},
+ 'Text.rich':function(){return N('Text.rich',[PO('textSpan',"TextSpan(text: 'Olá, ', children: [TextSpan(text: 'Flutter', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.indigo)), TextSpan(text: '!')])")])},
+ RichText:function(){return N('RichText',[A('text',"TextSpan(style: TextStyle(color: Colors.black), children: [TextSpan(text: 'Preço: '), TextSpan(text: 'R\\$ 9,90', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green))])")])},
+ SegmentedButton:function(){function sg(v,l){return N('ButtonSegment',[A('value',q(v)),SL('label')],{label:txt(l)})}var n=N('SegmentedButton',[SL('segments'),A('selected',"{'dia'}"),A('onSelectionChanged','(s) {}')],{segments:[sg('dia','Dia'),sg('semana','Semana'),sg('mes','Mês')]});n.generic='<String>';return n},
+ ButtonSegment:function(){var n=N('ButtonSegment',[A('value',q('ano')),SL('label')],{label:txt('Ano')});n.generic='<String>';return n},
+ PopupMenuButton:function(){var n=N('PopupMenuButton',[A('itemBuilder',"(context) => [PopupMenuItem(value: 'editar', child: Text('Editar')), PopupMenuItem(value: 'apagar', child: Text('Apagar'))]"),A('onSelected','(valor) {}')]);n.generic='<String>';return n},
+ Dismissible:function(){return N('Dismissible',[A('key',"Key('item1')"),A('onDismissed','(direction) {}'),SL('background'),SL('child')],{background:N('ColoredBox',[A('color','Colors.red'),SL('child')],{child:N('Align',[A('alignment','Alignment.centerRight'),SL('child')],{child:N('Icon',[PO('icon','Icons.delete'),A('color','Colors.white')])})}),child:N('ListTile',[SL('title')],{title:txt('Deslize para apagar')})})},
+ CustomScrollView:function(){return N('CustomScrollView',[SL('slivers')],{slivers:[]})},
+ SliverAppBar:function(){return N('SliverAppBar',[SL('title'),A('pinned','true'),A('expandedHeight','140')],{title:txt('Título que encolhe')})},
+ SliverToBoxAdapter:function(){return N('SliverToBoxAdapter',[SL('child')],{child:txt('Um widget qualquer')})},
+ 'SliverList.list':function(){return N('SliverList.list',[SL('children')],{children:[N('ListTile',[SL('title')],{title:txt('Item 1')}),N('ListTile',[SL('title')],{title:txt('Item 2')})]})},
+ 'SliverList.builder':function(){return N('SliverList.builder',[A('itemCount','10'),A('itemBuilder',"(context, index) => ListTile(title: Text('Item $index'))")])},
+ FutureBuilder:function(){var n=N('FutureBuilder',[A('future','Future.delayed(const Duration(seconds: 2), () => \'Pronto!\')'),A('builder',"(context, snapshot) {\n  if (snapshot.connectionState == ConnectionState.waiting) {\n    return const Center(child: CircularProgressIndicator());\n  }\n  return Center(child: Text('${snapshot.data}'));\n}")]);n.generic='<String>';return n},
+ FlutterMap:function(){return N('FlutterMap',[A('options','MapOptions(initialCenter: LatLng(-8.0476, -34.8770), initialZoom: 13)'),SL('children')],{children:[N('TileLayer',[A('urlTemplate',"'https://tile.openstreetmap.org/{z}/{x}/{y}.png'"),A('userAgentPackageName',"'com.exemplo.app'")]),N('MarkerLayer',[SL('markers')],{markers:[N('Marker',[A('point','LatLng(-8.0476, -34.8770)'),A('width','40'),A('height','40'),SL('child')],{child:N('Icon',[PO('icon','Icons.location_on'),A('color','Colors.red'),A('size','40')])})]}),N('RichAttributionWidget',[])]})},
+ TileLayer:function(){return N('TileLayer',[A('urlTemplate',"'https://tile.openstreetmap.org/{z}/{x}/{y}.png'"),A('userAgentPackageName',"'com.exemplo.app'")])},
+ MarkerLayer:function(){return N('MarkerLayer',[SL('markers')],{markers:[]})},
+ Marker:function(){return N('Marker',[A('point','LatLng(-8.0476, -34.8770)'),A('width','40'),A('height','40'),SL('child')],{child:N('Icon',[PO('icon','Icons.location_on'),A('color','Colors.red'),A('size','40')])})},
+ CircleLayer:function(){return N('CircleLayer',[SL('circles')],{circles:[]})},
+ CircleMarker:function(){return N('CircleMarker',[A('point','LatLng(-8.0476, -34.8770)'),A('radius','40'),A('color','Colors.blue.withOpacity(0.25)'),A('borderStrokeWidth','2'),A('borderColor','Colors.blue')])},
+ PolylineLayer:function(){return N('PolylineLayer',[SL('polylines')],{polylines:[]})},
+ Polyline:function(){return N('Polyline',[A('points','[LatLng(-8.05, -34.89), LatLng(-8.04, -34.88), LatLng(-8.045, -34.865)]'),A('strokeWidth','4'),A('color','Colors.blue')])},
+ RichAttributionWidget:function(){return N('RichAttributionWidget',[A('attributions',"[TextSourceAttribution('© OpenStreetMap contributors')]")])},
+ Badge:function(){return N('Badge',[SL('label'),SL('child')],{label:txt('3'),child:N('Icon',[PO('icon','Icons.notifications'),A('size','32')])})},
+ AnimatedOpacity:function(){return N('AnimatedOpacity',[A('opacity','1.0'),A('duration','Duration(milliseconds: 300)')])},
+ Form:function(){return N('Form')},
+ VerticalDivider:function(){return N('VerticalDivider')},
+ FilledButton:function(){return N('FilledButton',[A('onPressed','() {}'),SL('child')],{child:txt('Botão')})},
+ TextFormField:function(){return N('TextFormField',[A('decoration',"InputDecoration(labelText: 'E-mail', border: OutlineInputBorder())")])},
+ ChoiceChip:function(){return N('ChoiceChip',[SL('label'),A('selected','true'),A('onSelected','(v) {}')],{label:txt('Opção')})},
+ FilterChip:function(){return N('FilterChip',[SL('label'),A('selected','false'),A('onSelected','(v) {}')],{label:txt('Filtro')})},
+ ActionChip:function(){return N('ActionChip',[SL('label'),A('onPressed','() {}')],{label:txt('Ação')})},
+ ExpansionTile:function(){return N('ExpansionTile',[SL('title'),SL('children')],{title:txt('Mais detalhes'),children:[txt('Conteúdo que aparece ao expandir')]})},
+ NavigationDestination:function(){return N('NavigationDestination',[SL('icon'),A('label',q('Início'))],{icon:N('Icon',[PO('icon','Icons.home')])})},
+ NavigationBar:function(){function dst(i,l){return N('NavigationDestination',[SL('icon'),A('label',q(l))],{icon:N('Icon',[PO('icon',i)])})}return N('NavigationBar',[A('selectedIndex','0'),A('onDestinationSelected','(i) {}'),SL('destinations')],{destinations:[dst('Icons.home','Início'),dst('Icons.search','Buscar'),dst('Icons.person','Perfil')]})},
  Divider:function(){return N('Divider')},
  'GridView.count':function(){return N('GridView.count',[A('crossAxisCount','2'),A('mainAxisSpacing','8'),A('crossAxisSpacing','8'),SL('children')],{children:[]})}
 };
@@ -848,7 +1022,7 @@ function isD(x){return x instanceof Dbl}
 function nn(x){return x instanceof Dbl?x.v:x}
 function dstr(v){return Number.isInteger(v)?v.toFixed(1):String(v)}
 function isRaw(v){return v!==null&&typeof v==='object'&&!isD(v)&&!Array.isArray(v)&&v.raw!==undefined}
-function show(v){if(v===null||v===undefined)return 'null';if(v&&v.cls)return "Instance of '"+v.cls+"'";if(v&&(v.isMap||v.lam))return lit(v);if(v&&v.ctl)return v.text;if(isD(v))return dstr(v.v);if(isRaw(v))return v.raw;if(Array.isArray(v))return '['+v.map(show).join(', ')+']';return String(v)}
+function show(v){if(v===null||v===undefined)return 'null';if(v&&v.nat)return natStr(v);if(v&&v.cls)return "Instance of '"+v.cls+"'";if(v&&(v.isMap||v.lam))return lit(v);if(v&&v.ctl)return v.text;if(isD(v))return dstr(v.v);if(isRaw(v))return v.raw;if(Array.isArray(v))return '['+v.map(show).join(', ')+']';return String(v)}
 function lit(v){
   if(v===null||v===undefined)return 'null';
   if(typeof v==='string')return "'"+v.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\$/g,'\\$').replace(/\n/g,'\\n')+"'";
@@ -856,6 +1030,7 @@ function lit(v){
   if(isRaw(v))return v.raw;
   if(v&&v.ctl)return lit(v.text);
   if(v&&v.lam)return v.src;
+  if(v&&v.nat)return v.nat==='#class'?v.name:v.src;
   if(v&&v.cls)return v.cls+'('+Object.keys(v.f).map(function(k){return k+': '+lit(v.f[k])}).join(', ')+')';
   if(v&&v.isMap)return '{'+Array.from(v.m.entries()).map(function(e){return lit(e[0])+': '+lit(e[1])}).join(', ')+'}';
   if(Array.isArray(v))return '['+v.map(lit).join(', ')+']';
@@ -1023,6 +1198,7 @@ function lookup(env,n){
     if(ST.busy&&ST.busy[n])throw new Error('ciclo');
     (ST.busy=ST.busy||{})[n]=1;
     try{var v=ev(pTern(new Ps(ST.locals[n])),mkEnv());cache[key]=v;return v}finally{ST.busy[n]=0}}
+  if(NATCLS[n]||ENUMS[n])return{nat:'#class',name:n};
   throw new Error('desconhecido '+n)}
 function evalGetter(o,g){
   var env=mkEnv({});env.self=o;
@@ -1062,6 +1238,9 @@ function ev(a,env){
     case 'tern':return ev(a.c,env)?ev(a.a,env):ev(a.b,env);
     case 'ctor':{
       if(a.args&&ST.dataClasses[a.name])return construct(a.name,evalArgs(a,env));
+      if(a.args&&NATCTOR[a.name])return natCtor(a.name,evalArgs(a,env));
+      if(!a.args&&a.name.indexOf('.')>0){var pe=a.name.split('.');if(pe.length===2&&ENUMS[pe[0]])return a.name}
+      if(a.args&&a.name.indexOf('.')>0){var pre=a.name.split('.');if(pre.length===2&&(NATCLS[pre[0]]||ENUMS[pre[0]]))return natMember({nat:'#class',name:pre[0]},pre[1],evalArgs(a,env).filter(function(x){return !x.name}).map(function(x){return x.val}))}
       return{raw:a.name+(a.args?'('+a.args.map(function(x){return emitArg(x,env)}).join(', ')+')':'')}}
     case 'lam':{
       var cenv=env;
@@ -1111,6 +1290,7 @@ function callLam(f,args){if(!f||!f.lam)throw new Error('arg');return f.call(args
 function member(v,name,args){
   args=args||[];
   if(v===null||v===undefined)throw exc("NoSuchMethodError: o valor é null ao usar '"+name+"'");
+  if(v.nat)return natMember(v,name,args);
   if(v.wid){if(hasOwn(ST.widgetVals,name))return ST.widgetVals[name];throw new Error('membro widget.'+name)}
   if(v.cls){
     var dcm=ST.dataClasses[v.cls];
@@ -1213,7 +1393,7 @@ function skipToEnd(p){var d=0;while(p.pk()){var k=p.pk();if(k.k==='p'){if('([{'.
 
 /* ---- efeitos de navegação: Navigator, diálogos, SnackBar, BottomSheet ---- */
 ST.fx=[];
-var FXSTART={showDialog:1,showModalBottomSheet:1,showBottomSheet:1,Navigator:1,ScaffoldMessenger:1,Future:1};
+var FXSTART={showDatePicker:1,showTimePicker:1,showDialog:1,showModalBottomSheet:1,showBottomSheet:1,Navigator:1,ScaffoldMessenger:1,Future:1};
 var lastSusp=null;
 function clonePs(p){var q=new Ps('');q.src=p.src;q.t=p.t;q.i=p.i;return q}
 function bindDecl(env,name,val){
@@ -1249,7 +1429,8 @@ function awaitStmt(p,env,run,aw){
   p.i=aw.at;lastSusp=null;
   var h=p.pk(),hd=h&&h.k==='id'?h.v:'',val=null,fx=null;
   if(hd==='Future'&&p.is('.',1)&&p.pk(2)&&p.pk(2).v==='delayed'){
-    fx=mkDelay(grabStmt(p),env);fx.cb=null;ST.fx.push(fx)}
+    if(ST.sync)grabStmt(p);else{fx=mkDelay(grabStmt(p),env);fx.cb=null;ST.fx.push(fx)}}
+  else if(hd==='showDatePicker'||hd==='showTimePicker'){fx=mkPicker(grabStmt(p),env,null);ST.fx.push(fx)}
   else if(hd==='Navigator'||hd==='showDialog'||hd==='showModalBottomSheet'){
     var n0=ST.fx.length;fxStmt(p,env,true);var f=ST.fx[ST.fx.length-1];
     if(ST.fx.length>n0&&(f.k==='push'||f.k==='dialog'||f.k==='sheet')){fx=f;fx.cb=null}}
@@ -1319,6 +1500,7 @@ function fxStmt(p,env,run){
   var m;
   if(/^Future\s*\.\s*delayed\b/.test(txt)){ST.fx.push(mkDelay(txt,env));return true}
   if(/^Future\b/.test(txt))return true;
+  if(/^show(Date|Time)Picker\b/.test(txt)){ST.fx.push(mkPicker(txt,env,thenCb(txt)));return true}
   if(/^showDialog\b/.test(txt)){ST.fx.push({k:'dialog',src:bindEnv(builderBody(txt),env),cb:thenCb(txt)});return true}
   if(/^show(Modal)?BottomSheet\b/.test(txt)){ST.fx.push({k:'sheet',src:bindEnv(builderBody(txt),env),cb:thenCb(txt)});return true}
   if(/^ScaffoldMessenger\b/.test(txt)){
@@ -1347,7 +1529,8 @@ function simple(p,env,run){
     p.i++;var pa=pPost(p);if(run)assignTo(pa,arith(ev(pa,env),k.v==='++'?'+':'-',1),env);return}
   var st=p.i,ast=pPost(p),nx=p.pk();
   if(nx&&nx.k==='p'&&ASG.test(nx.v)&&(ast.t==='id'||ast.t==='idx'||(ast.t==='mem'&&ast.args===null))){
-    p.i++;var ex=pTern(p);
+    p.i++;var es0=p.i;var ex=pTern(p);
+    if(run&&ast.t==='id'&&nx.v==='='&&ST.fields[ast.name]&&/Future/.test(ST.fields[ast.name].type||'')){(ST.futExpr=ST.futExpr||{})[ast.name]=p.src.slice(p.t[es0].s,p.t[p.i-1].e);ST.futGen=(ST.futGen||0)+1}
     if(run){var val=ev(ex,env);if(nx.v!=='=')val=arith(ev(ast,env),nx.v[0],val);assignTo(ast,val,env)}
     return}
   if(nx&&nx.k==='p'&&(nx.v==='++'||nx.v==='--')&&(ast.t==='id'||ast.t==='idx'||(ast.t==='mem'&&ast.args===null))){
@@ -1494,6 +1677,7 @@ ST.run=function(raw,args){
   }catch(e){err=e.message;isExc=!!e.dartExc}
   return{dirty:dirty,mutated:mutated,err:err,exc:isExc,fx:ST.fx.slice()}};
 ST.reset=function(){
+  ST.futExpr={};ST.futGen=0;
   if(ST.onReset)ST.onReset();
   ST.order.forEach(function(n){var f=ST.fields[n];f.value=initOf(f)});cache={};ST.runInit()};
 function initOf(f){
@@ -1504,6 +1688,7 @@ function initOf(f){
   else v=null;
   return coerce(f.type,v)}
 ST.load=function(info){
+  ST.futExpr={};ST.futGen=0;
   var old=ST.fields;ST.fields={};ST.order=[];ST.methods={};ST.locals={};ST.dataClasses={};ST.userWidgets={};ST.widgetVals={};cache={};ST.initState=null;ST.statefuls={};ST.funcs={};
   if(!info){ST.active=false;ST.re=null;return}
   (info.states||[]).forEach(function(sx){var wc=info.classes[sx.of];if(wc&&wc.kind==='StatefulWidget'&&sx.ci.build&&sx.ci.build.body){ST.statefuls[sx.of]={state:sx.ci,widget:wc.ci};ST.userWidgets[sx.of]={params:wc.ci.params,build:sx.ci.build,stateful:true}}});
@@ -1617,6 +1802,129 @@ ST.pickAll=function(raw){
 
 
 ST.value=function(raw){return ev(pTern(new Ps(raw)),mkEnv())};
+
+/* ---- objetos nativos simulados: DateTime, TimeOfDay, GPS, bateria, rede, câmera ---- */
+ST.sensors={gps:true,perm:'granted',lat:-8.0476,lon:-34.877,alt:4,battery:78,charging:false,net:'wifi',photo:'ok'};
+ST.resetSensors=function(){ST.sensors={gps:true,perm:'granted',lat:-8.0476,lon:-34.877,alt:4,battery:78,charging:false,net:'wifi',photo:'ok'}};
+var NATCLS={LatLng:1,MapController:1,Geolocator:1,Battery:1,Connectivity:1,DateTime:1,TimeOfDay:1,Position:1,ImagePicker:1,HapticFeedback:1,Share:1};
+var NATCTOR={LatLng:1,MapController:1,DateTime:1,TimeOfDay:1,Position:1,Battery:1,Connectivity:1,ImagePicker:1};
+var ENUMS={LocationPermission:1,ConnectionState:1,ConnectivityResult:1,BatteryState:1,ImageSource:1,LocationAccuracy:1};
+function p2(n){return (n<10?'0':'')+n}
+function mkDate(y,mo,d,h,mi,s){
+  var j=new Date(y,mo-1,d,h,mi,s);
+  var f={year:j.getFullYear(),month:j.getMonth()+1,day:j.getDate(),hour:j.getHours(),minute:j.getMinutes(),second:j.getSeconds(),weekday:j.getDay()===0?7:j.getDay()};
+  return{nat:'DateTime',f:f,j:j,src:'DateTime('+[f.year,f.month,f.day,f.hour,f.minute,f.second].join(', ')+')'}}
+ST.mkDate=mkDate;
+function mkTime(h,mi){return{nat:'TimeOfDay',f:{hour:h,minute:mi},src:'TimeOfDay(hour: '+h+', minute: '+mi+')'}}
+ST.mkTime=mkTime;
+function mkPos(lat,lon,alt){return{nat:'Position',f:{latitude:new Dbl(lat),longitude:new Dbl(lon),altitude:new Dbl(alt||0),accuracy:new Dbl(12.5),speed:new Dbl(0)},src:'Position(latitude: '+lat+', longitude: '+lon+')'}}
+ST.mkLL=function(a,b){return mkLL(a,b)};
+function mkLL(a,b){return{nat:'LatLng',f:{latitude:new Dbl(a),longitude:new Dbl(b)},src:'LatLng('+a+', '+b+')'}}
+function natStr(v){
+  if(v.nat==='#class')return v.name;
+  if(v.nat==='DateTime')return v.f.year+'-'+p2(v.f.month)+'-'+p2(v.f.day)+' '+p2(v.f.hour)+':'+p2(v.f.minute)+':'+p2(v.f.second)+'.000';
+  if(v.nat==='TimeOfDay')return 'TimeOfDay('+p2(v.f.hour)+':'+p2(v.f.minute)+')';
+  if(v.nat==='LatLng')return 'LatLng(latitude:'+dstr(v.f.latitude.v)+', longitude:'+dstr(v.f.longitude.v)+')';
+  if(v.nat==='Position')return 'Latitude: '+dstr(v.f.latitude.v)+', Longitude: '+dstr(v.f.longitude.v);
+  return "Instance of '"+v.nat+"'"}
+function natCtor(name,args){
+  var pos=args.filter(function(a){return !a.name}).map(function(a){return nn(a.val)}),nm={};
+  args.forEach(function(a){if(a.name)nm[a.name]=nn(a.val)});
+  if(name==='DateTime')return mkDate(pos[0]||2000,pos.length>1?pos[1]:1,pos.length>2?pos[2]:1,pos[3]||0,pos[4]||0,pos[5]||0);
+  if(name==='TimeOfDay')return mkTime(nm.hour!==undefined?nm.hour:pos[0]||0,nm.minute!==undefined?nm.minute:pos[1]||0);
+  if(name==='Position')return mkPos(nm.latitude||0,nm.longitude||0,nm.altitude||0);
+  if(name==='LatLng')return mkLL(pos[0]||0,pos[1]||0);
+  return{nat:name,f:{},src:name+'()'}}
+function haversine(a,b,c,d){
+  var R=6371000,r=Math.PI/180,dl=(c-a)*r,dg=(d-b)*r,h=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(a*r)*Math.cos(c*r)*Math.sin(dg/2)*Math.sin(dg/2);
+  return 2*R*Math.asin(Math.sqrt(h))}
+function natMember(v,name,args){
+  var S=ST.sensors;
+  if(v.nat==='#class'){
+    var c=v.name;
+    if(ENUMS[c])return c+'.'+name;
+    if(c==='DateTime'&&name==='now'){var n=new Date();return mkDate(n.getFullYear(),n.getMonth()+1,n.getDate(),n.getHours(),n.getMinutes(),n.getSeconds())}
+    if(c==='TimeOfDay'&&name==='now'){var n2=new Date();return mkTime(n2.getHours(),n2.getMinutes())}
+    if(c==='Geolocator'){
+      switch(name){
+        case 'isLocationServiceEnabled':return !!S.gps;
+        case 'checkPermission':return 'LocationPermission.'+(S.perm==='granted'?'whileInUse':S.perm==='forever'?'deniedForever':'denied');
+        case 'requestPermission':if(S.perm==='ask')S.perm='granted';return 'LocationPermission.'+(S.perm==='granted'?'whileInUse':S.perm==='forever'?'deniedForever':'denied');
+        case 'getCurrentPosition':
+          if(!S.gps)throw exc('LocationServiceDisabledException: Location services are disabled.');
+          if(S.perm!=='granted')throw exc('PermissionDeniedException: User denied permissions to access the device\'s location.');
+          return mkPos(S.lat,S.lon,S.alt);
+        case 'distanceBetween':return new Dbl(haversine(nn(args[0]),nn(args[1]),nn(args[2]),nn(args[3])));
+        case 'openAppSettings':case 'openLocationSettings':return true}}
+    if(c==='HapticFeedback'){(ST.fx=ST.fx||[]).push({k:'toast',msg:'📳 O aparelho vibrou ('+name+')'});return null}
+    if(c==='Share'&&name==='share'){(ST.fx=ST.fx||[]).push({k:'toast',msg:'Compartilhar: '+show(args[0])});return null}
+    throw new Error('membro estático '+c+'.'+name)}
+  var k=v.nat;
+  if(k==='Battery'){
+    if(name==='batteryLevel')return S.battery;
+    if(name==='batteryState')return 'BatteryState.'+(S.charging?(S.battery>=100?'full':'charging'):'discharging');
+    if(name==='isInBatterySaveMode')return S.battery<=20}
+  if(k==='Connectivity'&&name==='checkConnectivity')return ['ConnectivityResult.'+S.net];
+  if(k==='ImagePicker'&&name==='pickImage'){return S.photo==='cancel'?null:{nat:'XFile',f:{path:'/storage/emulated/0/DCIM/foto_001.jpg',name:'foto_001.jpg'},src:'XFile()'}}
+  if(k==='DateTime'){
+    if(name==='toIso8601String')return natStr(v).replace(' ','T');
+    if(name==='millisecondsSinceEpoch')return v.j.getTime();
+    if(name==='isBefore')return v.j<args[0].j;if(name==='isAfter')return v.j>args[0].j;
+    if(name==='add'||name==='subtract'){var dd=/days\s*:\s*(-?\d+)/.exec(show(args[0]));var sg=name==='add'?1:-1,dn=dd?+dd[1]*sg:0;return mkDate(v.f.year,v.f.month,v.f.day+dn,v.f.hour,v.f.minute,v.f.second)}}
+  if(k==='MapController'&&name==='move'){ST.mapView={lat:nn(args[0].f.latitude),lon:nn(args[0].f.longitude),zoom:args.length>1?nn(args[1]):null};(ST.fx=ST.fx||[]).push({k:'map'});return true}
+  if(k==='TimeOfDay'&&name==='format')return p2(v.f.hour)+':'+p2(v.f.minute);
+  if(hasOwn(v.f,name))return v.f[name];
+  if(name==='toString')return natStr(v);
+  throw new Error('membro '+k+'.'+name)}
+function mkPicker(txt,env,cb){
+  var date=/^showDatePicker/.test(txt),im=new RegExp('\\b'+(date?'initialDate':'initialTime')+'\\s*:').exec(txt),init=null;
+  if(im){try{init=ev(pTern(new Ps(grabArg(txt,im.index+im[0].length))),env)}catch(e){}}
+  return{k:'picker',kind:date?'date':'time',init:init&&init.nat?init:null,cb:cb}}
+
+
+function lamFull(raw){
+  var t=lex(raw),p=new Ps(raw);
+  if(!p.is('('))throw new Error('lambda');
+  p.i++;var st=p.i;while(!p.is(')')&&!p.end())p.i++;
+  var names=paramNames(raw.slice(t[st]?t[st].s:0,t[p.i]?t[p.i].s:raw.length));
+  p.i++;if(p.isId('async'))p.i++;
+  var body;
+  if(p.eat('=>'))body='return '+raw.slice(t[p.i].s).trim().replace(/;\s*$/,'')+';';
+  else if(p.is('{'))body=raw.slice(t[p.i].s+1,raw.lastIndexOf('}'));
+  else throw new Error('lambda');
+  return{names:names,body:body}}
+function futInfo(fr){
+  var env=mkEnv({}),ms=0,data=null,err=null,t=fr.trim();
+  var old=ST.sync;ST.sync=true;
+  try{
+    if(/^Future\s*\.\s*delayed\s*\(/.test(t)){
+      var fx=mkDelay(t,env);ms=fx.ms;
+      if(fx.cb){var lf=lamFull(fx.cb),e2=mkEnv({});stmt(new Ps('{'+lf.body+'}'),e2,true);data=e2.ret===undefined?null:e2.ret}}
+    else if(/^Future\s*\.\s*value\s*\(/.test(t)){data=ev(pTern(new Ps(grabArg(t,t.indexOf('(')+1))),env)}
+    else{
+      var m=/^(\w+)\s*\(/.exec(t),call=null;
+      if(m&&ST.methods[m[1]])call=t;
+      else if(/^\w+$/.test(t)){
+        var fl=ST.fields[t],src=(ST.futExpr&&ST.futExpr[t])||(fl&&fl.init);
+        if(!src&&ST.initState){var im=new RegExp('\\b'+t+'\\s*=\\s*([^;]+);').exec(ST.initState.body);if(im)src=im[1]}
+        var m2=src&&/^(\w+)\s*\(/.exec(src.trim());if(m2&&ST.methods[m2[1]])call=src.trim()}
+      if(call){
+        var mn=/^(\w+)/.exec(call)[1],body=ST.methods[mn].body,re=/Future\s*\.\s*delayed\s*\(/g,mm;
+        while((mm=re.exec(body))){var seg=grabCall(body.slice(mm.index),'Future\\s*\\.\\s*delayed');if(seg)ms+=mkDelay(seg,env).ms}
+        data=ev(pTern(new Ps(call)),env);if(data===undefined)data=null}
+      else ms=1500}
+  }catch(e){if(e.dartExc)err=e.message;else{ST.sync=old;throw e}}
+  ST.sync=old;return{ms:ms,data:data,err:err}}
+function futureTexts(n){
+  var fr=M.rawProp(n,'future'),bd=M.rawProp(n,'builder');
+  if(fr==null||bd==null)throw new Error('FutureBuilder precisa de future e builder');
+  var info=futInfo(fr),phase=ST.futPhase?ST.futPhase(n,info.ms):'done',w=phase==='waiting';
+  var snap={nat:'AsyncSnapshot',f:{connectionState:'ConnectionState.'+(w?'waiting':'done'),hasData:!w&&!info.err&&info.data!==null,hasError:!w&&!!info.err,data:w||info.err?null:info.data,error:w||!info.err?null:info.err},src:'AsyncSnapshot()'};
+  var lf=lamFull(bd.trim()),env=mkEnv({});env.params[lf.names[0]||'context']=null;env.params[lf.names[1]||'snapshot']=snap;
+  stmt(new Ps('{'+lf.body+'}'),env,true);
+  var r=env.ret;if(r===undefined||r===null)throw new Error('o builder não devolveu um widget');
+  return [isRaw(r)?r.raw:'Text('+lit(show(r))+')']}
+
 /* ---- builders: itemBuilder, separatorBuilder, builder ---- */
 function lambdaParts(raw){
   var t=lex(raw),p=new Ps(raw);
@@ -1632,11 +1940,13 @@ function lambdaParts(raw){
     body=raw.slice(t[j+1].s,raw.lastIndexOf('}')).trim().replace(/;\s*$/,'')}
   else throw new Error('lambda');
   return{names:names,body:body}}
-var BUILDERS={'ListView.builder':1,'ListView.separated':1,'GridView.builder':1,'LayoutBuilder':1,Builder:1};
+var BUILDERS={FutureBuilder:1,'SliverList.builder':1,'ListView.builder':1,'ListView.separated':1,'GridView.builder':1,'LayoutBuilder':1,Builder:1};
+ST.futureTexts=futureTexts;
 ST.isBuilder=function(n){return !!BUILDERS[n.type]};
 ST.builderTexts=function(n){
   var out=[];
   function raw(k){var v=M.rawProp(n,k);return v==null?null:v.trim()}
+  if(n.type==='FutureBuilder')return futureTexts(n);
   if(n.type==='LayoutBuilder'||n.type==='Builder'){
     var lp=lambdaParts(raw('builder')),b=lp.body;
     if(n.type==='LayoutBuilder'&&lp.names[1])b=b.replace(new RegExp('\\b'+lp.names[1]+'\\.(maxWidth|maxHeight|minWidth|minHeight)\\b','g'),function(m,k){return k==='maxWidth'?'360.0':k==='maxHeight'?'600.0':'0.0'});
@@ -1878,6 +2188,33 @@ function textCss(raw){
 }
 function enumName(raw){return raw?String(raw).trim().split('.').pop():''}
 var ICONS={star_border:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" fill="none"/>',check_circle_outline:'<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>',lightbulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>',refresh:'<path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/>',home:'<path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/>',add:'<path d="M12 5v14M5 12h14"/>',star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" fill="currentColor"/>',favorite:'<path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/>',settings:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9L7 7M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>',search:'<circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l6 6"/>',person:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>',menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',check:'<path d="M5 12.5l4.5 4.5L19 7"/>',close:'<path d="M6 6l12 12M18 6L6 18"/>',arrow_back:'<path d="M20 12H5M11 5l-7 7 7 7"/>',email:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',phone:'<path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A15 15 0 013 6a2 2 0 012-2z"/>',shopping_cart:'<path d="M3 4h2l2.5 11h10L20 7H6.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/>',camera_alt:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',notifications:'<path d="M6 17v-6a6 6 0 0112 0v6l2 2H4z"/><path d="M10 21h4"/>',location_on:'<path d="M12 21s-7-6.5-7-12a7 7 0 0114 0c0 5.500-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/>'};
+Object.assign(ICONS,{
+delete:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+chevron_right:'<path d="M9 5l7 7-7 7"/>',
+navigation:'<path d="M12 3l7 17-7-4-7 4z"/>',
+circle:'<circle cx="12" cy="12" r="8" fill="currentColor"/>',
+shopping_bag:'<path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 016 0v2"/>',
+event:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/>',
+schedule:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+explore:'<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+volume_up:'<path d="M4 9v6h4l5 4V5L8 9zM16 9a4 4 0 010 6M18.5 6.5a8 8 0 010 11"/>',
+volume_off:'<path d="M4 9v6h4l5 4V5L8 9zM17 9l5 6M22 9l-5 6"/>',
+mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/>',
+mic_none:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/>',
+place:ICONS.location_on,
+photo_camera:ICONS.camera_alt,
+flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+my_location:'<circle cx="12" cy="12" r="3.5" fill="currentColor"/><circle cx="12" cy="12" r="8"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
+directions_walk:'<circle cx="13" cy="4.5" r="1.8"/><path d="M12 8l-3 4 3 2v6M12 8l3 4 3 1M9 12l-2 7"/>',
+lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',
+lock_open:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 017.5-2"/>',
+flashlight_on:'<path d="M8 3h8v5l-2 3v10h-4V11L8 8z"/><path d="M12 14v2"/>',
+flashlight_off:'<path d="M8 3h8v5l-2 3v10h-4V11L8 8z"/>',
+language:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
+check_circle:'<circle cx="12" cy="12" r="9" fill="currentColor" stroke="none"/><path d="M8 12l3 3 5-6" stroke="#fff"/>',
+radio_button_unchecked:'<circle cx="12" cy="12" r="9"/>',
+emoji_events:'<path d="M8 4h8v6a4 4 0 01-8 0zM8 6H4v1a4 4 0 004 4M16 6h4v1a4 4 0 01-4 4M12 14v4M8 21h8M10 18h4"/>',
+sentiment_satisfied:'<circle cx="12" cy="12" r="9"/><path d="M8 14a5 5 0 008 0M9 9.5v.5M15 9.5v.5"/>'});
 var ICONNAMES=Object.keys(ICONS);
 function iconSvg(raw){
   var nm=enumName(raw).replace(/_(outlined|rounded|sharp)$/,'');
@@ -1886,7 +2223,33 @@ function iconSvg(raw){
 }
 
 /* ====== Regras de espaço (aproxima as constraints do Flutter) ====== */
-var ALIAS={AnimatedContainer:'Container',Hero:'Padding'};
+
+function topSplit(s){var o=[],d=0,q=null,cur='';for(var i=0;i<s.length;i++){var c=s[i];if(q){cur+=c;if(c==='\\'){cur+=s[++i]||'';continue}if(c===q)q=null;continue}if(c==="'"||c==='"'){q=c;cur+=c;continue}if('([{'.indexOf(c)>=0)d++;else if(')]}'.indexOf(c)>=0)d--;if(c===','&&d===0){o.push(cur);cur=''}else cur+=c}if(cur.trim())o.push(cur);return o}
+function innerArgs(s){var i=s.indexOf('(');if(i<0)return null;var d=0,q=null;for(var j=i;j<s.length;j++){var c=s[j];if(q){if(c==='\\')j++;else if(c===q)q=null;continue}if(c==="'"||c==='"'){q=c;continue}if(c==='(')d++;else if(c===')'){d--;if(d===0)return s.slice(i+1,j)}}return s.slice(i+1)}
+function spanEl(raw){
+  raw=String(raw).trim().replace(/^const\s+/,'');if(!/^TextSpan\s*\(/.test(raw))return null;
+  var sp=document.createElement('span'),text=null,style=null,kids=null;
+  topSplit(innerArgs(raw)||'').forEach(function(a){var m=/^\s*(\w+)\s*:\s*([\s\S]*)$/.exec(a);if(!m)return;var k=m[1],v=m[2].trim();
+    if(k==='text')text=strVal(v);else if(k==='style')style=v;else if(k==='children')kids=topSplit(v.replace(/^(?:const\s+)?\[/,'').replace(/\]\s*$/,''))});
+  if(style)sp.style.cssText=textCss(style);
+  if(text!=null)sp.appendChild(document.createTextNode(text));
+  (kids||[]).forEach(function(k){var e=spanEl(k);if(e)sp.appendChild(e)});
+  return sp}
+function popItems(n){
+  var raw=M.getProp(n,'itemBuilder')||'',out=[],re=/PopupMenuItem\s*(?:<[^>(]*>)?\s*\(/g,m;
+  while((m=re.exec(raw))){var o={value:null,label:'?'};
+    topSplit(innerArgs(raw.slice(m.index))||'').forEach(function(a){var mm=/^\s*(\w+)\s*:\s*([\s\S]*)$/.exec(a);if(!mm)return;
+      if(mm[1]==='value')o.value=mm[2].trim();
+      else if(mm[1]==='child'){var t=/Text\s*\(\s*('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*")/.exec(mm[2]);if(t)o.label=strVal(t[1])}});
+    out.push(o)}
+  return out}
+function numExpr(raw){
+  if(raw==null)return null;var t=String(raw).replace(/math\.pi|\bpi\b/g,'3.14159265').replace(/\s+/g,'');
+  if(!/^[\d.+\-*\/()]+$/.test(t))return null;try{var v=Function('"use strict";return ('+t+')')();return isFinite(v)?v:null}catch(e){return null}}
+function llOf(raw){var m=/LatLng\s*\(\s*(-?[\d.]+)\s*,\s*(-?[\d.]+)\s*\)/.exec(raw||'');return m?[+m[1],+m[2]]:null}
+function lamArg(raw,key){var m=new RegExp('\\b'+key+'\\s*:\\s*').exec(raw||'');if(!m)return null;var s=raw.slice(m.index+m[0].length),d=0,q=null;for(var i=0;i<s.length;i++){var c=s[i];if(q){if(c==='\\')i++;else if(c===q)q=null;continue}if(c==="'"||c==='"'){q=c;continue}if('([{'.indexOf(c)>=0)d++;else if(')]}'.indexOf(c)>=0){if(d===0)return s.slice(0,i).trim();d--}else if(c===','&&d===0)return s.slice(0,i).trim()}return s.trim()}
+function wmerc(lat,lon,z){var sc=256*Math.pow(2,z),sn=Math.sin(lat*Math.PI/180);return[(lon+180)/360*sc,(0.5-Math.log((1+sn)/(1-sn))/(4*Math.PI))*sc]}
+var ALIAS={AnimatedContainer:'Container',Hero:'Padding',AnimatedOpacity:'Opacity'};
 function dim(n,k){return numVal(M.getProp(n,k))}
 function sizeMin(n){return /MainAxisSize\.min/.test(M.getProp(n,'mainAxisSize')||'')}
 function stackFill(n){return !(n.slots.children||[]).some(function(c){return c.type!=='Positioned'})}
@@ -1894,11 +2257,11 @@ function fillV(n){
   if(!n||n.unknown)return false;
   switch(ALIAS[n.type]||n.type){
     case 'Column':return !sizeMin(n);
-    case 'ListView':case 'ListView.builder':case 'ListView.separated':case 'GridView.builder':case 'PageView':case 'Center':case 'Spacer':case 'Align':case 'GridView.count':case 'SingleChildScrollView':case 'TabBarView':case 'Scaffold':return true;
+    case 'ListView':case 'ListView.builder':case 'ListView.separated':case 'GridView.builder':case 'PageView':case 'Center':case 'Spacer':case 'Align':case 'GridView.count':case 'SingleChildScrollView':case 'TabBarView':case 'Scaffold':case 'FlutterMap':case 'CustomScrollView':case 'FutureBuilder':return true;
     case 'Stack':return stackFill(n);
     case 'Expanded':case 'Flexible':return !!n.slots.child&&fillV(n.slots.child);
     case 'Container':if(dim(n,'height')!=null)return false;if(M.getProp(n,'alignment'))return true;return !n.slots.child||fillV(n.slots.child);
-    case 'Padding':case 'Card':case 'ClipRRect':case 'Opacity':case 'SafeArea':case 'GestureDetector':case 'InkWell':case 'DefaultTabController':return !!n.slots.child&&fillV(n.slots.child);
+    case 'Padding':case 'Card':case 'ClipRRect':case 'Opacity':case 'SafeArea':case 'GestureDetector':case 'InkWell':case 'DefaultTabController':case 'ColoredBox':case 'Tooltip':case 'Dismissible':case 'Transform.rotate':case 'Transform.scale':case 'Transform.translate':case 'Form':case 'Visibility':case 'FittedBox':case 'ConstrainedBox':case 'FractionallySizedBox':return !!n.slots.child&&fillV(n.slots.child);
     case 'SizedBox':return dim(n,'height')==null&&!!n.slots.child&&fillV(n.slots.child);
   }return false;
 }
@@ -1906,12 +2269,12 @@ function fillH(n){
   if(!n||n.unknown)return false;
   switch(ALIAS[n.type]||n.type){
     case 'Row':return !sizeMin(n);
-    case 'ListView':case 'ListView.builder':case 'ListView.separated':case 'GridView.builder':case 'PageView':case 'Table':case 'SwitchListTile':case 'CheckboxListTile':case 'RadioListTile':case 'Center':case 'Align':case 'GridView.count':case 'Divider':case 'TextField':case 'ListTile':case 'Wrap':case 'Slider':case 'SingleChildScrollView':case 'TabBarView':case 'TabBar':case 'BottomNavigationBar':case 'Scaffold':return true;
+    case 'ListView':case 'ListView.builder':case 'ListView.separated':case 'GridView.builder':case 'PageView':case 'FlutterMap':case 'CustomScrollView':case 'FutureBuilder':case 'Table':case 'SwitchListTile':case 'CheckboxListTile':case 'RadioListTile':case 'Center':case 'Align':case 'GridView.count':case 'Divider':case 'AspectRatio':case 'FractionallySizedBox':case 'TextField':case 'TextFormField':case 'VerticalDivider':case 'ExpansionTile':case 'NavigationBar':case 'ListTile':case 'Wrap':case 'Slider':case 'SingleChildScrollView':case 'TabBarView':case 'TabBar':case 'BottomNavigationBar':case 'Scaffold':return true;
     case 'Stack':return stackFill(n);
     case 'Column':return /CrossAxisAlignment\.stretch/.test(M.getProp(n,'crossAxisAlignment')||'')||(n.slots.children||[]).some(fillH);
     case 'Expanded':case 'Flexible':return !!n.slots.child&&fillH(n.slots.child);
     case 'Container':if(dim(n,'width')!=null)return dim(n,'width')===Infinity;if(M.getProp(n,'alignment'))return true;return !n.slots.child||fillH(n.slots.child);
-    case 'Padding':case 'Card':case 'ClipRRect':case 'Opacity':case 'SafeArea':case 'GestureDetector':case 'InkWell':case 'DefaultTabController':return !!n.slots.child&&fillH(n.slots.child);
+    case 'Padding':case 'Card':case 'ClipRRect':case 'Opacity':case 'SafeArea':case 'GestureDetector':case 'InkWell':case 'DefaultTabController':case 'ColoredBox':case 'Tooltip':case 'Dismissible':case 'Transform.rotate':case 'Transform.scale':case 'Transform.translate':case 'Form':case 'Visibility':case 'FittedBox':case 'ConstrainedBox':case 'FractionallySizedBox':return !!n.slots.child&&fillH(n.slots.child);
     case 'SizedBox':return dim(n,'width')===Infinity||(dim(n,'width')==null&&!!n.slots.child&&fillH(n.slots.child));
   }return false;
 }
@@ -1931,6 +2294,7 @@ function place(d,n,pt,ppt){
     d.style.flex=flexOf(n)+' 1 0';d.style.minWidth='0';d.style.minHeight='0';
     if(pt==='Row'&&n.type!=='Spacer'&&!fillV(n))d.style.alignSelf='center';
     if(pt==='Row'&&fillV(n))d.style.alignSelf='stretch';
+    if((pt==='Column'||pt==='#single')&&fillH(n))d.style.alignSelf='stretch';
     return}
   if(pt==='Column'||pt==='#single'){
     if(fillH(n))d.style.alignSelf='stretch';
@@ -2025,7 +2389,7 @@ function build(n,path,pt,ppt,sel){
     case 'ListView':{d.className+=' list';var lp=insets(M.getProp(n,'padding'));if(lp)d.style.padding=px(lp);if(!(n.slots.children||[]).length)d.appendChild(ph('children: [ ]'));kids('children','ListView');break}
     case 'Expanded':d.className+=' col';d.style.alignItems='flex-start';single('child','#expanded','child: adicione um widget',pt);break;
     case 'Spacer':d.style.minHeight='0';break;
-    case 'Container':case 'Padding':case 'SizedBox':case 'Card':{
+    case 'Container':case 'Padding':case 'SizedBox':case 'Card':case 'ColoredBox':{
       d.className+=(n.type==='Card'?' card':' col');d.style.alignItems='flex-start';
       var wv=dim(n,'width'),hv=dim(n,'height');
       if(wv!=null&&wv!==Infinity){d.style.width=wv+'px';d.style.flexShrink='0'}
@@ -2059,7 +2423,7 @@ function build(n,path,pt,ppt,sel){
       if(sl.trailing){var tr=child(sl.trailing,'trailing','#none');tr.classList.add('trail');d.appendChild(tr)}
       if(sl.subtitle)d.style.minHeight='72px';
       break}
-    case 'TextField':{
+    case 'TextField':case 'TextFormField':{
       d.className+=' tf';var dp=callParts(M.getProp(n,'decoration'),'InputDecoration').map;
       var lab=dp.labelText?strVal(dp.labelText):'',hint=dp.hintText?strVal(dp.hintText):'';
       if(/OutlineInputBorder/.test(dp.border||''))d.className+=' ol';
@@ -2077,7 +2441,7 @@ function build(n,path,pt,ppt,sel){
       d.className+=' bnb';kids('items','BNB');var ci=numVal(M.getProp(n,'currentIndex'))||0;
       var its=[].slice.call(d.children);if(its[ci])its[ci].classList.add('on');
       if(!(n.slots.items||[]).length)d.appendChild(ph('items: [ ]'));break}
-    case 'BottomNavigationBarItem':{
+    case 'BottomNavigationBarItem':case 'NavigationDestination':{
       d.className+=' bni';if(n.slots.icon)d.appendChild(child(n.slots.icon,'icon','#none'));
       var lb=M.getProp(n,'label');if(lb){var sp2=document.createElement('span');sp2.textContent=strVal(lb);d.appendChild(sp2)}break}
     case 'TabBar':{
@@ -2137,7 +2501,7 @@ function build(n,path,pt,ppt,sel){
       if(R_opts.run)si=Math.min(R_opts.tab[R_opts.tabCtl||'root']||0,Math.max(0,tv.length-1));else tv.forEach(function(c,i){var kk=path.concat('children:'+i).join('>');if(sel&&(sel===kk||sel.indexOf(kk+'>')===0))si=i});
       if(tv[si])d.appendChild(child(tv[si],'children:'+si,'#expanded','Column'));else d.appendChild(ph('children: [ ]'));break}
     case 'DefaultTabController':{d.className+=' col';d.style.alignItems='flex-start';var ptc=R_opts.tabCtl;R_opts.tabCtl=path.join('>')||'root';try{single('child','#single','child: adicione um widget')}finally{R_opts.tabCtl=ptc}break}
-    case 'SafeArea':case 'GestureDetector':case 'InkWell':{d.className+=' col';d.style.alignItems='flex-start';single('child','#single','child: adicione um widget');break}
+    case 'SafeArea':case 'GestureDetector':case 'InkWell':case 'Form':case 'FittedBox':{d.className+=' col';d.style.alignItems='flex-start';single('child','#single','child: adicione um widget');break}
     case 'ClipRRect':{
       d.className+=' col clp';d.style.alignItems='flex-start';d.style.overflow='hidden';
       var crm=/circular\(\s*([\d.]+)/.exec(M.getProp(n,'borderRadius')||'');if(crm)d.style.borderRadius=crm[1]+'px';
@@ -2169,8 +2533,8 @@ function build(n,path,pt,ppt,sel){
     case 'CircularProgressIndicator':{d.className+=' dspin';d.style.flex='none';var pc=colorVal(M.getProp(n,'color'));if(pc)d.style.setProperty('--act',pc);break}
     case 'LinearProgressIndicator':{d.className+=' dlin';var lv=numVal(M.getProp(n,'value')),lc=colorVal(M.getProp(n,'color'));if(lc)d.style.setProperty('--act',lc);
       d.innerHTML='<i'+(lv==null?' class="ind"':' style="width:'+Math.max(0,Math.min(1,lv))*100+'%"')+'></i>';break}
-    case 'Chip':{
-      d.className+=' dchip';d.style.flex='none';var cbg=colorVal(M.getProp(n,'backgroundColor'));if(cbg)d.style.background=cbg;
+    case 'Chip':case 'ChoiceChip':case 'FilterChip':case 'ActionChip':{
+      d.className+=' dchip'+(/true/.test(M.getProp(n,'selected')||'')?' chsel':'');d.style.flex='none';var cbg=colorVal(M.getProp(n,'backgroundColor'));if(cbg)d.style.background=cbg;
       if(n.slots.avatar)d.appendChild(child(n.slots.avatar,'avatar','#none'));
       if(n.slots.label)d.appendChild(child(n.slots.label,'label','#none'));else d.appendChild(ph('label'));break}
     case 'Checkbox':{
@@ -2181,23 +2545,153 @@ function build(n,path,pt,ppt,sel){
       d.className+=' sld';var mn=numVal(M.getProp(n,'min')),mx=numVal(M.getProp(n,'max')),vv=numVal(M.getProp(n,'value'));mn=mn==null?0:mn;mx=mx==null?1:mx;vv=vv==null?mn:vv;
       var fr=mx>mn?Math.max(0,Math.min(1,(vv-mn)/(mx-mn))):0,acl=colorVal(M.getProp(n,'activeColor'));if(acl)d.style.setProperty('--act',acl);
       d.innerHTML='<span class="tk"><span class="ac" style="width:'+(fr*100)+'%"></span><span class="thm" style="left:'+(fr*100)+'%"></span></span>';break}
+    case 'AspectRatio':{d.className+=' col';d.style.alignItems='stretch';var asr=numVal(M.getProp(n,'aspectRatio'));d.style.aspectRatio=String(asr>0?asr:1);d.style.width='100%';d.style.flex='none';single('child','#expanded','child: adicione um widget','Column');break}
+    case 'ConstrainedBox':{
+      d.className+=' col';d.style.alignItems='flex-start';var cbm=callParts(M.getProp(n,'constraints'),'BoxConstraints').map||{};
+      ['minWidth','maxWidth','minHeight','maxHeight'].forEach(function(k){var v=parseFloat(OF.ST.subst(cbm[k]||''));if(isFinite(v))d.style[k]=v+'px'});
+      single('child','#single','child: adicione um widget');break}
+    case 'FractionallySizedBox':{
+      d.className+=' col';d.style.alignItems='flex-start';var wf=numVal(M.getProp(n,'widthFactor')),hf=numVal(M.getProp(n,'heightFactor'));
+      d.style.width=((wf==null?1:wf)*100)+'%';if(hf!=null)d.style.height=(hf*100)+'%';d.style.flex='none';single('child','#single','child: adicione um widget');break}
+    case 'Visibility':{
+      d.className+=' col';d.style.alignItems='flex-start';var vis=!/false/.test(M.getProp(n,'visible')||'true');
+      if(!vis){if(R_opts.run)d.style.display='none';else{d.style.opacity='.35';d.style.outline='1px dashed currentColor'}}
+      single('child','#single','child: adicione um widget');break}
+    case 'Tooltip':{d.className+=' col';d.style.alignItems='flex-start';var tm=M.getProp(n,'message');if(tm)d.title=strVal(tm);single('child','#single','child: adicione um widget');break}
+    case 'Badge':{
+      d.className+=' badge';if(n.slots.child)d.appendChild(child(n.slots.child,'child','#none'));else d.appendChild(ph('child'));
+      if(n.slots.label){var bl=child(n.slots.label,'label','#none');bl.classList.add('bdg');d.appendChild(bl)}else{var dot=document.createElement('span');dot.className='bdg dot';d.appendChild(dot)}break}
+    case 'VerticalDivider':{
+      var vdw=dim(n,'width'),vdt=dim(n,'thickness'),vdc=colorVal(M.getProp(n,'color'))||'rgba(0,0,0,.22)';vdw=vdw==null?16:vdw;vdt=vdt==null?1:vdt;
+      d.style.width=vdw+'px';d.style.alignSelf='stretch';d.style.flex='none';d.style.minHeight='24px';
+      d.style.background='linear-gradient(90deg,transparent calc(50% - '+(vdt/2)+'px),'+vdc+' 0 calc(50% + '+(vdt/2)+'px),transparent 0)';break}
+    case 'ExpansionTile':{
+      d.className+=' exp';var ek=path.join('>')||'root',ex0=/true/.test(M.getProp(n,'initiallyExpanded')||''),
+        opn=R_opts.run?(R_opts.exp[ek]!==undefined?R_opts.exp[ek]:ex0):true;
+      var hd=document.createElement('div');hd.className='nd tile exh';
+      if(n.slots.leading){var le2=child(n.slots.leading,'leading','#none');le2.classList.add('lead');hd.appendChild(le2)}
+      var md=document.createElement('div');md.className='mid';
+      if(n.slots.title){var te2=child(n.slots.title,'title','#none');te2.classList.add('tt');md.appendChild(te2)}
+      if(n.slots.subtitle){var se2=child(n.slots.subtitle,'subtitle','#none');se2.classList.add('st');md.appendChild(se2)}
+      hd.appendChild(md);var chv=document.createElement('span');chv.className='chev';chv.textContent=opn?'▴':'▾';hd.appendChild(chv);
+      if(R_opts.run){hd.classList.add('hh');hd.dataset.h='exp';hd.dataset.k=ek}
+      d.appendChild(hd);
+      if(opn){var bd=document.createElement('div');bd.className='exb';(n.slots.children||[]).forEach(function(c,i){bd.appendChild(child(c,'children:'+i,'Column'))});d.appendChild(bd)}
+      break}
+    case 'NavigationBar':{
+      d.className+=' bnb nvb';kids('destinations','BNB');var nsi=numVal(M.getProp(n,'selectedIndex'))||0;
+      var nit=[].slice.call(d.children);if(nit[nsi])nit[nsi].classList.add('on');
+      if(R_opts.run)nit.forEach(function(c,i){c.classList.add('hh');c.dataset.h='navd';c.dataset.i=i;c._pn=n});
+      if(!(n.slots.destinations||[]).length)d.appendChild(ph('destinations: [ ]'));break}
+    case 'Transform.rotate':case 'Transform.scale':case 'Transform.translate':{
+      d.className+=' col';d.style.alignItems='flex-start';d.style.flex='none';var tf='';
+      if(n.type==='Transform.rotate'){var ang=numExpr(M.getProp(n,'angle'));if(ang!=null)tf='rotate('+ang+'rad)'}
+      else if(n.type==='Transform.scale'){var scv=numExpr(M.getProp(n,'scale'));if(scv!=null)tf='scale('+scv+')'}
+      else{var om=/Offset\(\s*(-?[\d.]+)\s*,\s*(-?[\d.]+)\s*\)/.exec(M.getProp(n,'offset')||'');if(om)tf='translate('+om[1]+'px,'+om[2]+'px)'}
+      if(tf)d.style.transform=tf;single('child','#single','child: adicione um widget');break}
+    case 'Text.rich':case 'RichText':{
+      d.className+=' txt';var rs=spanEl(M.getProp(n,n.type==='RichText'?'text':'textSpan')||'');
+      if(rs)d.appendChild(rs);else d.textContent='TextSpan(…)';break}
+    case 'ButtonSegment':{
+      d.className+=' sgb';if(n.slots.icon){var si=child(n.slots.icon,'icon','#none');si.classList.add('sgi');d.appendChild(si)}
+      if(n.slots.label)d.appendChild(child(n.slots.label,'label','#none'));else d.appendChild(ph('label'));break}
+    case 'SegmentedButton':{
+      d.className+=' seg2';
+      var sg0=(M.getProp(n,'selected')||'').replace(/^\s*[{\[]|[}\]]\s*$/g,'').split(',').map(function(x){return x.trim().replace(/^['"]|['"]$/g,'')}).filter(Boolean);
+      kids('segments','#none');
+      [].slice.call(d.children).forEach(function(el,i){var sgn=(n.slots.segments||[])[i];if(!sgn||!el.classList.contains('sgb'))return;
+        var vv=(M.getProp(sgn,'value')||'').trim();if(sg0.indexOf(vv.replace(/^['"]|['"]$/g,''))>=0)el.classList.add('on');
+        if(R_opts.run){el.classList.add('hh');el.dataset.h='segsel';el.dataset.vraw=vv;el._pn=n}});
+      if(!(n.slots.segments||[]).length)d.appendChild(ph('segments: [ ]'));break}
+    case 'PopupMenuButton':{
+      d.className+=' pmb';
+      if(n.slots.child)d.appendChild(child(n.slots.child,'child','#none'));
+      else if(n.slots.icon)d.appendChild(child(n.slots.icon,'icon','#none'));
+      else{var pi=document.createElement('span');pi.className='pmi';pi.innerHTML='<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>';d.appendChild(pi)}
+      if(R_opts.run){d.classList.add('hh');d.dataset.h='popup';d._pn=n}break}
+    case 'Dismissible':{
+      d.className+=' dism';
+      if(n.slots.background){var bgd=child(n.slots.background,'background','#single');bgd.classList.add('dbg');d.appendChild(bgd)}
+      var fg0=document.createElement('div');fg0.className='dfg';d.appendChild(fg0);
+      var kd=n.slots.child?child(n.slots.child,'child','#single'):ph('child: adicione um widget');fg0.appendChild(kd);
+      if(R_opts.run){d.dataset.dm='1';d._n=n}else{var dh=document.createElement('span');dh.className='dhint';dh.textContent='⇠';d.appendChild(dh)}
+      break}
+    case 'CustomScrollView':{d.className+=' csv';kids('slivers','ListView');if(!(n.slots.slivers||[]).length)d.appendChild(ph('slivers: [ ]'));break}
+    case 'SliverAppBar':{
+      d.className+=' appbar sab';var eh=numVal(M.getProp(n,'expandedHeight')),pin=/true/.test(M.getProp(n,'pinned')||'');eh=Math.max(56,eh==null?56:eh);
+      d.style.height=eh+'px';d.style.flex='none';if(pin){d.style.position='sticky';d.style.top=(56-eh)+'px';d.style.zIndex='3'}
+      var sb2=colorVal(M.getProp(n,'backgroundColor'));if(sb2)d.style.background=sb2;var sf2=colorVal(M.getProp(n,'foregroundColor'));if(sf2)d.style.color=sf2;
+      if(n.slots.title){var stt=child(n.slots.title,'title','#none');d.appendChild(stt)}break}
+    case 'SliverToBoxAdapter':{d.className+=' col';d.style.alignItems='stretch';single('child','Column','child: adicione um widget');break}
+    case 'SliverList.list':{d.className+=' col';d.style.alignItems='stretch';kids('children','ListView');break}
+    case 'SliverList.builder':{d.className+=' list';genKids('ListView');break}
+    case 'FutureBuilder':{d.className+=' col';d.style.alignItems='flex-start';n._key=path.join('>');genKids('#single');break}
+    case 'FlutterMap':{
+      d.className+=' fmap';var mo=M.getProp(n,'options')||'',mc=/initialCenter\s*:\s*(?:const\s+)?LatLng\(\s*(-?[\d.]+)\s*,\s*(-?[\d.]+)\s*\)/.exec(mo),mz=/initialZoom\s*:\s*([\d.]+)/.exec(mo);
+      var mla=mc?+mc[1]:0,mlo=mc?+mc[2]:0,mzz=mz?+mz[1]:13,mv=OF.ST.mapView;
+      if(R_opts.run&&mv){mla=mv.lat;mlo=mv.lon;if(mv.zoom!=null)mzz=mv.zoom}
+      mzz=Math.max(1,Math.min(18,Math.round(mzz)));var c0=wmerc(mla,mlo,mzz);
+      var mctx={lat:mla,lon:mlo,z:mzz,c0:c0,el:d,off:function(la,lo){var p=wmerc(la,lo,mzz);return[p[0]-c0[0],p[1]-c0[1]]}};
+      d.dataset.lat=mla;d.dataset.lon=mlo;d.dataset.z=mzz;
+      var otp=lamArg(mo,'onTap');if(otp&&R_opts.run){d.dataset.ontap=otp;d.classList.add('mtap');d._pn=n}
+      var prevM=R_opts.mapV;R_opts.mapV=mctx;try{kids('children','#none')}finally{R_opts.mapV=prevM}
+      if(!(n.slots.children||[]).length)d.appendChild(ph('children: [ TileLayer(...) ]'));break}
+    case 'TileLayer':{
+      d.className+=' mly';var mx=R_opts.mapV;
+      if(mx){
+        var tpl=strVal(M.getProp(n,'urlTemplate')||'');
+        if(/^https:\/\//.test(tpl)){var tx0=Math.floor((mx.c0[0]-260)/256),tx1=Math.floor((mx.c0[0]+260)/256),ty0=Math.floor((mx.c0[1]-440)/256),ty1=Math.floor((mx.c0[1]+440)/256),nt=Math.pow(2,mx.z);
+          for(var ty=ty0;ty<=ty1;ty++)for(var tx=tx0;tx<=tx1;tx++){if(ty<0||ty>=nt)continue;
+            var im=document.createElement('img'),xw=((tx%nt)+nt)%nt;im.className='tile';im.alt='';im.draggable=false;
+            im.style.left='calc(50% + '+(tx*256-mx.c0[0])+'px)';im.style.top='calc(50% + '+(ty*256-mx.c0[1])+'px)';
+            im.onerror=function(){this.remove();mx.el.classList.add('notiles')};
+            im.src=tpl.replace('{z}',mx.z).replace('{x}',xw).replace('{y}',ty).replace('{s}','a');d.appendChild(im)}}}
+      else d.appendChild(ph('TileLayer'));break}
+    case 'MarkerLayer':{d.className+=' mly';kids('markers','#none');break}
+    case 'CircleLayer':{d.className+=' mly';kids('circles','#none');break}
+    case 'PolylineLayer':{d.className+=' mly';kids('polylines','#none');break}
+    case 'Marker':{
+      d.className+=' mk';var mw=dim(n,'width')||30,mh=dim(n,'height')||30,pt2=llOf(M.getProp(n,'point')),mx2=R_opts.mapV;
+      d.style.width=mw+'px';d.style.height=mh+'px';
+      if(mx2&&pt2){var of=mx2.off(pt2[0],pt2[1]);d.style.left='calc(50% + '+of[0]+'px)';d.style.top='calc(50% + '+of[1]+'px)'}else d.style.position='relative';
+      single('child','#center','child: adicione um widget');break}
+    case 'CircleMarker':{
+      d.className+=' mcir';var mx3=R_opts.mapV,pt3=llOf(M.getProp(n,'point')),rr=dim(n,'radius')||10;
+      if(/true/.test(M.getProp(n,'useRadiusInMeter')||'')&&mx3)rr=rr/(156543.03392*Math.cos(mx3.lat*Math.PI/180)/Math.pow(2,mx3.z));
+      var cc=colorVal(M.getProp(n,'color'))||'rgba(33,150,243,.25)',cwo=/withOpacity\(\s*([\d.]+)\s*\)/.exec(M.getProp(n,'color')||'');
+      if(cwo){var cb=colorVal((M.getProp(n,'color')||'').replace(/\.withOpacity\([^)]*\)/,''));if(cb&&cb[0]==='#'){var cv=parseInt(cb.slice(1),16);cc='rgba('+(cv>>16)+','+((cv>>8)&255)+','+(cv&255)+','+cwo[1]+')'}}
+      d.style.width=d.style.height=(rr*2)+'px';d.style.background=cc;
+      var bw=dim(n,'borderStrokeWidth'),bc=colorVal(M.getProp(n,'borderColor'));if(bw)d.style.border=bw+'px solid '+(bc||'#2196F3');
+      if(mx3&&pt3){var of3=mx3.off(pt3[0],pt3[1]);d.style.left='calc(50% + '+of3[0]+'px)';d.style.top='calc(50% + '+of3[1]+'px)'}break}
+    case 'Polyline':{
+      d.className+=' mpl';var mx4=R_opts.mapV,pts=[],lm,lre=/LatLng\s*\(\s*(-?[\d.]+)\s*,\s*(-?[\d.]+)\s*\)/g,ptxt=M.getProp(n,'points')||'';
+      while((lm=lre.exec(ptxt))){if(mx4){var o4=mx4.off(+lm[1],+lm[2]);pts.push(o4[0].toFixed(1)+','+o4[1].toFixed(1))}}
+      var sw=dim(n,'strokeWidth')||1,scol=colorVal(M.getProp(n,'color'))||'#FFEB3B';
+      d.innerHTML='<svg width="1" height="1" style="position:absolute;left:50%;top:50%;overflow:visible"><polyline points="'+pts.join(' ')+'" fill="none" stroke="'+scol+'" stroke-width="'+sw+'" stroke-linejoin="round" stroke-linecap="round"/></svg>';break}
+    case 'RichAttributionWidget':{d.className+=' mattr';d.textContent='© OpenStreetMap contributors';break}
     case 'Text':{
       d.className+=' txt';d.textContent=strVal(M.getProp(n,'data'));d.style.cssText+=textCss(M.getProp(n,'style'));break}
     case 'Icon':{
       d.className+=' ico';var sz=numVal(M.getProp(n,'size'))||24;d.style.width=d.style.height=sz+'px';d.style.flex='none';
       d.style.color=colorVal(M.getProp(n,'color'))||'inherit';d.innerHTML=iconSvg(M.getProp(n,'icon'));break}
-    case 'ElevatedButton':case 'TextButton':case 'OutlinedButton':{
-      d.className+=' btn'+(n.type==='TextButton'?' tbtn':n.type==='OutlinedButton'?' obtn':'');d.style.flex='none';if(n.slots.child)d.appendChild(child(n.slots.child,'child','#none'));else d.appendChild(ph('child'));break}
+    case 'ElevatedButton':case 'TextButton':case 'OutlinedButton':case 'FilledButton':{
+      d.className+=' btn'+(n.type==='TextButton'?' tbtn':n.type==='OutlinedButton'?' obtn':n.type==='FilledButton'?' fbtn':'');d.style.flex='none';if(n.slots.child)d.appendChild(child(n.slots.child,'child','#none'));else d.appendChild(ph('child'));break}
   }
   lbl(d,n);
   if(pt&&pt!=='#none')place(d,n,pt,ppt);
   if(R_opts.run)bindRun(d,n);
   return d;
 }
-var R_opts={run:false,xray:false,typed:{},page:{},depth:0,nav:[],navSc:[],over:[],tab:{},tabCtl:null};
-var HANDLERS=['onPressed','onTap','onLongPress','onDoubleTap','onChanged'];
+var R_opts={run:false,xray:false,typed:{},page:{},depth:0,nav:[],navSc:[],over:[],tab:{},tabCtl:null,exp:{},fut:{},futT:[],mapV:null};
+OF.ST.futPhase=function(n,ms){
+  if(!R_opts.run||ms<=0)return 'done';
+  var k=(n._key||'?')+'#'+(OF.ST.futGen||0),f=R_opts.fut[k];
+  if(!f){f=R_opts.fut[k]={done:false};R_opts.futT.push(setTimeout(function(){f.done=true;if(R_opts.rerender)R_opts.rerender()},Math.min(ms,8000)))}
+  return f.done?'done':'waiting'};
+var HANDLERS=['onPressed','onTap','onLongPress','onDoubleTap','onChanged','onSelected'];
 function bindRun(d,n){
-  if(n.type==='TextField'){
+  if(n.type==='PopupMenuButton'||n.type==='SegmentedButton'||n.type==='Dismissible')return;
+  if(n.type==='TextField'||n.type==='TextFormField'){
     var key=d.dataset.path,inp=document.createElement('input');inp.className='tfi'+(d.querySelector('.tl')?' hl':'');inp.dataset.key=key;
     var cr=M.rawProp(n,'controller'),cf=cr&&OF.ST.fields[cr.trim()];cf=cf&&cf.value&&cf.value.ctl?cf.value:null;d._ctl=cf;
     inp.value=cf?cf.text:(R_opts.typed[key]||'');inp.setAttribute('aria-label','Campo de texto');d.classList.toggle('typed',!!inp.value);d.appendChild(inp);d._n=n;d.classList.add('hh')}
@@ -2257,7 +2751,7 @@ function renderInner(root,selKey,screen){
     try{w.appendChild(build(nd,['@ov'+i],null,null,null))}finally{R_opts.depth=h;OF.ST.leave()}
     screen.appendChild(w)});
 }
-OF.R={opts:R_opts,renderScreen:renderScreen,colorVal:colorVal,numVal:numVal,strVal:strVal,enumName:enumName,SWATCH:SWATCH,ICONNAMES:ICONNAMES,styleParts:styleParts,callParts:callParts,insets:insets,pv:pv};
+OF.R={wmerc:wmerc,popItems:popItems,lamArg:lamArg,opts:R_opts,renderScreen:renderScreen,colorVal:colorVal,numVal:numVal,strVal:strVal,enumName:enumName,SWATCH:SWATCH,ICONNAMES:ICONNAMES,styleParts:styleParts,callParts:callParts,insets:insets,pv:pv};
 })();
 
 (function(){
@@ -3968,6 +4462,556 @@ class _TelaState extends State<Tela> {
   }
 }
 `},
+{t:'x. Chips, lista que expande e selo de aviso',
+ text:'ChoiceChip escolhe uma opção entre várias: selected diz se está marcada e onSelected recebe o toque. FilterChip liga e desliga, e cada um guarda o seu bool. ExpansionTile mostra uma linha que abre e fecha, ótima para perguntas frequentes. Badge coloca um selo sobre outro widget, como o número de notificações.',
+ tryit:'Em ▶ Testar, escolha outro tamanho e ligue os filtros. Abra e feche o ExpansionTile. Toque em Nova notificação e veja o número do selo subir. Acrescente o tamanho G.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Tela()));
+
+class Tela extends StatefulWidget {
+  const Tela({super.key});
+
+  @override
+  State<Tela> createState() => _TelaState();
+}
+
+class _TelaState extends State<Tela> {
+  String tamanho = 'M';
+  bool vegano = false;
+  bool semGluten = true;
+  int avisos = 2;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Pedido'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: Badge(
+              label: Text('$avisos'),
+              child: const Icon(Icons.notifications),
+            ),
+          ),
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Tamanho', style: TextStyle(fontSize: 18)),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              children: [
+                ChoiceChip(
+                  label: const Text('P'),
+                  selected: tamanho == 'P',
+                  onSelected: (v) {
+                    setState(() {
+                      tamanho = 'P';
+                    });
+                  },
+                ),
+                ChoiceChip(
+                  label: const Text('M'),
+                  selected: tamanho == 'M',
+                  onSelected: (v) {
+                    setState(() {
+                      tamanho = 'M';
+                    });
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 8,
+              children: [
+                FilterChip(
+                  label: const Text('Vegano'),
+                  selected: vegano,
+                  onSelected: (v) {
+                    setState(() {
+                      vegano = v;
+                    });
+                  },
+                ),
+                FilterChip(
+                  label: const Text('Sem glúten'),
+                  selected: semGluten,
+                  onSelected: (v) {
+                    setState(() {
+                      semGluten = v;
+                    });
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            const ExpansionTile(
+              title: Text('Como funciona a entrega?'),
+              children: [
+                ListTile(title: Text('Entregamos em até 40 minutos.')),
+              ],
+            ),
+            const SizedBox(height: 16),
+            FilledButton(
+              onPressed: () {
+                setState(() {
+                  avisos++;
+                });
+              },
+              child: const Text('Nova notificação'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+`},
+{t:'x. Navegação inferior, visibilidade e proporção',
+ text:'NavigationBar é a barra de navegação inferior do Material 3: selectedIndex marca o destino atual e onDestinationSelected recebe o índice tocado, para guardar no estado. Visibility mostra ou esconde um widget conforme um bool. AspectRatio mantém a proporção largura/altura, e FractionallySizedBox ocupa uma fração da largura do pai.',
+ tryit:'Em ▶ Testar, toque nos três destinos da barra. Na aba Início, use o botão para esconder e mostrar o banner. Mude aspectRatio: 2 para 1 e veja o banner ficar quadrado.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Tela()));
+
+class Tela extends StatefulWidget {
+  const Tela({super.key});
+
+  @override
+  State<Tela> createState() => _TelaState();
+}
+
+class _TelaState extends State<Tela> {
+  int aba = 0;
+  bool banner = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Loja')),
+      body: aba == 0
+          ? Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  Visibility(
+                    visible: banner,
+                    child: FractionallySizedBox(
+                      widthFactor: 0.9,
+                      child: AspectRatio(
+                        aspectRatio: 2,
+                        child: ColoredBox(
+                          color: Colors.deepOrange,
+                          child: Center(
+                            child: Text('Oferta do dia', style: TextStyle(color: Colors.white, fontSize: 22)),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  OutlinedButton(
+                    onPressed: () {
+                      setState(() {
+                        banner = !banner;
+                      });
+                    },
+                    child: const Text('Mostrar ou esconder banner'),
+                  ),
+                ],
+              ),
+            )
+          : Center(
+              child: Text(aba == 1 ? 'Busca' : 'Perfil', style: const TextStyle(fontSize: 28)),
+            ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: aba,
+        onDestinationSelected: (i) {
+          setState(() {
+            aba = i;
+          });
+        },
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.home), label: 'Início'),
+          NavigationDestination(icon: Icon(Icons.search), label: 'Buscar'),
+          NavigationDestination(icon: Icon(Icons.person), label: 'Perfil'),
+        ],
+      ),
+    );
+  }
+}
+`},
+{t:'x. Texto com vários estilos e transformações',
+ text:'Text.rich mostra um texto com trechos de estilos diferentes: cada trecho é um TextSpan, e os TextSpan de children herdam o estilo do pai. Já Transform muda como o widget é desenhado sem mexer nos vizinhos: rotate gira (em radianos), scale amplia e translate desloca.',
+ tryit:'Arraste o controle e veja a seta girar. Troque Colors.indigo por outra cor em um dos trechos. Em Transform.scale, troque 1.5 por 0.5.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Tela()));
+
+class Tela extends StatefulWidget {
+  const Tela({super.key});
+
+  @override
+  State<Tela> createState() => _TelaState();
+}
+
+class _TelaState extends State<Tela> {
+  double angulo = 0.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Texto rico e Transform')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text.rich(
+              TextSpan(
+                text: 'Total do pedido: ',
+                children: [
+                  TextSpan(
+                    text: 'R\\$ 89,90',
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.indigo),
+                  ),
+                  TextSpan(text: ' em 3x', style: TextStyle(color: Colors.grey)),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            Center(
+              child: Transform.rotate(
+                angle: angulo,
+                child: const Icon(Icons.navigation, size: 72, color: Colors.indigo),
+              ),
+            ),
+            Slider(
+              value: angulo,
+              min: 0.0,
+              max: 6.28,
+              onChanged: (v) {
+                setState(() {
+                  angulo = v;
+                });
+              },
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Transform.scale(scale: 1.5, child: const Icon(Icons.favorite, color: Colors.red)),
+                Transform.translate(offset: const Offset(0, 12), child: const Icon(Icons.star, color: Colors.amber)),
+                const Icon(Icons.circle, color: Colors.grey),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+`},
+{t:'x. Menu de opções e escolha em segmentos',
+ text:'O PopupMenuButton é o botão de três pontinhos: itemBuilder devolve os itens e onSelected recebe o value do item escolhido. O SegmentedButton é uma escolha entre poucas opções lado a lado: selected é um conjunto entre chaves, e onSelectionChanged recebe o novo conjunto (use s.first para pegar o valor).',
+ tryit:'Em ▶ Testar, escolha uma ordem no menu e troque a visão nos segmentos. Acrescente um terceiro PopupMenuItem e um terceiro ButtonSegment.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Tela()));
+
+class Tela extends StatefulWidget {
+  const Tela({super.key});
+
+  @override
+  State<Tela> createState() => _TelaState();
+}
+
+class _TelaState extends State<Tela> {
+  String ordem = 'nome';
+  String visao = 'lista';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Opções')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text('Ordenar por: $ordem'),
+                const Spacer(),
+                PopupMenuButton<String>(
+                  onSelected: (valor) {
+                    setState(() {
+                      ordem = valor;
+                    });
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(value: 'nome', child: Text('Nome')),
+                    PopupMenuItem(value: 'preço', child: Text('Preço')),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            SegmentedButton<String>(
+              segments: const [
+                ButtonSegment(value: 'lista', label: Text('Lista')),
+                ButtonSegment(value: 'grade', label: Text('Grade')),
+              ],
+              selected: {visao},
+              onSelectionChanged: (s) {
+                setState(() {
+                  visao = s.first;
+                });
+              },
+            ),
+            const SizedBox(height: 24),
+            Text('Mostrando em $visao, ordenado por $ordem', style: const TextStyle(fontSize: 18)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+`},
+{t:'x. Deslizar para apagar: Dismissible',
+ text:'O Dismissible deixa um item sair da tela quando a pessoa o desliza. Ele precisa de uma key única por item e de um onDismissed, que roda depois do deslize e deve remover o item da lista dentro de setState. O background aparece atrás do item durante o deslize.',
+ tryit:'Em ▶ Testar, arraste um item para o lado, mais de um dedo de distância. Veja o SnackBar. Depois mude o texto da mensagem.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Tela()));
+
+class Tela extends StatefulWidget {
+  const Tela({super.key});
+
+  @override
+  State<Tela> createState() => _TelaState();
+}
+
+class _TelaState extends State<Tela> {
+  List<String> tarefas = ['Estudar Flutter', 'Fazer compras', 'Ligar para a avó', 'Treinar'];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Tarefas')),
+      body: ListView.builder(
+        itemCount: tarefas.length,
+        itemBuilder: (context, i) => Dismissible(
+          key: Key(tarefas[i]),
+          onDismissed: (direcao) {
+            final nome = tarefas[i];
+            setState(() {
+              tarefas.removeAt(i);
+            });
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('$nome apagada')),
+            );
+          },
+          background: const ColoredBox(
+            color: Colors.red,
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Icon(Icons.delete, color: Colors.white),
+            ),
+          ),
+          child: ListTile(title: Text(tarefas[i])),
+        ),
+      ),
+    );
+  }
+}
+`},
+{t:'x. Cabeçalho que encolhe: SliverAppBar',
+ text:'O CustomScrollView monta a rolagem com pedaços chamados slivers. O SliverAppBar é uma barra que acompanha a rolagem: começa alta (expandedHeight) e, com pinned: true, encolhe e fica presa no topo. Depois dele vêm os outros pedaços, como o SliverToBoxAdapter (um widget comum) e o SliverList.builder (uma lista sob demanda).',
+ tryit:'Role a lista no canvas e veja o cabeçalho encolher. Troque pinned: true por false e role de novo. Aumente expandedHeight para 240.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Tela()));
+
+class Tela extends StatelessWidget {
+  const Tela({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            pinned: true,
+            expandedHeight: 160,
+            backgroundColor: Colors.indigo,
+            foregroundColor: Colors.white,
+            title: const Text('Minha loja'),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text('Ofertas da semana', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            ),
+          ),
+          SliverList.builder(
+            itemCount: 30,
+            itemBuilder: (context, i) => ListTile(
+              leading: const Icon(Icons.shopping_bag),
+              title: Text('Produto $i'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+`},
+{t:'x. FutureBuilder: a tela que espera os dados',
+ text:'O FutureBuilder desenha a tela conforme o andamento de um Future. O builder recebe o snapshot: connectionState diz se ainda está esperando, hasError avisa de uma falha e data traz o resultado. Guarde o Future em uma variável (no initState): se você chamar o método dentro do build, ele recomeça a cada rebuild.',
+ tryit:'Em ▶ Testar, espere o círculo sumir. Toque em Recarregar para esperar de novo. Troque Duration(seconds: 2) por 4. Depois descomente o throw e veja o caminho do erro.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Tela()));
+
+class Tela extends StatefulWidget {
+  const Tela({super.key});
+
+  @override
+  State<Tela> createState() => _TelaState();
+}
+
+class _TelaState extends State<Tela> {
+  late Future<String> futuro;
+
+  Future<String> buscarSaudacao() async {
+    await Future.delayed(const Duration(seconds: 2));
+    // throw Exception('Servidor fora do ar');
+    return 'Olá, vindo do servidor!';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    futuro = buscarSaudacao();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('FutureBuilder')),
+      body: Column(
+        children: [
+          Expanded(
+            child: FutureBuilder<String>(
+              future: futuro,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Center(child: Text('Erro: \${snapshot.error}'));
+                }
+                return Center(child: Text('\${snapshot.data}', style: const TextStyle(fontSize: 20)));
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  futuro = buscarSaudacao();
+                });
+              },
+              child: const Text('Recarregar'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+`},
+{t:'x. Data e hora: showDatePicker e showTimePicker',
+ text:'showDatePicker abre o calendário do sistema e devolve um DateTime, ou null se a pessoa cancelar. showTimePicker faz o mesmo com a hora e devolve um TimeOfDay. Como a escolha leva tempo, o método é async e usa await. Sempre trate o null.',
+ tryit:'Em ▶ Testar, escolha uma data e uma hora. Cancele e veja que nada muda. Mude o formato do texto da data para dia-mês-ano com traços.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Agendar()));
+
+class Agendar extends StatefulWidget {
+  const Agendar({super.key});
+
+  @override
+  State<Agendar> createState() => _AgendarState();
+}
+
+class _AgendarState extends State<Agendar> {
+  String data = 'Nenhuma data';
+  String hora = 'Nenhuma hora';
+
+  Future<void> escolherData() async {
+    final d = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2035),
+    );
+    if (d == null) {
+      return;
+    }
+    setState(() {
+      data = '\${d.day}/\${d.month}/\${d.year}';
+    });
+  }
+
+  Future<void> escolherHora() async {
+    final h = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (h == null) {
+      return;
+    }
+    setState(() {
+      hora = '\${h.hour}:\${h.minute}';
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Agendar consulta')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.event),
+              title: Text(data),
+              onTap: escolherData,
+            ),
+            ListTile(
+              leading: const Icon(Icons.schedule),
+              title: Text(hora),
+              onTap: escolherHora,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+`},
 {t:'x. Sensor: acelerômetro',
  demo:true,
  text:'O acelerômetro mede a aceleração do aparelho nos eixos x, y e z, em m/s². Parado sobre a mesa, z fica perto de 9,8 (a gravidade). Ao inclinar ou sacudir o celular, os valores mudam. O pacote sensors_plus entrega esses valores como um Stream: o listen roda a cada leitura, e o setState redesenha a tela.',
@@ -4227,9 +5271,8 @@ class _GravadorState extends State<Gravador> {
 }
 `},
 {t:'x. Localização: GPS',
- demo:true,
  text:'O pacote geolocator lê a posição do aparelho. O caminho seguro tem três passos: o serviço de localização está ligado? o app tem permissão? então peça a posição com getCurrentPosition(). Cada passo pode falhar, e o app precisa mostrar uma mensagem clara.',
- tryit:'Siga os três passos no código. Troque a mensagem de cada falha por algo mais amigável.',
+ tryit:'Siga os três passos no código. Troque a mensagem de cada falha por algo mais amigável. Em ▶ Testar, abra 📡 Sensores: mude o lugar, desligue o GPS ou negue a permissão e veja cada mensagem.',
  setup:'1. No terminal do projeto:\n   flutter pub add geolocator\n\n2. Android: em AndroidManifest.xml, dentro de <manifest>:\n   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>\n   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>\n\n3. iOS: em Info.plist:\n   <key>NSLocationWhenInUseUsageDescription</key>\n   <string>Usamos sua localização para mostrar lugares perto de você.</string>',
  code:`import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -4291,9 +5334,8 @@ class _LocalizacaoState extends State<Localizacao> {
 }
 `},
 {t:'x. Câmera e vibração',
- demo:true,
  text:'Para tirar uma foto, o image_picker abre a câmera do sistema e devolve o arquivo, sem você montar a tela da câmera. Já a vibração não precisa de pacote: HapticFeedback, do próprio Flutter, dá pequenos toques (lightImpact, mediumImpact, heavyImpact).',
- tryit:'Veja que o resultado da câmera é null quando a pessoa cancela: o código trata esse caso. Troque lightImpact por heavyImpact.',
+ tryit:'Em ▶ Testar, toque em Tirar foto. Em 📡 Sensores, mude a câmera para "Pessoa cancela" e toque de novo: o resultado é null e o código trata esse caso. Troque lightImpact por heavyImpact.',
  setup:'1. No terminal do projeto:\n   flutter pub add image_picker\n\n2. Android: nenhuma permissão extra com o image_picker.\n\n3. iOS: em Info.plist:\n   <key>NSCameraUsageDescription</key>\n   <string>Usamos a câmera para você tirar a foto do perfil.</string>\n\n4. A vibração (HapticFeedback) vem no Flutter: import \'package:flutter/services.dart\'. Para vibrar por mais tempo, use o pacote vibration.',
  code:`import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -4338,6 +5380,641 @@ class _CameraState extends State<Camera> {
             ElevatedButton(onPressed: tirarFoto, child: const Text('Tirar foto')),
             const SizedBox(height: 16),
             Text(status, textAlign: TextAlign.center),
+          ],
+        ),
+      ),
+    );
+  }
+}
+`},
+{t:'x. Bateria e rede: battery_plus e connectivity_plus',
+ text:'O battery_plus informa o nível (0 a 100) e o estado da bateria. O connectivity_plus diz como o aparelho está conectado: wifi, mobile ou none. Na versão atual, checkConnectivity devolve uma lista, por isso o código usa contains. Apps bem feitos avisam quando não há rede em vez de falhar em silêncio.',
+ tryit:'Abra 📡 Sensores e mude a bateria e a rede, depois toque em Atualizar. Ponha a rede em "Sem rede" e leia a mensagem.',
+ setup:'1. No terminal do projeto:\n   flutter pub add battery_plus connectivity_plus\n\n2. Android e iOS: nenhuma permissão extra para ler a bateria.\n\n3. connectivity_plus: Android pede <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/> (o pacote já declara).\n\n4. Para acompanhar mudanças em tempo real, use Connectivity().onConnectivityChanged e Battery().onBatteryStateChanged, que são Streams.',
+ code:`import 'package:flutter/material.dart';
+import 'package:battery_plus/battery_plus.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+
+void main() => runApp(const MaterialApp(home: Aparelho()));
+
+class Aparelho extends StatefulWidget {
+  const Aparelho({super.key});
+
+  @override
+  State<Aparelho> createState() => _AparelhoState();
+}
+
+class _AparelhoState extends State<Aparelho> {
+  int nivel = 0;
+  String estado = 'desconhecido';
+  String rede = 'desconhecida';
+
+  Future<void> atualizar() async {
+    final n = await Battery().batteryLevel;
+    final e = await Battery().batteryState;
+    final redes = await Connectivity().checkConnectivity();
+    String texto = 'Dados móveis';
+    if (redes.contains(ConnectivityResult.none)) {
+      texto = 'Sem rede';
+    } else if (redes.contains(ConnectivityResult.wifi)) {
+      texto = 'Wi-Fi';
+    }
+    setState(() {
+      nivel = n;
+      estado = e == BatteryState.charging ? 'carregando' : 'descarregando';
+      rede = texto;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Bateria e rede')),
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Bateria: $nivel% ($estado)', style: const TextStyle(fontSize: 20)),
+            const SizedBox(height: 8),
+            LinearProgressIndicator(value: nivel / 100),
+            const SizedBox(height: 24),
+            Text('Conexão: $rede', style: const TextStyle(fontSize: 20)),
+            const SizedBox(height: 24),
+            ElevatedButton(onPressed: atualizar, child: const Text('Atualizar')),
+          ],
+        ),
+      ),
+    );
+  }
+}
+`},
+{t:'x. Mapa com OpenStreetMap: flutter_map',
+ text:'O flutter_map desenha mapas sem chave de API nem cobrança, usando as imagens (tiles) do OpenStreetMap. O FlutterMap recebe options (centro e zoom) e uma lista de camadas: TileLayer traz as imagens, MarkerLayer põe marcadores, CircleLayer desenha círculos, PolylineLayer desenha rotas. O OpenStreetMap exige o crédito "© OpenStreetMap contributors", e o userAgentPackageName identifica o seu app.',
+ tryit:'Em ▶ Testar, toque no mapa para plantar marcadores. Toque em Limpar. Mude initialZoom para 15 e o raio do círculo para 150.',
+ setup:'1. No terminal do projeto:\n   flutter pub add flutter_map latlong2\n\n2. Android: em AndroidManifest.xml, dentro de <manifest>:\n   <uses-permission android:name="android.permission.INTERNET"/>\n\n3. Sem chave de API. Respeite a política de uso dos tiles do OpenStreetMap: identifique o app (userAgentPackageName) e mostre o crédito. Para muito tráfego, use um provedor de tiles próprio.\n\n4. No simulador da Oficina, as imagens do mapa só aparecem se a página tiver acesso à internet. Sem isso, você vê o fundo quadriculado, e marcadores, círculos e rotas continuam nos lugares certos.',
+ code:`import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+
+void main() => runApp(const MaterialApp(home: Mapa()));
+
+class Mapa extends StatefulWidget {
+  const Mapa({super.key});
+
+  @override
+  State<Mapa> createState() => _MapaState();
+}
+
+class _MapaState extends State<Mapa> {
+  List<LatLng> pontos = [LatLng(-8.0631, -34.8711)];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Recife')),
+      body: Column(
+        children: [
+          Expanded(
+            child: FlutterMap(
+              options: MapOptions(
+                initialCenter: LatLng(-8.0476, -34.8770),
+                initialZoom: 13,
+                onTap: (posicao, ponto) {
+                  setState(() {
+                    pontos.add(ponto);
+                  });
+                },
+              ),
+              children: [
+                TileLayer(
+                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  userAgentPackageName: 'com.exemplo.oficina',
+                ),
+                CircleLayer(
+                  circles: [
+                    CircleMarker(
+                      point: LatLng(-8.0476, -34.8770),
+                      radius: 60,
+                      color: Colors.blue.withOpacity(0.2),
+                      borderColor: Colors.blue,
+                      borderStrokeWidth: 2,
+                    ),
+                  ],
+                ),
+                MarkerLayer(
+                  markers: pontos.map((p) => Marker(
+                    point: p,
+                    width: 40,
+                    height: 40,
+                    child: const Icon(Icons.location_on, color: Colors.red, size: 40),
+                  )).toList(),
+                ),
+                RichAttributionWidget(
+                  attributions: [TextSourceAttribution('© OpenStreetMap contributors')],
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              children: [
+                Expanded(child: Text('\${pontos.length} marcadores')),
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      pontos.clear();
+                    });
+                  },
+                  child: const Text('Limpar'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+`},
+{t:'x. Mapa e GPS: você está aqui',
+ text:'Aqui o GPS e o mapa trabalham juntos. O botão segue os três passos do geolocator (serviço ligado? permissão? posição), cria um LatLng com a posição, move o mapa com o MapController e calcula a distância até o Marco Zero com Geolocator.distanceBetween, que devolve metros.',
+ tryit:'Abra 📡 Sensores, escolha Lisboa e toque em Onde estou?. Ponha a permissão em Negada e tente de novo. Desligue o GPS e leia o aviso.',
+ setup:'1. No terminal do projeto:\n   flutter pub add flutter_map latlong2 geolocator\n\n2. Android: em AndroidManifest.xml, dentro de <manifest>:\n   <uses-permission android:name="android.permission.INTERNET"/>\n   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>\n   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>\n\n3. iOS: em Info.plist:\n   <key>NSLocationWhenInUseUsageDescription</key>\n   <string>Usamos sua localização para mostrar onde você está no mapa.</string>\n\n4. Para acompanhar o movimento, use Geolocator.getPositionStream(), que é um Stream.',
+ code:`import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
+
+void main() => runApp(const MaterialApp(home: VoceEstaAqui()));
+
+class VoceEstaAqui extends StatefulWidget {
+  const VoceEstaAqui({super.key});
+
+  @override
+  State<VoceEstaAqui> createState() => _VoceEstaAquiState();
+}
+
+class _VoceEstaAquiState extends State<VoceEstaAqui> {
+  final MapController controle = MapController();
+  LatLng marcoZero = LatLng(-8.0631, -34.8711);
+  LatLng minha = LatLng(-8.0476, -34.8770);
+  String aviso = 'Toque para descobrir onde você está';
+
+  Future<void> localizar() async {
+    final ligado = await Geolocator.isLocationServiceEnabled();
+    if (!ligado) {
+      setState(() {
+        aviso = 'Ligue o GPS do aparelho';
+      });
+      return;
+    }
+    var permissao = await Geolocator.checkPermission();
+    if (permissao == LocationPermission.denied) {
+      permissao = await Geolocator.requestPermission();
+    }
+    if (permissao == LocationPermission.denied || permissao == LocationPermission.deniedForever) {
+      setState(() {
+        aviso = 'Sem permissão de localização';
+      });
+      return;
+    }
+    final pos = await Geolocator.getCurrentPosition();
+    final ponto = LatLng(pos.latitude, pos.longitude);
+    final metros = Geolocator.distanceBetween(
+      pos.latitude, pos.longitude, marcoZero.latitude, marcoZero.longitude,
+    );
+    controle.move(ponto, 14);
+    setState(() {
+      minha = ponto;
+      aviso = 'Você está a \${(metros / 1000).toStringAsFixed(1)} km do Marco Zero';
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Você está aqui')),
+      body: Column(
+        children: [
+          Expanded(
+            child: FlutterMap(
+              mapController: controle,
+              options: MapOptions(initialCenter: minha, initialZoom: 13),
+              children: [
+                TileLayer(
+                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  userAgentPackageName: 'com.exemplo.oficina',
+                ),
+                MarkerLayer(
+                  markers: [
+                    Marker(
+                      point: marcoZero,
+                      width: 40,
+                      height: 40,
+                      child: const Icon(Icons.flag, color: Colors.green, size: 36),
+                    ),
+                    Marker(
+                      point: minha,
+                      width: 40,
+                      height: 40,
+                      child: const Icon(Icons.my_location, color: Colors.blue, size: 36),
+                    ),
+                  ],
+                ),
+                RichAttributionWidget(
+                  attributions: [TextSourceAttribution('© OpenStreetMap contributors')],
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              children: [
+                Text(aviso, textAlign: TextAlign.center),
+                const SizedBox(height: 8),
+                ElevatedButton(onPressed: localizar, child: const Text('Onde estou?')),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+`},
+{t:'x. Sensor: pedômetro (passos)',
+ demo:true,
+ text:'O pacote pedometer conta os passos usando o sensor do aparelho. stepCountStream é um Stream: a cada novo valor, o listen chama o seu código. O número é o total desde o último reinício do aparelho, não do dia. No Android 10 ou mais novo, o app precisa pedir a permissão de reconhecimento de atividade.',
+ tryit:'Leia como o initState começa a escutar e o dispose cancela. Troque o texto "passos" por algo seu e some uma meta de 6000 passos.',
+ setup:'1. No terminal do projeto:\n   flutter pub add pedometer permission_handler\n\n2. Android: em AndroidManifest.xml, dentro de <manifest>:\n   <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>\n\n3. iOS: em Info.plist:\n   <key>NSMotionUsageDescription</key>\n   <string>Contamos seus passos para mostrar sua atividade.</string>\n\n4. Teste em um aparelho real, andando com ele.',
+ code:`import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:pedometer/pedometer.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+void main() => runApp(const MaterialApp(home: Passos()));
+
+class Passos extends StatefulWidget {
+  const Passos({super.key});
+
+  @override
+  State<Passos> createState() => _PassosState();
+}
+
+class _PassosState extends State<Passos> {
+  StreamSubscription<StepCount>? _escuta;
+  int passos = 0;
+  String aviso = 'Pedindo permissão...';
+
+  @override
+  void initState() {
+    super.initState();
+    _iniciar();
+  }
+
+  Future<void> _iniciar() async {
+    final status = await Permission.activityRecognition.request();
+    if (!status.isGranted) {
+      setState(() {
+        aviso = 'Sem permissão para contar passos';
+      });
+      return;
+    }
+    _escuta = Pedometer.stepCountStream.listen(
+      (evento) {
+        setState(() {
+          passos = evento.steps;
+          aviso = 'Contando';
+        });
+      },
+      onError: (erro) {
+        setState(() {
+          aviso = 'Este aparelho não tem pedômetro';
+        });
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _escuta?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Pedômetro')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.directions_walk, size: 96),
+            Text('$passos passos', style: const TextStyle(fontSize: 32)),
+            Text(aviso),
+          ],
+        ),
+      ),
+    );
+  }
+}
+`},
+{t:'x. Sensor: barômetro e magnetômetro',
+ demo:true,
+ text:'O sensors_plus também lê o barômetro (pressão do ar, em hPa) e o magnetômetro (campo magnético, em microtesla). A pressão cai com a altitude, por isso serve para estimar subidas de andar. Nem todo aparelho tem barômetro: o Stream pode dar erro, e o código precisa tratar isso.',
+ tryit:'Veja como cada sensor tem o seu Stream e a sua escuta. Troque o arredondamento da pressão para duas casas decimais.',
+ setup:'1. No terminal do projeto:\n   flutter pub add sensors_plus\n\n2. Nenhuma permissão é necessária.\n\n3. O barômetro exige uma versão recente do sensors_plus (6.1 ou mais nova). Teste em um aparelho real: emuladores quase nunca têm esses sensores.',
+ code:`import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:sensors_plus/sensors_plus.dart';
+
+void main() => runApp(const MaterialApp(home: Ambiente()));
+
+class Ambiente extends StatefulWidget {
+  const Ambiente({super.key});
+
+  @override
+  State<Ambiente> createState() => _AmbienteState();
+}
+
+class _AmbienteState extends State<Ambiente> {
+  StreamSubscription<BarometerEvent>? _baro;
+  StreamSubscription<MagnetometerEvent>? _mag;
+  double pressao = 0;
+  double campo = 0;
+  String aviso = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _baro = barometerEventStream().listen(
+      (e) {
+        setState(() {
+          pressao = e.pressure;
+        });
+      },
+      onError: (erro) {
+        setState(() {
+          aviso = 'Sem barômetro neste aparelho';
+        });
+      },
+    );
+    _mag = magnetometerEventStream().listen((e) {
+      setState(() {
+        campo = e.x.abs() + e.y.abs() + e.z.abs();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _baro?.cancel();
+    _mag?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Ambiente')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Pressão: \${pressao.toStringAsFixed(1)} hPa', style: const TextStyle(fontSize: 22)),
+            const SizedBox(height: 12),
+            Text('Campo magnético: \${campo.toStringAsFixed(0)} µT', style: const TextStyle(fontSize: 22)),
+            const SizedBox(height: 12),
+            Text(aviso),
+          ],
+        ),
+      ),
+    );
+  }
+}
+`},
+{t:'x. Biometria: impressão digital e rosto',
+ demo:true,
+ text:'O local_auth pede ao sistema para confirmar a identidade com impressão digital, rosto ou o bloqueio de tela. Seu app nunca vê a digital: recebe só um sim ou não. Antes de pedir, confirme se o aparelho suporta e trate o caso em que a pessoa cancela.',
+ tryit:'Siga o fluxo: suporta? autenticou? Troque a mensagem de localizedReason. Leia o que acontece quando authenticate devolve false.',
+ setup:'1. No terminal do projeto:\n   flutter pub add local_auth\n\n2. Android: a MainActivity precisa herdar de FlutterFragmentActivity (em MainActivity.kt: class MainActivity : FlutterFragmentActivity()) e o AndroidManifest.xml precisa de:\n   <uses-permission android:name="android.permission.USE_BIOMETRIC"/>\n\n3. iOS: em Info.plist:\n   <key>NSFaceIDUsageDescription</key>\n   <string>Usamos o rosto para confirmar que é você.</string>\n\n4. Teste em um aparelho real com biometria cadastrada.',
+ code:`import 'package:flutter/material.dart';
+import 'package:local_auth/local_auth.dart';
+
+void main() => runApp(const MaterialApp(home: Cofre()));
+
+class Cofre extends StatefulWidget {
+  const Cofre({super.key});
+
+  @override
+  State<Cofre> createState() => _CofreState();
+}
+
+class _CofreState extends State<Cofre> {
+  final LocalAuthentication _auth = LocalAuthentication();
+  bool aberto = false;
+  String aviso = 'Cofre trancado';
+
+  Future<void> abrir() async {
+    final suporta = await _auth.isDeviceSupported();
+    if (!suporta) {
+      setState(() {
+        aviso = 'Este aparelho não tem biometria nem bloqueio de tela';
+      });
+      return;
+    }
+    final ok = await _auth.authenticate(
+      localizedReason: 'Confirme que é você para abrir o cofre',
+    );
+    setState(() {
+      aberto = ok;
+      aviso = ok ? 'Cofre aberto!' : 'Não foi possível confirmar';
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Cofre')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(aberto ? Icons.lock_open : Icons.lock, size: 96),
+            const SizedBox(height: 12),
+            Text(aviso),
+            const SizedBox(height: 12),
+            ElevatedButton(onPressed: abrir, child: const Text('Abrir com biometria')),
+          ],
+        ),
+      ),
+    );
+  }
+}
+`},
+{t:'x. Lanterna: torch_light',
+ demo:true,
+ text:'O torch_light liga e desliga o flash da câmera como lanterna. Ele pode falhar: o aparelho pode não ter flash, ou a câmera estar em uso por outro app. Por isso as chamadas ficam em try/catch, e o botão mostra o estado atual.',
+ tryit:'Veja como o estado ligada muda o ícone e o texto do botão. Acrescente um segundo botão que pisca a lanterna duas vezes.',
+ setup:'1. No terminal do projeto:\n   flutter pub add torch_light\n\n2. Android: em AndroidManifest.xml, dentro de <manifest>:\n   <uses-permission android:name="android.permission.CAMERA"/>\n   <uses-feature android:name="android.hardware.camera.flash" android:required="false"/>\n\n3. iOS: em Info.plist:\n   <key>NSCameraUsageDescription</key>\n   <string>Usamos o flash como lanterna.</string>\n\n4. Teste em um aparelho real: emuladores não têm flash.',
+ code:`import 'package:flutter/material.dart';
+import 'package:torch_light/torch_light.dart';
+
+void main() => runApp(const MaterialApp(home: Lanterna()));
+
+class Lanterna extends StatefulWidget {
+  const Lanterna({super.key});
+
+  @override
+  State<Lanterna> createState() => _LanternaState();
+}
+
+class _LanternaState extends State<Lanterna> {
+  bool ligada = false;
+  String aviso = '';
+
+  Future<void> alternar() async {
+    try {
+      if (ligada) {
+        await TorchLight.disableTorch();
+      } else {
+        await TorchLight.enableTorch();
+      }
+      setState(() {
+        ligada = !ligada;
+        aviso = '';
+      });
+    } catch (e) {
+      setState(() {
+        aviso = 'Não consegui usar a lanterna: $e';
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Lanterna')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(ligada ? Icons.flashlight_on : Icons.flashlight_off, size: 96),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: alternar,
+              child: Text(ligada ? 'Desligar' : 'Ligar'),
+            ),
+            Text(aviso),
+          ],
+        ),
+      ),
+    );
+  }
+}
+`},
+{t:'x. Leitor de QR code: mobile_scanner',
+ demo:true,
+ text:'O mobile_scanner mostra a imagem da câmera e avisa, em onDetect, quando encontra um código de barras ou QR. O capture traz uma lista de barcodes, e rawValue é o texto lido. Como a câmera dispara várias vezes seguidas para o mesmo código, o exemplo guarda o último valor e ignora as repetições.',
+ tryit:'Veja onde o texto lido é guardado e como a repetição é ignorada. Mostre o texto em um SnackBar em vez de na tela.',
+ setup:'1. No terminal do projeto:\n   flutter pub add mobile_scanner\n\n2. Android: em AndroidManifest.xml, dentro de <manifest>:\n   <uses-permission android:name="android.permission.CAMERA"/>\n   Em android/app/build.gradle, minSdkVersion 21 ou mais.\n\n3. iOS: em Info.plist:\n   <key>NSCameraUsageDescription</key>\n   <string>Usamos a câmera para ler QR codes.</string>\n\n4. Teste em um aparelho real e aponte para um QR code.',
+ code:`import 'package:flutter/material.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+
+void main() => runApp(const MaterialApp(home: Leitor()));
+
+class Leitor extends StatefulWidget {
+  const Leitor({super.key});
+
+  @override
+  State<Leitor> createState() => _LeitorState();
+}
+
+class _LeitorState extends State<Leitor> {
+  String lido = 'Aponte a câmera para um QR code';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Leitor de QR')),
+      body: Column(
+        children: [
+          Expanded(
+            child: MobileScanner(
+              onDetect: (captura) {
+                final codigos = captura.barcodes;
+                if (codigos.isEmpty) {
+                  return;
+                }
+                final texto = codigos.first.rawValue;
+                if (texto != null && texto != lido) {
+                  setState(() {
+                    lido = texto;
+                  });
+                }
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(lido, textAlign: TextAlign.center),
+          ),
+        ],
+      ),
+    );
+  }
+}
+`},
+{t:'x. Abrir um link e compartilhar',
+ demo:true,
+ text:'O url_launcher abre um endereço no navegador, no telefone ou no e-mail. O share_plus abre o painel de compartilhar do sistema, com WhatsApp, e-mail e outros apps. Em launchUrl, confira o resultado: ele devolve false quando nenhum app consegue abrir o endereço.',
+ tryit:'Troque o endereço do site. Troque o texto compartilhado. Acrescente um botão que abre uma ligação com o esquema tel:.',
+ setup:'1. No terminal do projeto:\n   flutter pub add url_launcher share_plus\n\n2. Android 11 ou mais novo: em AndroidManifest.xml, dentro de <manifest>:\n   <queries>\n     <intent>\n       <action android:name="android.intent.action.VIEW"/>\n       <data android:scheme="https"/>\n     </intent>\n   </queries>\n\n3. iOS: em Info.plist, para esquemas como tel: e mailto:, liste-os em LSApplicationQueriesSchemes.\n\n4. Teste em um aparelho real.',
+ code:`import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+void main() => runApp(const MaterialApp(home: Divulgar()));
+
+class Divulgar extends StatefulWidget {
+  const Divulgar({super.key});
+
+  @override
+  State<Divulgar> createState() => _DivulgarState();
+}
+
+class _DivulgarState extends State<Divulgar> {
+  String aviso = '';
+
+  Future<void> abrirSite() async {
+    final ok = await launchUrl(Uri.parse('https://flutter.dev'));
+    if (!ok) {
+      setState(() {
+        aviso = 'Nenhum app conseguiu abrir o link';
+      });
+    }
+  }
+
+  Future<void> compartilhar() async {
+    await Share.share('Estou aprendendo Flutter! https://flutter.dev');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Link e compartilhar')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(onPressed: abrirSite, child: const Text('Abrir o site do Flutter')),
+            const SizedBox(height: 12),
+            ElevatedButton(onPressed: compartilhar, child: const Text('Compartilhar')),
+            const SizedBox(height: 12),
+            Text(aviso),
           ],
         ),
       ),
@@ -6042,6 +7719,775 @@ A.revealSel=function(){
 };
 })();
 
+/* ====== Referência de widgets: atributos e exemplos ====== */
+(function(){
+var R={};
+function d(n,a,x){R[n]={a:a,x:x}}
+/* Estrutura */
+d('Scaffold',[
+['appBar','AppBar','Barra no topo da tela, com título e ações.'],
+['body','Widget','Conteúdo principal. Aceita um único widget; para vários, use Column ou Row.'],
+['floatingActionButton','Widget','Botão redondo flutuante no canto (normalmente um FloatingActionButton).'],
+['drawer','Widget','Menu lateral que abre pelo ícone de hambúrguer.'],
+['bottomNavigationBar','Widget','Barra de navegação fixa na base da tela.'],
+['backgroundColor','Color','Cor de fundo da tela.']],
+`Scaffold(
+  appBar: AppBar(title: const Text('Início')),
+  body: const Center(child: Text('Olá!')),
+)`);
+d('AppBar',[
+['title','Widget','Título mostrado na barra, em geral um Text.'],
+['backgroundColor','Color','Cor de fundo da barra.'],
+['foregroundColor','Color','Cor do título e dos ícones.'],
+['centerTitle','bool','true centraliza o título.'],
+['actions','List<Widget>','Ícones ou botões no lado direito.'],
+['leading','Widget','Widget no início da barra (a seta de voltar aparece sozinha).'],
+['bottom','PreferredSizeWidget','Widget logo abaixo da barra, como um TabBar.']],
+`AppBar(
+  title: const Text('Meu app'),
+  backgroundColor: Colors.indigo,
+  foregroundColor: Colors.white,
+)`);
+d('FloatingActionButton',[
+['onPressed','VoidCallback','O que fazer ao tocar. null deixa o botão desativado.'],
+['child','Widget','Conteúdo do botão, em geral um Icon.'],
+['backgroundColor','Color','Cor de fundo.'],
+['tooltip','String','Texto de ajuda que aparece ao segurar o dedo.']],
+`FloatingActionButton(
+  onPressed: () {},
+  child: const Icon(Icons.add),
+)`);
+d('Drawer',[
+['child','Widget','Conteúdo do menu, geralmente uma ListView com ListTile.'],
+['backgroundColor','Color','Cor de fundo do menu.'],
+['width','double','Largura do menu.']],
+`Drawer(
+  child: ListView(children: const [
+    ListTile(title: Text('Início')),
+    ListTile(title: Text('Perfil')),
+  ]),
+)`);
+d('BottomNavigationBar',[
+['items','List<BottomNavigationBarItem>','Os itens da barra (mínimo dois).'],
+['currentIndex','int','Índice do item selecionado.'],
+['onTap','ValueChanged<int>','Chamado ao tocar em um item; recebe o índice tocado.'],
+['selectedItemColor','Color','Cor do item selecionado.'],
+['type','BottomNavigationBarType','fixed ou shifting: como os itens se comportam.']],
+`BottomNavigationBar(
+  currentIndex: 0,
+  items: const [
+    BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
+    BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
+  ],
+)`);
+d('BottomNavigationBarItem',[
+['icon','Widget','Ícone do item.'],
+['label','String','Texto abaixo do ícone.'],
+['activeIcon','Widget','Ícone alternativo quando selecionado.']],
+`BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início')`);
+/* Abas */
+d('DefaultTabController',[
+['length','int','Quantidade de abas. Precisa ser igual ao número de Tab e de páginas.'],
+['initialIndex','int','Aba que abre primeiro (começa em 0).'],
+['child','Widget','Normalmente um Scaffold que contém o TabBar e o TabBarView.']],
+`DefaultTabController(
+  length: 2,
+  child: Scaffold(/* TabBar e TabBarView */),
+)`);
+d('TabBar',[
+['tabs','List<Widget>','As abas, uma Tab para cada página.'],
+['isScrollable','bool','true permite rolar quando há muitas abas.'],
+['indicatorColor','Color','Cor do traço sob a aba atual.'],
+['labelColor','Color','Cor do texto da aba selecionada.']],
+`TabBar(tabs: [
+  Tab(text: 'Fotos'),
+  Tab(text: 'Vídeos'),
+])`);
+d('Tab',[
+['text','String','Texto da aba.'],
+['icon','Widget','Ícone da aba (pode usar junto com text).']],
+`Tab(icon: Icon(Icons.photo), text: 'Fotos')`);
+d('TabBarView',[
+['children','List<Widget>','As páginas, na mesma ordem das abas.'],
+['controller','TabController','Controle manual; sem ele vale o do DefaultTabController.']],
+`TabBarView(children: [
+  Center(child: Text('Página 1')),
+  Center(child: Text('Página 2')),
+])`);
+/* Layout */
+d('Center',[
+['child','Widget','Widget que será centralizado na horizontal e na vertical.'],
+['widthFactor','double','Se informado, a largura do Center vira widthFactor × largura do filho.'],
+['heightFactor','double','Igual ao anterior, para a altura.']],
+`Center(child: Text('No meio'))`);
+d('Align',[
+['alignment','Alignment','Posição do filho: Alignment.topLeft, center, bottomRight, etc.'],
+['child','Widget','Widget a ser posicionado.']],
+`Align(
+  alignment: Alignment.bottomRight,
+  child: Text('Canto'),
+)`);
+d('Column',[
+['children','List<Widget>','Widgets empilhados de cima para baixo.'],
+['mainAxisAlignment','MainAxisAlignment','Distribuição na vertical: start, center, end, spaceBetween, spaceAround, spaceEvenly.'],
+['crossAxisAlignment','CrossAxisAlignment','Alinhamento na horizontal: start, center, end, stretch.'],
+['mainAxisSize','MainAxisSize','max ocupa toda a altura; min ocupa só o necessário.']],
+`Column(
+  mainAxisAlignment: MainAxisAlignment.center,
+  children: [Text('A'), Text('B')],
+)`);
+d('Row',[
+['children','List<Widget>','Widgets lado a lado, da esquerda para a direita.'],
+['mainAxisAlignment','MainAxisAlignment','Distribuição na horizontal: start, center, end, spaceBetween, spaceAround, spaceEvenly.'],
+['crossAxisAlignment','CrossAxisAlignment','Alinhamento na vertical: start, center, end, stretch.'],
+['mainAxisSize','MainAxisSize','max ocupa toda a largura; min ocupa só o necessário.']],
+`Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [Text('Esq'), Text('Dir')],
+)`);
+d('Stack',[
+['children','List<Widget>','Widgets sobrepostos; o último fica por cima.'],
+['alignment','AlignmentGeometry','Onde ficam os filhos que não são Positioned.'],
+['fit','StackFit','loose mantém o tamanho dos filhos; expand estica todos.']],
+`Stack(children: [
+  Container(width: 200, height: 200, color: Colors.blue),
+  Positioned(top: 10, left: 10, child: Text('Sobre o azul')),
+])`);
+d('Positioned',[
+['top','double','Distância da borda de cima do Stack.'],
+['left','double','Distância da borda esquerda.'],
+['right','double','Distância da borda direita.'],
+['bottom','double','Distância da borda de baixo.'],
+['width','double','Largura do filho.'],
+['height','double','Altura do filho.'],
+['child','Widget','Widget posicionado. Só funciona dentro de um Stack.']],
+`Positioned(bottom: 8, right: 8, child: Icon(Icons.star))`);
+d('Expanded',[
+['flex','int','Proporção do espaço livre. flex 2 recebe o dobro de flex 1.'],
+['child','Widget','Widget que vai preencher o espaço. Só dentro de Row, Column ou Flex.']],
+`Row(children: [
+  Expanded(child: Container(color: Colors.red)),
+  Expanded(flex: 2, child: Container(color: Colors.blue)),
+])`);
+d('Flexible',[
+['flex','int','Proporção do espaço livre.'],
+['fit','FlexFit','loose deixa o filho menor que o espaço; tight obriga a preencher (como o Expanded).'],
+['child','Widget','Widget flexível, dentro de Row ou Column.']],
+`Flexible(fit: FlexFit.loose, child: Text('Texto longo que pode quebrar'))`);
+d('Spacer',[
+['flex','int','Proporção do espaço vazio que ele ocupa.']],
+`Row(children: [Text('A'), Spacer(), Text('B')])`);
+d('Wrap',[
+['children','List<Widget>','Widgets que passam para a linha de baixo quando faltar espaço.'],
+['spacing','double','Espaço entre os itens na mesma linha.'],
+['runSpacing','double','Espaço entre as linhas.'],
+['direction','Axis','horizontal (padrão) ou vertical.']],
+`Wrap(spacing: 8, runSpacing: 8, children: [Chip(label: Text('A')), Chip(label: Text('B'))])`);
+d('ListView',[
+['children','List<Widget>','Itens da lista; rola quando passam da tela.'],
+['padding','EdgeInsets','Espaço ao redor da lista.'],
+['scrollDirection','Axis','vertical (padrão) ou horizontal.'],
+['shrinkWrap','bool','true ocupa só o tamanho dos itens (útil dentro de Column).']],
+`ListView(children: const [
+  ListTile(title: Text('Um')),
+  ListTile(title: Text('Dois')),
+])`);
+d('GridView.count',[
+['crossAxisCount','int','Quantidade de colunas.'],
+['mainAxisSpacing','double','Espaço vertical entre os itens.'],
+['crossAxisSpacing','double','Espaço horizontal entre os itens.'],
+['childAspectRatio','double','Proporção largura/altura de cada célula.'],
+['children','List<Widget>','Itens da grade.']],
+`GridView.count(
+  crossAxisCount: 2,
+  children: [Card(), Card(), Card(), Card()],
+)`);
+d('SingleChildScrollView',[
+['child','Widget','O conteúdo que passa a rolar (em geral uma Column).'],
+['scrollDirection','Axis','vertical (padrão) ou horizontal.'],
+['padding','EdgeInsets','Espaço interno ao redor do conteúdo.']],
+`SingleChildScrollView(child: Column(children: [/* muitos widgets */]))`);
+d('SafeArea',[
+['child','Widget','Conteúdo mantido fora do notch, da barra de status e da barra de gestos.'],
+['top','bool','false deixa o conteúdo ir até o topo.'],
+['bottom','bool','false deixa o conteúdo ir até a base.']],
+`SafeArea(child: Text('Dentro da área segura'))`);
+d('PageView',[
+['children','List<Widget>','Páginas que o usuário troca arrastando para o lado.'],
+['scrollDirection','Axis','horizontal (padrão) ou vertical.'],
+['controller','PageController','Permite saltar para uma página pelo código.'],
+['onPageChanged','ValueChanged<int>','Chamado ao trocar de página; recebe o número da página.']],
+`PageView(children: [
+  Center(child: Text('Página 1')),
+  Center(child: Text('Página 2')),
+])`);
+d('LayoutBuilder',[
+['builder','Widget Function(BuildContext, BoxConstraints)','Recebe o espaço disponível (constraints.maxWidth) e devolve um widget adequado a ele.']],
+`LayoutBuilder(
+  builder: (context, c) => c.maxWidth > 600
+      ? Text('Tela larga')
+      : Text('Tela estreita'),
+)`);
+d('Builder',[
+['builder','Widget Function(BuildContext)','Cria um novo context para os widgets de dentro (útil para achar o Scaffold acima).']],
+`Builder(builder: (context) => Text('Com novo context'))`);
+/* Listas e tabelas */
+d('ListView.builder',[
+['itemCount','int','Quantos itens existem.'],
+['itemBuilder','Widget Function(BuildContext, int)','Recebe o índice e devolve o widget daquele item. Só os itens visíveis são criados.'],
+['padding','EdgeInsets','Espaço ao redor da lista.']],
+`ListView.builder(
+  itemCount: 50,
+  itemBuilder: (context, i) => ListTile(title: Text('Item $i')),
+)`);
+d('ListView.separated',[
+['itemCount','int','Quantidade de itens.'],
+['itemBuilder','Widget Function(BuildContext, int)','Desenha cada item.'],
+['separatorBuilder','Widget Function(BuildContext, int)','Desenha o separador entre dois itens (um Divider, por exemplo).']],
+`ListView.separated(
+  itemCount: 5,
+  itemBuilder: (context, i) => ListTile(title: Text('Item $i')),
+  separatorBuilder: (context, i) => const Divider(),
+)`);
+d('GridView.builder',[
+['gridDelegate','SliverGridDelegate','Define as colunas, por exemplo SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2).'],
+['itemCount','int','Quantidade de itens.'],
+['itemBuilder','Widget Function(BuildContext, int)','Desenha a célula de cada índice.']],
+`GridView.builder(
+  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+  itemCount: 12,
+  itemBuilder: (context, i) => Card(child: Center(child: Text('$i'))),
+)`);
+d('Table',[
+['children','List<TableRow>','As linhas da tabela.'],
+['border','TableBorder','Bordas das células.'],
+['columnWidths','Map<int, TableColumnWidth>','Largura de cada coluna.']],
+`Table(children: [
+  TableRow(children: [Text('Nome'), Text('Idade')]),
+  TableRow(children: [Text('Ana'), Text('20')]),
+])`);
+d('TableRow',[
+['children','List<Widget>','As células da linha. Todas as linhas precisam ter o mesmo número.'],
+['decoration','Decoration','Fundo da linha.']],
+`TableRow(children: [Text('A'), Text('B')])`);
+d('DataTable',[
+['columns','List<DataColumn>','Os cabeçalhos.'],
+['rows','List<DataRow>','As linhas de dados (mesmo número de células que de colunas).'],
+['sortColumnIndex','int','Coluna que mostra a seta de ordenação.'],
+['sortAscending','bool','Direção da seta.']],
+`DataTable(
+  columns: const [DataColumn(label: Text('Nome')), DataColumn(label: Text('Nota'))],
+  rows: const [DataRow(cells: [DataCell(Text('Ana')), DataCell(Text('9'))])],
+)`);
+d('DataColumn',[
+['label','Widget','Título da coluna.'],
+['numeric','bool','true alinha a coluna à direita (para números).'],
+['onSort','Function','Chamado ao tocar no cabeçalho para ordenar.']],
+`DataColumn(label: Text('Nome'))`);
+d('DataRow',[
+['cells','List<DataCell>','Uma célula para cada coluna.'],
+['selected','bool','Destaca a linha como selecionada.'],
+['onSelectChanged','ValueChanged<bool?>','Chamado ao tocar na linha.']],
+`DataRow(cells: [DataCell(Text('Ana')), DataCell(Text('9'))])`);
+d('DataCell',[
+['child','Widget','Conteúdo da célula (posicional: DataCell(Text("x"))).'],
+['onTap','VoidCallback','Chamado ao tocar na célula.']],
+`DataCell(Text('Ana'))`);
+/* Caixas */
+d('Container',[
+['width','double','Largura.'],
+['height','double','Altura.'],
+['color','Color','Cor de fundo. Não use junto com decoration.'],
+['padding','EdgeInsets','Espaço entre a borda e o filho.'],
+['margin','EdgeInsets','Espaço fora da caixa, entre ela e os vizinhos.'],
+['alignment','Alignment','Posição do filho dentro da caixa.'],
+['decoration','BoxDecoration','Visual completo: color, borderRadius, border, boxShadow, gradient.'],
+['child','Widget','Conteúdo da caixa.']],
+`Container(
+  width: 120,
+  height: 80,
+  padding: const EdgeInsets.all(8),
+  decoration: BoxDecoration(
+    color: Colors.amber,
+    borderRadius: BorderRadius.circular(12),
+  ),
+  child: const Text('Caixa'),
+)`);
+d('Padding',[
+['padding','EdgeInsets','Espaço interno: EdgeInsets.all(8), symmetric(horizontal: 16), only(top: 4), fromLTRB(...).'],
+['child','Widget','Widget que recebe o espaço ao redor.']],
+`Padding(
+  padding: const EdgeInsets.all(16),
+  child: Text('Com respiro'),
+)`);
+d('SizedBox',[
+['width','double','Largura fixa.'],
+['height','double','Altura fixa.'],
+['child','Widget','Opcional; o filho é forçado ao tamanho da caixa. Sem filho, vira um espaço vazio.']],
+`const SizedBox(height: 16)`);
+d('Card',[
+['color','Color','Cor de fundo do cartão.'],
+['elevation','double','Tamanho da sombra.'],
+['margin','EdgeInsets','Espaço ao redor do cartão.'],
+['shape','ShapeBorder','Formato das bordas.'],
+['child','Widget','Conteúdo do cartão.']],
+`Card(
+  elevation: 4,
+  child: Padding(padding: EdgeInsets.all(12), child: Text('Cartão')),
+)`);
+d('Divider',[
+['height','double','Espaço total que o divisor ocupa na vertical.'],
+['thickness','double','Espessura da linha.'],
+['color','Color','Cor da linha.'],
+['indent','double','Recuo no início da linha.']],
+`const Divider(thickness: 2)`);
+d('ClipRRect',[
+['borderRadius','BorderRadius','Arredondamento dos cantos: BorderRadius.circular(16).'],
+['child','Widget','Widget que será recortado (uma imagem, por exemplo).']],
+`ClipRRect(
+  borderRadius: BorderRadius.circular(16),
+  child: Container(width: 100, height: 100, color: Colors.teal),
+)`);
+d('Opacity',[
+['opacity','double','De 0 (invisível) a 1 (opaco).'],
+['child','Widget','Widget que fica mais transparente.']],
+`Opacity(opacity: 0.5, child: Text('Meio apagado'))`);
+d('AnimatedContainer',[
+['duration','Duration','Tempo da animação entre um estado e outro.'],
+['curve','Curve','Ritmo da animação (Curves.easeInOut, bounceOut...).'],
+['width','double','Largura (ao mudar, anima).'],
+['height','double','Altura (ao mudar, anima).'],
+['color','Color','Cor (ao mudar, anima).'],
+['child','Widget','Conteúdo.']],
+`AnimatedContainer(
+  duration: const Duration(milliseconds: 400),
+  width: aberto ? 200 : 100,
+  height: 100,
+  color: Colors.orange,
+)`);
+d('Hero',[
+['tag','Object','Identificador igual nas duas telas; o widget "voa" de uma para a outra no Navigator.'],
+['child','Widget','Widget que será animado entre as telas.']],
+`Hero(tag: 'foto', child: Icon(Icons.photo, size: 64))`);
+/* Conteúdo */
+d('Text',[
+['data','String','O texto (primeiro argumento). Aceita interpolação: "Olá, $nome".'],
+['style','TextStyle','fontSize, fontWeight, color, fontStyle, letterSpacing, decoration.'],
+['textAlign','TextAlign','left, right, center, justify.'],
+['maxLines','int','Máximo de linhas.'],
+['overflow','TextOverflow','O que fazer se não couber: ellipsis, clip, fade.']],
+`Text(
+  'Olá, Flutter',
+  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+)`);
+d('Icon',[
+['icon','IconData','O ícone, escrito como Icons.nome (primeiro argumento).'],
+['size','double','Tamanho em pixels.'],
+['color','Color','Cor do ícone.']],
+`const Icon(Icons.favorite, color: Colors.red, size: 32)`);
+d('Image.network',[
+['src','String','Endereço (URL) da imagem (primeiro argumento).'],
+['width','double','Largura.'],
+['height','double','Altura.'],
+['fit','BoxFit','Como a imagem preenche o espaço: cover, contain, fill, fitWidth.']],
+`Image.network('https://picsum.photos/200', width: 120, height: 80, fit: BoxFit.cover)`);
+d('Image.asset',[
+['src','String','Caminho da imagem dentro do projeto, por exemplo assets/foto.png. Precisa estar declarada no pubspec.yaml.'],
+['width','double','Largura.'],
+['height','double','Altura.'],
+['fit','BoxFit','Como a imagem preenche o espaço.']],
+`Image.asset('assets/foto.png', width: 120, fit: BoxFit.cover)`);
+d('CircleAvatar',[
+['radius','double','Raio do círculo.'],
+['backgroundColor','Color','Cor de fundo.'],
+['backgroundImage','ImageProvider','Foto de fundo, como NetworkImage(url).'],
+['child','Widget','Conteúdo, em geral as iniciais em um Text.']],
+`const CircleAvatar(radius: 28, child: Text('JR'))`);
+d('Chip',[
+['label','Widget','Texto da etiqueta.'],
+['avatar','Widget','Ícone ou foto pequena no início.'],
+['backgroundColor','Color','Cor de fundo.'],
+['onDeleted','VoidCallback','Se informado, mostra um X que chama esta função.']],
+`const Chip(avatar: Icon(Icons.code), label: Text('Flutter'))`);
+d('ListTile',[
+['leading','Widget','Widget no início (ícone ou avatar).'],
+['title','Widget','Linha principal.'],
+['subtitle','Widget','Linha menor, abaixo do título.'],
+['trailing','Widget','Widget no fim (seta, ícone, interruptor).'],
+['onTap','VoidCallback','Chamado ao tocar na linha.']],
+`ListTile(
+  leading: const Icon(Icons.person),
+  title: const Text('Ana'),
+  subtitle: const Text('Online'),
+  onTap: () {},
+)`);
+d('CircularProgressIndicator',[
+['value','double','Sem valor, gira sem parar. De 0 a 1, mostra o progresso real.'],
+['color','Color','Cor do arco.'],
+['strokeWidth','double','Espessura do traço.']],
+`const CircularProgressIndicator()`);
+d('LinearProgressIndicator',[
+['value','double','De 0 a 1 mostra o progresso. Sem valor, a barra corre sem parar.'],
+['color','Color','Cor da barra.'],
+['backgroundColor','Color','Cor do fundo da barra.']],
+`const LinearProgressIndicator(value: 0.6)`);
+/* Botões e campos */
+d('ElevatedButton',[
+['onPressed','VoidCallback','O que fazer ao tocar. null deixa o botão desativado.'],
+['child','Widget','Conteúdo, normalmente um Text.'],
+['style','ButtonStyle','Aparência: ElevatedButton.styleFrom(backgroundColor: ..., foregroundColor: ...).']],
+`ElevatedButton(
+  onPressed: () {},
+  child: const Text('Salvar'),
+)`);
+d('TextButton',[
+['onPressed','VoidCallback','O que fazer ao tocar. null desativa.'],
+['child','Widget','Conteúdo do botão.'],
+['style','ButtonStyle','Aparência: TextButton.styleFrom(...).']],
+`TextButton(onPressed: () {}, child: const Text('Cancelar'))`);
+d('OutlinedButton',[
+['onPressed','VoidCallback','O que fazer ao tocar. null desativa.'],
+['child','Widget','Conteúdo do botão.'],
+['style','ButtonStyle','Aparência: OutlinedButton.styleFrom(...).']],
+`OutlinedButton(onPressed: () {}, child: const Text('Detalhes'))`);
+d('IconButton',[
+['onPressed','VoidCallback','O que fazer ao tocar.'],
+['icon','Widget','O ícone (um Icon).'],
+['color','Color','Cor do ícone.'],
+['tooltip','String','Texto de ajuda.']],
+`IconButton(onPressed: () {}, icon: const Icon(Icons.delete))`);
+d('TextField',[
+['controller','TextEditingController','Guarda o texto digitado (controller.text).'],
+['decoration','InputDecoration','labelText, hintText, border (OutlineInputBorder()), prefixIcon.'],
+['onChanged','ValueChanged<String>','Chamado a cada letra digitada.'],
+['onSubmitted','ValueChanged<String>','Chamado ao apertar Enter no teclado.'],
+['obscureText','bool','true esconde o texto (senha).'],
+['keyboardType','TextInputType','number, emailAddress, phone, multiline...'],
+['maxLines','int','Quantidade de linhas do campo.']],
+`TextField(
+  controller: nome,
+  decoration: const InputDecoration(
+    labelText: 'Nome',
+    border: OutlineInputBorder(),
+  ),
+)`);
+d('Checkbox',[
+['value','bool','Se está marcada.'],
+['onChanged','ValueChanged<bool?>','Chamado ao tocar; recebe o novo valor.'],
+['activeColor','Color','Cor quando marcada.']],
+`Checkbox(value: marcado, onChanged: (v) { setState(() { marcado = v!; }); })`);
+d('Switch',[
+['value','bool','Se está ligado.'],
+['onChanged','ValueChanged<bool>','Chamado ao tocar; recebe o novo valor.'],
+['activeColor','Color','Cor quando ligado.']],
+`Switch(value: ligado, onChanged: (v) { setState(() { ligado = v; }); })`);
+d('Slider',[
+['value','double','Posição atual.'],
+['min','double','Valor mínimo.'],
+['max','double','Valor máximo.'],
+['divisions','int','Número de passos; sem ele o controle é contínuo.'],
+['onChanged','ValueChanged<double>','Chamado ao arrastar; recebe o novo valor.'],
+['activeColor','Color','Cor da parte preenchida.']],
+`Slider(value: volume, min: 0, max: 10, divisions: 10, onChanged: (v) { setState(() { volume = v; }); })`);
+d('Radio',[
+['value','T','O valor que esta opção representa.'],
+['groupValue','T','O valor escolhido hoje no grupo. A opção fica marcada quando value == groupValue.'],
+['onChanged','ValueChanged<T?>','Chamado ao tocar; recebe o value da opção.']],
+`Radio<String>(value: 'A', groupValue: opcao, onChanged: (v) { setState(() { opcao = v!; }); })`);
+d('DropdownButton',[
+['value','T','Item escolhido agora.'],
+['items','List<DropdownMenuItem<T>>','As opções do menu.'],
+['onChanged','ValueChanged<T?>','Chamado ao escolher uma opção.'],
+['hint','Widget','Texto mostrado enquanto nada foi escolhido.']],
+`DropdownButton<String>(
+  value: cidade,
+  items: const [
+    DropdownMenuItem(value: 'Recife', child: Text('Recife')),
+    DropdownMenuItem(value: 'Olinda', child: Text('Olinda')),
+  ],
+  onChanged: (v) { setState(() { cidade = v!; }); },
+)`);
+d('DropdownMenuItem',[
+['value','T','Valor que a opção representa.'],
+['child','Widget','O que aparece no menu.']],
+`DropdownMenuItem(value: 'Recife', child: Text('Recife'))`);
+d('SwitchListTile',[
+['value','bool','Se está ligado.'],
+['onChanged','ValueChanged<bool>','Chamado ao tocar.'],
+['title','Widget','Texto principal.'],
+['subtitle','Widget','Texto de apoio.']],
+`SwitchListTile(title: const Text('Notificações'), value: on, onChanged: (v) { setState(() { on = v; }); })`);
+d('CheckboxListTile',[
+['value','bool','Se está marcada.'],
+['onChanged','ValueChanged<bool?>','Chamado ao tocar.'],
+['title','Widget','Texto principal.'],
+['subtitle','Widget','Texto de apoio.']],
+`CheckboxListTile(title: const Text('Aceito os termos'), value: aceito, onChanged: (v) { setState(() { aceito = v!; }); })`);
+d('RadioListTile',[
+['value','T','Valor desta opção.'],
+['groupValue','T','Valor escolhido no grupo.'],
+['onChanged','ValueChanged<T?>','Chamado ao tocar.'],
+['title','Widget','Texto da opção.']],
+`RadioListTile<String>(title: const Text('Pix'), value: 'pix', groupValue: pagamento, onChanged: (v) { setState(() { pagamento = v!; }); })`);
+/* Interação */
+d('GestureDetector',[
+['onTap','VoidCallback','Toque simples.'],
+['onDoubleTap','VoidCallback','Toque duplo.'],
+['onLongPress','VoidCallback','Toque longo (segurar).'],
+['child','Widget','Qualquer widget que passa a reagir a gestos.']],
+`GestureDetector(
+  onTap: () {},
+  child: Container(width: 100, height: 100, color: Colors.green),
+)`);
+d('InkWell',[
+['onTap','VoidCallback','Toque simples, com efeito de ondinha.'],
+['onLongPress','VoidCallback','Toque longo.'],
+['borderRadius','BorderRadius','Recorte da ondinha.'],
+['child','Widget','Widget tocável. Fica melhor dentro de um Material, Card ou Ink.']],
+`InkWell(onTap: () {}, child: Padding(padding: EdgeInsets.all(12), child: Text('Toque')))`);
+/* Janelas */
+d('AlertDialog',[
+['title','Widget','Título do diálogo.'],
+['content','Widget','Mensagem ou conteúdo.'],
+['actions','List<Widget>','Botões na base, em geral TextButton.']],
+`AlertDialog(
+  title: const Text('Apagar?'),
+  content: const Text('Não dá para desfazer.'),
+  actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
+)`);
+d('SnackBar',[
+['content','Widget','Mensagem, um Text.'],
+['action','SnackBarAction','Botão opcional, como Desfazer.'],
+['duration','Duration','Quanto tempo fica na tela.'],
+['backgroundColor','Color','Cor de fundo.']],
+`ScaffoldMessenger.of(context).showSnackBar(
+  const SnackBar(content: Text('Salvo!')),
+);`);
+d('SnackBarAction',[
+['label','String','Texto do botão.'],
+['onPressed','VoidCallback','O que fazer ao tocar.']],
+`SnackBarAction(label: 'Desfazer', onPressed: () {})`);
+/* Novos: uso diário */
+d('ColoredBox',[['color','Color','Cor do fundo.'],['child','Widget','Widget que recebe o fundo.']],`ColoredBox(color: Colors.amber, child: Padding(padding: EdgeInsets.all(8), child: Text('Fundo')))`);
+d('AspectRatio',[['aspectRatio','double','Largura dividida pela altura. 1 é quadrado, 16 / 9 é widescreen.'],['child','Widget','Widget que respeita a proporção.']],`AspectRatio(aspectRatio: 16 / 9, child: Container(color: Colors.indigo))`);
+d('ConstrainedBox',[['constraints','BoxConstraints','minWidth, maxWidth, minHeight e maxHeight do filho.'],['child','Widget','Widget limitado pelas constraints.']],`ConstrainedBox(constraints: const BoxConstraints(maxWidth: 200), child: Text('Texto que nunca passa de 200 de largura'))`);
+d('FittedBox',[['fit','BoxFit','contain (padrão) encolhe para caber; cover preenche; fill estica.'],['alignment','Alignment','Onde o filho fica dentro da caixa.'],['child','Widget','Widget que é ajustado.']],`FittedBox(fit: BoxFit.scaleDown, child: Text('Título muito, muito longo'))`);
+d('FractionallySizedBox',[['widthFactor','double','Fração da largura do pai (0 a 1).'],['heightFactor','double','Fração da altura do pai (0 a 1).'],['alignment','Alignment','Onde fica o filho.'],['child','Widget','Widget dimensionado.']],`FractionallySizedBox(widthFactor: 0.8, child: ElevatedButton(onPressed: () {}, child: Text('80% da largura')))`);
+d('Visibility',[['visible','bool','true mostra o filho; false esconde.'],['child','Widget','Widget mostrado ou escondido.'],['replacement','Widget','O que aparece no lugar quando está escondido (padrão: nada).'],['maintainSize','bool','true reserva o espaço mesmo escondido.']],`Visibility(visible: logado, child: Text('Bem-vindo!'))`);
+d('Tooltip',[['message','String','Texto da dica.'],['child','Widget','Widget que mostra a dica ao segurar.']],`Tooltip(message: 'Excluir', child: Icon(Icons.delete))`);
+d('Badge',[['label','Widget','Conteúdo da bolinha (um Text curto). Sem label, vira só um ponto.'],['child','Widget','Widget que recebe a bolinha, em geral um Icon.'],['backgroundColor','Color','Cor da bolinha.'],['isLabelVisible','bool','false esconde a bolinha.']],`Badge(label: Text('3'), child: Icon(Icons.notifications))`);
+d('AnimatedOpacity',[['opacity','double','Transparência de 0 a 1; ao mudar, anima.'],['duration','Duration','Tempo da animação.'],['curve','Curve','Ritmo da animação.'],['child','Widget','Widget que aparece e some.']],`AnimatedOpacity(
+  opacity: visivel ? 1.0 : 0.0,
+  duration: const Duration(milliseconds: 500),
+  child: Text('Surge aos poucos'),
+)`);
+d('Form',[['key','GlobalKey<FormState>','Chave usada para validar: _formKey.currentState!.validate().'],['child','Widget','Os campos, geralmente em uma Column.'],['autovalidateMode','AutovalidateMode','Quando validar sozinho.']],`Form(
+  key: _formKey,
+  child: Column(children: [TextFormField(validator: (v) => v!.isEmpty ? 'Preencha' : null)]),
+)`);
+d('VerticalDivider',[['width','double','Espaço total que ocupa na horizontal.'],['thickness','double','Espessura da linha.'],['color','Color','Cor.'],['indent','double','Recuo no início.']],`Row(children: [Text('A'), VerticalDivider(), Text('B')])`);
+d('FilledButton',[['onPressed','VoidCallback','O que fazer ao tocar. null desativa.'],['child','Widget','Conteúdo do botão.'],['style','ButtonStyle','Aparência: FilledButton.styleFrom(...).']],`FilledButton(onPressed: () {}, child: const Text('Continuar'))`);
+d('TextFormField',[['controller','TextEditingController','Guarda o texto digitado.'],['decoration','InputDecoration','labelText, hintText, border, prefixIcon.'],['validator','String? Function(String?)','Recebe o texto e devolve a mensagem de erro, ou null se estiver certo.'],['onChanged','ValueChanged<String>','Chamado a cada letra.'],['obscureText','bool','true esconde o texto (senha).'],['keyboardType','TextInputType','emailAddress, number, phone...']],`TextFormField(
+  decoration: const InputDecoration(labelText: 'E-mail', border: OutlineInputBorder()),
+  validator: (v) => (v == null || v.isEmpty) ? 'Informe o e-mail' : null,
+)`);
+d('ChoiceChip',[['label','Widget','Texto da etiqueta.'],['selected','bool','Se está escolhida.'],['onSelected','ValueChanged<bool>','Chamado ao tocar (recebe true).'],['selectedColor','Color','Cor quando escolhida.']],`ChoiceChip(label: Text('P'), selected: tam == 'P', onSelected: (v) { setState(() { tam = 'P'; }); })`);
+d('FilterChip',[['label','Widget','Texto da etiqueta.'],['selected','bool','Se o filtro está ligado.'],['onSelected','ValueChanged<bool>','Chamado ao tocar; recebe o novo valor.'],['selectedColor','Color','Cor quando ligado.']],`FilterChip(label: Text('Vegano'), selected: vegano, onSelected: (v) { setState(() { vegano = v; }); })`);
+d('ActionChip',[['label','Widget','Texto da etiqueta.'],['onPressed','VoidCallback','O que fazer ao tocar.'],['avatar','Widget','Ícone no início.']],`ActionChip(avatar: Icon(Icons.share), label: Text('Compartilhar'), onPressed: () {})`);
+d('ExpansionTile',[['title','Widget','Linha principal, sempre visível.'],['subtitle','Widget','Linha menor abaixo do título.'],['leading','Widget','Widget no início.'],['children','List<Widget>','O que aparece ao expandir.'],['initiallyExpanded','bool','true abre já aberta.']],`ExpansionTile(
+  title: Text('Perguntas frequentes'),
+  children: [ListTile(title: Text('Como funciona?'))],
+)`);
+d('NavigationBar',[['destinations','List<Widget>','Os destinos (de 2 a 5 NavigationDestination).'],['selectedIndex','int','Destino atual.'],['onDestinationSelected','ValueChanged<int>','Chamado ao tocar; recebe o índice.'],['backgroundColor','Color','Cor de fundo.']],`NavigationBar(
+  selectedIndex: aba,
+  onDestinationSelected: (i) { setState(() { aba = i; }); },
+  destinations: const [
+    NavigationDestination(icon: Icon(Icons.home), label: 'Início'),
+    NavigationDestination(icon: Icon(Icons.person), label: 'Perfil'),
+  ],
+)`);
+d('NavigationDestination',[['icon','Widget','Ícone do destino.'],['selectedIcon','Widget','Ícone quando selecionado.'],['label','String','Texto abaixo do ícone.']],`NavigationDestination(icon: Icon(Icons.home), label: 'Início')`);
+
+/* Transformações, texto rico e escolhas */
+d('Transform.rotate',[['angle','double','Giro em radianos. 3.14159 (math.pi) é meia volta; math.pi / 2, um quarto de volta.'],['child','Widget','Widget que será girado.'],['alignment','Alignment','Ponto de giro. Padrão: o centro.']],`Transform.rotate(
+  angle: math.pi / 8,
+  child: const Icon(Icons.navigation, size: 48),
+)`);
+d('Transform.scale',[['scale','double','Fator de tamanho. 1 é o normal, 2 dobra, 0.5 reduz à metade.'],['child','Widget','Widget que será ampliado ou reduzido.'],['alignment','Alignment','Ponto fixo da ampliação. Padrão: o centro.']],`Transform.scale(
+  scale: 1.5,
+  child: const Icon(Icons.favorite, color: Colors.red),
+)`);
+d('Transform.translate',[['offset','Offset','Deslocamento em pixels: Offset(dx, dy). dx positivo vai para a direita; dy positivo, para baixo.'],['child','Widget','Widget que será deslocado.']],`Transform.translate(
+  offset: const Offset(20, 10),
+  child: const Icon(Icons.star),
+)`);
+d('Text.rich',[['textSpan','InlineSpan','Primeiro argumento. Um TextSpan, com text, style e children.'],['textAlign','TextAlign','Alinhamento do texto.'],['maxLines','int','Número máximo de linhas.']],`Text.rich(
+  TextSpan(
+    text: 'Total: ',
+    children: [
+      TextSpan(
+        text: 'R\$ 25,00',
+        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
+      ),
+    ],
+  ),
+)`);
+d('RichText',[['text','TextSpan','O TextSpan com os trechos. O estilo padrão do app não vale aqui: defina a cor no style.'],['textAlign','TextAlign','Alinhamento do texto.'],['maxLines','int','Número máximo de linhas.']],`RichText(
+  text: TextSpan(
+    style: TextStyle(color: Colors.black),
+    children: [
+      TextSpan(text: 'Preço: '),
+      TextSpan(text: 'R\$ 9,90', style: TextStyle(fontWeight: FontWeight.bold)),
+    ],
+  ),
+)`);
+d('SegmentedButton',[['segments','List<ButtonSegment>','As opções, cada uma um ButtonSegment.'],['selected','Set<T>','Valores marcados, entre chaves: {opcao}.'],['onSelectionChanged','Function(Set<T>)','Recebe o novo conjunto. Use s.first para pegar o valor escolhido.'],['multiSelectionEnabled','bool','true permite marcar várias opções.'],['emptySelectionAllowed','bool','true permite não ter nenhuma marcada.']],`SegmentedButton<String>(
+  segments: const [
+    ButtonSegment(value: 'dia', label: Text('Dia')),
+    ButtonSegment(value: 'semana', label: Text('Semana')),
+  ],
+  selected: {visao},
+  onSelectionChanged: (s) {
+    setState(() {
+      visao = s.first;
+    });
+  },
+)`);
+d('ButtonSegment',[['value','T','Identifica a opção. É o que chega no onSelectionChanged.'],['label','Widget','Texto da opção.'],['icon','Widget','Ícone da opção.']],`ButtonSegment(value: 'mes', label: Text('Mês'), icon: Icon(Icons.calendar_month))`);
+d('PopupMenuButton',[['itemBuilder','List<PopupMenuEntry> Function(BuildContext)','Devolve os itens do menu, cada um um PopupMenuItem(value:, child:).'],['onSelected','Function(T)','Recebe o value do item escolhido.'],['icon','Widget','Troca os três pontinhos por outro ícone.'],['child','Widget','Troca o botão inteiro por outro widget.'],['tooltip','String','Dica ao segurar o botão.']],`PopupMenuButton<String>(
+  onSelected: (valor) {
+    setState(() {
+      escolha = valor;
+    });
+  },
+  itemBuilder: (context) => [
+    PopupMenuItem(value: 'editar', child: Text('Editar')),
+    PopupMenuItem(value: 'apagar', child: Text('Apagar')),
+  ],
+)`);
+d('Dismissible',[['key','Key','Obrigatória e única por item, como Key(item.id).'],['child','Widget','O item que desliza.'],['background','Widget','Aparece atrás do item durante o deslize (fundo vermelho com lixeira).'],['onDismissed','Function(DismissDirection)','Roda depois do deslize. Remova o item da lista aqui, dentro de setState.'],['direction','DismissDirection','Quais direções valem: horizontal, endToStart, startToEnd.'],['confirmDismiss','Future<bool?> Function','Pergunta antes de apagar. Devolve true para confirmar.']],`Dismissible(
+  key: Key(nome),
+  onDismissed: (direcao) {
+    setState(() {
+      nomes.remove(nome);
+    });
+  },
+  background: const ColoredBox(color: Colors.red),
+  child: ListTile(title: Text(nome)),
+)`);
+d('CustomScrollView',[['slivers','List<Widget>','Os pedaços da rolagem: SliverAppBar, SliverList, SliverToBoxAdapter...'],['controller','ScrollController','Controla ou lê a posição da rolagem.']],`CustomScrollView(
+  slivers: [
+    SliverAppBar(pinned: true, expandedHeight: 140, title: Text('Loja')),
+    SliverList.builder(
+      itemCount: 30,
+      itemBuilder: (context, i) => ListTile(title: Text('Item $i')),
+    ),
+  ],
+)`);
+d('SliverAppBar',[['title','Widget','Título da barra.'],['expandedHeight','double','Altura com a barra aberta.'],['pinned','bool','true: a barra encolhe e fica presa no topo. false: ela some ao rolar.'],['floating','bool','true: a barra volta assim que você rola para cima.'],['flexibleSpace','Widget','Conteúdo do espaço que encolhe, como uma imagem (FlexibleSpaceBar).'],['backgroundColor','Color','Cor de fundo.']],`SliverAppBar(
+  pinned: true,
+  expandedHeight: 160,
+  backgroundColor: Colors.indigo,
+  title: const Text('Meu perfil'),
+)`);
+d('SliverToBoxAdapter',[['child','Widget','Um widget comum (Card, Text, Row...) para usar dentro do CustomScrollView.']],`SliverToBoxAdapter(
+  child: Padding(
+    padding: const EdgeInsets.all(16),
+    child: Text('Novidades da semana'),
+  ),
+)`);
+d('SliverList.list',[['children','List<Widget>','Os itens da lista, como na ListView(children: ...).']],`SliverList.list(
+  children: const [
+    ListTile(title: Text('Primeiro')),
+    ListTile(title: Text('Segundo')),
+  ],
+)`);
+d('SliverList.builder',[['itemCount','int','Quantidade de itens.'],['itemBuilder','Widget Function(BuildContext, int)','Recebe o índice e devolve o widget daquela posição.']],`SliverList.builder(
+  itemCount: 50,
+  itemBuilder: (context, i) => ListTile(title: Text('Item $i')),
+)`);
+d('FutureBuilder',[['future','Future<T>','O Future a esperar. Guarde-o em uma variável (no initState), senão ele recomeça a cada rebuild.'],['builder','Widget Function(BuildContext, AsyncSnapshot<T>)','Desenha a tela conforme o snapshot.'],['initialData','T','Valor mostrado antes da resposta chegar.']],`FutureBuilder<String>(
+  future: carregar(),
+  builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (snapshot.hasError) {
+      return Center(child: Text('Erro: \${snapshot.error}'));
+    }
+    return Center(child: Text('\${snapshot.data}'));
+  },
+)`);
+/* Mapas */
+d('FlutterMap',[['options','MapOptions','Centro e zoom iniciais: MapOptions(initialCenter: LatLng(lat, lon), initialZoom: 13). onTap recebe o ponto tocado.'],['children','List<Widget>','As camadas, de baixo para cima: TileLayer, CircleLayer, PolylineLayer, MarkerLayer, RichAttributionWidget.'],['mapController','MapController','Permite mover o mapa por código: controller.move(LatLng(...), zoom).']],`FlutterMap(
+  options: MapOptions(
+    initialCenter: LatLng(-8.0476, -34.8770),
+    initialZoom: 13,
+  ),
+  children: [
+    TileLayer(
+      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+      userAgentPackageName: 'com.exemplo.app',
+    ),
+    MarkerLayer(markers: [
+      Marker(
+        point: LatLng(-8.0476, -34.8770),
+        width: 40,
+        height: 40,
+        child: Icon(Icons.location_on, color: Colors.red, size: 40),
+      ),
+    ]),
+  ],
+)`);
+d('TileLayer',[['urlTemplate','String','Endereço dos tiles, com {z}, {x} e {y}. O do OpenStreetMap: https://tile.openstreetmap.org/{z}/{x}/{y}.png'],['userAgentPackageName','String','O id do seu app (com.empresa.app). O OpenStreetMap pede essa identificação.'],['maxZoom','double','Zoom máximo que o servidor oferece.']],`TileLayer(
+  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+  userAgentPackageName: 'com.exemplo.app',
+)`);
+d('MarkerLayer',[['markers','List<Marker>','Os marcadores desta camada. Pode vir de uma lista: pontos.map((p) => Marker(...)).toList().']],`MarkerLayer(
+  markers: pontos.map((p) => Marker(
+    point: p,
+    width: 40,
+    height: 40,
+    child: Icon(Icons.place, color: Colors.red),
+  )).toList(),
+)`);
+d('Marker',[['point','LatLng','Coordenada do marcador.'],['child','Widget','O que é desenhado ali.'],['width','double','Largura da área do marcador.'],['height','double','Altura da área do marcador.'],['alignment','Alignment','Qual ponto do marcador fica sobre a coordenada. Padrão: o centro.']],`Marker(
+  point: LatLng(-8.05, -34.88),
+  width: 40,
+  height: 40,
+  child: Icon(Icons.location_on, color: Colors.red, size: 40),
+)`);
+d('CircleLayer',[['circles','List<CircleMarker>','Os círculos desta camada.']],`CircleLayer(
+  circles: [
+    CircleMarker(point: LatLng(-8.05, -34.88), radius: 500, useRadiusInMeter: true, color: Colors.blue.withOpacity(0.2)),
+  ],
+)`);
+d('CircleMarker',[['point','LatLng','Centro do círculo.'],['radius','double','Raio, em pixels (ou em metros com useRadiusInMeter).'],['useRadiusInMeter','bool','true: o raio é em metros e acompanha o zoom.'],['color','Color','Cor de preenchimento.'],['borderColor','Color','Cor da borda.'],['borderStrokeWidth','double','Espessura da borda.']],`CircleMarker(
+  point: LatLng(-8.05, -34.88),
+  radius: 500,
+  useRadiusInMeter: true,
+  color: Colors.blue.withOpacity(0.2),
+  borderColor: Colors.blue,
+  borderStrokeWidth: 2,
+)`);
+d('PolylineLayer',[['polylines','List<Polyline>','As linhas desta camada.']],`PolylineLayer(
+  polylines: [
+    Polyline(points: rota, strokeWidth: 4, color: Colors.blue),
+  ],
+)`);
+d('Polyline',[['points','List<LatLng>','Pontos por onde a linha passa, em ordem.'],['strokeWidth','double','Espessura da linha.'],['color','Color','Cor da linha.']],`Polyline(
+  points: [LatLng(-8.05, -34.89), LatLng(-8.04, -34.88), LatLng(-8.045, -34.865)],
+  strokeWidth: 4,
+  color: Colors.blue,
+)`);
+d('RichAttributionWidget',[['attributions','List<SourceAttribution>','Os créditos. Para o OpenStreetMap: TextSourceAttribution(\'© OpenStreetMap contributors\').']],`RichAttributionWidget(
+  attributions: [
+    TextSourceAttribution('© OpenStreetMap contributors'),
+  ],
+)`);
+OF.REF=R;
+})();
+
 (function(){
 'use strict';
 var OF=window.OF,M=OF.M,R=OF.R,W=OF.W,A=OF.A,S=A.S,$=A.$,esc=A.esc;
@@ -6146,6 +8592,29 @@ var FIELDS={
  Flexible:[['flex','num','flex (proporção)'],['fit','enum','fit',{prefix:'FlexFit',list:['loose','tight']}]],
  ListView:[['padding','inset','Padding (todos os lados)']],
  'GridView.count':[['crossAxisCount','num','Colunas'],['mainAxisSpacing','num','Espaço vertical'],['crossAxisSpacing','num','Espaço horizontal'],['padding','inset','Padding (todos os lados)']],
+ 'Transform.rotate':[['angle','num','Ângulo (radianos)']],
+ 'Transform.scale':[['scale','num','Escala']],
+ SegmentedButton:[['multiSelectionEnabled','bool','Permite várias opções']],
+ ButtonSegment:[['value','str','Valor']],
+ SliverAppBar:[['expandedHeight','num','Altura aberta'],['pinned','bool','Fica presa no topo'],['backgroundColor','color','Cor de fundo']],
+ TileLayer:[['urlTemplate','str','Endereço dos tiles'],['userAgentPackageName','str','Id do app']],
+ Marker:[['width','num','Largura'],['height','num','Altura']],
+ CircleMarker:[['radius','num','Raio'],['useRadiusInMeter','bool','Raio em metros'],['color','color','Cor'],['borderColor','color','Cor da borda'],['borderStrokeWidth','num','Espessura da borda']],
+ Polyline:[['strokeWidth','num','Espessura'],['color','color','Cor']],
+ ColoredBox:[['color','color','Cor']],
+ AspectRatio:[['aspectRatio','num','Proporção largura/altura']],
+ FractionallySizedBox:[['widthFactor','num','Fração da largura (0 a 1)'],['heightFactor','num','Fração da altura (0 a 1)']],
+ Visibility:[['visible','bool','Visível']],
+ Tooltip:[['message','str','Texto da dica']],
+ AnimatedOpacity:[['opacity','num','Opacidade (0 a 1)']],
+ VerticalDivider:[['width','num','Espaço total (width)'],['thickness','num','Espessura'],['color','color','Cor']],
+ ChoiceChip:[['selected','bool','Marcada'],['backgroundColor','color','Cor de fundo']],
+ FilterChip:[['selected','bool','Marcada'],['backgroundColor','color','Cor de fundo']],
+ ActionChip:[['backgroundColor','color','Cor de fundo']],
+ ExpansionTile:[['initiallyExpanded','bool','Começa aberta']],
+ NavigationBar:[['selectedIndex','num','Destino selecionado (índice)']],
+ NavigationDestination:[['label','str','Rótulo']],
+ TextFormField:[['deco.labelText','str','Rótulo'],['deco.hintText','str','Dica'],['deco.outline','bool','Borda contornada'],['obscureText','bool','Esconder texto']],
  CircularProgressIndicator:[['color','color','Cor']],
  LinearProgressIndicator:[['value','num','Progresso (0 a 1; vazio = correndo)'],['color','color','Cor']],
  Divider:[['height','num','Espaço total (height)'],['thickness','num','Espessura'],['color','color','Cor']],
@@ -6219,7 +8688,7 @@ function renderProps(){
     return}
   if(!n){box.innerHTML='<h3>Propriedades</h3><p class="wdesc">Clique em um widget no canvas, na árvore ou no código para ver e editar suas propriedades. Arraste itens da paleta para dentro do canvas para montar a tela.</p>';return}
   var sch=W[n.type],key=S.sel,path=pathOf(key);
-  box.innerHTML='<h3>Propriedades</h3><div class="wname">'+esc(n.type)+'</div><p class="wdesc">'+esc(sch?sch.desc:OF.ST.userWidgets[n.type]?'Widget criado por você (class '+n.type+'). O Canvas desenha o que o build() dele devolve, usando os argumentos desta chamada. Para alterar, edite a classe no código.':n.type==='expressão'?'Expressão que decide ou repete widgets na hora de rodar (if, for, ?:, map). O Canvas desenha o resultado com o estado atual; para mudar a lógica, edite no código: '+n.raw.replace(/\s+/g,' ').slice(0,90):'Este widget não tem visualização no canvas, mas continua no seu código.')+'</p>';
+  box.innerHTML='<h3>Propriedades</h3><div class="wname">'+esc(n.type)+'</div><p class="wdesc">'+esc(sch?sch.desc:OF.ST.userWidgets[n.type]?'Widget criado por você (class '+n.type+'). O Canvas desenha o que o build() dele devolve, usando os argumentos desta chamada. Para alterar, edite a classe no código.':n.type==='expressão'?'Expressão que decide ou repete widgets na hora de rodar (if, for, ?:, map). O Canvas desenha o resultado com o estado atual; para mudar a lógica, edite no código: '+n.raw.replace(/\s+/g,' ').slice(0,90):'Este widget não tem visualização no canvas, mas continua no seu código.')+'</p>'+(OF.REF&&OF.REF[n.type]?'<button class="btn lnk" data-ref="'+esc(n.type)+'">📖 Ver na referência</button>':'');
   var fs=sch&&FIELDS[n.type];
   if(fs&&fs.length){var g=document.createElement('div');g.className='fields';fs.forEach(function(f){g.appendChild(field(n,f,key))});box.appendChild(g)}
   var pi=M.parentInfo(S.root,path),acts=document.createElement('div');acts.className='acts';
@@ -6278,8 +8747,10 @@ function fit(){
 var refocus=null;
 function renderCanvas(){
   R.renderScreen(S.root,S.sel,S.xray,screen);
+  if(pk)drawPicker();
   if(refocus){var i=screen.querySelector('input.tfi[data-key="'+refocus.key+'"]');if(i){i.focus();try{i.setSelectionRange(refocus.pos,refocus.pos)}catch(e){}}}
 }
+R.opts.rerender=function(){renderCanvas()};
 screen.addEventListener('input',function(e){
   var i=e.target;if(!i.classList||!i.classList.contains('tfi'))return;
   var n=i.parentNode._n;if(i.parentNode._ctl)i.parentNode._ctl.text=i.value;else R.opts.typed[i.dataset.key]=i.value;renderStateBar();i.parentNode.classList.toggle('typed',!!i.value);
@@ -6304,21 +8775,23 @@ var hovEl=null;
 var ST=OF.ST,Dbl=OF.Dbl;
 function renderStateBar(){
   var bar=$('stBar');
-  if(!ST.active){bar.hidden=true;bar.innerHTML='';return}
+  if(!ST.active){bar.hidden=false;
+    bar.innerHTML='<b>Sem estado</b><span class="sv">Esta tela não tem variáveis nem navegação, então não há o que testar. Com StatefulWidget e setState, os botões ficam ativos.</span><span class="sp"></span><button class="btn" data-a="sens" title="Simular GPS, bateria, rede e câmera">📡 Sensores</button><div class="seg" role="group" aria-label="Modo"><button disabled aria-pressed="false">▶ Testar</button><button disabled aria-pressed="true">✎ Editar</button></div><button class="btn" disabled>↺ Reiniciar</button>';return}
   bar.hidden=false;
   var tsc=topScope(),lst=runIn(tsc,function(){return ST.list()}),hasSt=runIn(tsc,function(){return ST.order.length});
   bar.innerHTML='<b>'+(hasSt?'Estado':'Modo interativo')+(tsc?' · '+esc(tsc.cls):'')+'</b>'+lst.map(function(v){return '<span class="sv"><i>'+esc(v.type)+'</i> '+esc(v.name)+' = <b>'+esc(v.text)+'</b></span>'}).join('')+
-    '<span class="sp"></span><div class="seg" role="group" aria-label="Modo"><button data-a="test" aria-pressed="'+!!S.run+'">▶ Testar</button><button data-a="edit" aria-pressed="'+!S.run+'">✎ Editar</button></div><button class="btn" data-a="reset" title="Volta as variáveis aos valores iniciais">↺ Reiniciar</button>';
+    '<span class="sp"></span><button class="btn" data-a="sens" title="Simular GPS, bateria, rede e câmera">📡 Sensores</button><div class="seg" role="group" aria-label="Modo"><button data-a="test" aria-pressed="'+!!S.run+'">▶ Testar</button><button data-a="edit" aria-pressed="'+!S.run+'">✎ Editar</button></div><button class="btn" data-a="reset" title="Volta as variáveis aos valores iniciais">↺ Reiniciar</button>';
 }
 function setRun(x){if(!x)clearFx();S.run=!!x&&ST.active;R.opts.run=S.run;renderStateBar();renderCanvas()}
 $('stBar').addEventListener('click',function(e){
   var b=e.target.closest('button');if(!b)return;
   if(b.dataset.a==='test')setRun(true);
   else if(b.dataset.a==='edit')setRun(false);
+  else if(b.dataset.a==='sens'){toggleSens();return}
   else if(b.dataset.a==='reset'){clearFx();R.opts.typed={};ST.reset();renderStateBar();renderCanvas()}
 });
 var timers=[];
-function clearFx(){R.opts.nav=[];R.opts.navSc=[];R.opts.navRes=[];R.opts.over=[];R.opts.tab={};clearTimeout(snackT);timers.forEach(clearTimeout);timers=[]}
+function clearFx(){pk=null;R.opts.fut={};R.opts.futT.forEach(clearTimeout);R.opts.futT=[];ST.mapView=null;R.opts.nav=[];R.opts.navSc=[];R.opts.navRes=[];R.opts.over=[];R.opts.tab={};R.opts.exp={};clearTimeout(snackT);timers.forEach(clearTimeout);timers=[]}
 var snackT=null;
 function runIn(inst,fn){if(!inst)return fn();ST.enter(inst);try{return fn()}finally{ST.leave()}}
 function scopeOfEl(el){var h=el&&el.closest&&el.closest('[data-sc]');if(!h||!h.dataset.sc)return null;var all=R.opts.navSc.concat(R.opts.over.map(function(o){return o.sc}));for(var i=0;i<all.length;i++)if(all[i]&&all[i].id===h.dataset.sc)return all[i];return null}
@@ -6348,11 +8821,53 @@ function applyFx(fx,sc){
       if(f.replace){var i0=topOverlay();if(i0>=0)R.opts.over.splice(i0,1);else if(R.opts.nav.length){R.opts.nav.pop();R.opts.navSc.pop();R.opts.navRes.pop()}}
       R.opts.nav.push(f.src);R.opts.navSc.push(ST.makeScope(f.src));R.opts.navRes.push(res);R.opts.over=R.opts.over.filter(function(o){return o.k==='snack'})}
     else if(f.k==='delay'){var tm=setTimeout(function(){resolve(res,null);setTimeout(function(){},0)},Math.min(f.ms,8000));timers.push(tm)}
+    else if(f.k==='toast')toast(f.msg);
+    else if(f.k==='map'){R.opts.rerender&&renderCanvas()}
+    else if(f.k==='picker'){pk={f:f,res:res};drawPicker()}
     else if(f.k==='pop')popTop(f.val)})}
+var pk=null;
+function drawPicker(){
+  var old=screen.querySelector('.pkov');if(old)old.remove();
+  if(!pk)return;
+  var f=pk.f,isD=f.kind==='date',now=new Date(),d0=f.init&&f.init.j?f.init.j:now;
+  function p2(n){return (n<10?'0':'')+n}
+  var val=isD?(d0.getFullYear()+'-'+p2(d0.getMonth()+1)+'-'+p2(d0.getDate())):(f.init&&f.init.nat==='TimeOfDay'?p2(f.init.f.hour)+':'+p2(f.init.f.minute):p2(now.getHours())+':'+p2(now.getMinutes()));
+  var o=document.createElement('div');o.className='pkov';
+  o.innerHTML='<div class="pkb"><b>'+(isD?'Escolha a data':'Escolha a hora')+'</b><input type="'+(isD?'date':'time')+'" value="'+val+'"><div class="pka"><button data-c>Cancelar</button><button data-o>OK</button></div></div>';
+  o.addEventListener('click',function(e){
+    var b=e.target.closest('button');if(!b)return;e.stopPropagation();
+    var r=pk.res,out=null;
+    if(b.hasAttribute('data-o')){var v=o.querySelector('input').value;
+      if(v){var q=v.split('-').map(Number);if(isD)out=ST.mkDate(q[0],q[1],q[2],0,0,0);else{var tq=v.split(':').map(Number);out=ST.mkTime(tq[0],tq[1])}}}
+    pk=null;o.remove();resolve(r,out)});
+  screen.appendChild(o)}
+var SENS_PLACES=[['Recife',-8.0476,-34.877],['São Paulo',-23.5505,-46.6333],['Lisboa',38.7223,-9.1393],['Nova York',40.7128,-74.006],['Tóquio',35.6762,139.6503]];
+function toggleSens(){
+  var p=$('sensPop');
+  if(!p.hidden){p.hidden=true;return}
+  var S=ST.sensors;
+  p.innerHTML='<div class="sg"><label>Lugar <select data-s="place">'+SENS_PLACES.map(function(c,i){return '<option value="'+i+'">'+c[0]+'</option>'}).join('')+'<option value="x">Personalizado</option></select></label>'+
+   '<label>Lat <input type="number" step="0.0001" data-s="lat" value="'+S.lat+'"></label><label>Lon <input type="number" step="0.0001" data-s="lon" value="'+S.lon+'"></label></div>'+
+   '<div class="sg"><label><input type="checkbox" data-s="gps"'+(S.gps?' checked':'')+'> GPS ligado</label>'+
+   '<label>Permissão <select data-s="perm"><option value="granted">Concedida</option><option value="ask">Ainda não pedida (aceita ao pedir)</option><option value="denied">Negada</option><option value="forever">Negada para sempre</option></select></label></div>'+
+   '<div class="sg"><label>Bateria <input type="range" min="0" max="100" data-s="battery" value="'+S.battery+'"> <b id="sBat">'+S.battery+'%</b></label><label><input type="checkbox" data-s="charging"'+(S.charging?' checked':'')+'> Carregando</label>'+
+   '<label>Rede <select data-s="net"><option value="wifi">Wi-Fi</option><option value="mobile">Dados móveis</option><option value="none">Sem rede</option></select></label>'+
+   '<label>Câmera <select data-s="photo"><option value="ok">Tira a foto</option><option value="cancel">Pessoa cancela</option></select></label></div>'+
+   '<p class="sh">Vale para os botões do modo Testar: Geolocator, Battery, Connectivity, ImagePicker, HapticFeedback.</p>';
+  ['perm','net','photo'].forEach(function(k){p.querySelector('[data-s='+k+']').value=S[k]});
+  var pi=SENS_PLACES.findIndex(function(c){return c[1]===S.lat&&c[2]===S.lon});p.querySelector('[data-s=place]').value=pi>=0?pi:'x';
+  p.hidden=false}
+$('sensPop').addEventListener('input',function(e){
+  var t=e.target,k=t.dataset.s;if(!k)return;var S=ST.sensors;
+  if(k==='place'){if(t.value!=='x'){var c=SENS_PLACES[+t.value];S.lat=c[1];S.lon=c[2];this.querySelector('[data-s=lat]').value=c[1];this.querySelector('[data-s=lon]').value=c[2]}}
+  else if(k==='lat'||k==='lon'){var n=parseFloat(t.value);if(!isNaN(n))S[k]=n;this.querySelector('[data-s=place]').value='x'}
+  else if(t.type==='checkbox')S[k]=t.checked;
+  else if(k==='battery'){S.battery=+t.value;$('sBat').textContent=t.value+'%'}
+  else S[k]=t.value});
 function afterRun(r){
   if(r.fx&&r.fx.length){applyFx(r.fx,r.sc);r.dirty=true}
   var dl=OF.LESSONS[S.lesson];
-  if(r.err&&dl&&dl.demo&&!r.exc)toast('Aqui o simulador não tem sensores, som, câmera nem GPS: este botão só funciona no celular de verdade.');
+  if(r.err&&dl&&dl.demo&&!r.exc)toast('Este recurso o simulador não tem (sensores em tempo real, som, microfone, biometria, lanterna, QR): ele só funciona no celular de verdade.');
   else if(r.err)toast(r.exc?'Exceção não tratada: '+r.err:'Este comando ainda não é suportado no simulador: '+r.err);
   else if(r.dirty)renderCanvas();
   else if(r.mutated)toast('A variável mudou, mas sem setState() a tela não é redesenhada.');
@@ -6369,12 +8884,51 @@ function openMenu(t,n){
     o.addEventListener('click',function(e){e.stopPropagation();m.remove();try{afterRun(runAt(t,M.rawProp(n,'onChanged'),[valAt(t,M.rawProp(it,'value'))]))}catch(x){afterRun({err:'valor do item'})}});
     m.appendChild(o)});
   screen.appendChild(m)}
+function openPopup(t,n){
+  var old=screen.querySelector('.ddmenu');if(old)old.remove();
+  var sr=screen.getBoundingClientRect(),tr=t.getBoundingClientRect(),k=sr.width/360;
+  var m=document.createElement('div');m.className='ddmenu';
+  m.style.right=Math.max(4,(sr.right-tr.right)/k)+'px';m.style.top=((tr.bottom-sr.top)/k)+'px';
+  var its=R.popItems(n);if(!its.length)its=[{label:'(itemBuilder sem PopupMenuItem)',value:null}];
+  its.forEach(function(it){
+    var o=document.createElement('div');o.textContent=it.label;
+    o.addEventListener('click',function(e){e.stopPropagation();m.remove();var raw=M.rawProp(n,'onSelected');if(!raw||raw.trim()==='null'||it.value==null)return;
+      try{afterRun(runAt(t,raw,[valAt(t,it.value)]))}catch(x){afterRun({err:'valor do item'})}});
+    m.appendChild(o)});
+  screen.appendChild(m)}
+screen.addEventListener('click',function(e){
+  var m=e.target.closest('.fmap.mtap');if(!m||e.target.closest('.hh'))return;
+  var r=m.getBoundingClientRect(),k=r.width/m.offsetWidth,dx=(e.clientX-r.left)/k-m.offsetWidth/2,dy=(e.clientY-r.top)/k-m.offsetHeight/2;
+  var z=+m.dataset.z,sc=256*Math.pow(2,z),c=R.wmerc(+m.dataset.lat,+m.dataset.lon,z),x=c[0]+dx,y=c[1]+dy;
+  var lon=x/sc*360-180,lat=Math.atan(Math.sinh(Math.PI*(1-2*y/sc)))*180/Math.PI;
+  lat=Math.round(lat*1e5)/1e5;lon=Math.round(lon*1e5)/1e5;
+  afterRun(runAt(m,m.dataset.ontap,[null,ST.mkLL(lat,lon)]))});
+var dis=null;
+screen.addEventListener('pointerdown',function(e){var t=e.target.closest('.dism[data-dm]');if(!t)return;dis={t:t,x:e.clientX,dx:0,fg:t.querySelector('.dfg')};dis.fg.style.transition='none'});
+window.addEventListener('pointermove',function(e){if(!dis)return;var k=screen.getBoundingClientRect().width/360;dis.dx=(e.clientX-dis.x)/k;dis.fg.style.transform='translateX('+dis.dx+'px)'});
+window.addEventListener('pointerup',function(){
+  if(!dis)return;var d=dis;dis=null;d.fg.style.transition='';
+  if(Math.abs(d.dx)>90){d.fg.style.transform='translateX('+(d.dx<0?-420:420)+'px)';
+    var raw=d.t._n&&M.rawProp(d.t._n,'onDismissed');
+    if(raw&&raw.trim()!=='null')setTimeout(function(){afterRun(runAt(d.t,raw,['DismissDirection.'+(d.dx<0?'endToStart':'startToEnd')]))},170);
+    else setTimeout(function(){d.fg.style.transform=''},300)}
+  else d.fg.style.transform=''});
 function fire(t){
   if(t.dataset.h==='back'){popTop();renderCanvas();renderStateBar();return}
   if(t.dataset.h==='tab'){R.opts.tab[t.dataset.ctl]=+t.dataset.i;renderCanvas();return}
-  var n=t._n;if(!n||t.classList.contains('sld')||n.type==='TextField')return;
+  if(t.dataset.h==='exp'){var ek=t.dataset.k,wasOpen=!!t.querySelector('.chev')&&t.querySelector('.chev').textContent==='\u25B4';R.opts.exp[ek]=!wasOpen;renderCanvas();return}
+  if(t.dataset.h==='segsel'){var ps=t._pn,rs=ps&&M.rawProp(ps,'onSelectionChanged');
+    if(rs&&rs.trim()!=='null'){var v0=valAt(t,t.dataset.vraw),arr=[v0];
+      if(/true/.test(M.getProp(ps,'multiSelectionEnabled')||'')){var cur=(M.getProp(ps,'selected')||'').replace(/^\s*[{\[]|[}\]]\s*$/g,'');var cs=[];try{cs=cur.trim()?valAt(t,'['+cur+']'):[]}catch(x){}
+        var ix=cs.indexOf(v0);if(ix>=0)cs.splice(ix,1);else cs.push(v0);arr=cs}
+      afterRun(runAt(t,rs,[arr]))}
+    return}
+  if(t.dataset.h==='popup'){openPopup(t,t._pn);return}
+  if(t.dataset.h==='navd'){var pn=t._pn,rawN=pn&&M.rawProp(pn,'onDestinationSelected');if(rawN&&rawN.trim()!=='null')afterRun(runAt(t,rawN,[+t.dataset.i]));return}
+  var n=t._n;if(!n||t.classList.contains('sld')||n.type==='TextField'||n.type==='TextFormField')return;
   var h=t.dataset.h,raw=M.rawProp(n,h),args=[];
-  if(h==='onChanged'){
+  if(h==='onSelected'){var curSel=runIn(scopeOfEl(t),function(){return /true/.test(M.evalProp(n,'selected')||'')});args=[n.type==='ChoiceChip'?true:!curSel]}
+  else if(h==='onChanged'){
     if(n.type==='Checkbox')args=[!t.querySelector('.bx.on')];
     else if(n.type==='Switch')args=[!t.classList.contains('on')];
     else if(n.type==='SwitchListTile'||n.type==='CheckboxListTile')args=[!(t.querySelector('.dsw.on,.bx.on'))];
@@ -6491,7 +9045,7 @@ function loadLesson(i,fresh){
   var saved=fresh?null:LS.get(lkey(L));
   if(fresh)LS.del(lkey(L));
   A.setCode(saved&&saved!==L.code?saved:L.code);A.analyze();OF.ST.reset();S.loading=false;S.run=OF.ST.active;R.opts.typed={};goalsDone=false;
-  $('lessonBox').innerHTML='<h1>'+esc(L.t)+'</h1><p>'+esc(L.text)+'</p><p class="try"><b>Experimente:</b> '+esc(L.tryit)+'</p>'+(L.demo?'<p class="demo">📱 Lição demonstrativa: o código é real e funciona no celular, mas o simulador não tem sensores, som nem câmera.</p>':'')+(L.setup?'<details class="setup"><summary>Como instalar e quais permissões pedir</summary><pre>'+esc(L.setup)+'</pre></details>':'')+'<div id="goalBox" class="goals"></div>';
+  $('lessonBox').innerHTML='<h1>'+esc(L.t)+'</h1><p>'+esc(L.text)+'</p><p class="try"><b>Experimente:</b> '+esc(L.tryit)+'</p>'+(L.demo?'<p class="demo">📱 Lição demonstrativa: o código é real e funciona no celular, mas o simulador não tem estes recursos (sensores em tempo real, som, microfone, biometria, lanterna, QR). GPS, bateria, rede e câmera você simula pelo botão 📡 Sensores.</p>':'')+(L.setup?'<details class="setup"><summary>Como instalar e quais permissões pedir</summary><pre>'+esc(L.setup)+'</pre></details>':'')+'<div id="goalBox" class="goals"></div>';
   applyFold();
   goalsDone=!!(L.goals&&doneSet().indexOf(L.t.replace(/^\d+\.\s*/,''))>=0);
   updateGoals();goalsDone=goalsDone&&true;
@@ -6538,7 +9092,7 @@ $('lessonBox').addEventListener('click',function(e){if(e.target.closest('h1'))to
 $('lessonBox').addEventListener('keydown',function(e){if((e.key==='Enter'||e.key===' ')&&e.target.closest&&e.target.closest('h1')){e.preventDefault();toggleFold()}});
 $('resetBtn').addEventListener('click',function(){loadLesson(S.lesson,true);toast('Aula restaurada.')});
 function tab(which){
-  $('main').dataset.tab=which;$('tabCanvas').setAttribute('aria-selected',which==='canvas');$('tabCode').setAttribute('aria-selected',which==='code');
+  $('main').dataset.tab=which;$('tabCanvas').setAttribute('aria-selected',which==='canvas');$('tabCode').setAttribute('aria-selected',which==='code');$('refBtn').setAttribute('aria-pressed',which==='ref');
   setTimeout(fit,0);
 }
 $('tabCanvas').addEventListener('click',function(){tab('canvas')});
@@ -6551,6 +9105,69 @@ $('copyBtn').addEventListener('click',function(){
   var ok=function(){toast('Código copiado.')},fb=function(){var t=$('code');t.select();try{document.execCommand('copy');ok()}catch(e){toast('Selecione o código e copie com Ctrl+C.')}};
   try{navigator.clipboard.writeText(S.src).then(ok,fb)}catch(e){fb()}
 });
+
+/* ====== Aba de referência: todos os widgets ====== */
+var refPrev='canvas',refGroup=-1,refBuilt=false,refLessonOf=null;
+function slotInfo(t){
+  var sl=(W[t]&&W[t].slots)||{},ks=Object.keys(sl);
+  if(!ks.length)return 'Não recebe widgets filhos.';
+  return 'Recebe widgets em: '+ks.map(function(k){return '<code>'+k+'</code>'+(sl[k]==='many'?' (lista de widgets)':' (um widget)')}).join(', ')+'.'}
+function refLesson(t){
+  if(!refLessonOf){
+    refLessonOf={};
+    OF.LESSONS.forEach(function(L,i){
+      Object.keys(W).forEach(function(n){if(refLessonOf[n]===undefined&&L.code.indexOf(n+'(')>=0&&!L.demo)refLessonOf[n]=i})})}
+  return refLessonOf[t]}
+function refCard(t,g){
+  var r=OF.REF[t],sch=W[t],h='<details class="wcard" id="ref-'+t.replace('.','_')+'" data-n="'+t+'" style="--cc:'+OF.CATVAR[sch.cat]+'"><summary><b>'+t+'</b><span>'+esc(sch.desc)+'</span></summary><div class="wb">';
+  h+='<p>'+esc(sch.desc)+'</p><p class="acc">'+slotInfo(t)+'</p>';
+  if(r&&r.a.length){
+    h+='<table><thead><tr><th>Atributo</th><th>Tipo</th><th>Para que serve</th></tr></thead><tbody>'+
+      r.a.map(function(a){return '<tr><td>'+esc(a[0])+'</td><td>'+esc(a[1])+'</td><td>'+esc(a[2])+'</td></tr>'}).join('')+'</tbody></table>'}
+  if(r&&r.x)h+='<pre>'+esc(r.x)+'</pre>';
+  var li=refLesson(t);
+  h+='<div class="wact"><button class="btn pri" data-ra="add" data-n="'+t+'">Adicionar ao canvas</button><button class="btn" data-ra="copy" data-n="'+t+'">Copiar exemplo</button>'+
+    (li!==undefined?'<button class="btn" data-ra="lesson" data-i="'+li+'">Ver na aula: '+esc(OF.LESSONS[li].t.replace(/^\d+\.\s*/,'')).slice(0,40)+'</button>':'')+'</div>';
+  return h+'</div></details>'}
+function refRender(){
+  var q=($('refSearch').value||'').trim().toLowerCase(),out='',total=0;
+  OF.GROUPS.forEach(function(g,gi){
+    if(refGroup>=0&&refGroup!==gi)return;
+    var cards=g[1].filter(function(t){
+      if(!q)return true;
+      var r=OF.REF[t]||{a:[]},hay=(t+' '+W[t].desc+' '+r.a.map(function(a){return a[0]+' '+a[2]}).join(' ')).toLowerCase();
+      return hay.indexOf(q)>=0}).map(function(t){total++;return refCard(t,g)});
+    if(cards.length)out+='<h3>'+esc(g[0])+' · '+cards.length+'</h3><div class="rgrid">'+cards.join('')+'</div>'});
+  $('refList').innerHTML=out||'<div class="rempty">Nenhum widget encontrado para “'+esc(q)+'”.</div>';
+  $('refCount').textContent=total+' widgets'+(q?' encontrados':'');
+  if(q&&total&&total<=3)[].forEach.call($('refList').querySelectorAll('details'),function(d){d.open=true})}
+function refBuild(){
+  if(refBuilt)return;refBuilt=true;
+  $('refFilter').innerHTML='<button data-g="-1" aria-pressed="true">Todos</button>'+OF.GROUPS.map(function(g,i){return '<button data-g="'+i+'" aria-pressed="false">'+esc(g[0])+'</button>'}).join('');
+  refRender()}
+function openRef(name){
+  if($('main').dataset.tab!=='ref')refPrev=$('main').dataset.tab;
+  tab('ref');refBuild();
+  if(name){
+    $('refSearch').value='';refGroup=-1;
+    [].forEach.call($('refFilter').children,function(b){b.setAttribute('aria-pressed',b.dataset.g==='-1')});
+    refRender();
+    var el=document.getElementById('ref-'+name.replace('.','_'));
+    if(el){el.open=true;setTimeout(function(){el.scrollIntoView({block:'start'})},30)}}}
+function closeRef(){tab(refPrev==='ref'?'canvas':refPrev)}
+$('refBtn').addEventListener('click',function(){if($('main').dataset.tab==='ref')closeRef();else openRef()});
+$('refBack').addEventListener('click',closeRef);
+$('refSearch').addEventListener('input',refRender);
+$('refFilter').addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b)return;refGroup=+b.dataset.g;
+  [].forEach.call(this.children,function(x){x.setAttribute('aria-pressed',x===b)});refRender()});
+$('refList').addEventListener('click',function(e){
+  var b=e.target.closest('[data-ra]');if(!b)return;
+  if(b.dataset.ra==='add'){tab(refPrev==='ref'?'canvas':refPrev);addWidget(b.dataset.n,null)}
+  else if(b.dataset.ra==='copy'){var x=(OF.REF[b.dataset.n]||{}).x||'';
+    var ok=function(){toast('Exemplo copiado.')};try{navigator.clipboard.writeText(x).then(ok,function(){toast('Selecione o exemplo e copie com Ctrl+C.')})}catch(er){toast('Selecione o exemplo e copie com Ctrl+C.')}}
+  else if(b.dataset.ra==='lesson'){var i=+b.dataset.i;tab('canvas');$('lessonSel').value=String(i);loadLesson(i)}});
+$('props').addEventListener('click',function(e){var b=e.target.closest('[data-ref]');if(b)openRef(b.dataset.ref)});
 renderPalette();
 if(window.ResizeObserver)new ResizeObserver(fit).observe(stage);
 addEventListener('resize',fit);
