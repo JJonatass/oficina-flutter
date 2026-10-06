@@ -292,6 +292,8 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.02fr) min
     <button role="tab" id="tabCanvas" aria-selected="true">Canvas</button>
     <button role="tab" id="tabCode" aria-selected="false">Código</button>
   </div>
+  <button class="btn" id="undoBtn" title="Desfazer (Ctrl+Z)" aria-label="Desfazer" disabled>↶ Desfazer</button>
+  <button class="btn" id="redoBtn" title="Refazer (Ctrl+Shift+Z)" aria-label="Refazer" disabled>↷ Refazer</button>
   <button class="btn" id="profBtn" title="Progresso da turma">Professor</button>
   <button class="btn" id="themeBtn" aria-label="Alternar tema claro e escuro">Tema</button>
 </header>
@@ -6039,8 +6041,31 @@ function updateGoals(){
   box.innerHTML=html+(all?'<em>🏆 Desafio concluído!</em>':'');
   if(all&&!goalsDone){goalsDone=true;markDone(L);toast('Desafio concluído! 🏆')}
   if(!all)goalsDone=false}
+var hist={a:[],i:-1,busy:false};
+function histBtns(){$('undoBtn').disabled=hist.i<=0;$('redoBtn').disabled=hist.i>=hist.a.length-1}
+function histReset(){hist.a=[S.src];hist.i=0;histBtns()}
+function histPush(){
+  if(hist.busy||hist.a[hist.i]===S.src)return;
+  hist.a=hist.a.slice(0,hist.i+1);hist.a.push(S.src);
+  if(hist.a.length>300)hist.a.shift();
+  hist.i=hist.a.length-1;histBtns()}
+function histGo(d){
+  var j=hist.i+d;if(j<0||j>=hist.a.length)return;
+  hist.i=j;hist.busy=true;
+  try{A.setCode(hist.a[j]);A.analyze();S.sel=null;renderAll(false)}finally{hist.busy=false}
+  histBtns();toast(d<0?'Desfeito.':'Refeito.')}
+$('undoBtn').addEventListener('click',function(){histGo(-1)});
+$('redoBtn').addEventListener('click',function(){histGo(1)});
+document.addEventListener('keydown',function(e){
+  if(!(e.ctrlKey||e.metaKey)||e.altKey)return;
+  var k=e.key.toLowerCase(),t=e.target;
+  if(t&&t.tagName==='INPUT')return;
+  if(t&&t.tagName==='TEXTAREA'&&t.id!=='code')return;
+  if(k==='z'&&!e.shiftKey){e.preventDefault();histGo(-1)}
+  else if((k==='z'&&e.shiftKey)||k==='y'){e.preventDefault();histGo(1)}});
 A.onChange=function(){
   var L=OF.LESSONS[S.lesson];if(!L||S.loading)return;
+  histPush();
   if(S.src===L.code)LS.del(lkey(L));else LS.set(lkey(L),S.src);
   updateGoals()};
 function loadLesson(i,fresh){
@@ -6051,6 +6076,7 @@ function loadLesson(i,fresh){
   $('lessonBox').innerHTML='<h1>'+esc(L.t)+'</h1><p>'+esc(L.text)+'</p><p class="try"><b>Experimente:</b> '+esc(L.tryit)+'</p>'+(L.demo?'<p class="demo">📱 Lição demonstrativa: o código é real e funciona no celular, mas o simulador não tem sensores, som nem câmera.</p>':'')+(L.setup?'<details class="setup"><summary>Como instalar e quais permissões pedir</summary><pre>'+esc(L.setup)+'</pre></details>':'')+'<div id="goalBox" class="goals"></div>';
   goalsDone=!!(L.goals&&doneSet().indexOf(L.t.replace(/^\d+\.\s*/,''))>=0);
   updateGoals();goalsDone=goalsDone&&true;
+  histReset();
   renderAll(false);
   if(saved&&saved!==L.code)toast('Seu código salvo desta aula foi recuperado. Use Restaurar para voltar ao original.');
 }
