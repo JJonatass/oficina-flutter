@@ -177,6 +177,12 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.02fr) min
 .lesson details.setup{grid-column:1/-1;margin:0;font-size:13px}
 .lesson details.setup summary{cursor:pointer;font-weight:600;color:var(--accent)}
 .lesson details.setup pre{margin:6px 0 0;padding:10px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;font:12px/1.5 'JetBrains Mono',ui-monospace,monospace;white-space:pre-wrap;overflow:auto;max-height:140px;user-select:text}
+@media (min-width:901px){
+  html,body{height:auto;min-height:100%}
+  body{min-height:100vh;overflow-x:hidden;overflow-y:auto}
+  main{flex:none;height:max(620px,calc(100vh - 210px))}
+  .lesson{max-height:32vh;overflow:auto}
+}
 </style>
 <style>
 /* Widgets renderizados dentro do aparelho */
