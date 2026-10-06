@@ -1,9 +1,4 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Oficina Flutter</title>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Oficina Flutter</title><title>Oficina Flutter</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -59,10 +54,7 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.02fr) min
 .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
 .seg button{border:0;background:transparent;padding:5px 12px;font-size:13px}
 .seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:600}
-.palette{display:flex;gap:14px;overflow-x:auto;scrollbar-width:thin;padding:8px 12px;border-bottom:1px solid var(--line);background:var(--panel2)}
-.pgroup{display:flex;align-items:center;gap:6px;flex:none}
-.pgroup small{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2);margin-right:2px}
-@container (min-width:640px){.palette{flex-wrap:wrap;overflow-x:hidden;overflow-y:auto;max-height:132px;scrollbar-width:thin;gap:6px 14px}.pgroup{flex-wrap:wrap}}
+.palette{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 12px;border-bottom:1px solid var(--line);background:var(--panel2)}
 .chip{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:3px 9px;font-family:var(--f-mono);font-size:11.5px;cursor:grab;display:flex;align-items:center;gap:6px;white-space:nowrap}
 .chip i{width:8px;height:8px;border-radius:2px;background:var(--cc)}
 .chip:hover{border-color:var(--cc)}
@@ -183,6 +175,14 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.02fr) min
   main{flex:none;height:max(620px,calc(100vh - 210px))}
   .lesson{max-height:32vh;overflow:auto}
 }
+.pdd{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:5px 9px;font-size:12.5px}
+.pdd b{font-weight:600}
+.pdd .n{font-size:10.5px;color:var(--ink2);background:var(--panel2);border-radius:999px;padding:0 6px}
+.pdd em{font-style:normal;color:var(--ink2);font-size:10px}
+.pdd:hover,.pdd[aria-expanded="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.psearch{flex:1 1 140px;min-width:120px;max-width:220px;margin-left:auto;border:1px solid var(--line);border-radius:8px;padding:5px 9px;font-size:12.5px;background:var(--panel);color:var(--ink)}
+.pmenu{position:fixed;z-index:90;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.22);padding:8px;display:flex;flex-wrap:wrap;gap:6px;width:min(460px,92vw);overflow:auto}
+.pmenu .pmh{flex:0 0 100%;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2);padding:2px 2px 4px}
 </style>
 <style>
 /* Widgets renderizados dentro do aparelho */
@@ -285,9 +285,7 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.02fr) min
 .bkb{margin-right:16px;font-size:22px;line-height:1;cursor:pointer;flex:none}
 .screen.run .nd.tabi{cursor:pointer}
 </style>
-</head>
-<body>
-<header class="top">
+</head><body><header class="top">
   <div class="brand">
     <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect x="2" y="2" width="24" height="24" rx="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="7" y="7" width="14" height="5" rx="1.5" fill="var(--c-struct)"/><rect x="7" y="14" width="6" height="7" rx="1.5" fill="var(--c-layout)"/><rect x="15" y="14" width="6" height="7" rx="1.5" fill="var(--c-box)"/></svg>
     <b>Oficina Flutter</b><span>monte telas arrastando widgets ou escrevendo Dart</span>
@@ -5687,21 +5685,45 @@ function selNode(){return OF.nodeAt(S.root,S.sel)}
 function lastSeg(key){if(key==='')return 'return';var s=key.split('>').pop().split(':');return s[1]!==undefined?s[0]+'['+s[1]+']':s[0]}
 
 /* ====== Paleta ====== */
+function chipHtml(t){return '<button class="chip" draggable="true" data-type="'+t+'" style="--cc:'+OF.CATVAR[W[t].cat]+'" title="'+esc(W[t].desc)+'"><i></i>'+t+'</button>'}
+var pmenu=null,pmOpen=null;
+function closeMenu(){if(pmenu){pmenu.remove();pmenu=null}pmOpen=null;[].forEach.call($('palette').querySelectorAll('.pdd'),function(b){b.setAttribute('aria-expanded','false')})}
+function openGroup(btn,html){
+  closeMenu();
+  var m=document.createElement('div');m.className='pmenu';m.innerHTML=html;document.body.appendChild(m);
+  var r=btn.getBoundingClientRect(),w=m.offsetWidth,left=Math.max(8,Math.min(r.left,innerWidth-w-8));
+  m.style.left=left+'px';m.style.top=(r.bottom+4)+'px';m.style.maxHeight=Math.max(160,innerHeight-r.bottom-16)+'px';
+  pmenu=m;pmOpen=btn;btn.setAttribute('aria-expanded','true')}
 function renderPalette(){
   var h='';
-  OF.GROUPS.forEach(function(g){
-    h+='<div class="pgroup"><small>'+g[0]+'</small>';
-    g[1].forEach(function(t){h+='<button class="chip" draggable="true" data-type="'+t+'" style="--cc:'+OF.CATVAR[W[t].cat]+'" title="'+esc(W[t].desc)+'"><i></i>'+t+'</button>'});
-    h+='</div>'});
+  OF.GROUPS.forEach(function(g,i){
+    h+='<button class="pdd" data-g="'+i+'" aria-haspopup="true" aria-expanded="false"><b>'+esc(g[0])+'</b><span class="n">'+g[1].length+'</span><em>▾</em></button>'});
+  h+='<input class="psearch" id="pSearch" type="search" placeholder="Buscar widget…" aria-label="Buscar widget" autocomplete="off">';
   $('palette').innerHTML=h;
 }
 $('palette').addEventListener('click',function(e){
-  var c=e.target.closest('.chip');if(!c)return;addWidget(c.dataset.type,null);
-});
-$('palette').addEventListener('dragstart',function(e){
-  var c=e.target.closest('.chip');if(!c)return;
+  var b=e.target.closest('.pdd');if(!b)return;
+  if(pmOpen===b){closeMenu();return}
+  var g=OF.GROUPS[+b.dataset.g];
+  openGroup(b,'<div class="pmh">'+esc(g[0])+'</div>'+g[1].map(chipHtml).join(''))});
+$('palette').addEventListener('input',function(e){
+  var s=e.target;if(s.id!=='pSearch')return;
+  var q=s.value.trim().toLowerCase();
+  if(!q){closeMenu();return}
+  var hits=[];OF.GROUPS.forEach(function(g){g[1].forEach(function(t){if(hits.indexOf(t)<0&&(t.toLowerCase().indexOf(q)>=0||(W[t].desc||'').toLowerCase().indexOf(q)>=0))hits.push(t)})});
+  openGroup(s,hits.length?'<div class="pmh">'+hits.length+' resultado(s)</div>'+hits.map(chipHtml).join(''):'<div class="pmh">Nenhum widget encontrado</div>');
+  pmOpen=s});
+document.addEventListener('click',function(e){
+  var c=e.target.closest&&e.target.closest('.pmenu .chip');
+  if(c){addWidget(c.dataset.type,null);closeMenu();return}
+  if(pmenu&&!e.target.closest('.pmenu')&&!e.target.closest('#palette'))closeMenu()});
+document.addEventListener('dragstart',function(e){
+  var c=e.target.closest&&e.target.closest('.pmenu .chip');if(!c)return;
   e.dataTransfer.setData('text/plain','oficina:'+c.dataset.type);e.dataTransfer.effectAllowed='copy';
-});
+  setTimeout(function(){if(pmenu){pmenu.style.pointerEvents='none';pmenu.style.opacity='0'}},0)});
+document.addEventListener('dragend',function(){closeMenu()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&pmenu)closeMenu()});
+window.addEventListener('resize',closeMenu);
 
 /* ====== Árvore ====== */
 function renderTree(){
@@ -6140,6 +6162,4 @@ loadLesson(0);fit();
 })();
 
 </script>
-
-</body>
-</html>
+</body></html>
