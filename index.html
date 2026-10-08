@@ -1099,6 +1099,7 @@ function pPost(p){
       a={t:'mem',o:a,name:name,args:args}}
     else if(p.is('[')){p.i++;var ix=pTern(p);p.need(']');a={t:'idx',o:a,i:ix}}
     else if(p.is('!')&&!p.is('=',1)){p.i++}
+    else if(p.isId('as')&&p.pk(1)&&p.pk(1).k==='id'){p.i+=2;if(p.is('<')){var gd=1;p.i++;while(gd>0&&!p.end()){if(p.is('<'))gd++;else if(p.is('>'))gd--;p.i++}}p.eat('?')}
     else break}
   return a}
 function pArgs(p){
@@ -1259,6 +1260,7 @@ function ev(a,env){
       if(env.self){var dc0=ST.dataClasses[env.self.cls];if(dc0&&dc0.methods[a.name])return runMethod(dc0.methods[a.name],av,env.self)}
       if(ST.methods[a.name])return runMethod(ST.methods[a.name],av,null);
       if(a.name==='print'||a.name==='debugPrint')return null;
+      if(a.name==='jsonDecode')return jsonDec(av[0]);
       throw new Error('função '+a.name)}
     case 'mem':return member(ev(a.o,env),a.name,a.args&&a.args.map(function(x){if(x.ast===undefined)throw new Error('arg');return ev(x.ast,env)}));
     case 'idx':{var ov=ev(a.o,env),iv0=ev(a.i,env);
@@ -1804,9 +1806,9 @@ ST.pickAll=function(raw){
 ST.value=function(raw){return ev(pTern(new Ps(raw)),mkEnv())};
 
 /* ---- objetos nativos simulados: DateTime, TimeOfDay, GPS, bateria, rede, câmera ---- */
-ST.sensors={gps:true,perm:'granted',lat:-8.0476,lon:-34.877,alt:4,battery:78,charging:false,net:'wifi',photo:'ok'};
-ST.resetSensors=function(){ST.sensors={gps:true,perm:'granted',lat:-8.0476,lon:-34.877,alt:4,battery:78,charging:false,net:'wifi',photo:'ok'}};
-var NATCLS={LatLng:1,MapController:1,Geolocator:1,Battery:1,Connectivity:1,DateTime:1,TimeOfDay:1,Position:1,ImagePicker:1,HapticFeedback:1,Share:1};
+ST.sensors={http:'sim',gps:true,perm:'granted',lat:-8.0476,lon:-34.877,alt:4,battery:78,charging:false,net:'wifi',photo:'ok'};
+ST.resetSensors=function(){ST.sensors={http:'sim',gps:true,perm:'granted',lat:-8.0476,lon:-34.877,alt:4,battery:78,charging:false,net:'wifi',photo:'ok'}};
+var NATCLS={http:1,Uri:1,LatLng:1,MapController:1,Geolocator:1,Battery:1,Connectivity:1,DateTime:1,TimeOfDay:1,Position:1,ImagePicker:1,HapticFeedback:1,Share:1};
 var NATCTOR={LatLng:1,MapController:1,DateTime:1,TimeOfDay:1,Position:1,Battery:1,Connectivity:1,ImagePicker:1};
 var ENUMS={LocationPermission:1,ConnectionState:1,ConnectivityResult:1,BatteryState:1,ImageSource:1,LocationAccuracy:1};
 function p2(n){return (n<10?'0':'')+n}
@@ -1820,6 +1822,39 @@ ST.mkTime=mkTime;
 function mkPos(lat,lon,alt){return{nat:'Position',f:{latitude:new Dbl(lat),longitude:new Dbl(lon),altitude:new Dbl(alt||0),accuracy:new Dbl(12.5),speed:new Dbl(0)},src:'Position(latitude: '+lat+', longitude: '+lon+')'}}
 ST.mkLL=function(a,b){return mkLL(a,b)};
 function mkLL(a,b){return{nat:'LatLng',f:{latitude:new Dbl(a),longitude:new Dbl(b)},src:'LatLng('+a+', '+b+')'}}
+function mkResp(code,body){return{nat:'Response',f:{statusCode:code,body:body},src:'Response()'}}
+ST.mkResp=mkResp;
+function jsonConv(x){
+  if(x===null)return null;
+  if(Array.isArray(x))return x.map(jsonConv);
+  if(typeof x==='object'){var mp={isMap:true,m:new Map()};Object.keys(x).forEach(function(k){mp.m.set(k,jsonConv(x[k]))});return mp}
+  if(typeof x==='number'&&!Number.isInteger(x))return new Dbl(x);
+  return x}
+function jsonDec(b){
+  var t=show(b);
+  try{return jsonConv(JSON.parse(t))}catch(e){throw exc('FormatException: Unexpected character (at character 1)')}}
+var SIMPLACES=[['marco zero',-8.0631,-34.8711,'Marco Zero, Recife Antigo, Recife, Pernambuco, Brasil'],['porto digital',-8.0589,-34.8709,'Porto Digital, Recife Antigo, Recife, Pernambuco, Brasil'],['recife antigo',-8.0626,-34.8721,'Recife Antigo, Recife, Pernambuco, Brasil'],['boa viagem',-8.1290,-34.9010,'Praia de Boa Viagem, Recife, Pernambuco, Brasil'],['aeroporto',-8.1265,-34.9236,'Aeroporto Internacional do Recife/Guararapes, Recife, Pernambuco, Brasil'],['shopping recife',-8.1190,-34.9055,'Shopping Recife, Boa Viagem, Recife, Pernambuco, Brasil'],['jaqueira',-8.0386,-34.9005,'Parque da Jaqueira, Recife, Pernambuco, Brasil'],['brennand',-8.0680,-34.9525,'Instituto Ricardo Brennand, Recife, Pernambuco, Brasil'],['ufpe',-8.0512,-34.9519,'Universidade Federal de Pernambuco, Recife, Pernambuco, Brasil']];
+function simHttp(url){
+  var m;
+  if(/nominatim\.openstreetmap\.org\/search/.test(url)){
+    var q=(/[?&]q=([^&]*)/.exec(url)||[])[1]||'';try{q=decodeURIComponent(q)}catch(e){}
+    q=q.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    var hit=SIMPLACES.filter(function(p){return q.indexOf(p[0])>=0})[0];
+    return mkResp(200,JSON.stringify(hit?[{lat:String(hit[1]),lon:String(hit[2]),display_name:hit[3]}]:[]))}
+  if(/photon\.komoot\.io\/api/.test(url)){
+    var q2=(/[?&]q=([^&]*)/.exec(url)||[])[1]||'';try{q2=decodeURIComponent(q2.replace(/\+/g,' '))}catch(e){}
+    q2=q2.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    var h2=SIMPLACES.filter(function(p){return q2.indexOf(p[0])>=0})[0];
+    return mkResp(200,JSON.stringify({type:'FeatureCollection',features:h2?[{type:'Feature',geometry:{type:'Point',coordinates:[h2[2],h2[1]]},properties:{name:h2[3].split(',')[0],city:'Recife',state:'Pernambuco',country:'Brasil',countrycode:'BR'}}]:[]}))}
+  m=/(?:router\.project-osrm\.org|routing\.openstreetmap\.de\/routed-(car|bike|foot))\/route\/v1\/\w+\/(-?[\d.]+),(-?[\d.]+);(-?[\d.]+),(-?[\d.]+)/.exec(url);
+  if(m){
+    var prof=m[1]||'car',fk=prof==='foot'?1.15:prof==='bike'?1.25:1.3,vel=prof==='foot'?1.4:prof==='bike'?4.2:8.3;
+    var lo1=+m[2],la1=+m[3],lo2=+m[4],la2=+m[5],pts=[],n=18,i;
+    for(i=0;i<=n;i++){var t=i/n,bend=Math.sin(Math.PI*t)*(prof==='foot'?0.07:prof==='bike'?0.16:0.12)*(Math.abs(lo2-lo1)+Math.abs(la2-la1));
+      pts.push([+(lo1+(lo2-lo1)*t+bend*0.6).toFixed(5),+(la1+(la2-la1)*t-bend*0.4).toFixed(5)])}
+    var dist=haversine(la1,lo1,la2,lo2)*fk;
+    return mkResp(200,JSON.stringify({code:'Ok',routes:[{distance:Math.round(dist),duration:Math.round(dist/vel),geometry:{type:'LineString',coordinates:pts}}],waypoints:[]}))}
+  return mkResp(404,'')}
 function natStr(v){
   if(v.nat==='#class')return v.name;
   if(v.nat==='DateTime')return v.f.year+'-'+p2(v.f.month)+'-'+p2(v.f.day)+' '+p2(v.f.hour)+':'+p2(v.f.minute)+':'+p2(v.f.second)+'.000';
@@ -1835,6 +1870,7 @@ function natCtor(name,args){
   if(name==='Position')return mkPos(nm.latitude||0,nm.longitude||0,nm.altitude||0);
   if(name==='LatLng')return mkLL(pos[0]||0,pos[1]||0);
   return{nat:name,f:{},src:name+'()'}}
+function wm(lat,lon,z){var sc=256*Math.pow(2,z),sn=Math.sin(lat*Math.PI/180);return[(lon+180)/360*sc,(0.5-Math.log((1+sn)/(1-sn))/(4*Math.PI))*sc]}
 function haversine(a,b,c,d){
   var R=6371000,r=Math.PI/180,dl=(c-a)*r,dg=(d-b)*r,h=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(a*r)*Math.cos(c*r)*Math.sin(dg/2)*Math.sin(dg/2);
   return 2*R*Math.asin(Math.sqrt(h))}
@@ -1856,6 +1892,16 @@ function natMember(v,name,args){
           return mkPos(S.lat,S.lon,S.alt);
         case 'distanceBetween':return new Dbl(haversine(nn(args[0]),nn(args[1]),nn(args[2]),nn(args[3])));
         case 'openAppSettings':case 'openLocationSettings':return true}}
+    if(c==='Uri'){
+      if(name==='parse'){var us=show(args[0]);return{nat:'Uri',f:{},url:us,src:'Uri.parse('+lit(us)+')'}}
+      if(name==='https'||name==='http'){
+        var qs=args[2]&&args[2].isMap?Array.from(args[2].m.entries()).map(function(e){return encodeURIComponent(e[0])+'='+encodeURIComponent(show(e[1]))}).join('&'):'';
+        var uu=name+'://'+show(args[0])+show(args[1]||'')+(qs?'?'+qs:'');return{nat:'Uri',f:{},url:uu,src:'Uri.parse('+lit(uu)+')'}}}
+    if(c==='http'&&name==='get'){
+      var url=args[0]&&args[0].url?args[0].url:show(args[0]);
+      var sim=ST.sensors.http!=='real'?simHttp(url):null;
+      if(ST.sync||!ST.fx){return sim||mkResp(0,'')}
+      var hf={k:'http',url:url,sim:sim};ST.fx.push(hf);lastSusp=hf;return null}
     if(c==='HapticFeedback'){(ST.fx=ST.fx||[]).push({k:'toast',msg:'📳 O aparelho vibrou ('+name+')'});return null}
     if(c==='Share'&&name==='share'){(ST.fx=ST.fx||[]).push({k:'toast',msg:'Compartilhar: '+show(args[0])});return null}
     throw new Error('membro estático '+c+'.'+name)}
@@ -1871,6 +1917,14 @@ function natMember(v,name,args){
     if(name==='millisecondsSinceEpoch')return v.j.getTime();
     if(name==='isBefore')return v.j<args[0].j;if(name==='isAfter')return v.j>args[0].j;
     if(name==='add'||name==='subtract'){var dd=/days\s*:\s*(-?\d+)/.exec(show(args[0]));var sg=name==='add'?1:-1,dn=dd?+dd[1]*sg:0;return mkDate(v.f.year,v.f.month,v.f.day+dn,v.f.hour,v.f.minute,v.f.second)}}
+  if(k==='MapController'&&name==='fitCamera'){
+    var txt=show(args[0]),re=/LatLng\(\s*(-?[\d.]+)\s*,\s*(-?[\d.]+)\s*\)/g,mm,la=[],lo=[];
+    while((mm=re.exec(txt))){la.push(+mm[1]);lo.push(+mm[2])}
+    if(la.length){
+      var a0=Math.min.apply(null,la),a1=Math.max.apply(null,la),o0=Math.min.apply(null,lo),o1=Math.max.apply(null,lo),zz=18;
+      for(;zz>1;zz--){var p0=wm(a1,o0,zz),p1=wm(a0,o1,zz);if(p1[0]-p0[0]<=290&&p1[1]-p0[1]<=330)break}
+      ST.mapView={lat:(a0+a1)/2,lon:(o0+o1)/2,zoom:zz};(ST.fx=ST.fx||[]).push({k:'map'})}
+    return null}
   if(k==='MapController'&&name==='move'){ST.mapView={lat:nn(args[0].f.latitude),lon:nn(args[0].f.longitude),zoom:args.length>1?nn(args[1]):null};(ST.fx=ST.fx||[]).push({k:'map'});return true}
   if(k==='TimeOfDay'&&name==='format')return p2(v.f.hour)+':'+p2(v.f.minute);
   if(hasOwn(v.f,name))return v.f[name];
@@ -2206,6 +2260,8 @@ photo_camera:ICONS.camera_alt,
 flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
 my_location:'<circle cx="12" cy="12" r="3.5" fill="currentColor"/><circle cx="12" cy="12" r="8"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
 directions_walk:'<circle cx="13" cy="4.5" r="1.8"/><path d="M12 8l-3 4 3 2v6M12 8l3 4 3 1M9 12l-2 7"/>',
+directions_car:'<path d="M5 17v-6l1.7-4.3A1.5 1.5 0 018.1 6h7.8a1.5 1.5 0 011.4.7L19 11v6M3.5 11h17v6h-17zM6 17v2.5M18 17v2.5"/><circle cx="7.5" cy="14" r=".9" fill="currentColor"/><circle cx="16.5" cy="14" r=".9" fill="currentColor"/>',
+directions_bike:'<circle cx="6" cy="16.5" r="3.5"/><circle cx="18" cy="16.5" r="3.5"/><path d="M6 16.5l4-8h5l3 8M10 8.5l3 8M9 6h2.5"/>',
 lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',
 lock_open:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 017.5-2"/>',
 flashlight_on:'<path d="M8 3h8v5l-2 3v10h-4V11L8 8z"/><path d="M12 14v2"/>',
@@ -5645,6 +5701,226 @@ class _VoceEstaAquiState extends State<VoceEstaAqui> {
   }
 }
 `},
+{t:'x. Endereço e rota: carro, bicicleta e a pé',
+ text:'Serviços gratuitos e sem chave de API completam o mapa. Um geocodificador transforma o endereço em coordenadas: aqui, o Nominatim, com o Photon como alternativa. Um servidor de rotas devolve a distância, o tempo e a linha do caminho, que o Polyline desenha: o OSRM do routing.openstreetmap.de tem um servidor para cada modo (carro, bicicleta e a pé). Tudo é requisição HTTP: o app espera a resposta com await e lê o JSON com jsonDecode. Atenção: são serviços públicos mantidos por voluntários, feitos para uso leve. Leia as ressalvas na aba Setup antes de usar em um app de verdade.',
+ tryit:'Em ▶ Testar, toque em Traçar rota e depois escolha Bicicleta e A pé, traçando de novo: a distância e o tempo mudam, e o caminho também. Digite Aeroporto, Boa Viagem, Porto Digital, UFPE ou Jaqueira. Ligue Usar Photon e repita: é outro geocodificador, e muda a URL e o jeito de ler a resposta (veja o if (usarPhoton) em buscarEndereco). Digite um texto sem sentido e leia a mensagem. Em 📡 Sensores, mude Internet para Real para chamar os serviços de verdade (precisa de internet na página).',
+ setup:'1. No terminal do projeto:\n   flutter pub add flutter_map latlong2 http\n\n2. Android: em AndroidManifest.xml, dentro de <manifest>:\n   <uses-permission android:name="android.permission.INTERNET"/>\n\n3. Nenhum destes serviços pede chave de API ou cadastro. Em troca, todos têm regras de uso, e todas valem para a sua turma também:\n\n4. NOMINATIM (endereço -> coordenadas): https://nominatim.openstreetmap.org/search?q=...&format=json&limit=1\n   - Máximo de 1 requisição por segundo, no app inteiro (a turma toda na mesma rede conta como um só IP).\n   - Envie um User-Agent que identifique o seu app, com um contato. O padrão do pacote http é recusado.\n   - Não use para autocompletar enquanto a pessoa digita: busque ao tocar no botão.\n   - Guarde (cache) resultados repetidos.\n   - Pode bloquear sem aviso quem abusar.\n\n5. PHOTON (alternativa ao Nominatim): https://photon.komoot.io/api?q=...&limit=1\n   - Servidor público da Komoot, baseado em dados do OpenStreetMap. A resposta é GeoJSON e as coordenadas vêm na ordem longitude,latitude.\n   - Só para uso razoável: pode limitar a velocidade ou bloquear quem exagerar, não garante disponibilidade e pode mudar sem aviso.\n   - Para muitas buscas, o caminho é subir uma instância sua (o projeto é livre).\n\n6. ROTAS (OSRM do FOSSGIS): https://routing.openstreetmap.de/routed-car/route/v1/driving/lon1,lat1;lon2,lat2?overview=full&geometries=geojson\n   - Troque routed-car por routed-bike (bicicleta) ou routed-foot (a pé). O modo é escolhido pela pasta; a palavra driving no meio do caminho é só um nome obrigatório do formato. Estes endereços vêm do código do próprio site deles: se um dia a chamada falhar, confira em routing.openstreetmap.de.\n   - Máximo de 1 requisição por segundo, sem raspagem de dados e sem uso intensivo. As requisições ficam registradas no servidor deles.\n   - Identifique o app (User-Agent ou página de origem) e dê o crédito: mostre © OpenStreetMap contributors e um link para openstreetmap.org/fixthemap.\n   - Os dados do mapa são atualizados a cada poucos dias, e não há garantia de disponibilidade. O servidor é público e voluntário: serve para estudo, protótipo e app pequeno, não para um produto com muitos usuários.\n   - O servidor router.project-osrm.org, usado na versão anterior desta lição, é só para demonstração e só calcula de carro.\n\n7. O QUE A ROTA NÃO SABE: o tempo é estimado por uma velocidade média de cada modo, sem trânsito, semáforo, subida ou chuva. O caminho de bicicleta e a pé depende de como as ruas, ciclovias e calçadas foram desenhadas no OpenStreetMap na sua cidade: em lugares com pouco mapeamento, o resultado pode ser pior que o de carro. Sempre mostre ao usuário que é uma estimativa.\n\n8. Para um app de produção, hospede o seu próprio OSRM, Valhalla ou Photon, ou contrate um serviço comercial. Os mapas (tile.openstreetmap.org) também têm política própria: sem uso intensivo e com o userAgentPackageName preenchido.\n\n9. RODANDO O SEU PRÓPRIO OSRM (sem limites de terceiros): é a saída para produção ou para uma turma grande. Precisa de Docker. Confira os comandos no README do projeto (github.com/Project-OSRM/osrm-backend), porque podem mudar.\n   a) Baixe só a sua região (não o mundo): o Geofabrik divide o Brasil, e Pernambuco está no Nordeste:\n      mkdir osrm-carro && cd osrm-carro\n      wget https://download.geofabrik.de/south-america/brazil/nordeste-latest.osm.pbf\n   b) Processe os dados, uma vez por modo (perfis /opt/car.lua, /opt/bicycle.lua, /opt/foot.lua):\n      docker run -t -v "${PWD}:/data" ghcr.io/project-osrm/osrm-backend osrm-extract -p /opt/car.lua /data/nordeste-latest.osm.pbf\n      docker run -t -v "${PWD}:/data" ghcr.io/project-osrm/osrm-backend osrm-partition /data/nordeste-latest.osrm\n      docker run -t -v "${PWD}:/data" ghcr.io/project-osrm/osrm-backend osrm-customize /data/nordeste-latest.osrm\n      Para bicicleta e a pé, repita em outras pastas (osrm-bike, osrm-foot) trocando só o perfil: uma pasta por modo, para os arquivos não se sobrescreverem.\n   c) Suba o servidor (porta 5000 para carro, 5001 para bicicleta, 5002 para a pé):\n      docker run -d -p 5000:5000 -v "${PWD}:/data" ghcr.io/project-osrm/osrm-backend osrm-routed --algorithm mld /data/nordeste-latest.osrm\n      Teste: http://localhost:5000/route/v1/driving/-34.877,-8.0476;-34.8711,-8.0631?overview=full&geometries=geojson (mesmo formato da lição).\n   d) Coloque um proxy na frente (nginx ou Caddy). O osrm-routed puro não aceita chamadas de outra origem (CORS), não tem HTTPS, e o Android recusa HTTP sem criptografia. O proxy adiciona o cabeçalho Access-Control-Allow-Origin, coloca HTTPS (Let\'s Encrypt) e mapeia /routed-car/, /routed-bike/ e /routed-foot/ para as portas 5000, 5001 e 5002. Assim, na lição, só o domínio muda: troque routing.openstreetmap.de pelo seu.\n   e) Cuidados: a extração pede alguns GB de memória (depois de pronto, o servidor usa bem menos); o mapa não se atualiza sozinho, então baixe o .pbf de novo e refaça o passo b de tempos em tempos; o servidor não tem login, então limite o uso por IP no proxy se ele ficar aberto na internet.\n   f) Em sala de aula, pode rodar no seu notebook e os alunos acessam pelo IP dele na rede. O emulador Android acessa o seu computador por 10.0.2.2. Para HTTP sem criptografia no Android, só em teste, use android:usesCleartextTraffic="true" no manifesto.\n   g) O OSRM só calcula rotas. O mapa (tile.openstreetmap.org) e a busca de endereço (Nominatim ou Photon) continuam sendo serviços de terceiros, a menos que você hospede esses também.\n\n10. No simulador da Oficina, Internet: Simulada responde com dados de exemplo (alguns lugares do Recife, com tempo e distância calculados por modo), para funcionar em sala sem rede e sem gastar o limite dos serviços. Internet: Real chama os serviços de verdade pelo navegador. Lá o navegador não deixa trocar o User-Agent, então a chamada se identifica pelo endereço da página, e o servidor pode recusar se não aceitar chamadas de outra origem (CORS). No celular, o código acima envia o seu User-Agent.',
+ code:`import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:http/http.dart' as http;
+import 'package:latlong2/latlong.dart';
+
+void main() => runApp(const MaterialApp(home: RotaTela()));
+
+class RotaTela extends StatefulWidget {
+  const RotaTela({super.key});
+
+  @override
+  State<RotaTela> createState() => _RotaTelaState();
+}
+
+class _RotaTelaState extends State<RotaTela> {
+  // Identifique o seu app: nome, versão e um contato
+  final String agente = 'OficinaRotas/1.0 (seu@email.com)';
+  // Cada modo tem a sua pasta no routing.openstreetmap.de
+  final Map<String, String> servidores = {
+    'carro': 'routed-car',
+    'bicicleta': 'routed-bike',
+    'a pé': 'routed-foot',
+  };
+  final TextEditingController destinoCtl = TextEditingController(text: 'Marco Zero, Recife');
+  final MapController controle = MapController();
+  LatLng origem = LatLng(-8.0476, -34.8770);
+  LatLng destino = LatLng(-8.0631, -34.8711);
+  List<LatLng> caminho = [LatLng(-8.0476, -34.8770), LatLng(-8.0550, -34.8740), LatLng(-8.0631, -34.8711)];
+  String resumo = 'Digite um endereço e toque em Traçar rota';
+  String modo = 'carro';
+  bool usarPhoton = false;
+  bool carregando = false;
+
+  // Endereço -> coordenadas. Muda a URL e o jeito de ler a resposta:
+  // Nominatim devolve uma lista de objetos; Photon devolve GeoJSON (longitude primeiro)
+  Future<LatLng?> buscarEndereco(String texto) async {
+    final url = usarPhoton
+        ? Uri.https('photon.komoot.io', '/api', {
+            'q': texto,
+            'limit': '1',
+            'lat': '-8.05',
+            'lon': '-34.88',
+          })
+        : Uri.https('nominatim.openstreetmap.org', '/search', {
+            'q': texto,
+            'format': 'json',
+            'limit': '1',
+          });
+    final resposta = await http.get(url, headers: {'User-Agent': agente});
+    if (resposta.statusCode != 200) {
+      throw Exception('Busca respondeu \${resposta.statusCode}');
+    }
+    final dados = jsonDecode(resposta.body);
+    if (usarPhoton) {
+      final itens = dados['features'] as List;
+      if (itens.isEmpty) {
+        return null;
+      }
+      final c = itens[0]['geometry']['coordinates'];
+      return LatLng(c[1].toDouble(), c[0].toDouble());
+    }
+    final lista = dados as List;
+    if (lista.isEmpty) {
+      return null;
+    }
+    return LatLng(double.parse(lista[0]['lat']), double.parse(lista[0]['lon']));
+  }
+
+  // Dois pontos -> rota (OSRM do routing.openstreetmap.de)
+  Future<void> tracar() async {
+    setState(() {
+      carregando = true;
+      resumo = 'Procurando o endereço...';
+    });
+    try {
+      final alvo = await buscarEndereco(destinoCtl.text);
+      if (alvo == null) {
+        setState(() {
+          carregando = false;
+          resumo = 'Endereço não encontrado';
+        });
+        return;
+      }
+      final pasta = servidores[modo];
+      final url = Uri.parse(
+        'https://routing.openstreetmap.de/$pasta/route/v1/driving/'
+        '\${origem.longitude},\${origem.latitude};\${alvo.longitude},\${alvo.latitude}'
+        '?overview=full&geometries=geojson',
+      );
+      final resposta = await http.get(url, headers: {'User-Agent': agente});
+      if (resposta.statusCode != 200) {
+        throw Exception('Rotas respondeu \${resposta.statusCode}');
+      }
+      final dados = jsonDecode(resposta.body);
+      final rota = dados['routes'][0];
+      final pontos = (rota['geometry']['coordinates'] as List)
+          .map((c) => LatLng(c[1].toDouble(), c[0].toDouble()))
+          .toList();
+      final km = rota['distance'] / 1000;
+      final minutos = rota['duration'] / 60;
+      controle.fitCamera(
+        CameraFit.coordinates(coordinates: pontos, padding: const EdgeInsets.all(40)),
+      );
+      setState(() {
+        destino = alvo;
+        caminho = pontos;
+        carregando = false;
+        resumo = '\${km.toStringAsFixed(1)} km, cerca de \${minutos.round()} min ($modo)';
+      });
+    } catch (e) {
+      setState(() {
+        carregando = false;
+        resumo = 'Sem conexão ou serviço fora do ar. Tente de novo em instantes.';
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Endereço e rota')),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: destinoCtl,
+                    decoration: const InputDecoration(labelText: 'Destino', border: OutlineInputBorder()),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                FilledButton(onPressed: tracar, child: const Text('Traçar rota')),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: SegmentedButton<String>(
+              segments: const [
+                ButtonSegment(value: 'carro', label: Text('Carro'), icon: Icon(Icons.directions_car)),
+                ButtonSegment(value: 'bicicleta', label: Text('Bicicleta'), icon: Icon(Icons.directions_bike)),
+                ButtonSegment(value: 'a pé', label: Text('A pé'), icon: Icon(Icons.directions_walk)),
+              ],
+              selected: {modo},
+              onSelectionChanged: (s) {
+                setState(() {
+                  modo = s.first;
+                });
+              },
+            ),
+          ),
+          Row(
+            children: [
+              Switch(
+                value: usarPhoton,
+                onChanged: (v) {
+                  setState(() {
+                    usarPhoton = v;
+                  });
+                },
+              ),
+              const Text('Usar Photon no lugar do Nominatim'),
+            ],
+          ),
+          if (carregando) const LinearProgressIndicator(),
+          Expanded(
+            child: FlutterMap(
+              mapController: controle,
+              options: MapOptions(initialCenter: LatLng(-8.055, -34.874), initialZoom: 14),
+              children: [
+                TileLayer(
+                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  userAgentPackageName: 'com.exemplo.oficina',
+                ),
+                PolylineLayer(
+                  polylines: [Polyline(points: caminho, strokeWidth: 5, color: Colors.blue)],
+                ),
+                MarkerLayer(
+                  markers: [
+                    Marker(
+                      point: origem,
+                      width: 40,
+                      height: 40,
+                      child: const Icon(Icons.my_location, color: Colors.blue, size: 32),
+                    ),
+                    Marker(
+                      point: destino,
+                      width: 40,
+                      height: 40,
+                      child: const Icon(Icons.flag, color: Colors.red, size: 36),
+                    ),
+                  ],
+                ),
+                RichAttributionWidget(
+                  attributions: [
+                    TextSourceAttribution('© OpenStreetMap contributors'),
+                    TextSourceAttribution('Rotas: OSRM (FOSSGIS)'),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Text(resumo, style: const TextStyle(fontSize: 16)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+`},
 {t:'x. Sensor: pedômetro (passos)',
  demo:true,
  text:'O pacote pedometer conta os passos usando o sensor do aparelho. stepCountStream é um Stream: a cada novo valor, o listen chama o seu código. O número é o total desde o último reinício do aparelho, não do dia. No Android 10 ou mais novo, o app precisa pedir a permissão de reconhecimento de atividade.',
@@ -8791,7 +9067,7 @@ $('stBar').addEventListener('click',function(e){
   else if(b.dataset.a==='reset'){clearFx();R.opts.typed={};ST.reset();renderStateBar();renderCanvas()}
 });
 var timers=[];
-function clearFx(){pk=null;R.opts.fut={};R.opts.futT.forEach(clearTimeout);R.opts.futT=[];ST.mapView=null;R.opts.nav=[];R.opts.navSc=[];R.opts.navRes=[];R.opts.over=[];R.opts.tab={};R.opts.exp={};clearTimeout(snackT);timers.forEach(clearTimeout);timers=[]}
+function clearFx(){pk=null;fxGen++;R.opts.fut={};R.opts.futT.forEach(clearTimeout);R.opts.futT=[];ST.mapView=null;R.opts.nav=[];R.opts.navSc=[];R.opts.navRes=[];R.opts.over=[];R.opts.tab={};R.opts.exp={};clearTimeout(snackT);timers.forEach(clearTimeout);timers=[]}
 var snackT=null;
 function runIn(inst,fn){if(!inst)return fn();ST.enter(inst);try{return fn()}finally{ST.leave()}}
 function scopeOfEl(el){var h=el&&el.closest&&el.closest('[data-sc]');if(!h||!h.dataset.sc)return null;var all=R.opts.navSc.concat(R.opts.over.map(function(o){return o.sc}));for(var i=0;i<all.length;i++)if(all[i]&&all[i].id===h.dataset.sc)return all[i];return null}
@@ -8822,9 +9098,18 @@ function applyFx(fx,sc){
       R.opts.nav.push(f.src);R.opts.navSc.push(ST.makeScope(f.src));R.opts.navRes.push(res);R.opts.over=R.opts.over.filter(function(o){return o.k==='snack'})}
     else if(f.k==='delay'){var tm=setTimeout(function(){resolve(res,null);setTimeout(function(){},0)},Math.min(f.ms,8000));timers.push(tm)}
     else if(f.k==='toast')toast(f.msg);
+    else if(f.k==='http')doHttp(f,res);
     else if(f.k==='map'){R.opts.rerender&&renderCanvas()}
     else if(f.k==='picker'){pk={f:f,res:res};drawPicker()}
     else if(f.k==='pop')popTop(f.val)})}
+var fxGen=0;
+function doHttp(f,res){
+  var g=fxGen;
+  function done(code,body){if(g!==fxGen)return;resolve(res,ST.mkResp(code,body))}
+  if(f.sim){timers.push(setTimeout(function(){done(f.sim.f.statusCode,f.sim.f.body)},800));return}
+  var ac=window.AbortController?new AbortController():null,to=setTimeout(function(){if(ac)ac.abort()},10000);
+  try{fetch(f.url,ac?{signal:ac.signal}:{}).then(function(r){return r.text().then(function(b){clearTimeout(to);done(r.status,b)})}).catch(function(){clearTimeout(to);done(0,'')})}
+  catch(e){clearTimeout(to);done(0,'')}}
 var pk=null;
 function drawPicker(){
   var old=screen.querySelector('.pkov');if(old)old.remove();
@@ -8850,11 +9135,12 @@ function toggleSens(){
    '<label>Lat <input type="number" step="0.0001" data-s="lat" value="'+S.lat+'"></label><label>Lon <input type="number" step="0.0001" data-s="lon" value="'+S.lon+'"></label></div>'+
    '<div class="sg"><label><input type="checkbox" data-s="gps"'+(S.gps?' checked':'')+'> GPS ligado</label>'+
    '<label>Permissão <select data-s="perm"><option value="granted">Concedida</option><option value="ask">Ainda não pedida (aceita ao pedir)</option><option value="denied">Negada</option><option value="forever">Negada para sempre</option></select></label></div>'+
+   '<div class="sg"><label>Internet <select data-s="http"><option value="sim">Simulada (respostas de exemplo)</option><option value="real">Real (chama os serviços de verdade)</option></select></label></div>'+
    '<div class="sg"><label>Bateria <input type="range" min="0" max="100" data-s="battery" value="'+S.battery+'"> <b id="sBat">'+S.battery+'%</b></label><label><input type="checkbox" data-s="charging"'+(S.charging?' checked':'')+'> Carregando</label>'+
    '<label>Rede <select data-s="net"><option value="wifi">Wi-Fi</option><option value="mobile">Dados móveis</option><option value="none">Sem rede</option></select></label>'+
    '<label>Câmera <select data-s="photo"><option value="ok">Tira a foto</option><option value="cancel">Pessoa cancela</option></select></label></div>'+
    '<p class="sh">Vale para os botões do modo Testar: Geolocator, Battery, Connectivity, ImagePicker, HapticFeedback.</p>';
-  ['perm','net','photo'].forEach(function(k){p.querySelector('[data-s='+k+']').value=S[k]});
+  ['perm','net','photo','http'].forEach(function(k){p.querySelector('[data-s='+k+']').value=S[k]});
   var pi=SENS_PLACES.findIndex(function(c){return c[1]===S.lat&&c[2]===S.lon});p.querySelector('[data-s=place]').value=pi>=0?pi:'x';
   p.hidden=false}
 $('sensPop').addEventListener('input',function(e){
@@ -8867,7 +9153,7 @@ $('sensPop').addEventListener('input',function(e){
 function afterRun(r){
   if(r.fx&&r.fx.length){applyFx(r.fx,r.sc);r.dirty=true}
   var dl=OF.LESSONS[S.lesson];
-  if(r.err&&dl&&dl.demo&&!r.exc)toast('Este recurso o simulador não tem (sensores em tempo real, som, microfone, biometria, lanterna, QR): ele só funciona no celular de verdade.');
+  if(r.err&&dl&&dl.demo&&!r.exc)toast('Este recurso o simulador não tem (internet com http, sensores em tempo real, som, microfone, biometria, lanterna, QR): ele só funciona no celular de verdade.');
   else if(r.err)toast(r.exc?'Exceção não tratada: '+r.err:'Este comando ainda não é suportado no simulador: '+r.err);
   else if(r.dirty)renderCanvas();
   else if(r.mutated)toast('A variável mudou, mas sem setState() a tela não é redesenhada.');
@@ -9045,7 +9331,7 @@ function loadLesson(i,fresh){
   var saved=fresh?null:LS.get(lkey(L));
   if(fresh)LS.del(lkey(L));
   A.setCode(saved&&saved!==L.code?saved:L.code);A.analyze();OF.ST.reset();S.loading=false;S.run=OF.ST.active;R.opts.typed={};goalsDone=false;
-  $('lessonBox').innerHTML='<h1>'+esc(L.t)+'</h1><p>'+esc(L.text)+'</p><p class="try"><b>Experimente:</b> '+esc(L.tryit)+'</p>'+(L.demo?'<p class="demo">📱 Lição demonstrativa: o código é real e funciona no celular, mas o simulador não tem estes recursos (sensores em tempo real, som, microfone, biometria, lanterna, QR). GPS, bateria, rede e câmera você simula pelo botão 📡 Sensores.</p>':'')+(L.setup?'<details class="setup"><summary>Como instalar e quais permissões pedir</summary><pre>'+esc(L.setup)+'</pre></details>':'')+'<div id="goalBox" class="goals"></div>';
+  $('lessonBox').innerHTML='<h1>'+esc(L.t)+'</h1><p>'+esc(L.text)+'</p><p class="try"><b>Experimente:</b> '+esc(L.tryit)+'</p>'+(L.demo?'<p class="demo">📱 Lição demonstrativa: o código é real e funciona no celular, mas o simulador não tem estes recursos (internet com http, sensores em tempo real, som, microfone, biometria, lanterna, QR). GPS, bateria, rede e câmera você simula pelo botão 📡 Sensores.</p>':'')+(L.setup?'<details class="setup"><summary>Como instalar e quais permissões pedir</summary><pre>'+esc(L.setup)+'</pre></details>':'')+'<div id="goalBox" class="goals"></div>';
   applyFold();
   goalsDone=!!(L.goals&&doneSet().indexOf(L.t.replace(/^\d+\.\s*/,''))>=0);
   updateGoals();goalsDone=goalsDone&&true;
