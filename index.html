@@ -1176,7 +1176,7 @@ function isD(x){return x instanceof Dbl}
 function nn(x){return x instanceof Dbl?x.v:x}
 function dstr(v){return Number.isInteger(v)?v.toFixed(1):String(v)}
 function isRaw(v){return v!==null&&typeof v==='object'&&!isD(v)&&!Array.isArray(v)&&v.raw!==undefined}
-function show(v){if(v===null||v===undefined)return 'null';if(v&&v.nat)return natStr(v);if(v&&v.cls)return "Instance of '"+v.cls+"'";if(v&&(v.isMap||v.lam))return lit(v);if(v&&v.ctl)return v.text;if(isD(v))return dstr(v.v);if(isRaw(v))return v.raw;if(Array.isArray(v))return '['+v.map(show).join(', ')+']';return String(v)}
+function show(v){if(v===null||v===undefined)return 'null';if(v&&v.nat)return natStr(v);if(v&&v.cls){var tdc=ST.dataClasses[v.cls];if(tdc&&tdc.methods&&tdc.methods.toString){try{return String(runMethod(tdc.methods.toString,[],v))}catch(e){}}return "Instance of '"+v.cls+"'"}if(v&&v.isSet)return '{'+Array.from(v.s).map(show).join(', ')+'}';if(v&&v.isRec)return '('+v.pos.map(show).join(', ')+')';if(v&&v.isMap)return '{'+Array.from(v.m.entries()).map(function(e){return show(e[0])+': '+show(e[1])}).join(', ')+'}';if(v&&v.lam)return lit(v);if(v&&v.ctl)return v.text;if(isD(v))return dstr(v.v);if(isRaw(v))return v.raw;if(Array.isArray(v))return '['+v.map(show).join(', ')+']';return String(v)}
 function lit(v){
   if(v===null||v===undefined)return 'null';
   if(typeof v==='string')return "'"+v.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\$/g,'\\$').replace(/\n/g,'\\n')+"'";
@@ -1186,6 +1186,8 @@ function lit(v){
   if(v&&v.lam)return v.src;
   if(v&&v.nat)return v.nat==='#class'?v.name:v.src;
   if(v&&v.cls)return v.cls+'('+Object.keys(v.f).map(function(k){return k+': '+lit(v.f[k])}).join(', ')+')';
+  if(v&&v.isSet)return v.s.size?'{'+Array.from(v.s).map(lit).join(', ')+'}':'<dynamic>{}';
+  if(v&&v.isRec)return '('+v.pos.map(lit).join(', ')+')';
   if(v&&v.isMap)return '{'+Array.from(v.m.entries()).map(function(e){return lit(e[0])+': '+lit(e[1])}).join(', ')+'}';
   if(Array.isArray(v))return '['+v.map(lit).join(', ')+']';
   return String(v)}
@@ -1202,7 +1204,7 @@ function endStr(s,i){
     else{if(c===q)return j+1;if(c==='\n')return j}
     j++}
   return j}
-var OPS2=['??','==','!=','<=','>=','&&','||','++','--','+=','-=','*=','/=','~/','=>'];
+var OPS2=['?.','..','<<','??','==','!=','<=','>=','&&','||','++','--','+=','-=','*=','/=','~/','=>'];
 function lex(src){
   var t=[],i=0,n=src.length;
   while(i<n){
@@ -1216,8 +1218,10 @@ function lex(src){
       if(src[i]==='.'&&/\d/.test(src[i+1]||'')){i++;while(i<n&&/\d/.test(src[i]))i++}
       if(/[eE]/.test(src[i]||'')&&/[\d+-]/.test(src[i+1]||'')){i+=2;while(i<n&&/\d/.test(src[i]))i++}
       t.push({k:'num',v:src.slice(s,i),s:s,e:i});continue}
-    if(/[A-Za-z_]/.test(c)){while(i<n&&/[\w]/.test(src[i]))i++;t.push({k:'id',v:src.slice(s,i),s:s,e:i});continue}
+    if(/[A-Za-z_]/.test(c)||(c==='$'&&/\d/.test(src[i+1]||''))){i++;while(i<n&&/[\w]/.test(src[i]))i++;t.push({k:'id',v:src.slice(s,i),s:s,e:i});continue}
     if(c==="'"||c==='"'){i=endStr(src,i);t.push({k:'str',v:src.slice(s,i),s:s,e:i});continue}
+    var three=src.substr(i,3);
+    if(three==='??='||three==='...'){t.push({k:'p',v:three,s:s,e:i+3});i+=3;continue}
     var two=src.substr(i,2);
     if(OPS2.indexOf(two)>=0){t.push({k:'p',v:two,s:s,e:i+2});i+=2;continue}
     t.push({k:'p',v:c,s:s,e:i+1});i++;
@@ -1232,12 +1236,13 @@ Ps.prototype.isId=function(v){var k=this.pk();return !!k&&k.k==='id'&&k.v===v};
 Ps.prototype.eat=function(v){if(this.is(v)){this.i++;return true}return false};
 Ps.prototype.need=function(v){if(!this.eat(v))throw new Error('esperava '+v)};
 Ps.prototype.end=function(){return this.i>=this.t.length};
-var LV=[['??'],['||'],['&&'],['==','!='],['<','>','<=','>='],['+','-'],['*','/','%','~/']];
+var LV=[['??'],['||'],['&&'],['==','!='],['<','>','<=','>='],['|'],['^'],['&'],['<<'],['+','-'],['*','/','%','~/']];
 function pTern(p){var c=pBin(p,0);if(p.is('?')){p.i++;var a=pTern(p);p.need(':');var b=pTern(p);return{t:'tern',c:c,a:a,b:b}}return c}
 function pBin(p,l){
   if(l>=LV.length)return pUn(p);
   var a=pBin(p,l+1);
   while(true){var k=p.pk();
+    if(l===4&&k&&k.k==='id'&&k.v==='is'){p.i++;var ng=p.eat('!'),tn=p.pk()&&p.pk().v;p.i++;while(p.is('.')&&p.pk(1)){tn+='.'+p.pk(1).v;p.i+=2}if(p.is('<')){var gd2=1;p.i++;while(gd2>0&&!p.end()){if(p.is('<'))gd2++;else if(p.is('>'))gd2--;p.i++}}p.eat('?');a={t:'is',a:a,ty:tn,neg:ng};continue}
     if(k&&k.k==='p'&&LV[l].indexOf(k.v)>=0){p.i++;a={t:'bin',op:k.v,a:a,b:pBin(p,l+1)}}else break}
   return a}
 function pUn(p){
@@ -1247,10 +1252,11 @@ function pUn(p){
 function pPost(p){
   var a=pPrim(p);
   while(true){
-    if(p.is('.')&&p.pk(1)&&p.pk(1).k==='id'){
-      var name=p.pk(1).v;p.i+=2;var args=null;
+    if((p.is('.')||p.is('?.'))&&p.pk(1)&&p.pk(1).k==='id'){
+      var ns=p.is('?.'),name=p.pk(1).v;p.i+=2;var args=null;
       if(p.is('(')){p.i++;args=pArgs(p)}
-      a={t:'mem',o:a,name:name,args:args}}
+      a={t:'mem',o:a,name:name,args:args,ns:ns}}
+    else if(p.is('..')){var cops=[];while(p.is('..')){p.i++;var cn=p.pk()&&p.pk().k==='id'?p.pk().v:null;if(!cn)throw new Error('cascata');p.i++;var cargs=null,cset=null;if(p.is('(')){p.i++;cargs=pArgs(p)}else if(p.is('=')){p.i++;cset=pTern(p)}cops.push({name:cn,args:cargs,set:cset})}a={t:'casc',o:a,ops:cops}}
     else if(p.is('[')){p.i++;var ix=pTern(p);p.need(']');a={t:'idx',o:a,i:ix}}
     else if(p.is('!')&&!p.is('=',1)){p.i++}
     else if(p.isId('as')&&p.pk(1)&&p.pk(1).k==='id'){p.i+=2;if(p.is('<')){var gd=1;p.i++;while(gd>0&&!p.end()){if(p.is('<'))gd++;else if(p.is('>'))gd--;p.i++}}p.eat('?')}
@@ -1303,23 +1309,38 @@ function pLambda(p){
   else{var bs=p.i,dd=0;while(p.pk()){var q=p.pk();if(q.k==='p'&&q.v==='{')dd++;else if(q.k==='p'&&q.v==='}'){dd--;if(dd===0){p.i++;break}}p.i++}
     lam.block=p.src.slice(t[bs].s,p.t[p.i-1].e);lam.src=p.src.slice(startTok.s,p.t[p.i-1].e)}
   return lam}
+function pItem(p){
+  if(p.is('...')){p.i++;p.eat('?');return{t:'spread',e:pTern(p)}}
+  if(p.isId('if')&&p.is('(',1)){p.i+=2;var c=pTern(p);p.need(')');var a=pItem(p),b=null;if(p.isId('else')){p.i++;b=pItem(p)}return{t:'cif',c:c,a:a,b:b}}
+  if(p.isId('for')&&p.is('(',1)){p.i+=2;var nm=null;while(!p.isId('in')){if(p.end()||p.is(')'))throw new Error('for');if(p.pk().k==='id')nm=p.pk().v;p.i++}p.i++;var it=pTern(p);p.need(')');return{t:'cfor',name:nm,it:it,body:pItem(p)}}
+  return pTern(p)}
 function pPrim(p){
+  var hn=p.hn;p.hn=0;
   var k=p.pk();if(!k)throw new Error('fim');
   if(p.is('(')){var lm=pLambda(p);if(lm)return lm}
-  if(p.is('{')){p.i++;var ents=[];while(!p.is('}')){if(p.end())throw new Error('mapa');var kk=pTern(p);p.need(':');ents.push([kk,pTern(p)]);if(!p.eat(','))break}p.need('}');return{t:'map',entries:ents}}
+  if(p.is('{')){p.i++;
+    if(p.is('}')){p.i++;return hn===1?{t:'set',items:[]}:{t:'map',entries:[]}}
+    var first=pItem(p);
+    if(first.t==='spread'||first.t==='cif'||first.t==='cfor'||!p.is(':')){var sitems=[first];while(p.eat(',')){if(p.is('}'))break;sitems.push(pItem(p))}p.need('}');return{t:'set',items:sitems}}
+    var ents=[];p.need(':');ents.push([first,pTern(p)]);
+    while(p.eat(',')){if(p.is('}'))break;var kk=pTern(p);p.need(':');ents.push([kk,pTern(p)])}
+    p.need('}');return{t:'map',entries:ents}}
   if(k.k==='id'&&(k.v==='int'||k.v==='double'||k.v==='num')&&p.is('.',1)&&p.pk(2)&&(p.pk(2).v==='parse'||p.pk(2).v==='tryParse')&&p.is('(',3)){
     var fnn=k.v+'.'+p.pk(2).v;p.i+=4;return{t:'static',fn:fnn,args:pArgs(p)}}
-  if(p.is('<')){var dd=0;while(p.pk()){if(p.is('<'))dd++;else if(p.is('>')){dd--;if(dd===0){p.i++;break}}p.i++}return pPrim(p)}
+  if(p.is('<')){var dd=0,cm=0;while(p.pk()){if(p.is('<'))dd++;else if(p.is(',')&&dd===1)cm++;else if(p.is('>')){dd--;if(dd===0){p.i++;break}}p.i++}p.hn=cm+1;return pPrim(p)}
   if(k.k==='num'){p.i++;return{t:'num',v:/[.eE]/.test(k.v)?new Dbl(parseFloat(k.v)):parseInt(k.v,10)}}
   if(k.k==='str'){p.i++;var sa=parseStr(k);
     while(p.pk()&&p.pk().k==='str'){var s2=parseStr(p.pk());p.i++;sa.parts=sa.parts.concat(s2.parts)}
     return sa}
-  if(p.is('(')){p.i++;var e=pTern(p);p.need(')');return e}
-  if(p.is('[')){p.i++;var items=[];while(!p.is(']')){if(p.end())throw new Error('lista');items.push(pTern(p));if(!p.eat(','))break}p.need(']');return{t:'list',items:items}}
+  if(p.is('(')){p.i++;var e=pTern(p);if(p.is(',')){var rp=[e];while(p.eat(',')){if(p.is(')'))break;rp.push(pTern(p))}p.need(')');return{t:'rec',items:rp}}p.need(')');return e}
+  if(p.is('[')){p.i++;var items=[];while(!p.is(']')){if(p.end())throw new Error('lista');items.push(pItem(p));if(!p.eat(','))break}p.need(']');return{t:'list',items:items}}
   if(k.k==='id'){
     if(k.v==='true'||k.v==='false'){p.i++;return{t:'lit',v:k.v==='true'}}
     if(k.v==='null'){p.i++;return{t:'lit',v:null}}
-    if(k.v==='const'||k.v==='new'){p.i++;return pPrim(p)}
+    if(k.v==='const'||k.v==='new'){p.i++;p.hn=hn;return pPrim(p)}
+    if(k.v==='switch'&&p.is('(',1)){p.i+=2;var sj=pTern(p);p.need(')');p.need('{');var scs=[];
+      while(!p.is('}')){if(p.end())throw new Error('switch');var pat=null;if(p.isId('_')&&(p.is('=>',1)||p.isId('when'))){p.i++}else pat=pTern(p);var gd=null;if(p.isId('when')){p.i++;gd=pTern(p)}p.need('=>');scs.push({pat:pat,guard:gd,body:pTern(p)});if(!p.eat(','))break}
+      p.need('}');return{t:'swx',subj:sj,cases:scs}}
     if(k.v==='this'&&p.is('.',1)&&p.pk(2)&&p.pk(2).k==='id'){p.i+=3;return{t:'id',name:p.t[p.i-1].v}}
     if((k.v==='double'||k.v==='int')&&p.is('.',1)&&p.pk(2)&&p.pk(2).v==='infinity'){p.i+=3;return{t:'lit',v:new Dbl(Infinity)}}
     p.i++;
@@ -1353,8 +1374,12 @@ function lookup(env,n){
     if(ST.busy&&ST.busy[n])throw new Error('ciclo');
     (ST.busy=ST.busy||{})[n]=1;
     try{var v=ev(pTern(new Ps(ST.locals[n])),mkEnv());cache[key]=v;return v}finally{ST.busy[n]=0}}
+  if(ST.globals&&ST.globals[n])return globalVal(n);
   if(NATCLS[n]||ENUMS[n])return{nat:'#class',name:n};
+  if(n==='pi')return new Dbl(Math.PI);
+  if(n==='e'&&false)return new Dbl(Math.E);
   throw new Error('desconhecido '+n)}
+function globalVal(n){var g=ST.globals[n];if(!g.done){g.done=true;try{g.value=coerce(g.type,g.init!=null?ev(pTern(new Ps(g.init)),mkEnv()):null)}catch(e){g.value=null}}return g.value}
 function evalGetter(o,g){
   var env=mkEnv({});env.self=o;
   if(g.arrow)return ev(pTern(new Ps(g.body)),env);
@@ -1378,7 +1403,31 @@ function construct(name,args){
   Object.keys(vals).forEach(function(k){o.f[k]=coerce(fieldType(dc,k),vals[k])});
   args.forEach(function(a){if(a.name&&!hasOwn(vals,a.name)&&hasOwn(o.f,a.name))o.f[a.name]=coerce(fieldType(dc,a.name),a.val)});
   return o}
-function eq(a,b){if(isRaw(a)&&isRaw(b))return a.raw===b.raw;return nn(a)===nn(b)}
+function eq(a,b){
+  if(isRaw(a)&&isRaw(b))return a.raw===b.raw;
+  if(a&&a.cls){var edc=ST.dataClasses[a.cls];if(edc&&edc.methods['operator=='])return !!runMethod(edc.methods['operator=='],[b],a)}
+  return nn(a)===nn(b)}
+function evItems(items,env,out){
+  items.forEach(function(it){
+    if(it.t==='spread'){var sv=ev(it.e,env);if(sv==null)return;toIter(sv).forEach(function(x){out.push(x)})}
+    else if(it.t==='cif'){if(ev(it.c,env))evItems([it.a],env,out);else if(it.b)evItems([it.b],env,out)}
+    else if(it.t==='cfor'){toIter(ev(it.it,env)).forEach(function(x){var e2=mkEnv({});e2.parent=env;if(env.self)e2.self=env.self;e2.params[it.name]=x;evItems([it.body],e2,out)})}
+    else out.push(ev(it,env))});
+  return out}
+function isType(v,ty){
+  if(ty==='Object'||ty==='dynamic')return v!=null;
+  if(ty==='Null')return v==null;
+  if(v==null)return false;
+  switch(ty){
+    case 'int':return typeof v==='number'&&Number.isInteger(v);
+    case 'double':return isD(v);
+    case 'num':return typeof v==='number'||isD(v);
+    case 'String':return typeof v==='string';
+    case 'bool':return typeof v==='boolean';
+    case 'List':case 'Iterable':return Array.isArray(v);
+    case 'Map':return !!v.isMap;
+    case 'Set':return !!v.isSet}
+  return !!v.cls&&v.cls===ty}
 function emitArg(a,env){
   var pre=a.name?a.name+': ':'';
   if(a.rawText!==undefined)return pre+a.rawText;
@@ -1388,11 +1437,30 @@ function ev(a,env){
     case 'num':case 'lit':return a.v;
     case 'str':return a.parts.map(function(x){return typeof x==='string'?x:show(ev(x,env))}).join('');
     case 'id':return lookup(env,a.name);
-    case 'list':return a.items.map(function(x){return ev(x,env)});
+    case 'list':return evItems(a.items,env,[]);
+    case 'set':return{isSet:true,s:new Set(evItems(a.items,env,[]).map(nn))};
+    case 'rec':return{isRec:true,pos:a.items.map(function(x){return ev(x,env)})};
+    case 'is':{var iv2=ev(a.a,env),r2=isType(iv2,a.ty);return a.neg?!r2:r2}
+    case 'casc':{var co=ev(a.o,env);a.ops.forEach(function(op){
+        if(op.set){var sv2=ev(op.set,env);if(co&&co.cls){co.f[op.name]=sv2;mutated=true}else throw new Error('atribuição '+op.name)}
+        else{var cargs=op.args&&op.args.map(function(x){if(x.ast===undefined)throw new Error('arg');return ev(x.ast,env)});member(co,op.name,cargs)}});return co}
+    case 'swx':{var sv3=ev(a.subj,env);for(var si=0;si<a.cases.length;si++){var sc=a.cases[si];
+        if(sc.pat===null||eq(sv3,ev(sc.pat,env))){if(sc.guard&&!ev(sc.guard,env))continue;return ev(sc.body,env)}}
+      throw exc('Bad state: nenhum caso do switch combinou')}
     case 'un':{var v=ev(a.a,env);if(a.op==='!')return !v;return isD(v)?new Dbl(-v.v):-v}
     case 'tern':return ev(a.c,env)?ev(a.a,env):ev(a.b,env);
     case 'ctor':{
       if(a.args&&ST.dataClasses[a.name])return construct(a.name,evalArgs(a,env));
+      if(a.args&&/^(List\.(generate|filled|from|of)|Set(\.(from|of))?|Random|StringBuffer)$/.test(a.name)){
+        var ca=evalArgs(a,env).map(function(x){return x.val});
+        switch(a.name){
+          case 'List.generate':{var gl=[],gn=nn(ca[0]);for(var gi=0;gi<gn;gi++){tick();gl.push(callLam(ca[1],[gi]))}return gl}
+          case 'List.filled':{var fl=[];for(var fi=0;fi<nn(ca[0]);fi++)fl.push(ca[1]);return fl}
+          case 'List.from':case 'List.of':return toIter(ca[0]);
+          case 'Set':return{isSet:true,s:new Set()};
+          case 'Set.from':case 'Set.of':return{isSet:true,s:new Set(toIter(ca[0]).map(nn))};
+          case 'Random':return{nat:'Random',f:{},src:'Random()'};
+          case 'StringBuffer':return{nat:'StringBuffer',f:{},st:{s:ca.length?show(ca[0]):''},src:'StringBuffer()'}}}
       if(a.args&&NATCTOR[a.name])return natCtor(a.name,evalArgs(a,env));
       if(!a.args&&a.name.indexOf('.')>0){var pe=a.name.split('.');if(pe.length===2&&ENUMS[pe[0]])return a.name}
       if(a.args&&a.name.indexOf('.')>0){var pre=a.name.split('.');if(pre.length===2&&(NATCLS[pre[0]]||ENUMS[pre[0]]))return natMember({nat:'#class',name:pre[0]},pre[1],evalArgs(a,env).filter(function(x){return !x.name}).map(function(x){return x.val}))}
@@ -1411,12 +1479,25 @@ function ev(a,env){
       return isI?parseInt(st0,10):new Dbl(parseFloat(st0))}
     case 'fn':{
       var av=a.args.map(function(x){if(x.ast===undefined)throw new Error('arg');return ev(x.ast,env)});
-      if(env.self){var dc0=ST.dataClasses[env.self.cls];if(dc0&&dc0.methods[a.name])return runMethod(dc0.methods[a.name],av,env.self)}
-      if(ST.methods[a.name])return runMethod(ST.methods[a.name],av,null);
+      var fnames=a.args.map(function(x){return x.name});
+      if(env.self){var dc0=ST.dataClasses[env.self.cls];if(dc0&&dc0.methods[a.name]){ARGN=fnames;return runMethod(dc0.methods[a.name],av,env.self)}}
+      if(ST.methods[a.name]){ARGN=fnames;return runMethod(ST.methods[a.name],av,null)}
       if(a.name==='print'||a.name==='debugPrint')return null;
       if(a.name==='jsonDecode')return jsonDec(av[0]);
+      if(a.name==='jsonEncode')return jsonEnc(av[0]);
+      if(a.name==='identical')return av[0]===av[1];
+      switch(a.name){
+        case 'max':case 'min':{var mx=a.name==='max'?Math.max(nn(av[0]),nn(av[1])):Math.min(nn(av[0]),nn(av[1]));return(isD(av[0])||isD(av[1]))?new Dbl(mx):mx}
+        case 'sqrt':return new Dbl(Math.sqrt(nn(av[0])));
+        case 'pow':{var pw=Math.pow(nn(av[0]),nn(av[1]));return(isD(av[0])||isD(av[1])||nn(av[1])<0)?new Dbl(pw):pw}
+        case 'sin':return new Dbl(Math.sin(nn(av[0])));case 'cos':return new Dbl(Math.cos(nn(av[0])));case 'tan':return new Dbl(Math.tan(nn(av[0])));
+        case 'atan':return new Dbl(Math.atan(nn(av[0])));case 'atan2':return new Dbl(Math.atan2(nn(av[0]),nn(av[1])));
+        case 'log':return new Dbl(Math.log(nn(av[0])));case 'exp':return new Dbl(Math.exp(nn(av[0])))}
       throw new Error('função '+a.name)}
-    case 'mem':return member(ev(a.o,env),a.name,a.args&&a.args.map(function(x){if(x.ast===undefined)throw new Error('arg');return ev(x.ast,env)}));
+    case 'mem':{var mo=ev(a.o,env);if(a.ns&&mo==null)return null;
+      var margs=a.args&&a.args.map(function(x){if(x.ast===undefined)throw new Error('arg');return ev(x.ast,env)});
+      if(a.args)ARGN=a.args.map(function(x){return x.name});
+      try{return member(mo,a.name,margs)}finally{ARGN=null}}
     case 'idx':{var ov=ev(a.o,env),iv0=ev(a.i,env);
       if(ov&&ov.isMap){var mk=nn(iv0);return ov.m.has(mk)?ov.m.get(mk):null}
       var iv=nn(iv0);
@@ -1432,9 +1513,12 @@ function binary(a,env){
   var l=ev(a.a,env),r=ev(a.b,env);
   if(op==='==')return eq(l,r);
   if(op==='!=')return !eq(l,r);
+  if(l&&l.cls){var odc=ST.dataClasses[l.cls];if(odc&&odc.methods['operator'+op]){ARGN=null;return runMethod(odc.methods['operator'+op],[r],l)}}
   if(op==='+'&&(typeof l==='string'||typeof r==='string'))return show(l)+show(r);
+  if(op==='*'&&typeof l==='string'&&typeof nn(r)==='number'){var rs='',rn=nn(r);for(var ri=0;ri<rn;ri++)rs+=l;return rs}
   var x=nn(l),y=nn(r),res;
   switch(op){
+    case '&':return x&y;case '|':return x|y;case '^':return x^y;case '<<':return x<<y;
     case '<':return x<y;case '>':return x>y;case '<=':return x<=y;case '>=':return x>=y;
     case '+':res=x+y;break;case '-':res=x-y;break;case '*':res=x*y;break;
     case '/':res=x/y;break;
@@ -1462,7 +1546,28 @@ function member(v,name,args){
       case 'entries':return Array.from(v.m.entries()).map(function(e){return{entry:true,key:e[0],value:e[1]}});
       case 'containsKey':return v.m.has(nn(args[0]));
       case 'remove':{var had=v.m.get(nn(args[0]));v.m.delete(nn(args[0]));mutated=true;return had===undefined?null:had}
-      case 'clear':v.m.clear();mutated=true;return null}}
+      case 'clear':v.m.clear();mutated=true;return null;
+      case 'containsValue':return Array.from(v.m.values()).some(function(x){return eq(x,args[0])});
+      case 'putIfAbsent':{var pk0=nn(args[0]);if(!v.m.has(pk0)){v.m.set(pk0,callLam(args[1],[]));mutated=true}return v.m.get(pk0)}
+      case 'update':{var uk=nn(args[0]);if(v.m.has(uk))v.m.set(uk,callLam(args[1],[v.m.get(uk)]));else if(args[2])v.m.set(uk,callLam(args[2],[]));else throw exc('Bad state: Key not in map.');mutated=true;return v.m.get(uk)}
+      case 'forEach':Array.from(v.m.entries()).forEach(function(e){callLam(args[0],[e[0],e[1]])});return null;
+      case 'addAll':args[0].m.forEach(function(val,key){v.m.set(key,val)});mutated=true;return null;
+      case 'removeWhere':{Array.from(v.m.entries()).forEach(function(e){if(callLam(args[0],[e[0],e[1]]))v.m.delete(e[0])});mutated=true;return null}}}
+  if(v.isSet){
+    var sset=v.s;
+    switch(name){
+      case 'length':return sset.size;case 'isEmpty':return sset.size===0;case 'isNotEmpty':return sset.size>0;
+      case 'add':{var had2=sset.has(nn(args[0]));sset.add(nn(args[0]));mutated=true;return !had2}
+      case 'remove':{var h3=sset.delete(nn(args[0]));mutated=true;return h3}
+      case 'contains':return sset.has(nn(args[0]));
+      case 'clear':sset.clear();mutated=true;return null;
+      case 'addAll':toIter(args[0]).forEach(function(x){sset.add(nn(x))});mutated=true;return null;
+      case 'union':return{isSet:true,s:new Set(Array.from(sset).concat(toIter(args[0]).map(nn)))};
+      case 'intersection':{var o2=new Set(toIter(args[0]).map(nn));return{isSet:true,s:new Set(Array.from(sset).filter(function(x){return o2.has(x)}))}}
+      case 'difference':{var o3=new Set(toIter(args[0]).map(nn));return{isSet:true,s:new Set(Array.from(sset).filter(function(x){return !o3.has(x)}))}}
+      case 'toSet':return v;
+      default:return member(Array.from(sset),name,args)}}
+  if(v.isRec){var rmm=/^\$(\d+)$/.exec(name);if(rmm&&v.pos[+rmm[1]-1]!==undefined)return v.pos[+rmm[1]-1]}
   if(isRaw(v))return{raw:v.raw+'.'+name+(args.length?'('+args.map(lit).join(', ')+')':'')};
   if(v&&v.ctl){if(name==='text')return v.text;if(name==='clear'){v.text='';mutated=true;return null}}
   if(name==='toString')return show(v);
@@ -1474,7 +1579,13 @@ function member(v,name,args){
       case 'substring':return v.substring(nn(args[0]),args.length>1?nn(args[1]):undefined);
       case 'startsWith':return v.indexOf(args[0])===0;case 'endsWith':return v.length>=args[0].length&&v.slice(v.length-args[0].length)===args[0];
       case 'indexOf':return v.indexOf(args[0]);case 'compareTo':return v<args[0]?-1:v>args[0]?1:0;
-      case 'padLeft':{var ps=v;while(ps.length<nn(args[0]))ps=(args.length>1?args[1]:' ')+ps;return ps}}}
+      case 'padLeft':{var ps=v;while(ps.length<nn(args[0]))ps=(args.length>1?args[1]:' ')+ps;return ps}
+      case 'padRight':{var pr=v;while(pr.length<nn(args[0]))pr=pr+(args.length>1?args[1]:' ');return pr}
+      case 'replaceFirst':return v.replace(args[0],function(){return args[1]});
+      case 'trimLeft':return v.replace(/^\s+/,'');case 'trimRight':return v.replace(/\s+$/,'');
+      case 'lastIndexOf':return v.lastIndexOf(args[0]);
+      case 'codeUnitAt':return v.charCodeAt(nn(args[0]));
+      case 'codeUnits':case 'runes':return v.split('').map(function(c){return c.charCodeAt(0)})}}
   else if(typeof v==='number'||isD(v)){
     var x=nn(v);
     switch(name){
@@ -1485,6 +1596,9 @@ function member(v,name,args){
       case 'floor':return Math.floor(x);case 'ceil':return Math.ceil(x);
       case 'abs':return isD(v)?new Dbl(Math.abs(x)):Math.abs(x);
       case 'isEven':return x%2===0;case 'isOdd':return Math.abs(x%2)===1;
+      case 'isNaN':return isNaN(x);case 'isNegative':return x<0;case 'isFinite':return isFinite(x);
+      case 'sign':return isD(v)?new Dbl(Math.sign(x)):Math.sign(x);
+      case 'remainder':{var rm=x%nn(args[0]);return(isD(v)||isD(args[0]))?new Dbl(rm):rm}
       case 'compareTo':{var cy=nn(args[0]);return x<cy?-1:x>cy?1:0}
       case 'clamp':{var r=Math.min(Math.max(x,nn(args[0])),nn(args[1]));return(isD(v)||isD(args[0])||isD(args[1]))?new Dbl(r):r}}}
   else if(Array.isArray(v)){
@@ -1511,12 +1625,30 @@ function member(v,name,args){
       case 'fold':return v.reduce(function(acc,x){return callLam(args[1],[acc,x])},args[0]);
       case 'reduce':return v.reduce(function(acc,x){return callLam(args[0],[acc,x])});
       case 'removeWhere':{var keep=v.filter(function(x){return !callLam(args[0],[x])});v.length=0;keep.forEach(function(x){v.push(x)});mutated=true;return null}
-      case 'sort':v.sort(function(x,y){return nn(callLam(args[0],[x,y]))});mutated=true;return null;
-      case 'firstWhere':{var fw=v.filter(function(x){return callLam(args[0],[x])});if(!fw.length)throw exc('Bad state: No element');return fw[0]}}}
+      case 'sort':v.sort(args[0]?function(x,y){return nn(callLam(args[0],[x,y]))}:function(x,y){var a=nn(x),b=nn(y);return a<b?-1:a>b?1:0});mutated=true;return null;
+      case 'firstWhere':{var fw=v.filter(function(x){return callLam(args[0],[x])});if(!fw.length){if(args[1])return callLam(args[1],[]);throw exc('Bad state: No element')}return fw[0]}
+      case 'lastWhere':{var lw=v.filter(function(x){return callLam(args[0],[x])});if(!lw.length){if(args[1])return callLam(args[1],[]);throw exc('Bad state: No element')}return lw[lw.length-1]}
+      case 'singleWhere':{var sw=v.filter(function(x){return callLam(args[0],[x])});if(sw.length!==1)throw exc('Bad state: '+(sw.length?'Too many elements':'No element'));return sw[0]}
+      case 'indexWhere':{for(var iw=0;iw<v.length;iw++)if(callLam(args[0],[v[iw]]))return iw;return -1}
+      case 'lastIndexOf':return v.lastIndexOf(args[0]);
+      case 'sublist':return v.slice(nn(args[0]),args.length>1&&args[1]!=null?nn(args[1]):undefined);
+      case 'getRange':return v.slice(nn(args[0]),nn(args[1]));
+      case 'expand':{var ex=[];v.forEach(function(x){toIter(callLam(args[0],[x])).forEach(function(y){ex.push(y)})});return ex}
+      case 'toSet':return{isSet:true,s:new Set(v.map(nn))};
+      case 'followedBy':return v.concat(toIter(args[0]));
+      case 'elementAt':return v[nn(args[0])];
+      case 'single':if(v.length!==1)throw exc('Bad state: '+(v.length?'Too many elements':'No element'));return v[0];
+      case 'takeWhile':{var tw=[];for(var ti=0;ti<v.length;ti++){if(!callLam(args[0],[v[ti]]))break;tw.push(v[ti])}return tw}
+      case 'skipWhile':{var si=0;while(si<v.length&&callLam(args[0],[v[si]]))si++;return v.slice(si)}
+      case 'insertAll':v.splice.apply(v,[nn(args[0]),0].concat(toIter(args[1])));mutated=true;return null;
+      case 'removeRange':v.splice(nn(args[0]),nn(args[1])-nn(args[0]));mutated=true;return null;
+      case 'shuffle':for(var sh=v.length-1;sh>0;sh--){var sj=Math.floor(Math.random()*(sh+1)),tmp=v[sh];v[sh]=v[sj];v[sj]=tmp}mutated=true;return null;
+      case 'asMap':{var am={isMap:true,m:new Map()};v.forEach(function(x,i){am.m.set(i,x)});return am}}}
   throw new Error('membro '+name)}
 
 /* ---- comandos ---- */
 var TYPES={final:1,'var':1,'const':1,'int':1,'double':1,num:1,bool:1,String:1,dynamic:1,late:1};
+var ARGN=null;
 var steps=0;
 function tick(){if(++steps>20000)throw exc('laço longo demais (possível loop infinito)')}
 function coerce(type,v){
@@ -1529,10 +1661,11 @@ function setVar(env,n,v){
   if(env.parent){setVar(env.parent,n,v);return}
   if(env.self&&hasOwn(env.self.f,n)){env.self.f[n]=coerce(fieldType(ST.dataClasses[env.self.cls],n),v);mutated=true;return}
   if(ST.fields[n]){ST.fields[n].value=coerce(ST.fields[n].type,v);mutated=true;return}
+  if(ST.globals&&ST.globals[n]){globalVal(n);ST.globals[n].value=coerce(ST.globals[n].type,v);mutated=true;return}
   throw new Error('variável '+n)}
 function getVar(env,n){return lookup(env,n)}
 function arith(l,op,r){return binary({op:op,a:{t:'lit',v:l},b:{t:'lit',v:r}},null)}
-var ASG=/^(=|\+=|-=|\*=|\/=)$/;
+var ASG=/^(=|\+=|-=|\*=|\/=|\?\?=)$/;
 function assignTo(ast,val,env){
   if(ast.t==='id'){setVar(env,ast.name,val);return}
   if(ast.t==='mem'&&ast.args===null){
@@ -1675,13 +1808,23 @@ function fxStmt(p,env,run){
     if(/\.(push|pushReplacement)\s*\(/.test(txt)){ST.fx.push({k:'push',replace:/pushReplacement/.test(txt),src:bindEnv(builderBody(txt),env),cb:thenCb(txt)});return true}
     throw new Error('Navigator.'+((/Navigator(?:\.of\([^)]*\))?\.(\w+)/.exec(txt)||[])[1]||'?')+' (só push, pushReplacement e pop são simulados)')}
   return false}
+function excMsg(v){
+  if(isRaw(v)){var m=/^(\w*(?:Exception|Error))\(([\s\S]*)\)$/.exec(v.raw.trim());
+    if(m){var inner=m[2].trim();if(/^(['"])[\s\S]*\1$/.test(inner))inner=inner.slice(1,-1);
+      if(m[1]==='StateError')return 'Bad state: '+inner;if(m[1]==='ArgumentError')return 'Invalid argument(s)'+(inner?': '+inner:'');
+      return m[1]+(inner?': '+inner:'')}}
+  return show(v)}
+function excMatches(err,tn){
+  if(!tn||tn==='Object'||tn==='Exception')return true;
+  if(err.val&&err.val.cls)return err.val.cls===tn;
+  return (err.message||'').indexOf(tn)===0||tn==='Error'}
 function simple(p,env,run){
   var k=p.pk();
   if(k&&k.k==='id'){
     if(FXSTART[k.v]&&fxStmt(p,env,run))return;
     if(k.v==='setState'&&p.is('(',1)){stmt(p,env,run);return}
     if(k.v==='await'){p.i++;simple(p,env,run);return}
-    if(k.v==='throw'){p.i++;var te=pTern(p);if(run)throw exc(show(ev(te,env)));return}
+    if(k.v==='throw'){p.i++;var te=pTern(p);if(run){var tv=ev(te,env),ex2=exc(excMsg(tv));if(tv&&tv.cls)ex2.val=tv;throw ex2}return}
     if(k.v==='super'&&p.is('.',1)){skipToEnd(p);return}}
   if(k&&k.k==='p'&&(k.v==='++'||k.v==='--')){
     p.i++;var pa=pPost(p);if(run)assignTo(pa,arith(ev(pa,env),k.v==='++'?'+':'-',1),env);return}
@@ -1689,20 +1832,33 @@ function simple(p,env,run){
   if(nx&&nx.k==='p'&&ASG.test(nx.v)&&(ast.t==='id'||ast.t==='idx'||(ast.t==='mem'&&ast.args===null))){
     p.i++;var es0=p.i;var ex=pTern(p);
     if(run&&ast.t==='id'&&nx.v==='='&&ST.fields[ast.name]&&/Future/.test(ST.fields[ast.name].type||'')){(ST.futExpr=ST.futExpr||{})[ast.name]=p.src.slice(p.t[es0].s,p.t[p.i-1].e);ST.futGen=(ST.futGen||0)+1}
-    if(run){var val=ev(ex,env);if(nx.v!=='=')val=arith(ev(ast,env),nx.v[0],val);assignTo(ast,val,env)}
+    if(run){if(nx.v==='??='){if(ev(ast,env)==null)assignTo(ast,ev(ex,env),env);return}var val=ev(ex,env);if(nx.v!=='=')val=arith(ev(ast,env),nx.v[0],val);assignTo(ast,val,env)}
     return}
   if(nx&&nx.k==='p'&&(nx.v==='++'||nx.v==='--')&&(ast.t==='id'||ast.t==='idx'||(ast.t==='mem'&&ast.args===null))){
     p.i++;if(run)assignTo(ast,arith(ev(ast,env),nx.v==='++'?'+':'-',1),env);return}
   p.i=st;var a2=pTern(p);
   if(run){try{ev(a2,env)}catch(e){if(e.dartExc)throw e}}}
+var MODS={final:1,const:1,late:1,'var':1};
 function tryDecl(p,env,run){
-  var k=p.pk();
-  if(!(k&&k.k==='id'&&TYPES[k.v]&&p.pk(1)&&(p.pk(1).k==='id'||p.is('?',1)||p.is('<',1))))return false;
-  var j=p.i;
-  while(p.pk()&&p.pk().k==='id'&&TYPES[p.pk().v]&&p.pk(1)&&(p.pk(1).k==='id'||p.is('?',1))){p.i++;p.eat('?')}
-  if(!(p.pk()&&p.pk().k==='id')){p.i=j;return false}
-  var name=p.pk().v;p.i++;
-  if(p.eat('=')){var ie=pTern(p);if(run)env.locals[name]=ev(ie,env)}else if(run)env.locals[name]=null;
+  var t=p.t,i=p.i;if(!t[i]||t[i].k!=='id')return false;
+  while(t[i]&&t[i].k==='id'&&MODS[t[i].v])i++;
+  var had=i>p.i,tn=null,j;
+  if(had&&t[i]&&t[i].k==='p'&&t[i].v==='('){
+    var q=i+1,names=[];while(t[q]&&!(t[q].k==='p'&&t[q].v===')')){if(t[q].k==='id')names.push(t[q].v);q++}
+    if(t[q]&&t[q+1]&&t[q+1].k==='p'&&t[q+1].v==='='&&names.length){p.i=q+2;var rv=pTern(p);p.eat(';');
+      if(run){var rec=ev(rv,env);if(!rec||!rec.isRec)throw new Error('desestruturação');names.forEach(function(n,ix){env.locals[n]=rec.pos[ix]})}return true}
+    return false}
+  if(t[i]&&t[i].k==='id'&&t[i+1]&&t[i+1].k==='p'&&(t[i+1].v==='='||t[i+1].v===';')){
+    if(!had)return false;j=i}
+  else{
+    if(!(t[i]&&t[i].k==='id'&&(TYPES[t[i].v]||/^[A-Z]/.test(t[i].v)||had)))return false;
+    tn=t[i].v;j=i+1;
+    while(t[j]&&t[j].k==='p'&&t[j].v==='.'&&t[j+1]&&t[j+1].k==='id'){j+=2}
+    if(t[j]&&t[j].k==='p'&&t[j].v==='<'){var d=0;while(t[j]){if(t[j].k==='p'&&t[j].v==='<')d++;else if(t[j].k==='p'&&t[j].v==='>'){d--;if(d===0){j++;break}}else if(!(t[j].k==='id'||(t[j].k==='p'&&(t[j].v===','||t[j].v==='?'||t[j].v==='.'))))return false;j++}}
+    if(t[j]&&t[j].k==='p'&&t[j].v==='?')j++;
+    if(!(t[j]&&t[j].k==='id'&&t[j+1]&&t[j+1].k==='p'&&(t[j+1].v==='='||t[j+1].v===';')))return false}
+  var name=t[j].v;p.i=j+1;
+  if(p.eat('=')){var ie=pTern(p);if(run){var iv=ev(ie,env);if(tn==='Set'&&iv&&iv.isMap&&iv.m.size===0)iv={isSet:true,s:new Set()};env.locals[name]=tn?coerce(tn,iv):iv}}else if(run)env.locals[name]=null;
   return true}
 function block(p,env,run){
   p.need('{');var s0=env.susp;env.bd=(env.bd||0)+1;
@@ -1711,6 +1867,7 @@ function block(p,env,run){
   if(run&&!s0&&env.susp&&env.bd>0&&env.pend){var c={p:clonePs(p),env:env,decl:null,tail:null,sd:env.bd};env.pend.last.tail=c;env.pend.last=c}}
 function toIter(v){
   if(Array.isArray(v))return v.slice();
+  if(v&&v.isSet)return Array.from(v.s);
   if(v&&v.isMap)return Array.from(v.m.entries()).map(function(e){return{entry:true,key:e[0],value:e[1]}});
   if(typeof v==='string')return v.split('');
   throw new Error('iteração')}
@@ -1730,6 +1887,15 @@ function stmt(p,env,run){
         p.i+=2;p.need('(');while(!p.is(')')&&!p.end())p.i++;p.need(')');
         if(p.eat('=>'))simple(p,env,run);else stmt(p,env,run);
         p.need(')');p.eat(';');if(run)dirty=true;return}break;
+      case 'do':{
+        p.i++;var dbs=p.i;stmt(p,env,false);
+        if(!p.isId('while'))throw new Error('do sem while');p.i++;p.need('(');var dcs=p.i;pTern(p);p.need(')');p.eat(';');var dend=p.i;
+        if(run){
+          while(true){tick();p.i=dbs;env.lp=(env.lp||0)+1;try{stmt(p,env,true)}finally{env.lp--}
+            if(env.brk||env.returned)break;env.cont=false;
+            p.i=dcs;if(!ev(pTern(p),env))break}
+          env.brk=false;env.cont=false}
+        p.i=dend;return}
       case 'while':{
         p.i++;p.need('(');var cs=p.i;pTern(p);p.need(')');var bs=p.i;
         if(run){
@@ -1779,11 +1945,11 @@ function stmt(p,env,run){
         var caught=false;
         while(p.isId('on')||p.isId('catch')||p.isId('finally')){
           if(p.isId('finally')){p.i++;block(p,env,run);continue}
-          if(p.isId('on'))p.i+=2;
+          var tyn=null;if(p.isId('on')){tyn=p.pk(1)&&p.pk(1).v;p.i+=2;if(p.is('<')){var gd3=1;p.i++;while(gd3>0&&!p.end()){if(p.is('<'))gd3++;else if(p.is('>'))gd3--;p.i++}}p.eat('?')}
           var en=null;
           if(p.isId('catch')){p.i++;p.need('(');en=p.pk().v;p.i++;while(!p.is(')')&&!p.end())p.i++;p.need(')')}
-          var doC=run&&err&&!caught&&err.dartExc;
-          if(doC){caught=true;if(en)env.locals[en]=err.message}
+          var doC=run&&err&&!caught&&err.dartExc&&excMatches(err,tyn);
+          if(doC){caught=true;if(en)env.locals[en]=err.val||err.message}
           block(p,env,doC)}
         if(run&&err&&!caught)throw err;
         return}
@@ -1803,10 +1969,29 @@ function runGen(m,env){
   var ms=1000,dm=/Future\s*\.\s*delayed\s*\(/.exec(m.body);
   if(dm){var seg=grabCall(m.body.slice(dm.index),'Future\\s*\\.\\s*delayed');if(seg)ms=mkDelay(seg,env).ms}
   return{nat:'Stream',kind:'iter',items:ys,ms:ms,inf:inf,src:'Stream()'}}
+function declParams(txt){
+  var inner=txt.trim(),out=[];if(!inner)return out;
+  var bi=inner.indexOf('{'),si=inner.indexOf('[');
+  var pos=inner,nm='',op='';
+  if(bi>=0){pos=inner.slice(0,bi);nm=inner.slice(bi+1,inner.lastIndexOf('}'))}
+  else if(si>=0){pos=inner.slice(0,si);op=inner.slice(si+1,inner.lastIndexOf(']'))}
+  [[pos,0],[op,0],[nm,1]].forEach(function(sg){
+    splitTopStr(sg[0],',').forEach(function(pp){
+      pp=pp.trim().replace(/^required\s+/,'');if(!pp)return;
+      var eq2=pp.indexOf('='),left=(eq2>=0?pp.slice(0,eq2):pp).trim(),def=eq2>=0?pp.slice(eq2+1).trim():null;
+      var mm=/(\w+)\s*$/.exec(left);if(!mm)return;
+      var tm=/this\.(\w+)$/.exec(left);
+      out.push({name:tm?tm[1]:mm[1],named:sg[1]===1,def:def})})});
+  return out}
 function runMethod(m,args,self){
+  var an=ARGN;ARGN=null;
   if(++depth>25){depth=0;throw exc('Stack Overflow: recursão demais')}
   try{
-    var env=mkEnv({});env.self=self||null;paramNames(m.params).forEach(function(n,i){env.params[n]=args[i]});
+    var env=mkEnv({});env.self=self||null;
+    if(!m._dp)m._dp=declParams(m.params);
+    var simplePos=!/[{\[]/.test(m.params)&&!(an&&an.some(function(x){return x}));
+    if(simplePos)m._dp.forEach(function(pr,i){env.params[pr.name]=args[i]});
+    else{var vals=bindArgs(m._dp,args.map(function(v,i){return{name:an&&an[i],val:v}}));Object.keys(vals).forEach(function(k){env.params[k]=vals[k]})}
     if(!m.arrow&&/\byield\b/.test(m.body))return runGen(m,env);
     var p=new Ps(m.body);
     if(m.arrow){lastSusp=null;return ev(pTern(p),env)}
@@ -1843,6 +2028,7 @@ ST.run=function(raw,args){
   }catch(e){err=e.message;isExc=!!e.dartExc}
   return{dirty:dirty,mutated:mutated,err:err,exc:isExc,fx:ST.fx.slice()}};
 ST.reset=function(){
+  Object.keys(ST.globals||{}).forEach(function(k){ST.globals[k].done=false});
   ST.futExpr={};ST.futGen=0;
   if(ST.onReset)ST.onReset();
   ST.order.forEach(function(n){var f=ST.fields[n];f.value=initOf(f)});cache={};ST.runInit()};
@@ -1855,6 +2041,7 @@ function initOf(f){
   return coerce(f.type,v)}
 ST.load=function(info){
   ST.futExpr={};ST.futGen=0;
+  ST.globals={};((info&&info.globals)||[]).forEach(function(g){ST.globals[g.name]={name:g.name,type:g.type,init:g.init,done:false,value:null}});
   var old=ST.fields;ST.fields={};ST.order=[];ST.methods={};ST.locals={};ST.dataClasses={};ST.userWidgets={};ST.widgetVals={};cache={};ST.initState=null;ST.statefuls={};ST.funcs={};
   if(!info){ST.active=false;ST.re=null;return}
   (info.states||[]).forEach(function(sx){var wc=info.classes[sx.of];if(wc&&wc.kind==='StatefulWidget'&&sx.ci.build&&sx.ci.build.body){ST.statefuls[sx.of]={state:sx.ci,widget:wc.ci};ST.userWidgets[sx.of]={params:wc.ci.params,build:sx.ci.build,stateful:true}}});
@@ -1996,6 +2183,16 @@ function jsonConv(x){
   if(typeof x==='object'){var mp={isMap:true,m:new Map()};Object.keys(x).forEach(function(k){mp.m.set(k,jsonConv(x[k]))});return mp}
   if(typeof x==='number'&&!Number.isInteger(x))return new Dbl(x);
   return x}
+function jsonEnc(v){
+  if(v==null)return 'null';
+  if(typeof v==='string')return JSON.stringify(v);
+  if(isD(v))return Number.isInteger(v.v)?v.v.toFixed(1):String(v.v);
+  if(typeof v==='number'||typeof v==='boolean')return String(v);
+  if(Array.isArray(v))return '['+v.map(jsonEnc).join(',')+']';
+  if(v.isSet)return '['+Array.from(v.s).map(jsonEnc).join(',')+']';
+  if(v.isMap)return '{'+Array.from(v.m.entries()).map(function(e){return JSON.stringify(show(e[0]))+':'+jsonEnc(e[1])}).join(',')+'}';
+  if(v.cls){var dm=ST.dataClasses[v.cls];if(dm&&dm.methods.toJson)return jsonEnc(runMethod(dm.methods.toJson,[],v));throw exc('JsonUnsupportedObjectError: Converting object to an encodable object failed')}
+  return JSON.stringify(show(v))}
 function jsonDec(b){
   var t=show(b);
   try{return jsonConv(JSON.parse(t))}catch(e){throw exc('FormatException: Unexpected character (at character 1)')}}
@@ -2023,6 +2220,7 @@ function simHttp(url){
   return mkResp(404,'')}
 function natStr(v){
   if(v.nat==='#class')return v.name;
+  if(v.nat==='StringBuffer')return v.st.s;
   if(v.nat==='DateTime')return v.f.year+'-'+p2(v.f.month)+'-'+p2(v.f.day)+' '+p2(v.f.hour)+':'+p2(v.f.minute)+':'+p2(v.f.second)+'.000';
   if(v.nat==='TimeOfDay')return 'TimeOfDay('+p2(v.f.hour)+':'+p2(v.f.minute)+')';
   if(v.nat==='LatLng')return 'LatLng(latitude:'+dstr(v.f.latitude.v)+', longitude:'+dstr(v.f.longitude.v)+')';
@@ -2045,6 +2243,20 @@ function haversine(a,b,c,d){
   return 2*R*Math.asin(Math.sqrt(h))}
 function natMember(v,name,args){
   var S=ST.sensors;
+  if(v.nat==='Random'){
+    switch(name){
+      case 'nextInt':{var mxr=nn(args[0]);if(!(mxr>0))throw exc('RangeError: max deve ser positivo');return Math.floor(Math.random()*mxr)}
+      case 'nextDouble':return new Dbl(Math.random());
+      case 'nextBool':return Math.random()<0.5}}
+  if(v.nat==='StringBuffer'){
+    switch(name){
+      case 'write':v.st.s+=show(args[0]);return null;
+      case 'writeln':v.st.s+=(args.length?show(args[0]):'')+'\n';return null;
+      case 'writeAll':v.st.s+=toIter(args[0]).map(show).join(args.length>1?args[1]:'');return null;
+      case 'writeCharCode':v.st.s+=String.fromCharCode(nn(args[0]));return null;
+      case 'clear':v.st.s='';return null;
+      case 'toString':return v.st.s;
+      case 'length':return v.st.s.length;case 'isEmpty':return v.st.s.length===0;case 'isNotEmpty':return v.st.s.length>0}}
   if(v.nat==='#class'){
     var c=v.name;
     if(ENUMS[c])return c+'.'+name;
@@ -2354,7 +2566,7 @@ function stripComments(src){
     out+=c;i++}
   return out}
 ST.extract=function(src){src=stripComments(src);
-  var info={fields:[],methods:[],locals:{},funcs:[],classes:{},stateOf:null,initState:null,widgetCall:null,widgetClass:null};
+  var info={fields:[],methods:[],locals:{},funcs:[],classes:{},globals:[],stateOf:null,initState:null,widgetCall:null,widgetClass:null};
   var states=[];
   scan(src).forEach(function(ch){
     var cm=CLASSDECL.exec(ch);
@@ -2364,6 +2576,9 @@ ST.extract=function(src){src=stripComments(src);
       }else info.classes[name]={kind:ext==='StatelessWidget'||ext==='StatefulWidget'?ext:'data',ci:ci};
       return}
     if(/^(import|export|part|library|typedef|enum|mixin|extension)\b/.test(ch))return;
+    var gf=FIELD.exec(ch),gu=/^(?:const|final|var)\s+(\w+)\s*=\s*([\s\S]+);$/.exec(ch);
+    if(gf&&gf[3]!=null){info.globals.push({name:gf[2],type:normType(gf[1]),init:gf[3].trim()});return}
+    if(gu){info.globals.push({name:gu[1],type:'var',init:gu[2].trim()});return}
     var a=MARROW.exec(ch);if(a){if(a[1]!=='main')info.funcs.push({name:a[1],params:a[2],body:a[3],arrow:true});return}
     var bl=MBLOCK.exec(ch);if(bl&&bl[1]!=='main'&&bl[1]!=='runApp')info.funcs.push({name:bl[1],params:bl[2],body:bl[3],arrow:false})});
   info.states=states;
@@ -11062,29 +11277,15 @@ OF.REF=R;
 
 /* Limites do simulador: o que a Oficina não desenha ou não executa. Cada item foi conferido em teste automático. */
 OF.LIMITS=[
-{h:'⚠ Pode dar resultado errado, sem aviso',
- p:'Nestes casos o simulador não mostra erro: a tela fica diferente do que o Flutter faria. No celular de verdade o código funciona normalmente.',
- li:[
- 'lista.sort() sem comparador não ordena (com sort((a, b) => ...) funciona).',
- 'mapa.putIfAbsent(...), mapa.update(...) e mapa.forEach(...) não fazem nada. remove e mapa[chave] = valor funcionam.',
- 'Função global com parâmetro nomeado ou opcional, como soma({int a = 1, required int b}), devolve NaN. Métodos de classe com parâmetro nomeado funcionam.',
- '"ab" * 2 devolve NaN em vez de "abab".',
- 'Sobrescrever toString() e == numa classe não tem efeito: o texto sai como "Instance of \'A\'" e a comparação dá false.',
- 'Imprimir uma exceção mostra Exception(\'texto\') em vez de "Exception: texto".',
- 'firstWhere com orElse lança "Bad state: No element" em vez de usar o orElse.',
- 'Random(): o simulador não gera números aleatórios.'
- ]},
 {h:'Dart que o simulador não executa',
- p:'Aparece a mensagem "Este comando ainda não é suportado no simulador", ou o texto da interpolação fica cru na tela. O código continua válido para o celular.',
+ p:'Aparece a mensagem "Este comando ainda não é suportado no simulador", ou o texto da interpolação fica cru na tela (por exemplo, Cor.verde.name aparece escrito assim). O código continua válido para o celular.',
  li:[
- 'Variáveis: declarar local com tipo genérico, como List<int> l = [] ou Map<String, int> m = {}, ou com Object (use var). Variável global mutável e const global. ??= e ?. (acesso nulo-seguro).',
- 'Coleções: Set literal ({1, 2}), cascata (..add), spread (...lista), for e if dentro de lista literal, e os métodos expand, sublist, toSet e List.generate.',
- 'Controle: do-while, switch como expressão (switch (x) { 1 => ... }), records, desestruturação, if-case e padrões com when, e o operador <<.',
- 'Classes: mixin, extension, métodos static, factory, construtor nomeado, operador sobrecarregado (operator +), classe genérica (Box<int>), typedef, herança de método sem override e super.metodo().',
  'Enum: .name, .index, .values e enum com campos. Enum simples com switch funciona.',
- 'Exceções: classe própria de exceção lida com on Erro catch (e) e depois e.campo.',
- 'Bibliotecas: dart:math (max, sqrt, pow, pi), dart:convert (jsonEncode e jsonDecode), identical, replaceFirst, DateTime.difference, Duration.inMinutes e semelhantes, intl (DateFormat e NumberFormat), RegExp, StringBuffer.',
- 'Pacotes: só os simulados no botão 📡 Sensores (GPS, bateria, rede, câmera, http). Sensores em tempo real, som, microfone, biometria, lanterna e QR só funcionam no celular.'
+ 'Classes: membros static (A.n, A.metodo()), herança (extends com método herdado) e super.metodo(), mixin, extension, factory, construtor nomeado, operador sobrecarregado (operator +), classe genérica (Box<int>) e typedef.',
+ 'Padrões: if-case e padrões com when.',
+ 'Bibliotecas: DateTime.difference, Duration.inMinutes e semelhantes, intl (DateFormat e NumberFormat), RegExp.',
+ 'Pacotes: só os simulados no botão 📡 Sensores (GPS, bateria, rede, câmera, http). Sensores em tempo real, som, microfone, biometria, lanterna e QR só funcionam no celular.',
+ 'Já funcionam: sort, métodos de Map, parâmetros nomeados e opcionais em funções, toString e == sobrescritos, exceções próprias, Set, spread, cascata, ??= e ?., do-while, switch como expressão, records, dart:math (incluindo Random), jsonEncode e StringBuffer.'
  ]},
 {h:'Widgets que não existem no simulador',
  p:'Eles aparecem como uma caixa com o nome e (…). O código fica intacto e funciona no celular; só não são desenhados nem editáveis no canvas.',
