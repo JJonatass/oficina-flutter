@@ -10341,6 +10341,8 @@ var LIMS=[
 ['TabPageSelector','as bolinhas só mudam ao tocar nas abas do TabBar; deslizar a página não é simulado.'],
 ];
 LESSONS.forEach(function(L){LIMS.forEach(function(g){if(L.t.indexOf(g[0])>=0)L.lim=g[1]})});
+var NOSTATE=['Column: empilhar na vertical','Lista de tarefas','Botões e TextField','Rolagem, recorte e toque','Drawer e barra inferior','habilidades e acabamento'];
+NOSTATE.forEach(function(k){LESSONS.forEach(function(L){if(L.t.indexOf(k)>=0&&L.text.indexOf('não guarda estado')<0)L.text+=' Atenção: nesta aula a tela é só visual e não guarda estado, então o ▶ Testar fica desativado e os botões ainda não fazem nada. Eles passam a funcionar nas aulas de estado, com StatefulWidget e setState.'})});
 window.OF.LESSONS=LESSONS;
 })();
 
