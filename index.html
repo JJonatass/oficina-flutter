@@ -468,6 +468,7 @@ body:has(main[data-tab="ref"]) .lesson{display:none}
         <button id="vX" aria-pressed="true">Estrutura</button>
         <button id="vS" aria-pressed="false">Tela</button>
       </div>
+      <div class="seg" role="group" aria-label="Janela"><button id="vPop" type="button" title="Abrir só a tela do celular em uma nova janela, ligada ao editor">⤢ Janela</button></div>
     </div>
     <div class="palette" id="palette"></div>
     <div class="stbar" id="stBar" hidden></div>
@@ -12486,6 +12487,85 @@ renderPalette();
 if(window.ResizeObserver)new ResizeObserver(fit).observe(stage);
 addEventListener('resize',fit);
 loadLesson(0);fit();
+
+/* ====== Tela em nova janela (espelho ligado ao editor) ====== */
+var popW=null,popMO=null,popRaf=0,popDown=false;
+function popAlive(){try{return !!popW&&!popW.closed&&!!popW.document.getElementById('pmirror')}catch(e){return false}}
+function elPath(root,el){var p=[];while(el&&el!==root){var par=el.parentElement;if(!par)return null;p.unshift(Array.prototype.indexOf.call(par.children,el));el=par}return el===root?p:null}
+function elAt(root,p){var n=root;for(var i=0;i<p.length;i++){n=n&&n.children[p[i]]}return n||null}
+function popFit(){
+  if(!popAlive())return;
+  var ph=popW.document.getElementById('pphone'),s=Math.max(.3,Math.min((popW.innerWidth-24)/376,(popW.innerHeight-24)/672));
+  ph.style.transform='translate(-50%,-50%) scale('+s+')'}
+function popSync(){
+  popRaf=0;
+  if(!popAlive()){popStop();return}
+  var d=popW.document,m=d.getElementById('pmirror');
+  var ae=d.activeElement,fp=null,sel=null;
+  if(ae&&ae!==m&&m.contains(ae)){fp=elPath(m,ae);try{sel=[ae.selectionStart,ae.selectionEnd]}catch(e){}}
+  m.innerHTML=screen.innerHTML;
+  m.className=screen.className;m.setAttribute('style',screen.getAttribute('style')||'');
+  var a=screen.querySelectorAll('input,textarea,select'),b=m.querySelectorAll('input,textarea,select');
+  for(var i=0;i<a.length&&i<b.length;i++){if(a[i].type==='checkbox'||a[i].type==='radio')b[i].checked=a[i].checked;else if(b[i].value!==a[i].value)b[i].value=a[i].value}
+  var ea=screen.querySelectorAll('*'),eb=m.querySelectorAll('*');
+  for(var j=0;j<ea.length&&j<eb.length;j++){if(ea[j].scrollTop||ea[j].scrollLeft){eb[j].scrollTop=ea[j].scrollTop;eb[j].scrollLeft=ea[j].scrollLeft}}
+  if(fp){var f=elAt(m,fp);if(f){try{f.focus();if(sel&&f.setSelectionRange)f.setSelectionRange(sel[0],sel[1])}catch(e){}}}}
+function popSched(){if(!popRaf)popRaf=requestAnimationFrame(popSync)}
+function popStop(){
+  if(popMO){popMO.disconnect();popMO=null}
+  popW=null;var b=$('vPop');if(b)b.classList.remove('on')}
+function popMap(e){
+  var m=popW.document.getElementById('pmirror'),rp=m.getBoundingClientRect(),rs=screen.getBoundingClientRect(),el=null;
+  if(e.target&&e.target.nodeType===1){var p=elPath(m,e.target);if(p)el=elAt(screen,p)}
+  return{el:el,x:rs.left+(e.clientX-rp.left)*rs.width/rp.width,y:rs.top+(e.clientY-rp.top)*rs.height/rp.height}}
+function popFwd(e){
+  if(!popAlive())return;
+  var t=e.type,mp=popMap(e);
+  var init={bubbles:true,cancelable:true,clientX:mp.x,clientY:mp.y,pointerId:e.pointerId||1,pointerType:e.pointerType||'mouse',button:e.button||0,buttons:e.buttons||0,isPrimary:true,view:window,deltaY:e.deltaY||0};
+  if(t==='click'||t==='dblclick'||t==='contextmenu'){if(mp.el)mp.el.dispatchEvent(new MouseEvent(t,init));return}
+  if(t==='pointerdown'){if(!mp.el)return;popDown=true;mp.el.dispatchEvent(new PointerEvent(t,init));return}
+  if(t==='pointermove'){window.dispatchEvent(new PointerEvent(t,init));return}
+  if(t==='pointerup'||t==='pointercancel'){popDown=false;(mp.el||window).dispatchEvent(new PointerEvent(t,init));return}
+  if(t==='wheel'){if(mp.el&&mp.el.closest('.ivw[data-iv]')){e.preventDefault();mp.el.dispatchEvent(new WheelEvent('wheel',init))}}}
+function popField(e){
+  if(!popAlive())return;
+  var m=popW.document.getElementById('pmirror'),t=e.target,p=t&&t.nodeType===1?elPath(m,t):null;if(!p)return;
+  var el=elAt(screen,p);if(!el)return;
+  if(e.type==='keydown'){if(e.key==='Enter'&&/^(INPUT|TEXTAREA)$/.test(t.tagName))el.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true}));return}
+  if(t.type==='checkbox'||t.type==='radio')el.checked=t.checked;else if('value' in t)el.value=t.value;
+  el.dispatchEvent(new Event(e.type,{bubbles:true}))}
+function popScroll(e){
+  if(!popAlive())return;
+  var m=popW.document.getElementById('pmirror'),t=e.target;if(!t||t.nodeType!==1)return;
+  var p=elPath(m,t);if(!p)return;var el=elAt(screen,p);if(el){el.scrollTop=t.scrollTop;el.scrollLeft=t.scrollLeft}}
+function popOpen(){
+  if(popAlive()){popW.focus();popSync();return}
+  var w=null;
+  try{w=window.open('','oficinaTela','popup=yes,width=520,height=900,resizable=yes')}catch(e){w=null}
+  if(!w){toast('O navegador bloqueou a nova janela. Permita pop-ups para este site e tente de novo.');return}
+  try{
+    var css=Array.prototype.map.call(document.querySelectorAll('style,link[rel="stylesheet"]'),function(x){return x.outerHTML}).join('\n'),
+      th=document.documentElement.getAttribute('data-theme'),bg=getComputedStyle(document.body).backgroundColor;
+    w.document.open();
+    w.document.write('<!doctype html><html lang="pt-BR"'+(th?' data-theme="'+th+'"':'')+'><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tela — Oficina Flutter</title>'+css+
+      '<style>html,body{margin:0!important;padding:0!important;width:100%;height:100%;overflow:hidden!important;display:block!important;background:'+bg+'}#pphone{left:50%;top:50%;transform-origin:center center}</style></head><body><div class="phone" id="pphone"><div class="screen" id="pmirror"></div></div></body></html>');
+    w.document.close();
+    if(!w.document.getElementById('pmirror'))throw new Error('vazio')
+  }catch(e){try{w.close()}catch(x){}toast('Este ambiente não deixa a nova janela se ligar ao editor. Abra a Oficina direto no navegador (arquivo ou GitHub Pages) para usar este botão.');return}
+  popW=w;$('vPop').classList.add('on');
+  var d=w.document;
+  ['click','dblclick','contextmenu','pointerdown','pointermove','pointerup','pointercancel'].forEach(function(n){d.addEventListener(n,popFwd,true)});
+  d.addEventListener('wheel',popFwd,{passive:false,capture:true});
+  ['input','change','keydown'].forEach(function(n){d.addEventListener(n,popField,true)});
+  d.addEventListener('scroll',popScroll,true);
+  w.addEventListener('resize',popFit);
+  w.addEventListener('pagehide',function(){setTimeout(function(){if(!popAlive())popStop()},50)});
+  popMO=new MutationObserver(popSched);
+  popMO.observe(screen,{subtree:true,childList:true,attributes:true,characterData:true});
+  popFit();popSync()}
+$('vPop').addEventListener('click',popOpen);
+screen.addEventListener('input',popSched);screen.addEventListener('change',popSched);
+window.addEventListener('beforeunload',function(){if(popAlive())try{popW.close()}catch(e){}});
 })();
 
 </script>
