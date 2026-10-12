@@ -1176,7 +1176,7 @@ function isD(x){return x instanceof Dbl}
 function nn(x){return x instanceof Dbl?x.v:x}
 function dstr(v){return Number.isInteger(v)?v.toFixed(1):String(v)}
 function isRaw(v){return v!==null&&typeof v==='object'&&!isD(v)&&!Array.isArray(v)&&v.raw!==undefined}
-function show(v){if(v===null||v===undefined)return 'null';if(v&&v.nat)return natStr(v);if(v&&v.cls){var tdc=ST.dataClasses[v.cls];if(tdc&&tdc.methods&&tdc.methods.toString){try{return String(runMethod(tdc.methods.toString,[],v))}catch(e){}}if(v.enumv)return v.cls+'.'+v.f.name;return "Instance of '"+v.cls+"'"}if(v&&v.isSet)return '{'+Array.from(v.s).map(show).join(', ')+'}';if(v&&v.isRec)return '('+v.pos.map(show).join(', ')+')';if(v&&v.isMap)return '{'+Array.from(v.m.entries()).map(function(e){return show(e[0])+': '+show(e[1])}).join(', ')+'}';if(v&&v.lam)return lit(v);if(v&&v.ctl)return v.text;if(isD(v))return dstr(v.v);if(isRaw(v))return v.raw;if(Array.isArray(v))return '['+v.map(show).join(', ')+']';return String(v)}
+function show(v){if(v===null||v===undefined)return 'null';if(v&&v.nat)return natStr(v);if(v&&v.cls){var tdc=ST.dataClasses[v.cls];if(tdc&&tdc.methods&&tdc.methods.toString){try{return String(runMethod(tdc.methods.toString,[],v))}catch(e){}}if(v.enumv)return v.cls+'.'+v.f.name;return "Instance of '"+v.cls+"'"}if(v&&v.isSet)return '{'+Array.from(v.s).map(show).join(', ')+'}';if(v&&v.isRec)return '('+v.pos.map(show).join(', ')+')';if(v&&v.isMap)return '{'+Array.from(v.m.entries()).map(function(e){return show(e[0])+': '+show(e[1])}).join(', ')+'}';if(v&&v.lam)return lit(v);if(v&&v.ctl)return v.text;if(isD(v))return dstr(v.v);if(isRaw(v)){if(/^Duration\(/.test(v.raw)){var dmx=durMs(v);if(dmx!==null&&!/[a-zA-Z_]\w*\s*[,)]/.test(v.raw.replace(/\b(days|hours|minutes|seconds|milliseconds|microseconds)\s*:/g,'')))return fmtDur(dmx)}return v.raw}if(Array.isArray(v))return '['+v.map(show).join(', ')+']';return String(v)}
 function lit(v){
   if(v===null||v===undefined)return 'null';
   if(typeof v==='string')return "'"+v.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\$/g,'\\$').replace(/\n/g,'\\n')+"'";
@@ -1219,6 +1219,7 @@ function lex(src){
       if(src[i]==='.'&&/\d/.test(src[i+1]||'')){i++;while(i<n&&/\d/.test(src[i]))i++}
       if(/[eE]/.test(src[i]||'')&&/[\d+-]/.test(src[i+1]||'')){i+=2;while(i<n&&/\d/.test(src[i]))i++}
       t.push({k:'num',v:src.slice(s,i),s:s,e:i});continue}
+    if((c==='r'||c==='R')&&(src[i+1]==='\''||src[i+1]==='"')){i=endStr(src,i+1);t.push({k:'str',v:src.slice(s+1,i),s:s,e:i,raw:true});continue}
     if(/[A-Za-z_]/.test(c)||(c==='$'&&/\d/.test(src[i+1]||''))){i++;while(i<n&&/[\w]/.test(src[i]))i++;t.push({k:'id',v:src.slice(s,i),s:s,e:i});continue}
     if(c==="'"||c==='"'){i=endStr(src,i);t.push({k:'str',v:src.slice(s,i),s:s,e:i});continue}
     var three=src.substr(i,3);
@@ -1288,6 +1289,7 @@ function pArgs(p){
     throw new Error('args2')}}
 function parseStr(tok){
   var v=tok.v,q=v[0],tri=v.substr(0,3)===q+q+q,body=v.slice(tri?3:1,v.length-(tri?3:1)),parts=[],cur='',i=0;
+  if(tok.raw)return{t:'str',parts:[body]};
   while(i<body.length){
     var c=body[i];
     if(c==='\\'){var nx=body[i+1];cur+=nx==='n'?'\n':nx==='t'?'\t':nx;i+=2;continue}
@@ -1340,10 +1342,10 @@ function pPrim(p){
     if(k.v==='null'){p.i++;return{t:'lit',v:null}}
     if(k.v==='const'||k.v==='new'){p.i++;p.hn=hn;return pPrim(p)}
     if(k.v==='switch'&&p.is('(',1)){p.i+=2;var sj=pTern(p);p.need(')');p.need('{');var scs=[];
-      while(!p.is('}')){if(p.end())throw new Error('switch');var pat=null;if(p.isId('_')&&(p.is('=>',1)||p.isId('when'))){p.i++}else pat=pTern(p);var gd=null;if(p.isId('when')){p.i++;gd=pTern(p)}p.need('=>');scs.push({pat:pat,guard:gd,body:pTern(p)});if(!p.eat(','))break}
+      while(!p.is('}')){if(p.end())throw new Error('switch');var pat=null,ptn=null;if(p.isId('_')&&(p.is('=>',1)||p.isId('when'))){p.i++}else{var sst=p.i;try{ptn=pPat(p)}catch(pe){p.i=sst;pat=pTern(p)}}var gd=null;if(p.isId('when')){p.i++;gd=pTern(p)}p.need('=>');scs.push({pat:pat,ptn:ptn,guard:gd,body:pTern(p)});if(!p.eat(','))break}
       p.need('}');return{t:'swx',subj:sj,cases:scs}}
     if(k.v==='super'&&p.is('.',1)&&p.pk(2)&&p.pk(2).k==='id'){p.i+=3;var snm=p.t[p.i-1].v;if(p.is('(')){p.i++;return{t:'sup',name:snm,args:pArgs(p)}}return{t:'id',name:snm}}
-    if(k.v==='this'&&p.is('.',1)&&p.pk(2)&&p.pk(2).k==='id'){p.i+=3;return{t:'id',name:p.t[p.i-1].v}}
+    if(k.v==='this'&&p.is('.',1)&&p.pk(2)&&p.pk(2).k==='id'){p.i+=3;var thn=p.t[p.i-1].v;if(p.is('(')){p.i++;return{t:'fn',name:thn,args:pArgs(p)}}return{t:'id',name:thn}}
     if((k.v==='double'||k.v==='int')&&p.is('.',1)&&p.pk(2)&&p.pk(2).v==='infinity'){p.i+=3;return{t:'lit',v:new Dbl(Infinity)}}
     p.i++;
     if(/^[A-Z]/.test(k.v)){
@@ -1385,6 +1387,8 @@ function lookup(env,n){
   if(NATCLS[n]||ENUMS[n])return{nat:'#class',name:n};
   if(n==='pi')return new Dbl(Math.PI);
   if(n==='e'&&false)return new Dbl(Math.E);
+  if(n==='this'){if(env.self)return env.self;var tv0=curThis(env);if(tv0!==undefined)return tv0}
+  var tv=curThis(env);if(tv!==undefined){try{return member(tv,n,[])}catch(e1){if(e1.dartExc)throw e1}}
   throw new Error('desconhecido '+n)}
 function superMethod(cn,m){
   var dc=ST.dataClasses[cn];if(!dc)return null;
@@ -1393,6 +1397,15 @@ function superMethod(cn,m){
   return null}
 function isSub(cn,ty){var seen=0;while(cn&&seen++<20){if(cn===ty)return true;var dc=ST.dataClasses[cn];if(!dc)return false;if((dc.withs||[]).indexOf(ty)>=0)return true;
   var im=(dc.withs||[]).some(function(w){return isSub(w,ty)});if(im)return true;cn=dc.ext}return false}
+function extFind(v,name){
+  if(!ST.exts||!ST.exts.length)return null;
+  for(var i=ST.exts.length-1;i>=0;i--){var e=ST.exts[i],ci=e.ci;
+    if(!(ci.methods[name]||ci.getters[name]))continue;
+    var okT;try{okT=isType(v,e.on)}catch(x){okT=false}
+    if(!okT)continue;
+    return ci.getters[name]&&!ci.methods[name]?{g:ci.getters[name]}:{m:ci.methods[name]}}
+  return null}
+function curThis(env){while(env){if(hasOwn(env,'thisVal'))return env.thisVal;env=env.parent}return undefined}
 function curCls(env){while(env){if(env.cls)return env.cls;env=env.parent}return null}
 function staticOf(cn,n){var dc=ST.dataClasses[cn];return dc&&dc.statics&&hasOwn(dc.statics,n)?dc.statics[n]:null}
 function staticGet(s){if(!s.done){s.done=true;var e=mkEnv({});e.cls=s.owner;try{s.value=coerce(s.type,s.init!=null?ev(pTern(new Ps(s.init)),e):null)}catch(x){if(x.dartExc)throw x;s.value=null}}return s.value}
@@ -1504,7 +1517,8 @@ function ev(a,env){
         if(op.set){var sv2=ev(op.set,env);if(co&&co.cls){co.f[op.name]=sv2;mutated=true}else throw new Error('atribuição '+op.name)}
         else{var cargs=op.args&&op.args.map(function(x){if(x.ast===undefined)throw new Error('arg');return ev(x.ast,env)});member(co,op.name,cargs)}});return co}
     case 'swx':{var sv3=ev(a.subj,env);for(var si=0;si<a.cases.length;si++){var sc=a.cases[si];
-        if(sc.pat===null||eq(sv3,ev(sc.pat,env))){if(sc.guard&&!ev(sc.guard,env))continue;return ev(sc.body,env)}}
+        var okm;if(sc.ptn){var bb={};okm=matchPat(sc.ptn,sv3,env,bb);if(okm){env.locals=env.locals||{};Object.keys(bb).forEach(function(n){env.locals[n]=bb[n]})}}else okm=sc.pat===null||eq(sv3,ev(sc.pat,env));
+        if(okm){if(sc.guard&&!ev(sc.guard,env))continue;return ev(sc.body,env)}}
       throw exc('Bad state: nenhum caso do switch combinou')}
     case 'un':{var v=ev(a.a,env);if(a.op==='!')return !v;return isD(v)?new Dbl(-v.v):-v}
     case 'tern':return ev(a.c,env)?ev(a.a,env):ev(a.b,env);
@@ -1522,7 +1536,9 @@ function ev(a,env){
           case 'Random':return{nat:'Random',f:{},src:'Random()'};
           case 'StringBuffer':return{nat:'StringBuffer',f:{},st:{s:ca.length?show(ca[0]):''},src:'StringBuffer()'}}}
       if(a.args&&NATCTOR[a.name])return natCtor(a.name,evalArgs(a,env));
+      if(/^Duration\.zero(\.|$)/.test(a.name)){var dzc=mkDur(0),dzp=a.name.split('.').slice(2);dzp.forEach(function(x,ix){dzc=member(dzc,x,(ix===dzp.length-1&&a.args)?evalArgs(a,env).map(function(y){return y.val}):[])});return dzc}
       if(!a.args&&a.name.indexOf('.')>0){var pe=a.name.split('.');if(pe.length===2&&ENUMS[pe[0]])return a.name}
+      if(a.args&&/^(NumberFormat|DateFormat)\.\w+$/.test(a.name))return intlStatic(a.name,evalArgs(a,env));
       if(a.args&&a.name.indexOf('.')>0){var pre=a.name.split('.');if(pre.length===2&&(NATCLS[pre[0]]||ENUMS[pre[0]]))return natMember({nat:'#class',name:pre[0]},pre[1],evalArgs(a,env).filter(function(x){return !x.name}).map(function(x){return x.val}))}
       return{raw:a.name+(a.args?'('+a.args.map(function(x){return emitArg(x,env)}).join(', ')+')':'')}}
     case 'lam':{
@@ -1554,6 +1570,10 @@ function ev(a,env){
         case 'sin':return new Dbl(Math.sin(nn(av[0])));case 'cos':return new Dbl(Math.cos(nn(av[0])));case 'tan':return new Dbl(Math.tan(nn(av[0])));
         case 'atan':return new Dbl(Math.atan(nn(av[0])));case 'atan2':return new Dbl(Math.atan2(nn(av[0]),nn(av[1])));
         case 'log':return new Dbl(Math.log(nn(av[0])));case 'exp':return new Dbl(Math.exp(nn(av[0])))}
+      if(a.name==='initializeDateFormatting')return null;
+      var fv;try{fv=lookup(env,a.name)}catch(e0){fv=undefined}
+      if(fv&&fv.lam)return callLam(fv,av);
+      var tvf=curThis(env);if(tvf!==undefined){ARGN=null;return member(tvf,a.name,av)}
       throw new Error('função '+a.name)}
     case 'mem':{var mo=ev(a.o,env);if(a.ns&&mo==null)return null;
       var margs=a.args&&a.args.map(function(x){if(x.ast===undefined)throw new Error('arg');return ev(x.ast,env)});
@@ -1562,6 +1582,7 @@ function ev(a,env){
     case 'idx':{var ov=ev(a.o,env),iv0=ev(a.i,env);
       if(ov&&ov.isMap){var mk=nn(iv0);return ov.m.has(mk)?ov.m.get(mk):null}
       var iv=nn(iv0);
+      if(ov&&ov.nat==='Match'){var mg=ov.m[iv];return mg===undefined?null:mg}
       if(typeof ov==='string'||Array.isArray(ov)){if(!Number.isInteger(iv)||iv<0||iv>=ov.length)throw exc('RangeError (index): Invalid value: Not in inclusive range 0..'+(ov.length-1)+': '+iv);return ov[iv]}
       throw new Error('índice')}
     case 'bin':return binary(a,env)}
@@ -1572,6 +1593,10 @@ function binary(a,env){
   if(op==='||'){return ev(a.a,env)||ev(a.b,env)}
   if(op==='??'){var l0=ev(a.a,env);return l0==null?ev(a.b,env):l0}
   var l=ev(a.a,env),r=ev(a.b,env);
+  var dl=durMs(l),dr=durMs(r);
+  if(dl!==null&&dr!==null){switch(op){case '+':return mkDur(dl+dr);case '-':return mkDur(dl-dr);case '==':return dl===dr;case '!=':return dl!==dr;case '<':return dl<dr;case '>':return dl>dr;case '<=':return dl<=dr;case '>=':return dl>=dr}}
+  if(dl!==null&&(op==='*'||op==='~/'||op==='/')&&r!=null&&typeof r!=='object')return mkDur(op==='*'?dl*nn(r):dl/nn(r));
+  if(l&&r&&l.nat==='DateTime'&&r.nat==='DateTime'){switch(op){case '==':return l.j.getTime()===r.j.getTime();case '!=':return l.j.getTime()!==r.j.getTime();case '<':return l.j<r.j;case '>':return l.j>r.j;case '<=':return l.j<=r.j;case '>=':return l.j>=r.j}}
   if(op==='==')return eq(l,r);
   if(op==='!=')return !eq(l,r);
   if(l&&l.cls){var odc=ST.dataClasses[l.cls];if(odc&&odc.methods['operator'+op]){ARGN=null;return runMethod(odc.methods['operator'+op],[r],l)}}
@@ -1591,6 +1616,7 @@ function callLam(f,args){if(!f||!f.lam)throw new Error('arg');return f.call(args
 function member(v,name,args){
   args=args||[];
   if(v===null||v===undefined)throw exc("NoSuchMethodError: o valor é null ao usar '"+name+"'");
+  var exr=extFind(v,name);if(exr){if(exr.g){var eg=mkEnv({});eg.thisVal=v;if(exr.g.arrow)return ev(pTern(new Ps(exr.g.body)),eg);stmt(new Ps(exr.g.body),eg,true);return eg.ret}ARGN=null;return runMethod(exr.m,args,v)}
   if(v.nat)return natMember(v,name,args);
   if(v.wid){if(hasOwn(ST.widgetVals,name))return ST.widgetVals[name];throw new Error('membro widget.'+name)}
   if(v.cls){
@@ -1629,9 +1655,25 @@ function member(v,name,args){
       case 'toSet':return v;
       default:return member(Array.from(sset),name,args)}}
   if(v.isRec){var rmm=/^\$(\d+)$/.exec(name);if(rmm&&v.pos[+rmm[1]-1]!==undefined)return v.pos[+rmm[1]-1]}
+  if(isRaw(v)&&/^Duration\(/.test(v.raw)){
+    var dm0=durMs(v);
+    switch(name){case 'inDays':return Math.trunc(dm0/864e5);case 'inHours':return Math.trunc(dm0/36e5);case 'inMinutes':return Math.trunc(dm0/6e4);case 'inSeconds':return Math.trunc(dm0/1e3);case 'inMilliseconds':return Math.trunc(dm0);case 'inMicroseconds':return Math.trunc(dm0*1000);
+      case 'isNegative':return dm0<0;case 'abs':return mkDur(Math.abs(dm0));case 'compareTo':{var o0=durMs(args[0]);return dm0<o0?-1:dm0>o0?1:0}}}
   if(isRaw(v))return{raw:v.raw+'.'+name+(args.length?'('+args.map(lit).join(', ')+')':'')};
   if(v&&v.ctl){if(name==='text')return v.text;if(name==='clear'){v.text='';mutated=true;return null}}
   if(name==='toString')return show(v);
+  if(typeof v==='string'&&args.length&&isRe(args[0])){
+    var rx=args[0];
+    switch(name){
+      case 'contains':return jsRe(rx).test(v);
+      case 'replaceAll':return v.replace(jsRe(rx,true),function(){return args[1]});
+      case 'replaceFirst':return v.replace(jsRe(rx),function(){return args[1]});
+      case 'replaceAllMapped':return v.replace(jsRe(rx,true),function(){var a=Array.prototype.slice.call(arguments),idx=a.findIndex(function(x){return typeof x==='number'}),mm=a.slice(0,idx);mm.index=a[idx];return callLam(args[1],[mkMatch(mm,v)])});
+      case 'replaceFirstMapped':return v.replace(jsRe(rx),function(){var a=Array.prototype.slice.call(arguments),idx=a.findIndex(function(x){return typeof x==='number'}),mm=a.slice(0,idx);mm.index=a[idx];return callLam(args[1],[mkMatch(mm,v)])});
+      case 'split':return v.split(jsRe(rx,true));
+      case 'allMatches':return reMatches(rx,v);
+      case 'startsWith':{var sm=jsRe(rx).exec(v);return !!sm&&sm.index===0}
+      case 'indexOf':return v.search(jsRe(rx))}}
   if(typeof v==='string'){
     switch(name){case 'length':return v.length;case 'isEmpty':return v.length===0;case 'isNotEmpty':return v.length>0;
       case 'toUpperCase':return v.toUpperCase();case 'toLowerCase':return v.toLowerCase();case 'trim':return v.trim();
@@ -1901,6 +1943,103 @@ function simple(p,env,run){
     p.i++;if(run)assignTo(ast,arith(ev(ast,env),nx.v==='++'?'+':'-',1),env);return}
   p.i=st;var a2=pTern(p);
   if(run){try{ev(a2,env)}catch(e){if(e.dartExc)throw e}}}
+
+/* ---- padrões (if-case, switch, switch expression) ---- */
+var PTYPES={int:1,double:1,num:1,String:1,bool:1,List:1,Map:1,Set:1,Object:1,dynamic:1};
+function pPat(p){
+  var l=pPatAnd(p);
+  while(p.is('||')){p.i++;l={t:'por',l:l,r:pPatAnd(p)}}
+  return l}
+function pPatAnd(p){
+  var l=pPatPrim(p);
+  while(p.is('&&')){p.i++;l={t:'pand',l:l,r:pPatPrim(p)}}
+  return l}
+function pPatPrim(p){
+  var k=p.pk();if(!k)throw new Error('padrão');
+  if(k.k==='id'&&k.v==='_'&&!p.is('(',1)){p.i++;return{t:'pwild'}}
+  if(k.k==='id'&&(k.v==='var'||k.v==='final')){
+    p.i++;var n=p.pk();
+    if(n&&n.k==='id'&&!p.is('.',1)){p.i++;return{t:'pbind',name:n.v==='_'?null:n.v}}
+    var sub=pPatPrim(p);return markBind(sub)}
+  if(k.k==='p'&&k.v==='['){p.i++;var it=[];
+    while(!p.is(']')){if(p.end())throw new Error('padrão lista');
+      if(p.is('...')){p.i++;var rp=null;if(!p.is(',')&&!p.is(']'))rp=pPat(p);it.push({rest:true,pat:rp})}else it.push({pat:pPat(p)});
+      if(!p.eat(','))break}
+    p.need(']');return{t:'plist',items:it}}
+  if(k.k==='p'&&k.v==='('){p.i++;var ri=[],comma=false;
+    while(!p.is(')')){if(p.end())throw new Error('padrão registro');
+      if(p.pk().k==='id'&&p.is(':',1))throw new Error('registro nomeado');
+      ri.push(pPat(p));if(p.eat(','))comma=true;else break}
+    p.need(')');if(ri.length===1&&!comma)return ri[0];return{t:'prec',items:ri}}
+  if(k.k==='p'&&k.v==='{'){p.i++;var me=[];
+    while(!p.is('}')){if(p.end())throw new Error('padrão mapa');
+      var ke=pPost(p);p.need(':');me.push({key:ke,pat:pPat(p)});if(!p.eat(','))break}
+    p.need('}');return{t:'pmap',entries:me}}
+  if(k.k==='p'&&/^(<|>|<=|>=|==|!=)$/.test(k.v)){p.i++;return{t:'prel',op:k.v,e:pPost(p)}}
+  if(k.k==='id'&&(PTYPES[k.v]||/^[A-Z]/.test(k.v))){
+    var j=p.i+1;while(p.t[j]&&p.t[j].k==='p'&&p.t[j].v==='.'&&p.t[j+1]&&p.t[j+1].k==='id')j+=2;
+    var nx=p.t[j];
+    if(j===p.i+1&&nx&&nx.k==='id'&&nx.v!=='when'&&nx.v!=='case'&&!(nx.k==='p')){p.i=j+1;return{t:'ptype',ty:k.v,name:nx.v==='_'?null:nx.v}}
+    if(nx&&nx.k==='p'&&nx.v==='('&&j===p.i+1&&!(PTYPES[k.v]&&false)){
+      var tn=k.v;p.i=j+1;var fl=[];
+      while(!p.is(')')){if(p.end())throw new Error('padrão objeto');
+        var fnm=null;
+        if(p.is(':')){p.i++;var vn=p.pk();p.i++;if(p.isId('var')||p.isId('final')){}fl.push({name:vn.v,pat:{t:'pbind',name:vn.v}})}
+        else if(p.pk().k==='id'&&p.is(':',1)){fnm=p.pk().v;p.i+=2;fl.push({name:fnm,pat:pPat(p)})}
+        else throw new Error('padrão objeto');
+        if(!p.eat(','))break}
+      p.need(')');return{t:'pobj',ty:tn,fields:fl}}}
+  if(k.k==='p'&&k.v==='-'){return{t:'pconst',e:pPost(p)}}
+  return{t:'pconst',e:pPost(p)}}
+function markBind(pt){
+  switch(pt.t){case 'pconst':if(pt.e.t==='id')return{t:'pbind',name:pt.e.name==='_'?null:pt.e.name};return pt;
+    case 'plist':pt.items.forEach(function(x){if(x.pat)x.pat=markBind(x.pat)});return pt;
+    case 'prec':pt.items=pt.items.map(markBind);return pt;
+    case 'pmap':pt.entries.forEach(function(x){x.pat=markBind(x.pat)});return pt;
+    case 'pobj':pt.fields.forEach(function(x){x.pat=markBind(x.pat)});return pt}
+  return pt}
+function matchPat(pt,v,env,b){
+  switch(pt.t){
+    case 'pwild':return true;
+    case 'pbind':if(pt.name)b[pt.name]=v;return true;
+    case 'ptype':if(!isType(v,pt.ty))return false;if(pt.name)b[pt.name]=v;return true;
+    case 'pconst':return eq(v,ev(pt.e,env));
+    case 'prel':{if(v==null)return false;try{return !!arith(v,pt.op,ev(pt.e,env))}catch(e){return false}}
+    case 'por':return matchPat(pt.l,v,env,b)||matchPat(pt.r,v,env,b);
+    case 'pand':return matchPat(pt.l,v,env,b)&&matchPat(pt.r,v,env,b);
+    case 'plist':{
+      if(!Array.isArray(v))return false;
+      var ri=-1;pt.items.forEach(function(x,i){if(x.rest)ri=i});
+      var nfix=pt.items.length-(ri>=0?1:0);
+      if(ri<0?v.length!==nfix:v.length<nfix)return false;
+      for(var i=0;i<pt.items.length;i++){
+        var it=pt.items[i];
+        if(it.rest){var cnt=v.length-nfix;if(it.pat&&!matchPat(it.pat,v.slice(i,i+cnt),env,b))return false;continue}
+        var vi=ri>=0&&i>ri?v.length-(pt.items.length-i):i;
+        if(!matchPat(it.pat,v[vi],env,b))return false}
+      return true}
+    case 'prec':{
+      if(!v||!v.isRec||v.pos.length!==pt.items.length)return false;
+      for(var j=0;j<pt.items.length;j++)if(!matchPat(pt.items[j],v.pos[j],env,b))return false;
+      return true}
+    case 'pmap':{
+      if(!v||!v.isMap)return false;
+      for(var m=0;m<pt.entries.length;m++){var kk=nn(ev(pt.entries[m].key,env));if(!v.m.has(kk))return false;if(!matchPat(pt.entries[m].pat,v.m.get(kk),env,b))return false}
+      return true}
+    case 'pobj':{
+      if(v==null||!isType(v,pt.ty))return false;
+      for(var f=0;f<pt.fields.length;f++){var fv;try{fv=member(v,pt.fields[f].name,[])}catch(e){return false}if(!matchPat(pt.fields[f].pat,fv,env,b))return false}
+      return true}}
+  return false}
+function patTry(p,env,run,sv){
+  /* lê "padrão [when guarda]" e devolve true se casou (vinculando as variáveis em env.locals) */
+  var pt=pPat(p),guard=null;
+  if(p.isId('when')){p.i++;guard=pTern(p)}
+  if(!run)return false;
+  var b={};if(!matchPat(pt,sv,env,b))return false;
+  Object.keys(b).forEach(function(n){env.locals[n]=b[n]});
+  if(guard&&!ev(guard,env))return false;
+  return true}
 var MODS={final:1,const:1,late:1,'var':1};
 function tryDecl(p,env,run){
   var t=p.t,i=p.i;if(!t[i]||t[i].k!=='id')return false;
@@ -1941,7 +2080,7 @@ function stmt(p,env,run){
   if(k.k==='id'){
     var aw=awaitHead(p);if(aw){awaitStmt(p,env,run,aw);return}
     switch(k.v){
-      case 'if':{p.i++;p.need('(');var c=pTern(p);p.need(')');var ok=run&&!!ev(c,env);stmt(p,env,ok);if(p.isId('else')){p.i++;stmt(p,env,run&&!ok)}return}
+      case 'if':{p.i++;p.need('(');var c=pTern(p);var ok;if(p.isId('case')){p.i++;var csv=run?ev(c,env):null;ok=patTry(p,env,run,csv);p.need(')')}else{p.need(')');ok=run&&!!ev(c,env)}stmt(p,env,ok);if(p.isId('else')){p.i++;stmt(p,env,run&&!ok)}return}
       case 'return':{p.i++;if(!p.is(';')&&!p.is('}')&&!p.end()){var ra=pTern(p);if(run)env.ret=ev(ra,env)}if(run)env.returned=true;p.eat(';');return}
       case 'yield':if(!(p.pk(1)&&p.pk(1).k==='p'&&p.pk(1).v==='=')){p.i++;if(p.is('*'))p.i++;var ya=pTern(p);p.eat(';');if(run&&ST.yields){var yv=ev(ya,env);ST.yields.push(yv);if(ST.yields.length>=200)throw{genStop:1}}return}break;
       case 'break':p.i++;p.eat(';');if(run)env.brk=true;return;
@@ -1995,7 +2134,7 @@ function stmt(p,env,run){
           if(p.end())throw new Error('fim inesperado');
           if(p.isId('case')||p.isId('default')){
             var isDef=p.isId('default');p.i++;var hit=false;
-            if(!isDef){var ce=pTern(p);hit=run&&eq(sv,ev(ce,env))}
+            if(!isDef){var cst=p.i;try{hit=patTry(p,env,run,sv)}catch(pe){if(pe.dartExc)throw pe;p.i=cst;var ce=pTern(p);hit=run&&eq(sv,ev(ce,env))}}
             p.need(':');
             if(isDef)hit=run&&!matched;
             if(hit)matched=true;
@@ -2050,7 +2189,7 @@ function runMethod(m,args,self){
   var an=ARGN;ARGN=null;
   if(++depth>25){depth=0;throw exc('Stack Overflow: recursão demais')}
   try{
-    var env=mkEnv({});env.self=self||null;if(m.owner)env.cls=m.owner;
+    var env=mkEnv({});env.self=self||null;if(m.owner)env.cls=m.owner;if(m.ext){env.thisVal=self;env.self=null}
     if(!m._dp)m._dp=declParams(m.params);
     var simplePos=!/[{\[]/.test(m.params)&&!(an&&an.some(function(x){return x}));
     if(simplePos)m._dp.forEach(function(pr,i){env.params[pr.name]=args[i]});
@@ -2105,9 +2244,10 @@ function initOf(f){
 ST.load=function(info){
   ST.futExpr={};ST.futGen=0;
   ST.globals={};((info&&info.globals)||[]).forEach(function(g){ST.globals[g.name]={name:g.name,type:g.type,init:g.init,done:false,value:null}});
-  var old=ST.fields;ST.fields={};ST.order=[];ST.methods={};ST.locals={};ST.dataClasses={};ST.userWidgets={};ST.widgetVals={};cache={};ST.initState=null;ST.statefuls={};ST.funcs={};
+  var old=ST.fields;ST.fields={};ST.order=[];ST.methods={};ST.locals={};ST.dataClasses={};ST.exts=[];ST.userWidgets={};ST.widgetVals={};cache={};ST.initState=null;ST.statefuls={};ST.funcs={};
   if(!info){ST.active=false;ST.re=null;return}
   (info.states||[]).forEach(function(sx){var wc=info.classes[sx.of];if(wc&&wc.kind==='StatefulWidget'&&sx.ci.build&&sx.ci.build.body){ST.statefuls[sx.of]={state:sx.ci,widget:wc.ci};ST.userWidgets[sx.of]={params:wc.ci.params,build:sx.ci.build,stateful:true}}});
+  ST.exts=info.exts||[];
   info.funcs.forEach(function(f){ST.funcs[f.name]=f});
   (function(){var done={};function mg(n){var c=info.classes[n];if(!c||c.kind!=='data'||done[n])return;done[n]=1;var ci=c.ci,bases=[];
     if(ci.ext&&info.classes[ci.ext]&&info.classes[ci.ext].kind==='data'){mg(ci.ext);bases.push(info.classes[ci.ext].ci)}else ci.ext=null;
@@ -2233,8 +2373,8 @@ ST.value=function(raw){return ev(pTern(new Ps(raw)),mkEnv())};
 /* ---- objetos nativos simulados: DateTime, TimeOfDay, GPS, bateria, rede, câmera ---- */
 ST.sensors={osrm:'',http:'sim',gps:true,perm:'granted',lat:-8.0476,lon:-34.877,alt:4,battery:78,charging:false,net:'wifi',photo:'ok'};
 ST.resetSensors=function(){ST.sensors={http:'sim',gps:true,perm:'granted',lat:-8.0476,lon:-34.877,alt:4,battery:78,charging:false,net:'wifi',photo:'ok'}};
-var NATCLS={MenuCtl:1,RangeValues:1,Stream:1,StreamController:1,GlobalKey:1,http:1,Uri:1,LatLng:1,MapController:1,Geolocator:1,Battery:1,Connectivity:1,DateTime:1,TimeOfDay:1,Position:1,ImagePicker:1,HapticFeedback:1,Share:1};
-var NATCTOR={RangeValues:1,StreamController:1,GlobalKey:1,LatLng:1,MapController:1,DateTime:1,TimeOfDay:1,Position:1,Battery:1,Connectivity:1,ImagePicker:1};
+var NATCLS={DateFormat:1,NumberFormat:1,MenuCtl:1,RangeValues:1,Stream:1,StreamController:1,GlobalKey:1,http:1,Uri:1,LatLng:1,MapController:1,Geolocator:1,Battery:1,Connectivity:1,DateTime:1,TimeOfDay:1,Position:1,ImagePicker:1,HapticFeedback:1,Share:1};
+var NATCTOR={RegExp:1,DateFormat:1,NumberFormat:1,RangeValues:1,StreamController:1,GlobalKey:1,LatLng:1,MapController:1,DateTime:1,TimeOfDay:1,Position:1,Battery:1,Connectivity:1,ImagePicker:1};
 var ENUMS={LocationPermission:1,ConnectionState:1,ConnectivityResult:1,BatteryState:1,ImageSource:1,LocationAccuracy:1};
 function p2(n){return (n<10?'0':'')+n}
 function mkDate(y,mo,d,h,mi,s){
@@ -2300,9 +2440,110 @@ function natStr(v){
   if(v.nat==='LatLng')return 'LatLng(latitude:'+dstr(v.f.latitude.v)+', longitude:'+dstr(v.f.longitude.v)+')';
   if(v.nat==='Position')return 'Latitude: '+dstr(v.f.latitude.v)+', Longitude: '+dstr(v.f.longitude.v);
   return "Instance of '"+v.nat+"'"}
+
+/* ---- RegExp, Duration, intl ---- */
+function jsRe(re,g){return new RegExp(re.f.src,re.f.flags+(g&&re.f.flags.indexOf('g')<0?'g':''))}
+function mkMatch(m,input){return{nat:'Match',f:{input:input,start:m.index,end:m.index+m[0].length,groupCount:m.length-1},m:m,src:'Match()'}}
+function reMatches(re,str){var r=jsRe(re,true),out=[],m;while((m=r.exec(str))){out.push(mkMatch(m,str));if(m[0]==='')r.lastIndex++}return out}
+function isRe(v){return v&&v.nat==='RegExp'}
+function durMs(v){
+  var t=isRaw(v)?v.raw:'';if(!/^Duration\(/.test(t))return null;
+  var u={days:864e5,hours:36e5,minutes:6e4,seconds:1e3,milliseconds:1,microseconds:0.001},ms=0,re=/(days|hours|minutes|seconds|milliseconds|microseconds)\s*:\s*(-?[\d.]+)/g,m;
+  while((m=re.exec(t)))ms+=u[m[1]]*parseFloat(m[2]);return ms}
+function mkDur(ms){return{raw:'Duration(milliseconds: '+Math.round(ms)+')'}}
+function fmtDur(ms){
+  var neg=ms<0;ms=Math.abs(ms);var us=Math.round(ms*1000),h=Math.floor(us/3600e6);us-=h*3600e6;var mi=Math.floor(us/60e6);us-=mi*60e6;var se=Math.floor(us/1e6);us-=se*1e6;
+  var u6=String(us);while(u6.length<6)u6='0'+u6;return (neg?'-':'')+h+':'+p2(mi)+':'+p2(se)+'.'+u6}
+var PT_M=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'],
+ PT_MS=['jan.','fev.','mar.','abr.','mai.','jun.','jul.','ago.','set.','out.','nov.','dez.'],
+ PT_W=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'],PT_WS=['dom.','seg.','ter.','qua.','qui.','sex.','sáb.'],
+ EN_M=['January','February','March','April','May','June','July','August','September','October','November','December'],
+ EN_W=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+function isPt(loc){return /^pt/i.test(loc||'')}
+var SKEL_EN={yMd:'M/d/y',yMMMd:'MMM d, y',yMMMMd:'MMMM d, y',yMMMEd:'EEE, MMM d, y',yMMMMEEEEd:'EEEE, MMMM d, y',Hm:'HH:mm',jm:'h:mm a',Hms:'HH:mm:ss',jms:'h:mm:ss a',MMMd:'MMM d',MMMMd:'MMMM d',Md:'M/d',yMMMM:'MMMM y',yM:'M/y',MMMEd:'EEE, MMM d',MMMMEEEEd:'EEEE, MMMM d',yMEd:'EEE, M/d/y',yQQQ:'QQQ y'},
+ SKEL_PT={yMd:'dd/MM/y',yMMMd:"d 'de' MMM 'de' y",yMMMMd:"d 'de' MMMM 'de' y",yMMMEd:"EEE, d 'de' MMM 'de' y",yMMMMEEEEd:"EEEE, d 'de' MMMM 'de' y",Hm:'HH:mm',jm:'HH:mm',Hms:'HH:mm:ss',jms:'HH:mm:ss',MMMd:"d 'de' MMM",MMMMd:"d 'de' MMMM",Md:'d/M',yMMMM:"MMMM 'de' y",yM:'MM/y',MMMEd:"EEE, d 'de' MMM",MMMMEEEEd:"EEEE, d 'de' MMMM",yMEd:'EEE, dd/MM/y'};
+function fmtDate(d,pat,loc){
+  var pt=isPt(loc),out='',i=0,n=pat.length;
+  while(i<n){
+    var c=pat[i];
+    if(c==="'"){var j=pat.indexOf("'",i+1);if(j<0)j=n;if(j===i+1){out+="'";i+=2;continue}out+=pat.slice(i+1,j);i=j+1;continue}
+    if(!/[A-Za-z]/.test(c)){out+=c;i++;continue}
+    var k=i;while(k<n&&pat[k]===c)k++;var len=k-i;i=k;
+    var Y=d.getFullYear(),M=d.getMonth(),D=d.getDate(),H=d.getHours(),Mi=d.getMinutes(),S=d.getSeconds(),W=d.getDay();
+    switch(c){
+      case 'y':out+=len===2?String(Y).slice(-2):String(Y);break;
+      case 'M':case 'L':out+=len===1?M+1:len===2?p2(M+1):len===3?(pt?PT_MS[M]:EN_M[M].slice(0,3)):(pt?PT_M[M]:EN_M[M]);break;
+      case 'd':out+=len===1?D:p2(D);break;
+      case 'H':out+=len===1?H:p2(H);break;
+      case 'h':{var h12=H%12||12;out+=len===1?h12:p2(h12);break}
+      case 'm':out+=len===1?Mi:p2(Mi);break;
+      case 's':out+=len===1?S:p2(S);break;
+      case 'S':out+=String(d.getMilliseconds()+1000).slice(1).slice(0,len);break;
+      case 'a':out+=H<12?'AM':'PM';break;
+      case 'E':out+=len<=3?(pt?PT_WS[W]:EN_W[W].slice(0,3)):(pt?PT_W[W]:EN_W[W]);break;
+      case 'Q':out+=len<=2?Math.floor(M/3)+1:'T'+(Math.floor(M/3)+1);break;
+      default:out+=pat.slice(k-len,k)}}
+  return out}
+function mkDateFmt(pat,loc){
+  var table=isPt(loc)?SKEL_PT:SKEL_EN,real=hasOwn(table,pat)?table[pat]:pat;
+  return{nat:'DateFormat',f:{pat:real,loc:loc||'en_US'},src:'DateFormat()'}}
+function numSeps(loc){return /^(pt|es|de|it|nl|id|tr|da)/i.test(loc||'')?['.',',']:/^(fr|ru|pl|cs|sv|nb|fi)/i.test(loc||'')?[' ',',']:[',','.']}
+function fmtNum(x,pat,loc){
+  var sp=numSeps(loc),m=/[#0,]+(?:\.[#0]+)?/.exec(pat);
+  if(!m)return pat;
+  var pre=pat.slice(0,m.index),suf=pat.slice(m.index+m[0].length),np=m[0];
+  if(/%/.test(pre+suf))x=x*100;
+  var neg=x<0;x=Math.abs(x);
+  var di=np.indexOf('.'),ip=di<0?np:np.slice(0,di),fp=di<0?'':np.slice(di+1);
+  var minF=(fp.match(/0/g)||[]).length,maxF=fp.length,grp=ip.indexOf(',')>=0,minI=(ip.match(/0/g)||[]).length;
+  var str=(Math.round(x*Math.pow(10,maxF)+1e-9)/Math.pow(10,maxF)).toFixed(maxF),parts=str.split('.'),ints=parts[0],fr=parts[1]||'';
+  while(fr.length>minF&&fr[fr.length-1]==='0')fr=fr.slice(0,-1);
+  while(ints.length<minI)ints='0'+ints;
+  if(ints==='0'&&minI===0&&fr)ints='';
+  if(ints===''&&!fr)ints='0';
+  if(grp)ints=ints.replace(/\B(?=(\d{3})+(?!\d))/g,sp[0]);
+  var body=ints+(fr?sp[1]+fr:'');
+  pre=pre.replace(/¤/g,'');
+  return (neg?'-':'')+pre+body+suf}
+var CUR_SYM={pt_BR:'R$',en_US:'$',en_GB:'£',es_ES:'€',de_DE:'€',fr_FR:'€',it_IT:'€',ja_JP:'¥',pt_PT:'€'};
+function curPattern(sym,dec,loc){
+  var d=dec>0?'.'+new Array(dec+1).join('0'):'';
+  return isPt(loc)||numSeps(loc)[0]!==','?sym+' #,##0'+d:sym+'#,##0'+d}
+function mkNumFmt(kind,pat,loc,extra){return{nat:'NumberFormat',f:Object.assign({kind:kind,pat:pat,loc:loc||'en_US'},extra||{}),src:'NumberFormat()'}}
+function fmtCompact(x,loc){
+  var pt=isPt(loc),neg=x<0;x=Math.abs(x);
+  var T=pt?[[1e12,' tri'],[1e9,' bi'],[1e6,' mi'],[1e3,' mil']]:[[1e12,'T'],[1e9,'B'],[1e6,'M'],[1e3,'K']];
+  var sfx='',v=x;
+  for(var i=0;i<T.length;i++)if(x>=T[i][0]){v=x/T[i][0];sfx=T[i][1];break}
+  var r=v<10&&sfx?Math.round(v*10)/10:Math.round(v);
+  if(!sfx)r=Math.round(x*100)/100;
+  var sp=numSeps(loc);
+  return (neg?'-':'')+String(r).replace('.',sp[1])+sfx}
+function intlStatic(full,args){
+  var parts=full.split('.'),cls=parts[0],fn=parts[1],pos=args.filter(function(a){return !a.name}).map(function(a){return a.val}),nm={};
+  args.forEach(function(a){if(a.name)nm[a.name]=a.val});
+  if(cls==='DateFormat'){
+    var loc=pos.length>0&&typeof pos[0]==='string'?pos[0]:null;
+    return mkDateFmt(fn,loc)}
+  var L=nm.locale||(pos.length&&typeof pos[0]==='string'?pos[0]:null)||'en_US';
+  switch(fn){
+    case 'currency':{var dec=nm.decimalDigits!==undefined?nm.decimalDigits:2,sym=nm.symbol!==undefined?nm.symbol:(nm.name||'USD');return mkNumFmt('num',curPattern(sym,dec,L),L)}
+    case 'simpleCurrency':{var dec2=nm.decimalDigits!==undefined?nm.decimalDigits:2,sy=nm.name||CUR_SYM[L]||'$';return mkNumFmt('num',curPattern(sy,dec2,L),L)}
+    case 'decimalPattern':return mkNumFmt('num','#,##0.###',L);
+    case 'percentPattern':return mkNumFmt('num','#,##0%',L);
+    case 'decimalPercentPattern':{var dd=nm.decimalDigits||0;return mkNumFmt('num','#,##0'+(dd?'.'+new Array(dd+1).join('0'):'')+'%',L)}
+    case 'compact':case 'compactSimpleCurrency':case 'compactCurrency':return mkNumFmt('compact','',L);
+    case 'decimalPatternDigits':{var d3=nm.decimalDigits||0;return mkNumFmt('num','#,##0'+(d3?'.'+new Array(d3+1).join('0'):''),L)}}
+  throw new Error('membro '+cls+'.'+fn)}
 function natCtor(name,args){
   var pos=args.filter(function(a){return !a.name}).map(function(a){return nn(a.val)}),nm={};
   args.forEach(function(a){if(a.name)nm[a.name]=nn(a.val)});
+  if(name==='RegExp'){var fl='';if(nm.caseSensitive===false)fl+='i';var mlt=args.filter(function(a){return a.name==='multiLine'})[0];if(mlt&&mlt.val)fl+='m';var dta=args.filter(function(a){return a.name==='dotAll'})[0];if(dta&&dta.val)fl+='s';
+    var rs=args.filter(function(a){return !a.name})[0];
+    try{new RegExp(String(rs.val),fl)}catch(e){throw exc('FormatException: Invalid regular expression: '+String(rs.val))}
+    return{nat:'RegExp',f:{src:String(rs.val),flags:fl,pattern:String(rs.val)},src:'RegExp()'}}
+  if(name==='DateFormat'){var dfs=args.filter(function(a){return !a.name}).map(function(a){return a.val});return mkDateFmt(dfs[0]||'yMd',dfs[1]||null)}
+  if(name==='NumberFormat'){var nfs=args.filter(function(a){return !a.name}).map(function(a){return a.val});return mkNumFmt('num',nfs[0]||'#,##0.###',nfs[1]||null)}
   if(name==='DateTime')return mkDate(pos[0]||2000,pos.length>1?pos[1]:1,pos.length>2?pos[2]:1,pos[3]||0,pos[4]||0,pos[5]||0);
   if(name==='TimeOfDay')return mkTime(nm.hour!==undefined?nm.hour:pos[0]||0,nm.minute!==undefined?nm.minute:pos[1]||0);
   if(name==='Position')return mkPos(nm.latitude||0,nm.longitude||0,nm.altitude||0);
@@ -2334,6 +2575,7 @@ function natMember(v,name,args){
   if(v.nat==='#class'){
     var c=v.name;
     if(ENUMS[c])return c+'.'+name;
+    if(c==='DateTime'&&name==='parse'||c==='DateTime'&&name==='tryParse'){var pm=/^(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{2}):(\d{2})(?::(\d{2}))?)?/.exec(String(args[0]).trim());if(!pm){if(name==='tryParse')return null;throw exc('FormatException: Invalid date format\n'+args[0])}return mkDate(+pm[1],+pm[2],+pm[3],+(pm[4]||0),+(pm[5]||0),+(pm[6]||0))}
     if(c==='DateTime'&&name==='now'){var n=new Date();return mkDate(n.getFullYear(),n.getMonth()+1,n.getDate(),n.getHours(),n.getMinutes(),n.getSeconds())}
     if(c==='TimeOfDay'&&name==='now'){var n2=new Date();return mkTime(n2.getHours(),n2.getMinutes())}
     if(c==='Geolocator'){
@@ -2394,11 +2636,36 @@ function natMember(v,name,args){
     if(name==='isInBatterySaveMode')return S.battery<=20}
   if(k==='Connectivity'&&name==='checkConnectivity')return ['ConnectivityResult.'+S.net];
   if(k==='ImagePicker'&&name==='pickImage'){return S.photo==='cancel'?null:{nat:'XFile',f:{path:'/storage/emulated/0/DCIM/foto_001.jpg',name:'foto_001.jpg'},src:'XFile()'}}
+  if(k==='RegExp'){
+    switch(name){
+      case 'hasMatch':return jsRe(v).test(String(args[0]));
+      case 'firstMatch':{var fm=jsRe(v).exec(String(args[0]));return fm?mkMatch(fm,String(args[0])):null}
+      case 'allMatches':return reMatches(v,String(args[0]));
+      case 'stringMatch':{var sm0=jsRe(v).exec(String(args[0]));return sm0?sm0[0]:null}
+      case 'pattern':return v.f.pattern}}
+  if(k==='Match'){
+    switch(name){
+      case 'group':{var g=v.m[nn(args[0])];return g===undefined?null:g}
+      case '[]':{var g2=v.m[nn(args[0])];return g2===undefined?null:g2}
+      case 'groups':return toIter(args[0]).map(function(ix){var g3=v.m[nn(ix)];return g3===undefined?null:g3});
+      case 'namedGroup':{var g4=v.m.groups&&v.m.groups[args[0]];return g4===undefined?null:g4}}}
+  if(k==='DateFormat'){
+    if(name==='format'){if(!args[0]||args[0].nat!=='DateTime')throw new Error('DateFormat.format');return fmtDate(args[0].j,v.f.pat,v.f.loc)}
+    if(name==='pattern')return v.f.pat}
+  if(k==='NumberFormat'){
+    if(name==='format'){var nx=nn(args[0]);if(typeof nx!=='number')nx=Number(isD(nx)?nx.v:nx);return v.f.kind==='compact'?fmtCompact(nx,v.f.loc):fmtNum(nx,v.f.pat,v.f.loc)}
+    if(name==='parse'){var ps=String(args[0]).replace(/[^\d.,-]/g,''),sp2=numSeps(v.f.loc);ps=ps.split(sp2[0]).join('').replace(sp2[1],'.');var pv=parseFloat(ps);return Number.isInteger(pv)&&ps.indexOf('.')<0?pv:new Dbl(pv)}}
   if(k==='DateTime'){
+    if(name==='difference')return mkDur(v.j.getTime()-args[0].j.getTime());
+    if(name==='isAtSameMomentAs')return v.j.getTime()===args[0].j.getTime();
+    if(name==='compareTo')return v.j<args[0].j?-1:v.j>args[0].j?1:0;
+    if(name==='toLocal'||name==='toUtc')return v;
+    if(name==='isUtc')return false;
+    if(name==='millisecond')return v.j.getMilliseconds();
     if(name==='toIso8601String')return natStr(v).replace(' ','T');
     if(name==='millisecondsSinceEpoch')return v.j.getTime();
     if(name==='isBefore')return v.j<args[0].j;if(name==='isAfter')return v.j>args[0].j;
-    if(name==='add'||name==='subtract'){var dd=/days\s*:\s*(-?\d+)/.exec(show(args[0]));var sg=name==='add'?1:-1,dn=dd?+dd[1]*sg:0;return mkDate(v.f.year,v.f.month,v.f.day+dn,v.f.hour,v.f.minute,v.f.second)}}
+    if(name==='add'||name==='subtract'){var dms=durMs(args[0]);if(dms===null)dms=0;var nd=new Date(v.j.getTime()+(name==='add'?1:-1)*dms);return mkDate(nd.getFullYear(),nd.getMonth()+1,nd.getDate(),nd.getHours(),nd.getMinutes(),nd.getSeconds())}}
   if(k==='MapController'&&name==='fitCamera'){
     var txt=show(args[0]),re=/LatLng\(\s*(-?[\d.]+)\s*,\s*(-?[\d.]+)\s*\)/g,mm,la=[],lo=[];
     while((mm=re.exec(txt))){la.push(+mm[1]);lo.push(+mm[2])}
@@ -2658,7 +2925,7 @@ function stripComments(src){
     out+=c;i++}
   return out}
 ST.extract=function(src){src=stripComments(src);
-  var info={fields:[],methods:[],locals:{},funcs:[],classes:{},globals:[],stateOf:null,initState:null,widgetCall:null,widgetClass:null};
+  var info={fields:[],methods:[],locals:{},funcs:[],classes:{},exts:[],globals:[],stateOf:null,initState:null,widgetCall:null,widgetClass:null};
   var states=[];
   scan(src).forEach(function(ch){
     var cm=CLASSDECL.exec(ch);
@@ -2668,6 +2935,10 @@ ST.extract=function(src){src=stripComments(src);
       if(/^State</.test(ext)){states.push({of:ext.replace(/^State</,'').replace(/>$/,''),ci:ci})
       }else info.classes[name]={kind:ext==='StatelessWidget'||ext==='StatefulWidget'?ext:'data',ci:ci};
       return}
+    var xm=/^extension\s*(?:(\w+)\s*)?(?:<[^>{]*>)?\s*on\s+([^{]+?)\s*\{/.exec(ch);
+    if(xm){var xci=classInfo('_ext',ch.slice(xm[0].length,ch.lastIndexOf('}')));
+      Object.keys(xci.methods).forEach(function(k){xci.methods[k].ext=true;xci.methods[k].owner=null});
+      info.exts.push({on:xm[2].replace(/<.*$/,'').replace(/\?$/,'').trim(),ci:xci});return}
     var em=ENUMDECL.exec(ch);
     if(em){
       var eb=em[2],cut=-1,dd=0,qq=null;
@@ -11381,11 +11652,11 @@ OF.LIMITS=[
 {h:'Dart que o simulador não executa',
  p:'Aparece a mensagem "Este comando ainda não é suportado no simulador", ou o texto da interpolação fica cru na tela (por exemplo, Cor.verde.name aparece escrito assim). O código continua válido para o celular.',
  li:[
- 'Classes: extension (métodos de extensão) e typedef.',
- 'Padrões: if-case e padrões com when.',
- 'Bibliotecas: DateTime.difference, Duration.inMinutes e semelhantes, intl (DateFormat e NumberFormat), RegExp.',
+ 'Registros com campos nomeados, como (a: 1, b: 2) e r.a. Registros posicionais, como (1, "a"), funcionam.',
+ 'intl: só os idiomas português (pt_BR) e inglês têm nomes de mês e dia; DateFormat.parse e formatos de data muito raros não são suportados.',
+ 'RegExp: usa as regras do JavaScript, que são quase iguais às do Dart (lookbehind e grupos nomeados podem variar).',
  'Pacotes: só os simulados no botão 📡 Sensores (GPS, bateria, rede, câmera, http). Sensores em tempo real, som, microfone, biometria, lanterna e QR só funcionam no celular.',
- 'Já funcionam: enum (name, index, values, campos e métodos), static, herança, super, mixin, construtor nomeado, factory, classe genérica, operator +, sort, métodos de Map, parâmetros nomeados e opcionais em funções, toString e == sobrescritos, exceções próprias, Set, spread, cascata, ??= e ?., do-while, switch como expressão, records, dart:math (incluindo Random), jsonEncode e StringBuffer.'
+ 'Já funcionam: enum (name, index, values, campos e métodos), static, herança, super, mixin, construtor nomeado, factory, classe genérica, operator +, extension, typedef, if-case e padrões (lista, registro, mapa, objeto, when), RegExp, Duration e DateTime (difference, add, comparações), intl (DateFormat e NumberFormat), sort, métodos de Map, parâmetros nomeados e opcionais em funções, toString e == sobrescritos, exceções próprias, Set, spread, cascata, ??= e ?., do-while, switch como expressão, records, dart:math (incluindo Random), jsonEncode e StringBuffer.'
  ]},
 {h:'Widgets que não existem no simulador',
  p:'Eles aparecem como uma caixa com o nome e (…). O código fica intacto e funciona no celular; só não são desenhados nem editáveis no canvas.',
