@@ -53,6 +53,7 @@ select,.btn{background:var(--panel);border:1px solid var(--line);border-radius:8
 .lesson.fold{padding-top:8px;padding-bottom:8px}
 .lesson p{margin:0;color:var(--ink2);line-height:1.5;max-width:70ch}
 .lesson p.try{color:var(--ink)}
+.lesson p.lim{color:var(--muted,#6b6685);font-size:.92em;border-left:3px solid #d9a441;padding-left:10px}
 .lesson p.try b{color:var(--accent)}
 main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,1fr);gap:12px}
 .pane{background:var(--panel);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden}
@@ -9707,6 +9708,24 @@ var GOALS=[
 ['Projeto 5 · etapa 4',[['AppBar teal','Colors\\.teal']]]
 ];
 LESSONS.forEach(function(L){GOALS.forEach(function(g){if(L.t.indexOf(g[0])>=0)L.goals=g[1]})});
+var LIMS=[
+['StreamBuilder','stream.listen() com dispose ainda não é simulado; só StreamBuilder, Stream.periodic e StreamController.'],
+['AnimatedList','a animação de entrada e saída dos itens não aparece: o item surge e some de uma vez.'],
+['DraggableScrollableSheet','o painel só é arrastado pela alça, não pelo conteúdo.'],
+['Hero','o voo do widget entre as telas não é animado: a tela nova aparece direto.'],
+['AnimatedPositioned e AnimatedAlign','as curvas (Curves.*) são aproximadas por CSS; no celular o movimento pode ficar um pouco diferente. Trocas rápidas de estado podem cortar a animação anterior.'],
+['AnimatedContainer, AnimatedOpacity','as curvas são aproximadas por CSS; trocar o estado no meio da animação pode interrompê-la.'],
+['AnimatedSize e AnimatedPadding','as curvas são aproximadas por CSS.'],
+['AnimatedSwitcher e AnimatedCrossFade','só a transição de esmaecer é mostrada; transitionBuilder personalizado não é simulado.'],
+['TweenAnimationBuilder','só Tween numérico (double/int); ColorTween e outros tweens não são simulados.'],
+['Autocomplete e SearchBar','não é possível personalizar o campo (fieldViewBuilder) nem a lista de opções (optionsViewBuilder); SearchAnchor não existe.'],
+['Stepper','controlsBuilder, StepState e isActive não são desenhados.'],
+['NavigationRail','só labelType (all, selected, none); extended e trailing não são desenhados.'],
+['MaterialBanner e Banner','forceActionsBelow e opções avançadas do MaterialBanner não são tratadas; o Banner é uma faixa aproximada.'],
+['MenuAnchor','o menu abre sempre abaixo do botão (desloca só se vazar pela direita) e não há submenus. Colocar o MenuAnchor em AppBar(actions: [...]) não aparece no canvas.'],
+['TabPageSelector','as bolinhas só mudam ao tocar nas abas do TabBar; deslizar a página não é simulado.'],
+];
+LESSONS.forEach(function(L){LIMS.forEach(function(g){if(L.t.indexOf(g[0])>=0)L.lim=g[1]})});
 window.OF.LESSONS=LESSONS;
 })();
 
@@ -11695,7 +11714,7 @@ function loadLesson(i,fresh){
   var saved=fresh?null:LS.get(lkey(L));
   if(fresh)LS.del(lkey(L));
   A.setCode(saved&&saved!==L.code?saved:L.code);A.analyze();OF.ST.reset();S.loading=false;S.run=OF.ST.active;R.opts.typed={};goalsDone=false;
-  $('lessonBox').innerHTML='<h1>'+esc(L.t)+'</h1><p>'+esc(L.text)+'</p><p class="try"><b>Experimente:</b> '+esc(L.tryit)+'</p>'+(L.demo?'<p class="demo">📱 Lição demonstrativa: o código é real e funciona no celular, mas o simulador não tem estes recursos (internet com http, sensores em tempo real, som, microfone, biometria, lanterna, QR). GPS, bateria, rede e câmera você simula pelo botão 📡 Sensores.</p>':'')+(L.setup?'<details class="setup"><summary>Como instalar e quais permissões pedir</summary><pre>'+esc(L.setup)+'</pre></details>':'')+'<div id="goalBox" class="goals"></div>';
+  $('lessonBox').innerHTML='<h1>'+esc(L.t)+'</h1><p>'+esc(L.text)+'</p><p class="try"><b>Experimente:</b> '+esc(L.tryit)+'</p>'+(L.demo?'<p class="demo">📱 Lição demonstrativa: o código é real e funciona no celular, mas o simulador não tem estes recursos (internet com http, sensores em tempo real, som, microfone, biometria, lanterna, QR). GPS, bateria, rede e câmera você simula pelo botão 📡 Sensores.</p>':'')+(L.setup?'<details class="setup"><summary>Como instalar e quais permissões pedir</summary><pre>'+esc(L.setup)+'</pre></details>':'')+(L.lim?'<p class="lim"><b>Limites do simulador:</b> '+esc(L.lim)+'</p>':'')+'<div id="goalBox" class="goals"></div>';
   applyFold();
   goalsDone=!!(L.goals&&doneSet().indexOf(L.t.replace(/^\d+\.\s*/,''))>=0);
   updateGoals();goalsDone=goalsDone&&true;
