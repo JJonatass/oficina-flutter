@@ -160,6 +160,8 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.02fr) min
 .goals em{font-style:normal;font-weight:600;color:var(--ok,#2E7D32)}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
 .modal[hidden]{display:none}
+#limBody h3{margin:16px 0 4px}#limBody p.lp{color:var(--ink2);font-size:13.5px;margin:0 0 6px}#limBody ul{margin:0;padding-left:20px}#limBody li{margin:5px 0;line-height:1.4}
+#limBody .lead{margin:0 0 4px;color:var(--ink2);font-size:13.5px}
 .mbox{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:12px;width:min(760px,100%);max-height:90vh;display:flex;flex-direction:column}
 .mh{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line)}
 .mb{padding:4px 16px 16px;overflow:auto}
@@ -452,6 +454,7 @@ body:has(main[data-tab="ref"]) .lesson{display:none}
   <button class="btn" id="refBtn" title="Catálogo de widgets: o que cada um faz e seus atributos" aria-pressed="false">📖 Widgets</button>
   <button class="btn" id="undoBtn" title="Desfazer (Ctrl+Z)" aria-label="Desfazer" disabled>↶ Desfazer</button>
   <button class="btn" id="redoBtn" title="Refazer (Ctrl+Shift+Z)" aria-label="Refazer" disabled>↷ Refazer</button>
+  <button class="btn" id="limBtn" title="O que o simulador não desenha ou não executa">⚠ Limites</button>
   <button class="btn" id="profBtn" title="Progresso da turma">Professor</button>
   <button class="btn" id="themeBtn" aria-label="Alternar tema claro e escuro">Tema</button>
 </header>
@@ -521,6 +524,9 @@ body:has(main[data-tab="ref"]) .lesson{display:none}
    <div class="mrow"><button class="btn pri" id="profLoad">Mostrar turma</button><button class="btn" id="profClear">Limpar</button></div>
    <div id="profOut"></div>
   </div></div></div>
+<div class="modal" id="limModal" hidden role="dialog" aria-modal="true" aria-label="Limites do simulador"><div class="mbox">
+  <div class="mh"><b>Limites do simulador</b><button class="btn" id="limClose" aria-label="Fechar">✕</button></div>
+  <div class="mb" id="limBody"></div></div></div>
 <div class="toast" id="toast" role="status"></div>
 <script>
 (function(){
@@ -11054,6 +11060,67 @@ d('RichAttributionWidget',[['attributions','List<SourceAttribution>','Os crédit
 OF.REF=R;
 })();
 
+/* Limites do simulador: o que a Oficina não desenha ou não executa. Cada item foi conferido em teste automático. */
+OF.LIMITS=[
+{h:'⚠ Pode dar resultado errado, sem aviso',
+ p:'Nestes casos o simulador não mostra erro: a tela fica diferente do que o Flutter faria. No celular de verdade o código funciona normalmente.',
+ li:[
+ 'lista.sort() sem comparador não ordena (com sort((a, b) => ...) funciona).',
+ 'mapa.putIfAbsent(...), mapa.update(...) e mapa.forEach(...) não fazem nada. remove e mapa[chave] = valor funcionam.',
+ 'Função global com parâmetro nomeado ou opcional, como soma({int a = 1, required int b}), devolve NaN. Métodos de classe com parâmetro nomeado funcionam.',
+ '"ab" * 2 devolve NaN em vez de "abab".',
+ 'Sobrescrever toString() e == numa classe não tem efeito: o texto sai como "Instance of \'A\'" e a comparação dá false.',
+ 'Imprimir uma exceção mostra Exception(\'texto\') em vez de "Exception: texto".',
+ 'firstWhere com orElse lança "Bad state: No element" em vez de usar o orElse.',
+ 'Random(): o simulador não gera números aleatórios.'
+ ]},
+{h:'Dart que o simulador não executa',
+ p:'Aparece a mensagem "Este comando ainda não é suportado no simulador", ou o texto da interpolação fica cru na tela. O código continua válido para o celular.',
+ li:[
+ 'Variáveis: declarar local com tipo genérico, como List<int> l = [] ou Map<String, int> m = {}, ou com Object (use var). Variável global mutável e const global. ??= e ?. (acesso nulo-seguro).',
+ 'Coleções: Set literal ({1, 2}), cascata (..add), spread (...lista), for e if dentro de lista literal, e os métodos expand, sublist, toSet e List.generate.',
+ 'Controle: do-while, switch como expressão (switch (x) { 1 => ... }), records, desestruturação, if-case e padrões com when, e o operador <<.',
+ 'Classes: mixin, extension, métodos static, factory, construtor nomeado, operador sobrecarregado (operator +), classe genérica (Box<int>), typedef, herança de método sem override e super.metodo().',
+ 'Enum: .name, .index, .values e enum com campos. Enum simples com switch funciona.',
+ 'Exceções: classe própria de exceção lida com on Erro catch (e) e depois e.campo.',
+ 'Bibliotecas: dart:math (max, sqrt, pow, pi), dart:convert (jsonEncode e jsonDecode), identical, replaceFirst, DateTime.difference, Duration.inMinutes e semelhantes, intl (DateFormat e NumberFormat), RegExp, StringBuffer.',
+ 'Pacotes: só os simulados no botão 📡 Sensores (GPS, bateria, rede, câmera, http). Sensores em tempo real, som, microfone, biometria, lanterna e QR só funcionam no celular.'
+ ]},
+{h:'Widgets que não existem no simulador',
+ p:'Eles aparecem como uma caixa com o nome e (…). O código fica intacto e funciona no celular; só não são desenhados nem editáveis no canvas.',
+ li:[
+ 'Desenho e recorte: CustomPaint, ClipOval, BackdropFilter, ShaderMask, ColorFiltered, ImageFiltered, DecoratedBox, Material, Placeholder.',
+ 'Layout: IntrinsicHeight, IntrinsicWidth, LimitedBox, OverflowBox, UnconstrainedBox, RotatedBox, Baseline, Flow, Offstage, IgnorePointer, AbsorbPointer, GridView.extent, ListView.custom, NestedScrollView.',
+ 'Listas e rolagem: ListWheelScrollView, CarouselView, Scrollbar, SliverGrid, SliverPadding, SliverFillRemaining, SliverPersistentHeader, PaginatedDataTable.',
+ 'Arrastar e soltar: Draggable, LongPressDraggable, DragTarget.',
+ 'Animação: AnimatedBuilder, AnimatedDefaultTextStyle, SlideTransition, ScaleTransition, RotationTransition, ValueListenableBuilder, ListenableBuilder.',
+ 'Botões e campos: TextButton.icon, ElevatedButton.icon, OutlinedButton.icon, FilledButton.tonal, IconButton.filled, FloatingActionButton.extended, Card.outlined, InputChip, SelectableText, SearchAnchor, CalendarDatePicker.',
+ 'Outros: Theme, MediaQuery, Semantics, Focus, PopScope, InkResponse, Image.file e todos os widgets Cupertino (CupertinoButton, CupertinoAlertDialog, CupertinoSwitch e outros).'
+ ]},
+{h:'Propriedades que o simulador ignora',
+ p:'O widget aparece, mas estas propriedades não mudam o desenho.',
+ li:[
+ 'Text: textAlign, maxLines, overflow, softWrap, e no TextStyle tudo além de fontSize, fontWeight, fontStyle, color e letterSpacing (decoration, height e fontFamily não valem).',
+ 'Botões (ElevatedButton, TextButton, OutlinedButton, FilledButton): style e styleFrom (cores, padding, forma, tamanho mínimo).',
+ 'Card: elevation e shape. Container: boxShadow dentro do BoxDecoration. FittedBox: fit. Image: fit.',
+ 'AppBar: actions e leading. Scaffold: floatingActionButtonLocation e bottomSheet.',
+ 'ListView: scrollDirection horizontal e reverse. GridView.count: childAspectRatio. Wrap: direction. Column e Row: verticalDirection. Stack: clipBehavior. Flexible: fit. Visibility: maintainSize.',
+ 'Slider e RangeSlider: divisions não desenha as marcas (só limita os passos do arrasto).',
+ 'TextField: obscureText, keyboardType e maxLines não mudam o campo (a senha aparece como texto).'
+ ]},
+{h:'Animações e gestos',
+ p:'O que ainda é aproximado.',
+ li:[
+ 'As curvas (Curves.*) das animações implícitas são aproximadas por CSS; trocar o estado no meio de uma animação pode interrompê-la.',
+ 'AnimatedList e Hero: não mostram a animação de entrada, saída ou voo.',
+ 'AnimatedSwitcher e AnimatedCrossFade: só a transição de esmaecer. TweenAnimationBuilder: só tween numérico.',
+ 'DraggableScrollableSheet: o painel só é arrastado pela alça.',
+ 'AppBar(actions: [...]) não aparece, então um MenuAnchor ou PopupMenuButton ali não é visto no canvas. Coloque-o no corpo para testar.',
+ 'Stepper: controlsBuilder, StepState e isActive não são desenhados. Autocomplete: sem campo ou lista de opções personalizados.',
+ 'NavigationRail: só labelType (sem extended e trailing). MaterialBanner: sem forceActionsBelow. TabPageSelector: a bolinha só muda ao tocar nas abas.'
+ ]}
+];
+
 (function(){
 'use strict';
 var OF=window.OF,M=OF.M,R=OF.R,W=OF.W,A=OF.A,S=A.S,$=A.$,esc=A.esc;
@@ -11739,6 +11806,12 @@ function renderClass(){
   h+='</table><p class="mt">Passe o mouse sobre o número da coluna para ver o nome da lição.'+(bad?' '+bad+' linha(s) ignorada(s).':'')+'</p>';
   $('profOut').innerHTML=h}
 $('profBtn').addEventListener('click',function(){$('profModal').hidden=false;$('profName').value=LS.get('oficina.name')||'';$('profName').focus()});
+$('limBtn').addEventListener('click',function(){var h='<p class="lead">O simulador é uma versão simplificada do Flutter para aprender. O código escrito aqui é Dart de verdade e roda no celular, mas o que está abaixo o simulador não desenha ou não executa. Cada lição também avisa os limites do seu tema.</p>';
+  (OF.LIMITS||[]).forEach(function(s){h+='<h3>'+esc(s.h)+'</h3><p class="lp">'+esc(s.p)+'</p><ul>'+s.li.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>'});
+  $('limBody').innerHTML=h;$('limModal').hidden=false;$('limClose').focus()});
+$('limClose').addEventListener('click',function(){$('limModal').hidden=true});
+$('limModal').addEventListener('click',function(e){if(e.target===$('limModal'))$('limModal').hidden=true});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('limModal').hidden)$('limModal').hidden=true});
 $('profClose').addEventListener('click',function(){$('profModal').hidden=true});
 $('profModal').addEventListener('click',function(e){if(e.target===$('profModal'))$('profModal').hidden=true});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('profModal').hidden)$('profModal').hidden=true});
