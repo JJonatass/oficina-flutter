@@ -289,6 +289,45 @@ body:has(main[data-tab="ref"]) .lesson{display:none}
 .nd.wrapf{flex-direction:row}
 .nd.cav{border-radius:50%;align-items:center;justify-content:center;overflow:hidden;font-weight:500}
 .nd.dchip{height:32px;padding:0 12px;gap:8px;align-items:center;border:1px solid #79747E;border-radius:8px;font-size:14px;color:#1D1B20}
+.nd.dph2{border:1px solid currentColor;color:#8a8590;position:relative}.nd.dph2 svg{position:absolute;inset:0;width:100%;height:100%}
+.nd.cpt{border:1px dashed #8a8590;align-items:center;justify-content:center;position:relative;min-width:24px;min-height:24px;background:repeating-linear-gradient(45deg,transparent 0 8px,rgba(120,110,140,.08) 8px 16px)}
+.nd.cpt>.cpl{position:absolute;left:4px;top:2px;font-size:10px;opacity:.6;pointer-events:none}
+.nd .cfo{position:absolute;inset:0;pointer-events:none}
+.nd.ovb{overflow:visible}
+.nd.rtb{position:relative}
+.nd.ign,.nd.ign *{pointer-events:none!important}
+.nd .abs{position:absolute;inset:0;z-index:3;cursor:not-allowed}
+.nd.lws{position:relative;overflow:hidden}
+.nd.lws>.lwi{position:absolute;inset:0;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none;display:flex;flex-direction:column;-webkit-mask-image:linear-gradient(transparent,#000 30%,#000 70%,transparent);mask-image:linear-gradient(transparent,#000 30%,#000 70%,transparent)}
+.nd.lws>.lwi::-webkit-scrollbar{display:none}
+.nd.lws .lwc{flex:none;display:flex;align-items:center;justify-content:center;scroll-snap-align:center}
+.nd.lws>.lwb{position:absolute;left:8px;right:8px;top:50%;transform:translateY(-50%);border-top:1px solid rgba(120,110,140,.5);border-bottom:1px solid rgba(120,110,140,.5);pointer-events:none}
+.nd.crsl{display:flex;flex-direction:row;overflow-x:auto;gap:8px;padding:4px 0;scroll-snap-type:x mandatory;height:200px;flex:none;align-items:stretch;scrollbar-width:thin}
+.nd.crsl>.crc{flex:none;scroll-snap-align:start;border-radius:28px;overflow:hidden;display:flex}
+.nd.crsl>.crc>.nd{flex:1}
+.nd.sph{padding:12px 16px;background:rgba(120,110,140,.18);border-bottom:2px solid rgba(120,110,140,.5);font-size:13px;align-self:stretch}
+.nd.pdt .pdth{padding:12px 16px;font-size:20px}
+.nd.pdt .pdtt{display:grid;font-size:13px;padding:0 8px}
+.nd.pdt .pdtc{font-weight:600;padding:10px 8px;border-bottom:1px solid rgba(120,110,140,.4)}
+.nd.pdt .pdtx{padding:10px 8px;opacity:.5;border-bottom:1px solid rgba(120,110,140,.2)}
+.nd.pdt .pdtf{padding:10px 16px;font-size:12px;text-align:right;opacity:.7}
+.nd.btn.tonal{background:#E8DEF8;color:#1D192B;box-shadow:none}
+.nd.ibtn.ibf{background:var(--d-primary,#6750A4);color:#fff}
+.nd.ibtn.ibt{background:#E8DEF8;color:#1D192B}
+.nd.ibtn.ibo{border:1px solid #79747E}
+.nd.fab.fabx{width:auto;padding:0 20px;gap:0;flex-direction:row;border-radius:16px;font-weight:500}
+.nd.card.cardo{box-shadow:none;border:1px solid #CAC4D0;background:var(--d-surface)}
+.nd.card.cardf{box-shadow:none;background:#E7E0EC}
+.nd.dchip .chx{margin-left:2px;font-size:12px;opacity:.7;cursor:default}
+.nd.sbar2{height:56px;flex:none;border-radius:28px;background:#ECE6F0;flex-direction:row;align-items:center;padding:0 16px;gap:12px;color:#49454F;align-self:stretch}
+.nd.calp{padding:8px;flex-direction:column;width:100%;max-width:328px;align-items:stretch}
+.nd.calp .calh{display:flex;align-items:center;justify-content:space-between;padding:4px 8px 8px;font-size:14px}
+.nd.calp .calb{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:20px}
+.nd.calp .calg{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;font-size:13px}
+.nd.calp .cwd{font-style:normal;opacity:.6;padding:4px 0}
+.nd.calp .cdy{height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.nd.calp .cdy.off{opacity:.3}.nd.calp .cdy.tdy{border:1px solid var(--d-primary,#6750A4)}
+.nd.calp .cdy.on{background:var(--d-primary,#6750A4);color:#fff}
 .nd.chkb{width:48px;height:48px;flex:none;align-items:center;justify-content:center}
 .chkb .bx{width:18px;height:18px;border:2px solid #49454F;border-radius:2px;display:flex;align-items:center;justify-content:center}
 .chkb .bx.on{background:var(--act,var(--d-primary));border-color:var(--act,var(--d-primary));color:#fff}
@@ -691,10 +730,74 @@ var W={
  IconButton:{cat:'content',slots:{icon:'one'},desc:'Botão redondo que contém só um ícone, passado em icon.'},
  ListTile:{cat:'content',slots:{leading:'one',title:'one',subtitle:'one',trailing:'one'},desc:'Linha de lista pronta: leading (início), title, subtitle e trailing (fim).'},
  TextField:{cat:'content',slots:{},desc:'Campo de texto. A decoration (InputDecoration) define rótulo, dica e borda; obscureText: true esconde o conteúdo.'},
+ ClipRect:{cat:'box',slots:{child:'one'},desc:'Corta o que passa da área do filho (clipBehavior). Use com BackdropFilter para limitar o desfoque ao espaço do filho.'},
+ ClipOval:{cat:'box',slots:{child:'one'},desc:'Recorta o filho em forma de elipse (um círculo, se o filho for quadrado). Bom para fotos de perfil.'},
+ DecoratedBox:{cat:'box',slots:{child:'one'},desc:'Pinta uma decoração (BoxDecoration: cor, borda, cantos, sombra) atrás do filho, sem mexer no tamanho nem no padding. É o Container sem as outras funções.'},
+ Material:{cat:'box',slots:{child:'one'},desc:'Superfície do Material Design: color, elevation (sombra) e borderRadius. Dá fundo e sombra a quem não tem, como um InkWell dentro de um Container.'},
+ Placeholder:{cat:'box',slots:{},desc:'Caixa com um X, que marca o lugar de algo que ainda não foi feito. fallbackWidth e fallbackHeight dão o tamanho (padrão 400).'},
+ CustomPaint:{cat:'box',slots:{child:'one'},desc:'Desenha com código, por meio de um CustomPainter (canvas.drawCircle, drawLine…). size define o tamanho. O simulador não executa o painter: mostra uma caixa tracejada no tamanho certo.'},
+ BackdropFilter:{cat:'box',slots:{child:'one'},desc:'Aplica um efeito, como desfoque (ImageFilter.blur), no que está atrás dele. Use dentro de um Stack, sobre uma imagem, com um filho semitransparente.'},
+ ShaderMask:{cat:'box',slots:{child:'one'},desc:'Pinta o filho com um shader, por exemplo um LinearGradient. Com blendMode: BlendMode.srcIn o degradê aparece só onde o filho tem pixels (texto com degradê). No simulador, vale para textos.'},
+ ColorFiltered:{cat:'box',slots:{child:'one'},desc:'Tinge tudo o que o filho desenha, com colorFilter: ColorFilter.mode(cor, BlendMode.x). No simulador, os modos modulate, multiply, screen, overlay, darken, lighten e color.'},
+ ImageFiltered:{cat:'box',slots:{child:'one'},desc:'Aplica um efeito ao próprio filho: imageFilter: ImageFilter.blur(sigmaX: 4, sigmaY: 4) o desfoca.'},
+ IntrinsicHeight:{cat:'layout',slots:{child:'one'},desc:'Faz o filho ter a altura natural do seu maior item. Serve para uma Row com crossAxisAlignment: stretch deixar todos os itens da mesma altura.'},
+ IntrinsicWidth:{cat:'layout',slots:{child:'one'},desc:'Faz o filho ter a largura natural do seu maior item. Serve para colocar botões de mesma largura em uma Column.'},
+ LimitedBox:{cat:'layout',slots:{child:'one'},desc:'Limita o tamanho do filho só quando o espaço é ilimitado, como dentro de uma ListView. maxWidth e maxHeight dão o limite.'},
+ UnconstrainedBox:{cat:'layout',slots:{child:'one'},desc:'Tira os limites de tamanho que vêm do pai: o filho fica do tamanho que quiser e pode estourar a tela. alignment diz onde ele fica.'},
+ Baseline:{cat:'layout',slots:{child:'one'},desc:'Alinha o filho pela linha de base do texto. baseline é a distância do topo até a base e baselineType escolhe alphabetic ou ideographic. No simulador não muda o desenho.'},
+ RotatedBox:{cat:'layout',slots:{child:'one'},desc:'Gira o filho em múltiplos de 90 graus, e o layout acompanha (diferente do Transform.rotate). quarterTurns: 1 é 90°, 2 é 180°, 3 é 270°.'},
+ OverflowBox:{cat:'layout',slots:{child:'one'},desc:'Deixa o filho ter um tamanho diferente do espaço do pai, com maxWidth e maxHeight, e ele pode passar para fora. alignment diz de onde ele cresce.'},
+ Flow:{cat:'layout',slots:{children:'many'},desc:'Posiciona os filhos com um delegate, por cálculo. No simulador os filhos são dispostos em fila que quebra de linha, como um Wrap.'},
+ Offstage:{cat:'layout',slots:{child:'one'},desc:'Esconde o filho sem tirar ele da árvore (o estado dele é mantido). offstage: true esconde, false mostra. Atenção: o padrão é true.'},
+ IgnorePointer:{cat:'layout',slots:{child:'one'},desc:'Faz o filho ignorar toques: ignoring: true deixa os toques passarem para o que está atrás.'},
+ AbsorbPointer:{cat:'layout',slots:{child:'one'},desc:'Faz o filho não responder a toques e também não deixa o toque passar para trás. absorbing: true bloqueia.'},
+ 'GridView.extent':{cat:'layout',slots:{children:'many'},desc:'Grade em que você dá o tamanho máximo de cada célula (maxCrossAxisExtent) em vez do número de colunas. O Flutter calcula quantas colunas cabem.'},
+ 'ListView.custom':{cat:'layout',slots:{childrenDelegate:'one'},desc:'ListView em que os filhos vêm de um delegate. Com SliverChildListDelegate([...]) é igual a ListView(children: [...]). No simulador só esse delegate é desenhado.'},
+ SliverChildListDelegate:{cat:'layout',pos:['children'],slots:{children:'many'},desc:'Entrega uma lista fixa de filhos para ListView.custom ou SliverGrid. O primeiro argumento é a lista de widgets.'},
+ NestedScrollView:{cat:'layout',slots:{body:'one'},desc:'Cabeçalho que rola junto com o corpo (headerSliverBuilder + body). O simulador desenha só o body.'},
+ ListWheelScrollView:{cat:'layout',slots:{children:'many'},desc:'Lista em forma de roda, como o seletor de hora do iPhone. itemExtent é a altura de cada item. No simulador a roda rola e onSelectedItemChanged dispara.'},
+ CarouselView:{cat:'layout',slots:{children:'many'},desc:'Carrossel que rola na horizontal e para no item. itemExtent é a largura de cada item. Os itens ficam com cantos arredondados.'},
+ Scrollbar:{cat:'layout',slots:{child:'one'},desc:'Mostra a barra de rolagem ao lado de um conteúdo que rola. O filho precisa ser um ListView ou SingleChildScrollView. No simulador aparece uma barra fina fixa.'},
+ SliverGrid:{cat:'layout',slots:{delegate:'one'},desc:'Grade dentro de um CustomScrollView. delegate leva os itens (SliverChildListDelegate) e gridDelegate define as colunas (SliverGridDelegateWithFixedCrossAxisCount).'},
+ 'SliverGrid.count':{cat:'layout',slots:{children:'many'},desc:'Atalho de SliverGrid: crossAxisCount colunas e children direto.'},
+ SliverPadding:{cat:'layout',slots:{sliver:'one'},desc:'Dá espaço em volta de um sliver (um SliverList, por exemplo). padding recebe EdgeInsets.'},
+ SliverFillRemaining:{cat:'layout',slots:{child:'one'},desc:'Sliver que ocupa o espaço que sobrar na tela depois dos outros slivers. Bom para um rodapé ou uma mensagem de lista vazia.'},
+ SliverPersistentHeader:{cat:'layout',slots:{},desc:'Cabeçalho que fica fixo (pinned) ou reaparece (floating) ao rolar. Precisa de um delegate, que é uma classe sua. O simulador desenha só uma faixa no lugar.'},
+ PaginatedDataTable:{cat:'layout',slots:{header:'one',columns:'many'},desc:'DataTable com páginas e rodapé de navegação. Os dados vêm de um DataTableSource. O simulador desenha o cabeçalho, as colunas e linhas de exemplo.'},
+ AnimatedDefaultTextStyle:{cat:'box',slots:{child:'one'},desc:'Anima a mudança do estilo de texto (cor, tamanho, peso) do filho durante duration. Troque style em um setState.'},
+ 'TextButton.icon':{cat:'content',slots:{icon:'one',label:'one'},desc:'Versão do TextButton com ícone ao lado do texto. icon é o ícone, label é o texto e onPressed define a ação.'},
+ 'ElevatedButton.icon':{cat:'content',slots:{icon:'one',label:'one'},desc:'Versão do ElevatedButton com ícone ao lado do texto. icon é o ícone, label é o texto e onPressed define a ação.'},
+ 'OutlinedButton.icon':{cat:'content',slots:{icon:'one',label:'one'},desc:'Versão do OutlinedButton com ícone ao lado do texto. icon é o ícone, label é o texto e onPressed define a ação.'},
+ 'FilledButton.icon':{cat:'content',slots:{icon:'one',label:'one'},desc:'Versão do FilledButton com ícone ao lado do texto. icon é o ícone, label é o texto e onPressed define a ação.'},
+ 'FilledButton.tonal':{cat:'content',slots:{child:'one'},desc:'Botão preenchido com cor suave, entre o FilledButton e o OutlinedButton em destaque.'},
+ 'IconButton.filled':{cat:'content',slots:{icon:'one'},desc:'Botão de ícone com fundo na cor principal.'},
+ 'IconButton.filledTonal':{cat:'content',slots:{icon:'one'},desc:'Botão de ícone com fundo suave.'},
+ 'IconButton.outlined':{cat:'content',slots:{icon:'one'},desc:'Botão de ícone só com borda.'},
+ 'FloatingActionButton.extended':{cat:'struct',slots:{icon:'one',label:'one'},desc:'Botão flutuante largo, com ícone e texto. Vai em Scaffold(floatingActionButton: ...).'},
+ 'Card.outlined':{cat:'box',slots:{child:'one'},desc:'Card sem sombra, com borda.'},
+ 'Card.filled':{cat:'box',slots:{child:'one'},desc:'Card sem sombra, com fundo colorido.'},
+ InputChip:{cat:'content',slots:{label:'one',avatar:'one'},desc:'Chip que representa algo digitado ou escolhido, como um e-mail em um campo de destinatários. onDeleted mostra o X para remover.'},
+ SelectableText:{cat:'content',pos:['data'],slots:{},desc:'Texto que a pessoa pode selecionar e copiar. Funciona como o Text.'},
+ SearchAnchor:{cat:'content',slots:{},desc:'Campo de busca que abre uma tela de sugestões. builder desenha o campo (um SearchBar) e suggestionsBuilder devolve as sugestões. O simulador mostra o campo, sem a tela de sugestões.'},
+ 'SearchAnchor.bar':{cat:'content',slots:{},desc:'Atalho do SearchAnchor: já desenha a barra de busca. barHintText é a dica.'},
+ CalendarDatePicker:{cat:'content',slots:{},desc:'Calendário de um mês na própria tela (o que o showDatePicker abre). initialDate, firstDate e lastDate dão os limites e onDateChanged recebe o dia tocado.'},
+ Theme:{cat:'struct',slots:{child:'one'},desc:'Muda o tema só para o filho. data recebe um ThemeData (por exemplo, com colorScheme: ColorScheme.fromSeed). No simulador vale a cor principal.'},
+ MediaQuery:{cat:'struct',slots:{child:'one'},desc:'Entrega medidas da tela (tamanho, orientação, escala de texto) para os filhos lerem com MediaQuery.of(context). Não muda o desenho.'},
+ Semantics:{cat:'struct',slots:{child:'one'},desc:'Descreve o filho para leitores de tela (label, button, hint). Não muda o desenho.'},
+ Focus:{cat:'struct',slots:{child:'one'},desc:'Controla o foco do teclado do filho. autofocus e onKeyEvent. Não muda o desenho.'},
+ PopScope:{cat:'struct',slots:{child:'one'},desc:'Decide o que acontece ao apertar Voltar: canPop: false impede a saída e onPopInvokedWithResult avisa. Não muda o desenho.'},
+ InkResponse:{cat:'struct',slots:{child:'one'},desc:'Como o InkWell, com mais controle da forma do efeito de toque. onTap define a ação.'},
+ 'Image.file':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem guardada em um arquivo do aparelho (File(path)). O simulador desenha um quadro no lugar.'},
+ ValueListenableBuilder:{cat:'layout',slots:{child:'one'},desc:'Redesenha só o que está dentro quando um ValueNotifier muda, sem setState. valueListenable é o notifier e builder recebe (context, value, child). child é um pedaço fixo, que não precisa ser refeito.'},
+ ListenableBuilder:{cat:'layout',slots:{child:'one'},desc:'Redesenha quando um ChangeNotifier chama notifyListeners(). listenable é o objeto e builder recebe (context, child). Sem setState.'},
+ AnimatedBuilder:{cat:'layout',slots:{child:'one'},desc:'Redesenha a cada quadro de uma animação (animation: o AnimationController). builder recebe (context, child) e child é a parte que não muda, o que poupa trabalho.'},
+ ScaleTransition:{cat:'box',slots:{child:'one'},desc:'Muda o tamanho do filho conforme scale, uma animação (por exemplo, um AnimationController ou um Tween.animate). 1 é o tamanho normal.'},
+ RotationTransition:{cat:'box',slots:{child:'one'},desc:'Gira o filho conforme turns, uma animação que conta voltas (0.5 é meia volta, 1 é a volta inteira).'},
+ SlideTransition:{cat:'box',slots:{child:'one'},desc:'Desliza o filho conforme position, uma animação de Offset. O Offset é uma fração do tamanho do próprio filho: Offset(1, 0) desloca uma largura inteira para a direita.'},
  'Image.network':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem baixada de uma URL. O canvas mostra a imagem real quando a URL carrega; sem internet, ou se a página bloquear imagens externas, ele desenha um quadro no lugar. fit controla como ela preenche o espaço.'},
  'Image.asset':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem guardada no projeto (pasta assets). O canvas mostra a imagem real quando a URL carrega; sem internet, ou se a página bloquear imagens externas, ele desenha um quadro no lugar.'}
 };
-var GROUPS=[['Estrutura',['Scaffold','AppBar','FloatingActionButton','Drawer','BottomNavigationBar','BottomNavigationBarItem','NavigationBar','NavigationDestination','NavigationRail','NavigationRailDestination','MenuAnchor','MenuItemButton']],['Abas',['DefaultTabController','TabBar','Tab','TabBarView','TabPageSelector']],['Layout',['Center','Align','Column','Row','Stack','Positioned','Expanded','Flexible','Spacer','Wrap','Form','ListView','GridView.count','SingleChildScrollView','SafeArea','PageView','IndexedStack','Stepper','Step','ExpansionPanelList','ExpansionPanel','DraggableScrollableSheet','TweenAnimationBuilder','LayoutBuilder','Builder','FutureBuilder','StreamBuilder','RefreshIndicator','CustomScrollView','SliverAppBar','SliverToBoxAdapter','SliverList.list','SliverList.builder']],['Listas e tabelas',['ListView.builder','ListView.separated','ReorderableListView','ReorderableListView.builder','AnimatedList','GridView.builder','Table','TableRow','DataTable','DataColumn','DataRow','DataCell']],['Caixas',['Container','ColoredBox','Padding','SizedBox','AspectRatio','ConstrainedBox','FractionallySizedBox','FittedBox','Card','Divider','VerticalDivider','ClipRRect','Opacity','AnimatedOpacity','AnimatedContainer','AnimatedPositioned','AnimatedAlign','AnimatedPadding','AnimatedSize','AnimatedScale','AnimatedRotation','AnimatedSwitcher','AnimatedCrossFade','Visibility','Tooltip','Badge','Hero','FadeTransition','SizeTransition','InteractiveViewer','Transform.rotate','Transform.scale','Transform.translate','Dismissible']],['Conteúdo',['Text','Text.rich','RichText','Icon','Image.network','CircleAvatar','Chip','ChoiceChip','FilterChip','ActionChip','ListTile','ExpansionTile','Image.asset','CircularProgressIndicator','LinearProgressIndicator','SegmentedButton','ButtonSegment','PopupMenuButton']],['Botões e campos',['ElevatedButton','FilledButton','TextButton','OutlinedButton','IconButton','TextField','TextFormField','Checkbox','Switch','Slider','Radio','DropdownButton','DropdownMenuItem','SwitchListTile','CheckboxListTile','RadioListTile','RangeSlider','ToggleButtons','DropdownMenu','DropdownMenuEntry','Autocomplete','SearchBar']],['Interação',['GestureDetector','InkWell']],['Mapas (flutter_map)',['FlutterMap','TileLayer','MarkerLayer','Marker','CircleLayer','CircleMarker','PolylineLayer','Polyline','RichAttributionWidget']],['Janelas',['AlertDialog','SimpleDialog','SimpleDialogOption','SnackBar','SnackBarAction','MaterialBanner','Banner']]];
+var GROUPS=[['Estrutura',['Scaffold','AppBar','FloatingActionButton','Drawer','BottomNavigationBar','BottomNavigationBarItem','NavigationBar','NavigationDestination','NavigationRail','NavigationRailDestination','MenuAnchor','MenuItemButton','FloatingActionButton.extended']],['Abas',['DefaultTabController','TabBar','Tab','TabBarView','TabPageSelector']],['Layout',['ValueListenableBuilder','ListenableBuilder','AnimatedBuilder','Center','Align','Column','Row','Stack','Positioned','Expanded','Flexible','Spacer','Wrap','Form','ListView','GridView.count','SingleChildScrollView','SafeArea','PageView','IndexedStack','Stepper','Step','ExpansionPanelList','ExpansionPanel','DraggableScrollableSheet','TweenAnimationBuilder','LayoutBuilder','Builder','FutureBuilder','StreamBuilder','RefreshIndicator','CustomScrollView','SliverAppBar','SliverToBoxAdapter','SliverList.list','SliverList.builder','IntrinsicHeight','IntrinsicWidth','LimitedBox','UnconstrainedBox','OverflowBox','RotatedBox','Baseline','Flow','Offstage','IgnorePointer','AbsorbPointer','GridView.extent','NestedScrollView','Scrollbar','SliverGrid','SliverGrid.count','SliverPadding','SliverFillRemaining','SliverPersistentHeader']],['Listas e tabelas',['ListView.builder','ListView.separated','ReorderableListView','ReorderableListView.builder','AnimatedList','GridView.builder','Table','TableRow','DataTable','DataColumn','DataRow','DataCell','ListView.custom','SliverChildListDelegate','ListWheelScrollView','CarouselView','PaginatedDataTable']],['Caixas',['Container','ColoredBox','Padding','SizedBox','AspectRatio','ConstrainedBox','FractionallySizedBox','FittedBox','Card','Divider','VerticalDivider','ClipRRect','Opacity','AnimatedOpacity','AnimatedContainer','AnimatedPositioned','AnimatedAlign','AnimatedPadding','AnimatedSize','AnimatedScale','AnimatedRotation','AnimatedSwitcher','AnimatedCrossFade','Visibility','Tooltip','Badge','Hero','FadeTransition','SizeTransition','InteractiveViewer','Transform.rotate','Transform.scale','Transform.translate','Dismissible','ScaleTransition','RotationTransition','SlideTransition','ClipRect','ClipOval','DecoratedBox','Material','Placeholder','CustomPaint','BackdropFilter','ShaderMask','ColorFiltered','ImageFiltered','AnimatedDefaultTextStyle','Card.outlined','Card.filled']],['Conteúdo',['Text','Text.rich','RichText','Icon','Image.network','CircleAvatar','Chip','ChoiceChip','FilterChip','ActionChip','ListTile','ExpansionTile','Image.asset','CircularProgressIndicator','LinearProgressIndicator','SegmentedButton','ButtonSegment','PopupMenuButton','InputChip','SelectableText','Image.file','CalendarDatePicker']],['Botões e campos',['ElevatedButton','FilledButton','TextButton','OutlinedButton','IconButton','TextField','TextFormField','Checkbox','Switch','Slider','Radio','DropdownButton','DropdownMenuItem','SwitchListTile','CheckboxListTile','RadioListTile','RangeSlider','ToggleButtons','DropdownMenu','DropdownMenuEntry','Autocomplete','SearchBar','TextButton.icon','ElevatedButton.icon','OutlinedButton.icon','FilledButton.icon','FilledButton.tonal','IconButton.filled','IconButton.filledTonal','IconButton.outlined','SearchAnchor','SearchAnchor.bar']],['Interação',['GestureDetector','InkWell','InkResponse','Focus','Semantics','PopScope','Theme','MediaQuery']],['Mapas (flutter_map)',['FlutterMap','TileLayer','MarkerLayer','Marker','CircleLayer','CircleMarker','PolylineLayer','Polyline','RichAttributionWidget']],['Janelas',['AlertDialog','SimpleDialog','SimpleDialogOption','SnackBar','SnackBarAction','MaterialBanner','Banner']]];
 var CATVAR={struct:'var(--c-struct)',layout:'var(--c-layout)',box:'var(--c-box)',content:'var(--c-content)'};
 var warns=[];
 
@@ -1034,6 +1137,70 @@ var DEF={
  NavigationDestination:function(){return N('NavigationDestination',[SL('icon'),A('label',q('Início'))],{icon:N('Icon',[PO('icon','Icons.home')])})},
  NavigationBar:function(){function dst(i,l){return N('NavigationDestination',[SL('icon'),A('label',q(l))],{icon:N('Icon',[PO('icon',i)])})}return N('NavigationBar',[A('selectedIndex','0'),A('onDestinationSelected','(i) {}'),SL('destinations')],{destinations:[dst('Icons.home','Início'),dst('Icons.search','Buscar'),dst('Icons.person','Perfil')]})},
  Divider:function(){return N('Divider')},
+ ClipRect:function(){return N('ClipRect',[SL('child')],{child:N('Container',[A('width','80'),A('height','80'),A('color','Colors.orange')])})},
+ ClipOval:function(){return N('ClipOval',[SL('child')],{child:N('Container',[A('width','80'),A('height','80'),A('color','Colors.orange')])})},
+ DecoratedBox:function(){return N('DecoratedBox',[A('decoration','BoxDecoration(color: Colors.indigo, borderRadius: BorderRadius.circular(12))'),SL('child')],{child:N('Padding',[A('padding','EdgeInsets.all(16)'),SL('child')],{child:N('Text',[PO('data',q('Oi')),A('style','TextStyle(color: Colors.white)')])})})},
+ Material:function(){return N('Material',[A('color','Colors.white'),A('elevation','4'),A('borderRadius','BorderRadius.circular(12)'),SL('child')],{child:N('Padding',[A('padding','EdgeInsets.all(16)'),SL('child')],{child:txt('Superfície')})})},
+ Placeholder:function(){return N('Placeholder',[A('fallbackWidth','160'),A('fallbackHeight','100')])},
+ CustomPaint:function(){return N('CustomPaint',[A('size','Size(160, 80)'),SL('child')],{child:N('Container',[A('width','80'),A('height','80'),A('color','Colors.orange')])})},
+ BackdropFilter:function(){return N('BackdropFilter',[A('filter','ImageFilter.blur(sigmaX: 6, sigmaY: 6)'),SL('child')],{child:N('Container',[A('padding','EdgeInsets.all(16)'),A('color','Colors.white24'),SL('child')],{child:txt('Vidro fosco')})})},
+ ShaderMask:function(){return N('ShaderMask',[A('shaderCallback','(bounds) => LinearGradient(colors: [Colors.purple, Colors.orange]).createShader(bounds)'),A('blendMode','BlendMode.srcIn'),SL('child')],{child:N('Text',[PO('data',q('Degradê')),A('style','TextStyle(fontSize: 36, fontWeight: FontWeight.bold)')])})},
+ ColorFiltered:function(){return N('ColorFiltered',[A('colorFilter','ColorFilter.mode(Colors.red, BlendMode.modulate)'),SL('child')],{child:N('Container',[A('width','80'),A('height','80'),A('color','Colors.white')])})},
+ ImageFiltered:function(){return N('ImageFiltered',[A('imageFilter','ImageFilter.blur(sigmaX: 3, sigmaY: 3)'),SL('child')],{child:txt('Desfocado')})},
+ IntrinsicHeight:function(){return N('IntrinsicHeight',[SL('child')],{child:N('Container',[A('width','80'),A('height','80'),A('color','Colors.orange')])})},
+ IntrinsicWidth:function(){return N('IntrinsicWidth',[SL('child')],{child:N('Container',[A('width','80'),A('height','80'),A('color','Colors.orange')])})},
+ UnconstrainedBox:function(){return N('UnconstrainedBox',[SL('child')],{child:N('Container',[A('width','80'),A('height','80'),A('color','Colors.orange')])})},
+ LimitedBox:function(){return N('LimitedBox',[A('maxHeight','100'),SL('child')],{child:N('Container',[A('color','Colors.teal')])})},
+ Baseline:function(){return N('Baseline',[A('baseline','30'),A('baselineType','TextBaseline.alphabetic'),SL('child')],{child:txt('Linha de base')})},
+ RotatedBox:function(){return N('RotatedBox',[A('quarterTurns','3'),SL('child')],{child:txt('Vertical')})},
+ OverflowBox:function(){return N('OverflowBox',[A('maxWidth','200'),SL('child')],{child:N('Container',[A('width','80'),A('height','80'),A('color','Colors.orange')])})},
+ Flow:function(){return N('Flow',[SL('children')],{children:[N('Icon',[PO('icon','Icons.home')]),N('Icon',[PO('icon','Icons.star')]),N('Icon',[PO('icon','Icons.map')])]})},
+ Offstage:function(){return N('Offstage',[A('offstage','true'),SL('child')],{child:txt('Escondido')})},
+ IgnorePointer:function(){return N('IgnorePointer',[A('ignoring','true'),SL('child')],{child:N('ElevatedButton',[A('onPressed','() {}'),SL('child')],{child:txt('Sem resposta')})})},
+ AbsorbPointer:function(){return N('AbsorbPointer',[A('absorbing','true'),SL('child')],{child:N('ElevatedButton',[A('onPressed','() {}'),SL('child')],{child:txt('Bloqueado')})})},
+ 'GridView.extent':function(){return N('GridView.extent',[A('maxCrossAxisExtent','120'),A('mainAxisSpacing','8'),A('crossAxisSpacing','8'),SL('children')],{children:[N('Container',[A('color','Colors.red')]),N('Container',[A('color','Colors.green')]),N('Container',[A('color','Colors.blue')])]})},
+ 'ListView.custom':function(){return N('ListView.custom',[SL('childrenDelegate')],{childrenDelegate:N('SliverChildListDelegate',[{name:'children',slot:true,positional:true}],{children:[N('ListTile',[SL('title')],{title:txt('Um')}),N('ListTile',[SL('title')],{title:txt('Dois')})]})})},
+ SliverChildListDelegate:function(){return N('SliverChildListDelegate',[{name:'children',slot:true,positional:true}],{children:[txt('A'),txt('B')]})},
+ NestedScrollView:function(){return N('NestedScrollView',[A('headerSliverBuilder','(context, inner) => [SliverAppBar(title: Text(\'Título\'), floating: true)]'),SL('body')],{body:N('ListView',[SL('children')],{children:[txt('Conteúdo')]})})},
+ ListWheelScrollView:function(){return N('ListWheelScrollView',[A('itemExtent','44'),A('onSelectedItemChanged','(i) {}'),SL('children')],{children:[txt('Segunda'),txt('Terça'),txt('Quarta'),txt('Quinta'),txt('Sexta')]})},
+ CarouselView:function(){return N('CarouselView',[A('itemExtent','240'),SL('children')],{children:[N('Container',[A('color','Colors.red')]),N('Container',[A('color','Colors.green')]),N('Container',[A('color','Colors.blue')])]})},
+ Scrollbar:function(){return N('Scrollbar',[A('thumbVisibility','true'),SL('child')],{child:N('ListView',[SL('children')],{children:[txt('A'),txt('B'),txt('C')]})})},
+ SliverGrid:function(){return N('SliverGrid',[SL('delegate'),A('gridDelegate','SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2)')],{delegate:N('SliverChildListDelegate',[{name:'children',slot:true,positional:true}],{children:[N('Container',[A('color','Colors.red')]),N('Container',[A('color','Colors.blue')])]})})},
+ 'SliverGrid.count':function(){return N('SliverGrid.count',[A('crossAxisCount','3'),SL('children')],{children:[N('Container',[A('color','Colors.red')]),N('Container',[A('color','Colors.green')]),N('Container',[A('color','Colors.blue')])]})},
+ SliverPadding:function(){return N('SliverPadding',[A('padding','EdgeInsets.all(16)'),SL('sliver')],{sliver:N('SliverList.list',[SL('children')],{children:[txt('A'),txt('B')]})})},
+ SliverFillRemaining:function(){return N('SliverFillRemaining',[A('hasScrollBody','false'),SL('child')],{child:N('Center',[SL('child')],{child:txt('Fim da lista')})})},
+ SliverPersistentHeader:function(){return N('SliverPersistentHeader',[A('pinned','true'),A('delegate','MeuCabecalho()')])},
+ PaginatedDataTable:function(){function c(t){return N('DataColumn',[SL('label')],{label:txt(t)})}return N('PaginatedDataTable',[SL('header'),SL('columns'),A('source','MinhaFonte()'),A('rowsPerPage','5')],{header:txt('Alunos'),columns:[c('Nome'),c('Nota')]})},
+ AnimatedDefaultTextStyle:function(){return N('AnimatedDefaultTextStyle',[A('duration','Duration(milliseconds: 400)'),A('style','TextStyle(fontSize: 24, color: Colors.indigo)'),SL('child')],{child:txt('Texto')})},
+ 'TextButton.icon':function(){return N('TextButton.icon',[A('onPressed','() {}'),SL('icon'),SL('label')],{icon:N('Icon',[PO('icon','Icons.add')]),label:txt('Adicionar')})},
+ 'ElevatedButton.icon':function(){return N('ElevatedButton.icon',[A('onPressed','() {}'),SL('icon'),SL('label')],{icon:N('Icon',[PO('icon','Icons.add')]),label:txt('Adicionar')})},
+ 'OutlinedButton.icon':function(){return N('OutlinedButton.icon',[A('onPressed','() {}'),SL('icon'),SL('label')],{icon:N('Icon',[PO('icon','Icons.add')]),label:txt('Adicionar')})},
+ 'FilledButton.icon':function(){return N('FilledButton.icon',[A('onPressed','() {}'),SL('icon'),SL('label')],{icon:N('Icon',[PO('icon','Icons.add')]),label:txt('Adicionar')})},
+ 'FilledButton.tonal':function(){return N('FilledButton.tonal',[A('onPressed','() {}'),SL('child')],{child:txt('Tonal')})},
+ 'IconButton.filled':function(){return N('IconButton.filled',[A('onPressed','() {}'),SL('icon')],{icon:N('Icon',[PO('icon','Icons.favorite')])})},
+ 'IconButton.filledTonal':function(){return N('IconButton.filledTonal',[A('onPressed','() {}'),SL('icon')],{icon:N('Icon',[PO('icon','Icons.favorite')])})},
+ 'IconButton.outlined':function(){return N('IconButton.outlined',[A('onPressed','() {}'),SL('icon')],{icon:N('Icon',[PO('icon','Icons.favorite')])})},
+ 'FloatingActionButton.extended':function(){return N('FloatingActionButton.extended',[A('onPressed','() {}'),SL('icon'),SL('label')],{icon:N('Icon',[PO('icon','Icons.add')]),label:txt('Novo')})},
+ 'Card.outlined':function(){return N('Card.outlined',[SL('child')],{child:N('Padding',[A('padding','EdgeInsets.all(16)'),SL('child')],{child:txt('Com borda')})})},
+ 'Card.filled':function(){return N('Card.filled',[SL('child')],{child:N('Padding',[A('padding','EdgeInsets.all(16)'),SL('child')],{child:txt('Preenchido')})})},
+ InputChip:function(){return N('InputChip',[SL('label'),A('onDeleted','() {}')],{label:txt('ana@email.com')})},
+ SelectableText:function(){return N('SelectableText',[PO('data',q('Copie este texto'))])},
+ SearchAnchor:function(){return N('SearchAnchor',[A('builder','(context, controller) => SearchBar(controller: controller, hintText: \'Buscar\')'),A('suggestionsBuilder','(context, controller) => [ListTile(title: Text(\'Sugestão\'))]')])},
+ 'SearchAnchor.bar':function(){return N('SearchAnchor.bar',[A('barHintText',q('Buscar aula')),A('suggestionsBuilder','(context, controller) => [ListTile(title: Text(\'Sugestão\'))]')])},
+ CalendarDatePicker:function(){return N('CalendarDatePicker',[A('initialDate','DateTime(2026, 10, 12)'),A('firstDate','DateTime(2026, 1, 1)'),A('lastDate','DateTime(2026, 12, 31)'),A('onDateChanged','(d) {}')])},
+ Theme:function(){return N('Theme',[A('data','ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal))'),SL('child')],{child:N('ElevatedButton',[A('onPressed','() {}'),SL('child')],{child:txt('Verde')})})},
+ MediaQuery:function(){return N('MediaQuery',[A('data','MediaQuery.of(context)'),SL('child')],{child:txt('Texto')})},
+ Semantics:function(){return N('Semantics',[A('label',q('Voltar')),A('button','true'),SL('child')],{child:N('Icon',[PO('icon','Icons.arrow_back')])})},
+ Focus:function(){return N('Focus',[A('autofocus','true'),SL('child')],{child:txt('Com foco')})},
+ PopScope:function(){return N('PopScope',[A('canPop','false'),SL('child')],{child:txt('Não sai daqui')})},
+ InkResponse:function(){return N('InkResponse',[A('onTap','() {}'),A('radius','32'),SL('child')],{child:N('Icon',[PO('icon','Icons.star')])})},
+ 'Image.file':function(){return N('Image.file',[PO('src',"File('/storage/foto.jpg')"),A('width','120'),A('height','80')])},
+ ValueListenableBuilder:function(){return N('ValueListenableBuilder',[A('valueListenable','contador'),A('builder',"(context, value, child) => Text('Valor: $value')")])},
+ ListenableBuilder:function(){return N('ListenableBuilder',[A('listenable','contador'),A('builder',"(context, child) => Text('Contador')")])},
+ AnimatedBuilder:function(){return N('AnimatedBuilder',[A('animation','controle'),A('builder',"(context, child) => Opacity(opacity: 1.0, child: child)"),SL('child')],{child:txt('Animado')})},
+ ScaleTransition:function(){return N('ScaleTransition',[A('scale','controle'),SL('child')],{child:N('Icon',[PO('icon','Icons.favorite'),A('size','48'),A('color','Colors.red')])})},
+ RotationTransition:function(){return N('RotationTransition',[A('turns','controle'),SL('child')],{child:N('Icon',[PO('icon','Icons.refresh'),A('size','48')])})},
+ SlideTransition:function(){return N('SlideTransition',[A('position','controle'),SL('child')],{child:N('Icon',[PO('icon','Icons.arrow_forward'),A('size','48')])})},
  'GridView.count':function(){return N('GridView.count',[A('crossAxisCount','2'),A('mainAxisSpacing','8'),A('crossAxisSpacing','8'),SL('children')],{children:[]})}
 };
 function make(type){return DEF[type]()}
@@ -1190,6 +1357,7 @@ function lit(v){
   if(isRaw(v))return v.raw;
   if(v&&v.ctl)return lit(v.text);if(v&&v.pc)return 'PageController';
   if(v&&v.lam)return v.src;
+  if(v&&(v.nat==='AnimCtl'||v.nat==='AnimView')){var avl=animRaw(v);return avl&&avl.nat==='Offset'?avl.src:lit(avl)}
   if(v&&v.nat)return v.nat==='#class'?v.name:v.src;
   if(v&&v.enumv)return v.cls+'.'+v.f.name;
   if(v&&v.cls)return v.cls+'('+Object.keys(v.f).map(function(k){return k+': '+lit(v.f[k])}).join(', ')+')';
@@ -1393,7 +1561,7 @@ function lookup(env,n){
   if(NATCLS[n]||ENUMS[n])return{nat:'#class',name:n};
   if(n==='pi')return new Dbl(Math.PI);
   if(n==='e'&&false)return new Dbl(Math.E);
-  if(n==='this'){if(env.self)return env.self;var tv0=curThis(env);if(tv0!==undefined)return tv0}
+  if(n==='this'){if(env.self)return env.self;var tv0=curThis(env);if(tv0!==undefined)return tv0;return{nat:'#vsync',f:{},src:'this'}}
   var tv=curThis(env);if(tv!==undefined){try{return member(tv,n,[])}catch(e1){if(e1.dartExc)throw e1}}
   throw new Error('desconhecido '+n)}
 function superMethod(cn,m){
@@ -1566,6 +1734,7 @@ function ev(a,env){
       var fcn=curCls(env);if(fcn){var fdc=ST.dataClasses[fcn];if(fdc&&fdc.smethods&&fdc.smethods[a.name]){ARGN=fnames;return runMethod(fdc.smethods[a.name],av,null)}}
       if(ST.methods[a.name]){ARGN=fnames;return runMethod(ST.methods[a.name],av,null)}
       if(a.name==='print'||a.name==='debugPrint')return null;
+      if(a.name==='notifyListeners'){dirty=true;return null}
       if(a.name==='jsonDecode')return jsonDec(av[0]);
       if(a.name==='jsonEncode')return jsonEnc(av[0]);
       if(a.name==='identical')return av[0]===av[1];
@@ -1792,6 +1961,8 @@ function assignTo(ast,val,env){
     var o=ev(ast.o,env);
     if(o&&o.cls){o.f[ast.name]=coerce(fieldType(ST.dataClasses[o.cls],ast.name),val);mutated=true;return}
     if(o&&o.ctl&&ast.name==='text'){o.text=show(val);mutated=true;return}
+    if(o&&o.nat==='AnimCtl'&&ast.name==='value'){o.c.value=Math.max(o.c.lower,Math.min(o.c.upper,nn(val)));dirty=true;return}
+    if(o&&o.nat==='ValueNotifier'&&ast.name==='value'){if(o.f.value!==val){o.f.value=val;dirty=true}return}
     throw new Error('atribuição '+ast.name)}
   if(ast.t==='idx'){
     var c=ev(ast.o,env),i=nn(ev(ast.i,env));
@@ -2238,13 +2409,20 @@ ST.run=function(raw,args){
       p.need(')');if(p.isId('async'))p.i++;
       if(p.eat('=>'))simple(p,env,true);else stmt(p,env,true)}
     else if(p.pk()&&p.pk().k==='id'){
-      var nm=p.pk().v;p.i++;
+      var nm=p.pk().v;
+      if(p.is('.',1)&&p.pk(2)&&p.pk(2).k==='id'&&!p.is('(',3)&&(ST.fields[nm]||(ST.globals&&ST.globals[nm]))){
+        /* tear-off de método de objeto: onPressed: carrinho.adicionar */
+        var obj=ev({t:'id',name:nm},mkEnv()),mm=p.pk(2).v;p.i+=3;
+        if(obj&&obj.cls&&ST.dataClasses[obj.cls]&&ST.dataClasses[obj.cls].methods[mm])runMethod(ST.dataClasses[obj.cls].methods[mm],args||[],obj);
+        else member(obj,mm,args||[])}
+      else{p.i++;
       if(p.is('(')){p.i++;pArgs(p)}
-      callMethod(nm,args||[])}
+      callMethod(nm,args||[])}}
     else err='handler';
   }catch(e){err=e.message;isExc=!!e.dartExc}
   return{dirty:dirty,mutated:mutated,err:err,exc:isExc,fx:ST.fx.slice()}};
 ST.reset=function(){
+  ST.anims=[];
   Object.keys(ST.globals||{}).forEach(function(k){ST.globals[k].done=false});
   ST.futExpr={};ST.futGen=0;
   if(ST.onReset)ST.onReset();
@@ -2259,6 +2437,7 @@ function initOf(f){
   else v=null;
   return coerce(f.type,v)}
 ST.load=function(info){
+  ST.anims=[];
   ST.futExpr={};ST.futGen=0;
   ST.globals={};((info&&info.globals)||[]).forEach(function(g){ST.globals[g.name]={name:g.name,type:g.type,init:g.init,done:false,value:null}});
   var old=ST.fields;ST.fields={};ST.order=[];ST.methods={};ST.locals={};ST.dataClasses={};ST.exts=[];ST.userWidgets={};ST.widgetVals={};cache={};ST.initState=null;ST.statefuls={};ST.funcs={};
@@ -2390,8 +2569,8 @@ ST.value=function(raw){return ev(pTern(new Ps(raw)),mkEnv())};
 /* ---- objetos nativos simulados: DateTime, TimeOfDay, GPS, bateria, rede, câmera ---- */
 ST.sensors={osrm:'',http:'sim',gps:true,perm:'granted',lat:-8.0476,lon:-34.877,alt:4,battery:78,charging:false,net:'wifi',photo:'ok'};
 ST.resetSensors=function(){ST.sensors={http:'sim',gps:true,perm:'granted',lat:-8.0476,lon:-34.877,alt:4,battery:78,charging:false,net:'wifi',photo:'ok'}};
-var NATCLS={DateFormat:1,NumberFormat:1,MenuCtl:1,RangeValues:1,Stream:1,StreamController:1,GlobalKey:1,http:1,Uri:1,LatLng:1,MapController:1,Geolocator:1,Battery:1,Connectivity:1,DateTime:1,TimeOfDay:1,Position:1,ImagePicker:1,HapticFeedback:1,Share:1};
-var NATCTOR={RegExp:1,DateFormat:1,NumberFormat:1,RangeValues:1,StreamController:1,GlobalKey:1,LatLng:1,MapController:1,DateTime:1,TimeOfDay:1,Position:1,Battery:1,Connectivity:1,ImagePicker:1};
+var NATCLS={Curves:1,AnimationStatus:1,Offset:1,IntTween:1,ColorTween:1,ValueNotifier:1,AnimationController:1,Tween:1,CurvedAnimation:1,DateFormat:1,NumberFormat:1,MenuCtl:1,RangeValues:1,Stream:1,StreamController:1,GlobalKey:1,http:1,Uri:1,LatLng:1,MapController:1,Geolocator:1,Battery:1,Connectivity:1,DateTime:1,TimeOfDay:1,Position:1,ImagePicker:1,HapticFeedback:1,Share:1};
+var NATCTOR={AnimationController:1,Tween:1,IntTween:1,ColorTween:1,CurvedAnimation:1,Offset:1,ValueNotifier:1,RegExp:1,DateFormat:1,NumberFormat:1,RangeValues:1,StreamController:1,GlobalKey:1,LatLng:1,MapController:1,DateTime:1,TimeOfDay:1,Position:1,Battery:1,Connectivity:1,ImagePicker:1};
 var ENUMS={LocationPermission:1,ConnectionState:1,ConnectivityResult:1,BatteryState:1,ImageSource:1,LocationAccuracy:1};
 function p2(n){return (n<10?'0':'')+n}
 function mkDate(y,mo,d,h,mi,s){
@@ -2451,6 +2630,9 @@ function simHttp(url){
   return mkResp(404,'')}
 function natStr(v){
   if(v.nat==='#class')return v.name;
+  if(v.nat==='AnimCtl'||v.nat==='AnimView'){var avs=animRaw(v);return avs&&avs.nat==='Offset'?avs.src:show(avs)}
+  if(v.nat==='Offset')return v.src;
+  if(v.nat==='Curve')return v.src;
   if(v.nat==='StringBuffer')return v.st.s;
   if(v.nat==='DateTime')return v.f.year+'-'+p2(v.f.month)+'-'+p2(v.f.day)+' '+p2(v.f.hour)+':'+p2(v.f.minute)+':'+p2(v.f.second)+'.000';
   if(v.nat==='TimeOfDay')return 'TimeOfDay('+p2(v.f.hour)+':'+p2(v.f.minute)+')';
@@ -2552,6 +2734,78 @@ function intlStatic(full,args){
     case 'compact':case 'compactSimpleCurrency':case 'compactCurrency':return mkNumFmt('compact','',L);
     case 'decimalPatternDigits':{var d3=nm.decimalDigits||0;return mkNumFmt('num','#,##0'+(d3?'.'+new Array(d3+1).join('0'):''),L)}}
   throw new Error('membro '+cls+'.'+fn)}
+
+/* ---- AnimationController, Tween, Curves, Offset ---- */
+ST.anims=[];
+ST.now=function(){return (typeof performance!=='undefined'&&performance.now)?performance.now():Date.now()};
+function cubicB(a,b,c,d){return function(t){if(t<=0)return 0;if(t>=1)return 1;var lo=0,hi=1,s=t,i;for(i=0;i<26;i++){s=(lo+hi)/2;var x=3*a*s*(1-s)*(1-s)+3*c*s*s*(1-s)+s*s*s;if(x<t)lo=s;else hi=s}return 3*b*s*(1-s)*(1-s)+3*d*s*s*(1-s)+s*s*s}}
+function bounceOut(t){if(t<1/2.75)return 7.5625*t*t;if(t<2/2.75){t-=1.5/2.75;return 7.5625*t*t+0.75}if(t<2.5/2.75){t-=2.25/2.75;return 7.5625*t*t+0.9375}t-=2.625/2.75;return 7.5625*t*t+0.984375}
+var CURVES={linear:function(t){return t},ease:cubicB(.25,.1,.25,1),easeIn:cubicB(.42,0,1,1),easeOut:cubicB(0,0,.58,1),easeInOut:cubicB(.42,0,.58,1),fastOutSlowIn:cubicB(.4,0,.2,1),
+  decelerate:function(t){return 1-(1-t)*(1-t)},easeInQuad:cubicB(.55,.085,.68,.53),easeOutQuad:cubicB(.25,.46,.45,.94),easeInOutQuad:cubicB(.455,.03,.515,.955),
+  easeInCubic:cubicB(.55,.055,.675,.19),easeOutCubic:cubicB(.215,.61,.355,1),easeInOutCubic:cubicB(.645,.045,.355,1),easeInBack:cubicB(.6,-.28,.735,.045),easeOutBack:cubicB(.175,.885,.32,1.275),
+  bounceOut:bounceOut,bounceIn:function(t){return 1-bounceOut(1-t)},bounceInOut:function(t){return t<.5?(1-bounceOut(1-t*2))*.5:bounceOut(t*2-1)*.5+.5},
+  elasticOut:function(t){return t<=0?0:t>=1?1:Math.pow(2,-10*t)*Math.sin((t-0.1)*(2*Math.PI)/0.4)+1},elasticIn:function(t){return t<=0?0:t>=1?1:-Math.pow(2,10*(t-1))*Math.sin((t-1.1)*(2*Math.PI)/0.4)}};
+function mkOffset(dx,dy){return{nat:'Offset',f:{dx:new Dbl(dx),dy:new Dbl(dy)},src:'Offset('+dstr(dx)+', '+dstr(dy)+')'}}
+function interp(b,e,t){
+  if(b&&b.nat==='Offset'&&e&&e.nat==='Offset')return mkOffset(nn(b.f.dx)+(nn(e.f.dx)-nn(b.f.dx))*t,nn(b.f.dy)+(nn(e.f.dy)-nn(b.f.dy))*t);
+  var x=nn(b),y=nn(e);if(typeof x==='number'&&typeof y==='number')return new Dbl(x+(y-x)*t);
+  return t<.5?b:e}
+function animRaw(v){
+  if(v&&v.nat==='AnimCtl')return new Dbl(v.c.value);
+  if(v&&v.nat==='AnimView'){var a=v.av,pv=animRaw(a.parent),t=nn(pv);if(a.curve)t=a.curve(t);return interp(a.begin,a.end,t)}
+  return v}
+function ctlStatus(c){return 'AnimationStatus.'+c.status}
+function ctlStart(v,target,ms,rep){
+  var c=v.c;c.from=c.value;c.to=target;c.t0=ST.now();c.span=Math.max(1,ms);c.rep=rep||null;
+  c.status=target>=c.value?'forward':'reverse';if(ST.anims.indexOf(v)<0)ST.anims.push(v);
+  if(c.span<=1||c.from===c.to){c.value=target;ST.anims.splice(ST.anims.indexOf(v),1);c.status=target>=c.upper?'completed':'dismissed'}
+  ctlNotify(v,true)}
+function ctlNotify(v,statusToo){
+  var c=v.c,i;
+  for(i=0;i<c.ls.length;i++){try{callLam(c.ls[i],[])}catch(e){}}
+  if(statusToo)for(i=0;i<c.sls.length;i++){try{callLam(c.sls[i],[ctlStatus(c)])}catch(e){}}}
+ST.tick=function(now){
+  var changed=false,list=ST.anims.slice();
+  list.forEach(function(v){
+    var c=v.c,t=(now-c.t0)/c.span;changed=true;
+    if(t>=1){
+      c.value=c.to;
+      if(c.rep){
+        var mn=c.rep.min,mx=c.rep.max;
+        if(c.rep.rev){var nt=c.to===mx?mn:mx;c.from=c.to;c.to=nt;c.status=nt>=c.from?'forward':'reverse'}
+        else{c.from=mn;c.to=mx;c.value=mn;c.status='forward'}
+        c.t0=now;c.span=Math.max(1,c.rep.period*Math.abs(c.to-c.from)/(mx-mn||1));ctlNotify(v,true)}
+      else{var ix=ST.anims.indexOf(v);if(ix>=0)ST.anims.splice(ix,1);c.status=c.to>=c.upper?'completed':c.to<=c.lower?'dismissed':c.status;ctlNotify(v,true)}}
+    else{c.value=c.from+(c.to-c.from)*Math.max(0,t);ctlNotify(v,false)}});
+  return changed};
+function ctlMember(v,name,args,named){
+  var c=v.c;
+  function nmd(k){return named&&named[k]!==undefined?named[k]:undefined}
+  switch(name){
+    case 'value':return new Dbl(c.value);
+    case 'status':return ctlStatus(c);
+    case 'lowerBound':return new Dbl(c.lower);case 'upperBound':return new Dbl(c.upper);
+    case 'duration':return mkDur(c.dur);
+    case 'isAnimating':return ST.anims.indexOf(v)>=0;
+    case 'isCompleted':return c.status==='completed';
+    case 'isDismissed':return c.status==='dismissed';
+    case 'velocity':return new Dbl(0);
+    case 'forward':{var fr=nmd('from');if(fr!==undefined)c.value=nn(fr);ctlStart(v,c.upper,c.dur*(c.upper-c.value)/(c.upper-c.lower||1),null);dirty=true;return null}
+    case 'reverse':{var rf=nmd('from');if(rf!==undefined)c.value=nn(rf);ctlStart(v,c.lower,c.dur*(c.value-c.lower)/(c.upper-c.lower||1),null);dirty=true;return null}
+    case 'repeat':{var mn=nmd('min')!==undefined?nn(nmd('min')):c.lower,mx=nmd('max')!==undefined?nn(nmd('max')):c.upper,rv=nmd('reverse')===true,pr=nmd('period')!==undefined?durMs(nmd('period')):c.dur;
+      ctlStart(v,mx,pr*Math.abs(mx-c.value)/(mx-mn||1),{min:mn,max:mx,rev:rv,period:pr});dirty=true;return null}
+    case 'stop':{var ix=ST.anims.indexOf(v);if(ix>=0)ST.anims.splice(ix,1);dirty=true;return null}
+    case 'reset':{var ix2=ST.anims.indexOf(v);if(ix2>=0)ST.anims.splice(ix2,1);c.value=c.lower;c.status='dismissed';dirty=true;return null}
+    case 'animateTo':case 'animateBack':{var tg=nn(args[0]),dd=nmd('duration')!==undefined?durMs(nmd('duration')):c.dur*Math.abs(tg-c.value)/(c.upper-c.lower||1);ctlStart(v,tg,dd,null);dirty=true;return null}
+    case 'toggle':return null;
+    case 'addListener':if(args[0])c.ls.push(args[0]);return null;
+    case 'addStatusListener':if(args[0])c.sls.push(args[0]);return null;
+    case 'removeListener':case 'removeStatusListener':case 'dispose':return null;
+    case 'drive':return{nat:'AnimView',av:{parent:v,begin:args[0]&&args[0].tw?args[0].tw.begin:0,end:args[0]&&args[0].tw?args[0].tw.end:1,curve:null},src:'Animation()'};
+    case 'view':return v}
+  throw new Error('AnimationController.'+name)}
+function mkCurve(name){return{nat:'Curve',f:{name:name},src:'Curves.'+name}}
+
 function natCtor(name,args){
   var pos=args.filter(function(a){return !a.name}).map(function(a){return nn(a.val)}),nm={};
   args.forEach(function(a){if(a.name)nm[a.name]=nn(a.val)});
@@ -2559,6 +2813,16 @@ function natCtor(name,args){
     var rs=args.filter(function(a){return !a.name})[0];
     try{new RegExp(String(rs.val),fl)}catch(e){throw exc('FormatException: Invalid regular expression: '+String(rs.val))}
     return{nat:'RegExp',f:{src:String(rs.val),flags:fl,pattern:String(rs.val)},src:'RegExp()'}}
+  if(name==='AnimationController'){var anm={};args.forEach(function(x){if(x.name)anm[x.name]=x.val});
+    var cdur=anm.duration?durMs(anm.duration):300;
+    return{nat:'AnimCtl',f:{},c:{value:anm.value!==undefined?nn(anm.value):0,lower:anm.lowerBound!==undefined?nn(anm.lowerBound):0,upper:anm.upperBound!==undefined?nn(anm.upperBound):1,dur:cdur==null?300:cdur,from:0,to:0,t0:0,span:1,rep:null,status:'dismissed',ls:[],sls:[]},src:'AnimationController()'}}
+  if(name==='Tween'||name==='IntTween'||name==='ColorTween'){var tnm={};args.forEach(function(x){if(x.name)tnm[x.name]=x.val});
+    return{nat:'Tween',f:{},tw:{begin:tnm.begin!==undefined?tnm.begin:0,end:tnm.end!==undefined?tnm.end:1},src:'Tween()'}}
+  if(name==='CurvedAnimation'){var cnm={};args.forEach(function(x){if(x.name)cnm[x.name]=x.val});
+    var cn=cnm.curve&&cnm.curve.nat==='Curve'?cnm.curve.f.name:'linear';
+    return{nat:'AnimView',av:{parent:cnm.parent,begin:0,end:1,curve:CURVES[cn]||CURVES.linear},src:'Animation()'}}
+  if(name==='Offset')return mkOffset(nn(pos[0])||0,nn(pos[1])||0);
+  if(name==='ValueNotifier')return{nat:'ValueNotifier',f:{value:args.length?args[0].val:null},src:'ValueNotifier()'};
   if(name==='DateFormat'){var dfs=args.filter(function(a){return !a.name}).map(function(a){return a.val});return mkDateFmt(dfs[0]||'yMd',dfs[1]||null)}
   if(name==='NumberFormat'){var nfs=args.filter(function(a){return !a.name}).map(function(a){return a.val});return mkNumFmt('num',nfs[0]||'#,##0.###',nfs[1]||null)}
   if(name==='DateTime')return mkDate(pos[0]||2000,pos.length>1?pos[1]:1,pos.length>2?pos[2]:1,pos[3]||0,pos[4]||0,pos[5]||0);
@@ -2575,6 +2839,27 @@ function haversine(a,b,c,d){
   return 2*R*Math.asin(Math.sqrt(h))}
 function natMember(v,name,args){
   var S=ST.sensors;
+  if(v.nat==='AnimCtl'){var nmv={},posv=[],an=ARGN||[];args.forEach(function(x,i){if(an[i])nmv[an[i]]=x;else posv.push(x)});return ctlMember(v,name,posv,nmv)}
+  if(v.nat==='AnimView'){
+    switch(name){
+      case 'value':return animRaw(v);
+      case 'status':{var pr=v.av.parent;return pr&&pr.nat==='AnimCtl'?ctlStatus(pr.c):pr&&pr.nat==='AnimView'?natMember(pr,'status',[]):'AnimationStatus.dismissed'}
+      case 'drive':return{nat:'AnimView',av:{parent:v,begin:args[0]&&args[0].tw?args[0].tw.begin:0,end:args[0]&&args[0].tw?args[0].tw.end:1,curve:null},src:'Animation()'};
+      case 'addListener':case 'addStatusListener':case 'removeListener':case 'removeStatusListener':{var p0=v.av.parent;if(p0&&p0.nat==='AnimCtl')return ctlMember(p0,name,args,null);return null}}}
+  if(v.nat==='Tween'){
+    switch(name){
+      case 'animate':return{nat:'AnimView',av:{parent:args[0],begin:v.tw.begin,end:v.tw.end,curve:null},src:'Animation()'};
+      case 'begin':return v.tw.begin;case 'end':return v.tw.end;
+      case 'transform':return interp(v.tw.begin,v.tw.end,nn(args[0]));
+      case 'chain':return v}}
+  if(v.nat==='Offset'){
+    switch(name){case 'dx':return v.f.dx;case 'dy':return v.f.dy;case 'distance':return new Dbl(Math.hypot(nn(v.f.dx),nn(v.f.dy)))}}
+  if(v.nat==='ValueNotifier'){
+    switch(name){
+      case 'value':return v.f.value;
+      case 'addListener':case 'removeListener':case 'dispose':return null;
+      case 'notifyListeners':dirty=true;return null;
+      case 'hasListeners':return true}}
   if(v.nat==='Random'){
     switch(name){
       case 'nextInt':{var mxr=nn(args[0]);if(!(mxr>0))throw exc('RangeError: max deve ser positivo');return Math.floor(Math.random()*mxr)}
@@ -2592,6 +2877,9 @@ function natMember(v,name,args){
   if(v.nat==='#class'){
     var c=v.name;
     if(ENUMS[c])return c+'.'+name;
+    if(c==='Curves')return mkCurve(name);
+    if(c==='AnimationStatus')return 'AnimationStatus.'+name;
+    if(c==='Offset'&&name==='zero')return mkOffset(0,0);
     if(c==='DateTime'&&name==='parse'||c==='DateTime'&&name==='tryParse'){var pm=/^(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{2}):(\d{2})(?::(\d{2}))?)?/.exec(String(args[0]).trim());if(!pm){if(name==='tryParse')return null;throw exc('FormatException: Invalid date format\n'+args[0])}return mkDate(+pm[1],+pm[2],+pm[3],+(pm[4]||0),+(pm[5]||0),+(pm[6]||0))}
     if(c==='DateTime'&&name==='now'){var n=new Date();return mkDate(n.getFullYear(),n.getMonth()+1,n.getDate(),n.getHours(),n.getMinutes(),n.getSeconds())}
     if(c==='TimeOfDay'&&name==='now'){var n2=new Date();return mkTime(n2.getHours(),n2.getMinutes())}
@@ -2789,7 +3077,7 @@ function lambdaParts(raw){
     body=raw.slice(t[j+1].s,raw.lastIndexOf('}')).trim().replace(/;\s*$/,'')}
   else throw new Error('lambda');
   return{names:names,body:body}}
-var BUILDERS={TweenAnimationBuilder:1,AnimatedList:1,DraggableScrollableSheet:1,StreamBuilder:1,'ReorderableListView.builder':1,FutureBuilder:1,'SliverList.builder':1,'ListView.builder':1,'ListView.separated':1,'GridView.builder':1,'LayoutBuilder':1,Builder:1};
+var BUILDERS={ValueListenableBuilder:1,ListenableBuilder:1,AnimatedBuilder:1,TweenAnimationBuilder:1,AnimatedList:1,DraggableScrollableSheet:1,StreamBuilder:1,'ReorderableListView.builder':1,FutureBuilder:1,'SliverList.builder':1,'ListView.builder':1,'ListView.separated':1,'GridView.builder':1,'LayoutBuilder':1,Builder:1};
 ST.futureTexts=futureTexts;
 ST.isBuilder=function(n){return !!BUILDERS[n.type]};
 ST.builderTexts=function(n){
@@ -2810,6 +3098,16 @@ ST.builderTexts=function(n){
     if(tlp.names[1])tbody=bindVar(tbody,tlp.names[1],new Dbl(Math.round(tcur*1e4)/1e4));
     var tch=raw('child');if(tlp.names[2]&&tch)tbody=bindVar(tbody,tlp.names[2],{raw:tch});
     expandText(tbody,out);return out}
+  if(n.type==='ValueListenableBuilder'){
+    var vlr=raw('valueListenable'),vlo=null;try{vlo=ST.value(vlr||'null')}catch(e){vlo=null}
+    var vlp=lambdaParts(raw('builder')),vbody=vlp.body,vlv=vlo&&vlo.nat==='ValueNotifier'?vlo.f.value:null;
+    if(vlp.names[1])vbody=bindVar(vbody,vlp.names[1],vlv);
+    var vch=raw('child');if(vlp.names[2]&&vch)vbody=bindVar(vbody,vlp.names[2],{raw:vch});
+    expandText(vbody,out);return out}
+  if(n.type==='ListenableBuilder'||n.type==='AnimatedBuilder'){
+    var lbp=lambdaParts(raw('builder')),lbb=lbp.body,lch=raw('child');
+    if(lbp.names[1]&&lch)lbb=bindVar(lbb,lbp.names[1],{raw:lch});
+    expandText(lbb,out);return out}
   if(n.type==='LayoutBuilder'||n.type==='Builder'||n.type==='DraggableScrollableSheet'){
     var lp=lambdaParts(raw('builder')),b=lp.body;
     if(n.type==='LayoutBuilder'&&lp.names[1])b=b.replace(new RegExp('\\b'+lp.names[1]+'\\.(maxWidth|maxHeight|minWidth|minHeight)\\b','g'),function(m,k){return k==='maxWidth'?'360.0':k==='maxHeight'?'600.0':'0.0'});
@@ -3058,6 +3356,7 @@ var SH={50:[1,.9],100:[1,.8],200:[1,.6],300:[1,.4],400:[1,.2],600:[0,.12],700:[0
 function mix(hex,n){var f=SH[n];if(!f)return hex;var t=f[0]?255:0,v=parseInt(hex.slice(1),16),r=v>>16,g=(v>>8)&255,b=v&255,k=f[1];
   function m(c){return Math.round(c+(t-c)*k)}return '#'+[m(r),m(g),m(b)].map(function(x){return ('0'+x.toString(16)).slice(-2)}).join('')}
 var cache={};
+function esc2(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
 function pv(raw){if(raw in cache)return cache[raw];var r=null;try{r=new OF.Parser(raw,OF.tokenize(raw),0).expr()}catch(e){}cache[raw]=r;return r}
 function numVal(raw){if(raw==null)return null;raw=String(raw).trim();if(raw==='double.infinity')return Infinity;return /^-?\d*\.?\d+$/.test(raw)?parseFloat(raw):null}
 function colorVal(raw){
@@ -3168,7 +3467,7 @@ function numExpr(raw){
 function llOf(raw){var m=/LatLng\s*\(\s*(-?[\d.]+)\s*,\s*(-?[\d.]+)\s*\)/.exec(raw||'');return m?[+m[1],+m[2]]:null}
 function lamArg(raw,key){var m=new RegExp('\\b'+key+'\\s*:\\s*').exec(raw||'');if(!m)return null;var s=raw.slice(m.index+m[0].length),d=0,q=null;for(var i=0;i<s.length;i++){var c=s[i];if(q){if(c==='\\')i++;else if(c===q)q=null;continue}if(c==="'"||c==='"'){q=c;continue}if('([{'.indexOf(c)>=0)d++;else if(')]}'.indexOf(c)>=0){if(d===0)return s.slice(0,i).trim();d--}else if(c===','&&d===0)return s.slice(0,i).trim()}return s.trim()}
 function wmerc(lat,lon,z){var sc=256*Math.pow(2,z),sn=Math.sin(lat*Math.PI/180);return[(lon+180)/360*sc,(0.5-Math.log((1+sn)/(1-sn))/(4*Math.PI))*sc]}
-var ALIAS={AnimatedContainer:'Container',AnimatedPositioned:'Positioned',AnimatedPadding:'Padding',FadeTransition:'Opacity',SizeTransition:'Padding',Hero:'Padding',AnimatedOpacity:'Opacity'};
+var ALIAS={DecoratedBox:'Container','Card.outlined':'Card','Card.filled':'Card',SelectableText:'Text',InputChip:'Chip',Flow:'Wrap','Image.file':'Image.asset','SliverGrid.count':'GridView.count','IntrinsicHeight':'SafeArea','IntrinsicWidth':'SafeArea',LimitedBox:'SafeArea',UnconstrainedBox:'SafeArea',Baseline:'SafeArea',Scrollbar:'SafeArea',MediaQuery:'SafeArea',Semantics:'SafeArea',Focus:'SafeArea',PopScope:'SafeArea',InkResponse:'InkWell',ClipOval:'ClipRRect',ClipRect:'ClipRRect',AnimatedContainer:'Container',AnimatedPositioned:'Positioned',AnimatedPadding:'Padding',FadeTransition:'Opacity',SizeTransition:'Padding',Hero:'Padding',AnimatedOpacity:'Opacity'};
 function dim(n,k){return numVal(M.getProp(n,k))}
 function sizeMin(n){return /MainAxisSize\.min/.test(M.getProp(n,'mainAxisSize')||'')}
 function stackFill(n){var ch=n.slots.children||[];return !ch.some(function(c){return c.type!=='Positioned'&&c.type!=='AnimatedPositioned'})||ch.some(function(c){return c.type==='DraggableScrollableSheet'})}
@@ -3177,12 +3476,12 @@ function fillV(n){
   switch(ALIAS[n.type]||n.type){
     case 'Column':return !sizeMin(n);
     case 'ListView':case 'ListView.builder':case 'ListView.separated':case 'GridView.builder':case 'PageView':case 'IndexedStack':case 'AnimatedAlign':case 'AnimatedList':case 'DraggableScrollableSheet':case 'InteractiveViewer':case 'ReorderableListView':case 'ReorderableListView.builder':case 'Center':case 'Spacer':case 'Align':case 'GridView.count':case 'SingleChildScrollView':case 'TabBarView':case 'Scaffold':case 'FlutterMap':case 'CustomScrollView':case 'FutureBuilder':case 'StreamBuilder':return true;
-    case 'NavigationRail':return true;
+    case 'NavigationRail':case 'ListWheelScrollView':case 'SliverFillRemaining':return true;
     case 'Row':return (n.slots.children||[]).some(function(c){return c&&c.type==='NavigationRail'});
     case 'Stack':return stackFill(n);
     case 'Expanded':case 'Flexible':return !!n.slots.child&&fillV(n.slots.child);
     case 'Container':if(dim(n,'height')!=null)return false;if(M.getProp(n,'alignment'))return true;return !n.slots.child||fillV(n.slots.child);
-    case 'Padding':case 'Card':case 'ClipRRect':case 'Opacity':case 'SafeArea':case 'GestureDetector':case 'InkWell':case 'DefaultTabController':case 'ColoredBox':case 'Tooltip':case 'RefreshIndicator':case 'Dismissible':case 'Transform.rotate':case 'Transform.scale':case 'Transform.translate':case 'Form':case 'Visibility':case 'FittedBox':case 'ConstrainedBox':case 'FractionallySizedBox':return !!n.slots.child&&fillV(n.slots.child);
+    case 'ScaleTransition':case 'RotationTransition':case 'SlideTransition':case 'Material':case 'BackdropFilter':case 'ShaderMask':case 'ColorFiltered':case 'ImageFiltered':case 'Theme':case 'Offstage':case 'IgnorePointer':case 'AbsorbPointer':case 'AnimatedDefaultTextStyle':case 'CustomPaint':case 'RotatedBox':case 'Padding':case 'Card':case 'ClipRRect':case 'Opacity':case 'SafeArea':case 'GestureDetector':case 'InkWell':case 'DefaultTabController':case 'ColoredBox':case 'Tooltip':case 'RefreshIndicator':case 'Dismissible':case 'Transform.rotate':case 'Transform.scale':case 'Transform.translate':case 'Form':case 'Visibility':case 'FittedBox':case 'ConstrainedBox':case 'FractionallySizedBox':return !!n.slots.child&&fillV(n.slots.child);
     case 'SizedBox':return dim(n,'height')==null&&!!n.slots.child&&fillV(n.slots.child);
   }return false;
 }
@@ -3195,7 +3494,7 @@ function fillH(n){
     case 'Column':return /CrossAxisAlignment\.stretch/.test(M.getProp(n,'crossAxisAlignment')||'')||(n.slots.children||[]).some(fillH);
     case 'Expanded':case 'Flexible':return !!n.slots.child&&fillH(n.slots.child);
     case 'Container':if(dim(n,'width')!=null)return dim(n,'width')===Infinity;if(M.getProp(n,'alignment'))return true;return !n.slots.child||fillH(n.slots.child);
-    case 'Padding':case 'Card':case 'ClipRRect':case 'Opacity':case 'SafeArea':case 'GestureDetector':case 'InkWell':case 'DefaultTabController':case 'ColoredBox':case 'Tooltip':case 'RefreshIndicator':case 'Dismissible':case 'Transform.rotate':case 'Transform.scale':case 'Transform.translate':case 'Form':case 'Visibility':case 'FittedBox':case 'ConstrainedBox':case 'FractionallySizedBox':return !!n.slots.child&&fillH(n.slots.child);
+    case 'ScaleTransition':case 'RotationTransition':case 'SlideTransition':case 'Material':case 'BackdropFilter':case 'ShaderMask':case 'ColorFiltered':case 'ImageFiltered':case 'Theme':case 'Offstage':case 'IgnorePointer':case 'AbsorbPointer':case 'AnimatedDefaultTextStyle':case 'CustomPaint':case 'RotatedBox':case 'Padding':case 'Card':case 'ClipRRect':case 'Opacity':case 'SafeArea':case 'GestureDetector':case 'InkWell':case 'DefaultTabController':case 'ColoredBox':case 'Tooltip':case 'RefreshIndicator':case 'Dismissible':case 'Transform.rotate':case 'Transform.scale':case 'Transform.translate':case 'Form':case 'Visibility':case 'FittedBox':case 'ConstrainedBox':case 'FractionallySizedBox':return !!n.slots.child&&fillH(n.slots.child);
     case 'SizedBox':return dim(n,'width')===Infinity||(dim(n,'width')==null&&!!n.slots.child&&fillH(n.slots.child));
   }return false;
 }
@@ -3352,7 +3651,7 @@ function build(n,path,pt,ppt,sel){
     case 'Expanded':d.className+=' col';d.style.alignItems='flex-start';single('child','#expanded','child: adicione um widget',pt);break;
     case 'Spacer':d.style.minHeight='0';break;
     case 'Container':case 'Padding':case 'SizedBox':case 'Card':case 'ColoredBox':{
-      d.className+=(n.type==='Card'?' card':' col');d.style.alignItems='flex-start';
+      d.className+=(/^Card/.test(n.type)?' card'+(n.type==='Card.outlined'?' cardo':n.type==='Card.filled'?' cardf':''):' col');d.style.alignItems='flex-start';
       var wv=dim(n,'width'),hv=dim(n,'height');
       if(wv!=null&&wv!==Infinity){d.style.width=wv+'px';d.style.flexShrink='0'}
       if(hv!=null&&hv!==Infinity){d.style.height=hv+'px';d.style.flexShrink='0'}
@@ -3432,7 +3731,7 @@ function build(n,path,pt,ppt,sel){
       d.className+=' gridv';var gdl=M.getProp(n,'gridDelegate')||'',cmm=/crossAxisCount:\s*(\d+)/.exec(gdl),msp=/mainAxisSpacing:\s*([\d.]+)/.exec(gdl),csp=/crossAxisSpacing:\s*([\d.]+)/.exec(gdl);
       d.style.gridTemplateColumns='repeat('+(cmm?Math.max(1,+cmm[1]):2)+',minmax(0,1fr))';d.style.rowGap=(msp?+msp[1]:0)+'px';d.style.columnGap=(csp?+csp[1]:0)+'px';
       var gp2=insets(M.getProp(n,'padding'));if(gp2)d.style.padding=px(gp2);genKids('GridView');break}
-    case 'LayoutBuilder':case 'Builder':{d.className+=' col';d.style.alignItems='flex-start';genKids('#single');break}
+    case 'LayoutBuilder':case 'Builder':case 'ValueListenableBuilder':case 'ListenableBuilder':case 'AnimatedBuilder':{d.className+=' col';d.style.alignItems='flex-start';genKids('#single');break}
     case 'SwitchListTile':case 'CheckboxListTile':case 'RadioListTile':{
       d.className+=' tile';var sl3=n.slots,tp=n.type,ctl=document.createElement('div');
       if(tp==='RadioListTile'){var rv=M.getProp(n,'value'),rg=M.getProp(n,'groupValue');ctl.className='nd chkb';ctl.innerHTML='<span class="rdo'+(rv!=null&&rg!=null&&rv.trim()===rg.trim()?' on':'')+'"></span>'}
@@ -3481,7 +3780,7 @@ function build(n,path,pt,ppt,sel){
     case 'SafeArea':case 'GestureDetector':case 'InkWell':case 'Form':case 'FittedBox':{d.className+=' col';d.style.alignItems='flex-start';single('child','#single','child: adicione um widget');break}
     case 'ClipRRect':{
       d.className+=' col clp';d.style.alignItems='flex-start';d.style.overflow='hidden';
-      var crm=/circular\(\s*([\d.]+)/.exec(M.getProp(n,'borderRadius')||'');if(crm)d.style.borderRadius=crm[1]+'px';
+      var crm=/circular\(\s*([\d.]+)/.exec(M.getProp(n,'borderRadius')||'');if(crm)d.style.borderRadius=crm[1]+'px';if(n.type==='ClipOval')d.style.borderRadius='50%';
       single('child','#single','child: adicione um widget');break}
     case 'Opacity':{d.className+=' col';d.style.alignItems='flex-start';var ovr=M.getProp(n,'opacity'),oam=/AlwaysStoppedAnimation\s*(?:<[^>]*>)?\s*\(\s*([\d.]+)/.exec(ovr||''),op=oam?+oam[1]:numVal(ovr);if(op!=null)d.style.opacity=op;single('child','#single','child: adicione um widget');break}
     case 'Wrap':{
@@ -3513,7 +3812,9 @@ function build(n,path,pt,ppt,sel){
     case 'Chip':case 'ChoiceChip':case 'FilterChip':case 'ActionChip':{
       d.className+=' dchip'+(/true/.test(M.getProp(n,'selected')||'')?' chsel':'');d.style.flex='none';var cbg=colorVal(M.getProp(n,'backgroundColor'));if(cbg)d.style.background=cbg;
       if(n.slots.avatar)d.appendChild(child(n.slots.avatar,'avatar','#none'));
-      if(n.slots.label)d.appendChild(child(n.slots.label,'label','#none'));else d.appendChild(ph('label'));break}
+      if(n.slots.label)d.appendChild(child(n.slots.label,'label','#none'));else d.appendChild(ph('label'));
+      if(n.type==='InputChip'){var odl=M.rawProp(n,'onDeleted');if(odl&&odl.trim()!=='null'){var dx=document.createElement('span');dx.className='chx'+(R_opts.run?' hh':'');dx.textContent='\u2715';dx.setAttribute('aria-label','Remover');if(R_opts.run){dx.dataset.h='onDeleted';dx._n=n}d.appendChild(dx)}}
+      break}
     case 'Checkbox':{
       d.className+=' chkb';var ck=/true/.test(M.getProp(n,'value')||''),acc=colorVal(M.getProp(n,'activeColor'));if(acc)d.style.setProperty('--act',acc);
       d.innerHTML='<span class="bx'+(ck?' on':'')+'">'+(ck?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>':'')+'</span>';break}
@@ -3566,6 +3867,12 @@ function build(n,path,pt,ppt,sel){
       else if(n.type==='Transform.scale'){var scv=numExpr(M.getProp(n,'scale'));if(scv!=null)tf='scale('+scv+')'}
       else{var om=/Offset\(\s*(-?[\d.]+)\s*,\s*(-?[\d.]+)\s*\)/.exec(M.getProp(n,'offset')||'');if(om)tf='translate('+om[1]+'px,'+om[2]+'px)'}
       if(tf)d.style.transform=tf;single('child','#single','child: adicione um widget');break}
+    case 'ScaleTransition':case 'RotationTransition':case 'SlideTransition':{
+      d.className+=' col';d.style.alignItems='flex-start';d.style.flex='none';var tf2='';
+      if(n.type==='ScaleTransition'){var sv2=numExpr(M.getProp(n,'scale'));if(sv2!=null)tf2='scale('+sv2+')'}
+      else if(n.type==='RotationTransition'){var tv2=numExpr(M.getProp(n,'turns'));if(tv2!=null)tf2='rotate('+(tv2*360)+'deg)'}
+      else{var om2=/Offset\(\s*(-?[\d.eE+-]+)\s*,\s*(-?[\d.eE+-]+)\s*\)/.exec(M.getProp(n,'position')||'');if(om2)tf2='translate('+(om2[1]*100)+'%,'+(om2[2]*100)+'%)'}
+      if(tf2)d.style.transform=tf2;single('child','#single','child: adicione um widget');break}
     case 'Text.rich':case 'RichText':{
       d.className+=' txt';var rs=spanEl(M.getProp(n,n.type==='RichText'?'text':'textSpan')||'');
       if(rs)d.appendChild(rs);else d.textContent='TextSpan(…)';break}
@@ -3830,6 +4137,143 @@ function build(n,path,pt,ppt,sel){
       var sw=dim(n,'strokeWidth')||1,scol=colorVal(M.getProp(n,'color'))||'#FFEB3B';
       d.innerHTML='<svg width="1" height="1" style="position:absolute;left:50%;top:50%;overflow:visible"><polyline points="'+pts.join(' ')+'" fill="none" stroke="'+scol+'" stroke-width="'+sw+'" stroke-linejoin="round" stroke-linecap="round"/></svg>';break}
     case 'RichAttributionWidget':{d.className+=' mattr';d.textContent='© OpenStreetMap contributors';break}
+
+    case 'Material':{
+      d.className+=' col';d.style.alignItems='flex-start';
+      var mbgc=colorVal(M.getProp(n,'color'));d.style.background=mbgc||'var(--d-surface)';
+      var mel=numVal(M.getProp(n,'elevation'));if(mel)d.style.boxShadow='0 '+Math.min(mel,12)/2+'px '+Math.min(mel,12)*1.5+'px rgba(0,0,0,.28)';
+      var mbr=/circular\(\s*([\d.]+)/.exec(M.getProp(n,'borderRadius')||'');if(mbr){d.style.borderRadius=mbr[1]+'px';d.style.overflow='hidden'}
+      if(/MaterialType\.circle/.test(M.getProp(n,'type')||'')){d.style.borderRadius='50%';d.style.overflow='hidden'}
+      single('child','#single',null);break}
+    case 'Placeholder':{
+      d.className+=' dph2';var pfw=numVal(M.getProp(n,'fallbackWidth')),pfh=numVal(M.getProp(n,'fallbackHeight')),pcl=colorVal(M.getProp(n,'color'));
+      d.style.width=(pfw||400)+'px';d.style.maxWidth='100%';d.style.height=(pfh||400)+'px';d.style.maxHeight='100%';d.style.flex='none';
+      d.innerHTML='<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0L100 100M100 0L0 100" stroke="'+(pcl||'currentColor')+'" stroke-width="1.5" vector-effect="non-scaling-stroke" fill="none"/></svg>';
+      if(pcl)d.style.borderColor=pcl;break}
+    case 'CustomPaint':{
+      d.className+=' cpt';var csz=/Size\(\s*([\d.]+)\s*,\s*([\d.]+)\s*\)/.exec(M.getProp(n,'size')||'');
+      if(csz){d.style.width=csz[1]+'px';d.style.height=csz[2]+'px';d.style.flex='none'}
+      else if(!n.slots.child){d.style.width='120px';d.style.height='80px';d.style.flex='none'}
+      var cpl=document.createElement('span');cpl.className='cpl';cpl.textContent='CustomPaint';d.appendChild(cpl);
+      if(n.slots.child){d.style.position='relative';var cch=child(n.slots.child,'child','#single');d.appendChild(cch)}
+      break}
+    case 'BackdropFilter':{
+      d.className+=' col';d.style.alignItems='flex-start';var bsg=/blur\(([^)]*)\)/.exec(M.getProp(n,'filter')||''),bsx=bsg&&/sigmaX:\s*([\d.]+)/.exec(bsg[1]),bsy=bsg&&/sigmaY:\s*([\d.]+)/.exec(bsg[1]);
+      var bpx=Math.max(bsx?+bsx[1]:0,bsy?+bsy[1]:0);if(bpx){d.style.backdropFilter='blur('+bpx+'px)';d.style.webkitBackdropFilter='blur('+bpx+'px)'}
+      single('child','#single',null);break}
+    case 'ImageFiltered':{
+      d.className+=' col';d.style.alignItems='flex-start';var isg=/blur\(([^)]*)\)/.exec(M.getProp(n,'imageFilter')||''),isx=isg&&/sigmaX:\s*([\d.]+)/.exec(isg[1]),isy=isg&&/sigmaY:\s*([\d.]+)/.exec(isg[1]);
+      var ipx=Math.max(isx?+isx[1]:0,isy?+isy[1]:0);if(ipx)d.style.filter='blur('+ipx+'px)';
+      single('child','#single',null);break}
+    case 'ShaderMask':{
+      d.className+=' col shm';d.style.alignItems='flex-start';var sgr=M.getProp(n,'shaderCallback')||'',sgc=/colors:\s*\[([^\]]*)\]/.exec(sgr);
+      if(sgc){var scs=sgc[1].split(',').map(function(x){return colorVal(x.trim())}).filter(Boolean);if(scs.length>1){d.style.backgroundImage='linear-gradient('+(/topCenter|bottomCenter|vertical/i.test(sgr)?'180deg':'90deg')+','+scs.join(',')+')'}else if(scs.length===1)d.style.backgroundColor=scs[0]}
+      single('child','#single',null);
+      if(d.style.backgroundImage||d.style.backgroundColor){var shg=d.style.backgroundImage||'linear-gradient('+d.style.backgroundColor+','+d.style.backgroundColor+')';d.style.backgroundImage='';d.style.backgroundColor='';
+        [].forEach.call(d.querySelectorAll('.txt'),function(t){t.style.backgroundImage=shg;t.style.webkitBackgroundClip='text';t.style.backgroundClip='text';t.style.color='transparent'})}
+      break}
+    case 'ColorFiltered':{
+      d.className+=' col';d.style.alignItems='flex-start';d.style.position='relative';d.style.width='fit-content';d.style.maxWidth='100%';
+      single('child','#single',null);
+      var cfm=/ColorFilter\.mode\(\s*([^,]+),\s*BlendMode\.(\w+)/.exec(M.getProp(n,'colorFilter')||'');
+      if(cfm){var cfc=colorVal(cfm[1].trim()),bmm={modulate:'multiply',multiply:'multiply',screen:'screen',overlay:'overlay',darken:'darken',lighten:'lighten',color:'color',hue:'hue',saturation:'saturation',luminosity:'luminosity',difference:'difference',exclusion:'exclusion',colorBurn:'color-burn',colorDodge:'color-dodge',hardLight:'hard-light',softLight:'soft-light',srcATop:'normal',srcOver:'normal',plus:'plus-lighter'};
+        if(cfc){var cfo=document.createElement('div');cfo.className='cfo';cfo.style.background=cfc;cfo.style.mixBlendMode=bmm[cfm[2]]||'normal';d.appendChild(cfo)}}
+      break}
+    case 'OverflowBox':{
+      d.className+=' col ovb';d.style.alignItems='center';d.style.justifyContent='center';var oal=ALIGN[enumName(M.getProp(n,'alignment'))];if(oal){d.style.alignItems=oal[0];d.style.justifyContent=oal[1]}
+      single('child','#single','child: adicione um widget');
+      var ovc=d.firstChild,omw=numVal(M.getProp(n,'maxWidth')),omh=numVal(M.getProp(n,'maxHeight'));
+      if(ovc&&ovc.style){if(omw!=null&&isFinite(omw)){ovc.style.width=omw+'px';ovc.style.maxWidth='none'}if(omh!=null&&isFinite(omh)){ovc.style.height=omh+'px'}ovc.style.flexShrink='0'}
+      break}
+    case 'RotatedBox':{
+      d.className+=' rtb';var qt=((numVal(M.getProp(n,'quarterTurns'))||0)%4+4)%4;
+      var rin=document.createElement('div');rin.className='rti';d.appendChild(rin);
+      if(n.slots.child){var rch=child(n.slots.child,'child','#single');rin.appendChild(rch)}else rin.appendChild(ph('child: adicione um widget'));
+      if(qt){d.dataset.qt=qt;rin.style.position='absolute';rin.style.left='0';rin.style.top='0';rin.style.transformOrigin='0 0';
+        requestAnimationFrame(function(){if(!d.isConnected)return;var w=rin.offsetWidth,h=rin.offsetHeight;
+          d.style.width=((qt%2)?h:w)+'px';d.style.height=((qt%2)?w:h)+'px';d.style.flex='none';
+          rin.style.transform=qt===1?'translateX('+h+'px) rotate(90deg)':qt===2?'translate('+w+'px,'+h+'px) rotate(180deg)':'translateY('+w+'px) rotate(270deg)'})}
+      break}
+    case 'Offstage':{
+      d.className+=' col';d.style.alignItems='flex-start';var off=!/false/.test(M.getProp(n,'offstage')||'true');
+      if(off){if(R_opts.run)d.style.display='none';else{d.style.opacity='.35';d.style.outline='1px dashed currentColor'}}
+      single('child','#single','child: adicione um widget');break}
+    case 'IgnorePointer':case 'AbsorbPointer':{
+      d.className+=' col';d.style.alignItems='flex-start';var igk=n.type==='IgnorePointer'?'ignoring':'absorbing',igv=!/false/.test(M.getProp(n,igk)||'true');
+      single('child','#single','child: adicione um widget');
+      if(igv&&R_opts.run){if(n.type==='IgnorePointer')d.classList.add('ign');else{var abo=document.createElement('div');abo.className='abs';d.appendChild(abo)}}
+      else if(igv){d.style.outline='1px dotted currentColor';d.title=n.type+': '+igk+' true'}
+      break}
+    case 'GridView.extent':{
+      d.className+=' gridv';var gmx=Math.max(20,numVal(M.getProp(n,'maxCrossAxisExtent'))||100),gpx2=insets(M.getProp(n,'padding'))||[0,0,0,0],gcn=Math.max(1,Math.ceil((360-(gpx2[1]||0)-(gpx2[3]||0))/gmx));
+      d.style.gridTemplateColumns='repeat('+gcn+',minmax(0,1fr))';
+      d.style.rowGap=(numVal(M.getProp(n,'mainAxisSpacing'))||0)+'px';d.style.columnGap=(numVal(M.getProp(n,'crossAxisSpacing'))||0)+'px';
+      if(insets(M.getProp(n,'padding')))d.style.padding=px(gpx2);
+      if(!(n.slots.children||[]).length)d.appendChild(ph('children: [ ]'));kids('children','GridView');break}
+    case 'ListView.custom':{d.className+=' list';single('childrenDelegate','ListView','childrenDelegate: SliverChildListDelegate([...])');break}
+    case 'SliverChildListDelegate':{d.style.display='contents';kids('children',pt==='GridView'?'GridView':'ListView');break}
+    case 'NestedScrollView':{d.className+=' col';d.style.alignItems='stretch';single('body','#single','body: adicione um widget');break}
+    case 'ListWheelScrollView':{
+      d.className+=' lws';var lex=Math.max(20,numVal(M.getProp(n,'itemExtent'))||50),lch=n.slots.children||[];d.dataset.ext=lex;d.style.flex='1 1 0';d.style.minHeight='120px';d.style.alignSelf='stretch';
+      var lin=document.createElement('div');lin.className='lwi';d.appendChild(lin);d.dataset.lk=path.join('>')||'root';
+      var lsp=document.createElement('div');lsp.style.cssText='flex:none;height:calc(50% - '+(lex/2)+'px)';lin.appendChild(lsp);
+      lch.forEach(function(c,i){var w=document.createElement('div');w.className='lwc';w.style.height=lex+'px';w.appendChild(child(c,'children:'+i,'#none'));lin.appendChild(w)});
+      var lsp2=lsp.cloneNode();lin.appendChild(lsp2);if(!lch.length)lin.appendChild(ph('children: [ ]'));
+      var lwb=document.createElement('div');lwb.className='lwb';lwb.style.height=lex+'px';d.appendChild(lwb);
+      d._n=n;(function(lk){requestAnimationFrame(function(){if(lin.isConnected&&R_opts.lws[lk])lin.scrollTop=R_opts.lws[lk]})})(d.dataset.lk);break}
+    case 'CarouselView':{
+      d.className+=' crsl';var cex=Math.max(40,numVal(M.getProp(n,'itemExtent'))||250),cch2=n.slots.children||[];
+      cch2.forEach(function(c,i){var w=document.createElement('div');w.className='crc';w.style.width=cex+'px';w.appendChild(child(c,'children:'+i,'#expanded','Column'));d.appendChild(w)});
+      if(!cch2.length)d.appendChild(ph('children: [ ]'));break}
+    case 'SliverGrid':{
+      d.className+=' gridv';var sgx=/crossAxisCount:\s*(\d+)/.exec(M.getProp(n,'gridDelegate')||''),sgm=/maxCrossAxisExtent:\s*([\d.]+)/.exec(M.getProp(n,'gridDelegate')||''),sgnn=sgx?+sgx[1]:sgm?Math.max(1,Math.ceil(360/+sgm[1])):2;
+      d.style.gridTemplateColumns='repeat('+sgnn+',minmax(0,1fr))';var sgs=/mainAxisSpacing:\s*([\d.]+)/.exec(M.getProp(n,'gridDelegate')||''),sgc2=/crossAxisSpacing:\s*([\d.]+)/.exec(M.getProp(n,'gridDelegate')||'');
+      d.style.rowGap=(sgs?+sgs[1]:0)+'px';d.style.columnGap=(sgc2?+sgc2[1]:0)+'px';
+      single('delegate','GridView','delegate: SliverChildListDelegate([...])');break}
+    case 'SliverPadding':{d.className+=' col';d.style.alignItems='stretch';var spd=insets(M.getProp(n,'padding'));if(spd)d.style.padding=px(spd);single('sliver','Column','sliver: adicione um widget');break}
+    case 'SliverFillRemaining':{d.className+=' col';d.style.alignItems='flex-start';d.style.minHeight='120px';single('child','#single',null);break}
+    case 'SliverPersistentHeader':{d.className+=' sph';d.textContent='SliverPersistentHeader'+(/pinned:\s*true/.test(n.raw||'')||/true/.test(M.getProp(n,'pinned')||'')?' · fixo':'');break}
+    case 'PaginatedDataTable':{
+      d.className+=' col pdt';d.style.alignItems='stretch';
+      if(n.slots.header){var pdh=child(n.slots.header,'header','#none');pdh.classList.add('pdth');d.appendChild(pdh)}
+      var pcols=n.slots.columns||[],prp=Math.min(6,numVal(M.getProp(n,'rowsPerPage'))||10),ptb=document.createElement('div');ptb.className='pdtt';ptb.style.gridTemplateColumns='repeat('+Math.max(1,pcols.length)+',1fr)';
+      pcols.forEach(function(c,i){var ce=child(c,'columns:'+i,'#none');ce.classList.add('pdtc');ptb.appendChild(ce)});
+      for(var pr=0;pr<prp;pr++)pcols.forEach(function(){var cc3=document.createElement('div');cc3.className='pdtx';cc3.textContent='…';ptb.appendChild(cc3)});
+      d.appendChild(ptb);var pft=document.createElement('div');pft.className='pdtf';pft.textContent='Linhas por página: '+(numVal(M.getProp(n,'rowsPerPage'))||10)+'   ‹  ›';d.appendChild(pft);break}
+    case 'AnimatedDefaultTextStyle':{
+      d.className+=' col';d.style.alignItems='flex-start';d.style.cssText+=textCss(M.getProp(n,'style'));single('child','#single','child: adicione um widget');break}
+    case 'TextButton.icon':case 'ElevatedButton.icon':case 'OutlinedButton.icon':case 'FilledButton.icon':case 'FilledButton.tonal':{
+      var bk0=n.type.split('.')[0];d.className+=' btn'+(bk0==='TextButton'?' tbtn':bk0==='OutlinedButton'?' obtn':bk0==='FilledButton'?' fbtn':'')+(n.type==='FilledButton.tonal'?' tonal':'');d.style.flex='none';
+      if(n.slots.icon){var bic=child(n.slots.icon,'icon','#none');bic.style.marginRight='8px';d.appendChild(bic)}
+      if(n.slots.label)d.appendChild(child(n.slots.label,'label','#none'));else if(n.slots.child)d.appendChild(child(n.slots.child,'child','#none'));else d.appendChild(ph('label'));break}
+    case 'IconButton.filled':case 'IconButton.filledTonal':case 'IconButton.outlined':{
+      d.className+=' ibtn '+(n.type==='IconButton.filled'?'ibf':n.type==='IconButton.filledTonal'?'ibt':'ibo');if(n.slots.icon)d.appendChild(child(n.slots.icon,'icon','#none'));else d.appendChild(ph('icon'));break}
+    case 'FloatingActionButton.extended':{
+      d.className+=' fab fabx';var fb2=colorVal(M.getProp(n,'backgroundColor'));if(fb2)d.style.background=fb2;
+      if(n.slots.icon){var fic=child(n.slots.icon,'icon','#none');fic.style.marginRight='8px';d.appendChild(fic)}
+      if(n.slots.label)d.appendChild(child(n.slots.label,'label','#none'));break}
+    case 'SearchAnchor':case 'SearchAnchor.bar':{
+      d.className+=' tfld sbar2';var sh2=M.getProp(n,n.type==='SearchAnchor.bar'?'barHintText':'viewHintText');
+      d.innerHTML='<span class="sbi">⌕</span><span class="sbh">'+(sh2?esc2(strVal(sh2)):'Buscar')+'</span>';break}
+    case 'Theme':{
+      d.className+=' col';d.style.alignItems='flex-start';var tdr=M.getProp(n,'data')||'',tsm=/seedColor:\s*([^,)\s]+(?:\.[\w]+)*)/.exec(tdr)||/(?:primaryColor|primary):\s*([^,)\s]+(?:\.[\w]+)*)/.exec(tdr),tcv=tsm&&colorVal(tsm[1]);
+      if(tcv&&tcv[0]==='#'){d.style.setProperty('--d-primary',tcv);d.style.setProperty('--d-btn',mixHex(tcv,.82))}
+      single('child','#single','child: adicione um widget');break}
+    case 'CalendarDatePicker':{
+      d.className+=' calp';var ckey=path.join('>')||'root',cst=R_opts.cal[ckey];
+      function dparse(raw,dflt){var m=/DateTime\(\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*(\d+))?/.exec(raw||'');return m?{y:+m[1],m:+m[2],d:m[3]?+m[3]:1}:dflt}
+      var tdy=new Date(),cinit=dparse(M.getProp(n,'initialDate'),{y:tdy.getFullYear(),m:tdy.getMonth()+1,d:tdy.getDate()}),cfirst=dparse(M.getProp(n,'firstDate'),{y:1900,m:1,d:1}),clast=dparse(M.getProp(n,'lastDate'),{y:2100,m:12,d:31});
+      if(!cst||cst.init!==cinit.y+'-'+cinit.m+'-'+cinit.d){cst=R_opts.cal[ckey]={y:cinit.y,m:cinit.m,sy:cinit.y,sm:cinit.m,sd:cinit.d,init:cinit.y+'-'+cinit.m+'-'+cinit.d}}
+      var MN=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'],ch2=document.createElement('div');ch2.className='calh';
+      ch2.innerHTML='<span class="calb hh" data-h="calnav" data-k="'+ckey+'" data-s="-1">‹</span><b>'+MN[cst.m-1]+' de '+cst.y+'</b><span class="calb hh" data-h="calnav" data-k="'+ckey+'" data-s="1">›</span>';d.appendChild(ch2);
+      var cg=document.createElement('div');cg.className='calg';['D','S','T','Q','Q','S','S'].forEach(function(x){var e=document.createElement('i');e.className='cwd';e.textContent=x;cg.appendChild(e)});
+      var f0=new Date(cst.y,cst.m-1,1).getDay(),dim2=new Date(cst.y,cst.m,0).getDate(),k2;
+      for(k2=0;k2<f0;k2++)cg.appendChild(document.createElement('i'));
+      function cv(y,m,dd){return y*10000+m*100+dd}
+      for(k2=1;k2<=dim2;k2++){var cdd=document.createElement('span'),cvv=cv(cst.y,cst.m,k2),ok2=cvv>=cv(cfirst.y,cfirst.m,cfirst.d)&&cvv<=cv(clast.y,clast.m,clast.d);
+        cdd.textContent=k2;cdd.className='cdy'+(ok2?' hh':' off')+((cst.sy===cst.y&&cst.sm===cst.m&&cst.sd===k2)?' on':'')+((tdy.getFullYear()===cst.y&&tdy.getMonth()+1===cst.m&&tdy.getDate()===k2)?' tdy':'');
+        if(ok2&&R_opts.run){cdd.dataset.h='caldy';cdd.dataset.k=ckey;cdd.dataset.d=k2;cdd._n=n}cg.appendChild(cdd)}
+      d.appendChild(cg);if(!R_opts.run)d.title='Entre em ▶ Testar para tocar nos dias';break}
     case 'Text':{
       d.className+=' txt';d.textContent=strVal(M.getProp(n,'data'));d.style.cssText+=textCss(M.getProp(n,'style'));break}
     case 'Icon':{
@@ -3844,7 +4288,7 @@ function build(n,path,pt,ppt,sel){
   if(R_opts.run)bindRun(d,n);
   return d;
 }
-var R_opts={drawerOpen:{},run:false,xray:false,typed:{},page:{},depth:0,nav:[],navSc:[],over:[],tab:{},tabCtl:null,exp:{},fut:{},futT:[],mapV:null,rf:{},str:{},iv:{},dss:{},ddm:{},acx:{},anim:{},sw:{},tw:{}};
+var R_opts={lsel:{},lws:{},cal:{},drawerOpen:{},run:false,xray:false,typed:{},page:{},depth:0,nav:[],navSc:[],over:[],tab:{},tabCtl:null,exp:{},fut:{},futT:[],mapV:null,rf:{},str:{},iv:{},dss:{},ddm:{},acx:{},anim:{},sw:{},tw:{}};
 OF.ST.futPhase=function(n,ms){
   if(!R_opts.run||ms<=0)return 'done';
   var k=(n._key||'?')+'#'+(OF.ST.futGen||0),f=R_opts.fut[k];
@@ -11730,6 +12174,384 @@ d('RichAttributionWidget',[['attributions','List<SourceAttribution>','Os crédit
     TextSourceAttribution('© OpenStreetMap contributors'),
   ],
 )`);
+d('ClipOval',[['child', 'Widget', 'O que será recortado (normalmente uma imagem).'], ['clipBehavior', 'Clip', 'Suavização da borda: Clip.antiAlias (padrão).']],
+`ClipOval(
+  child: Container(width: 80, height: 80, color: Colors.teal),
+)`);
+d('DecoratedBox',[['decoration', 'Decoration', 'Normalmente BoxDecoration(color, borderRadius, border, boxShadow).'], ['child', 'Widget', 'Widget que fica na frente da decoração.']],
+`DecoratedBox(
+  decoration: BoxDecoration(
+    color: Colors.indigo,
+    borderRadius: BorderRadius.circular(12),
+  ),
+  child: Padding(padding: EdgeInsets.all(16), child: Text('Oi')),
+)`);
+d('Material',[['color', 'Color', 'Cor de fundo da superfície.'], ['elevation', 'double', 'Altura da sombra.'], ['borderRadius', 'BorderRadius', 'Cantos arredondados.'], ['child', 'Widget', 'Conteúdo.']],
+`Material(
+  color: Colors.white,
+  elevation: 4,
+  borderRadius: BorderRadius.circular(12),
+  child: Padding(padding: EdgeInsets.all(16), child: Text('Superfície')),
+)`);
+d('Placeholder',[['fallbackWidth', 'double', 'Largura quando o espaço não tem limite (padrão 400).'], ['fallbackHeight', 'double', 'Altura quando o espaço não tem limite (padrão 400).'], ['color', 'Color', 'Cor das linhas.'], ['strokeWidth', 'double', 'Espessura das linhas.']],
+`SizedBox(
+  width: 160,
+  height: 100,
+  child: Placeholder(),
+)`);
+d('CustomPaint',[['painter', 'CustomPainter', 'Classe sua, com paint(Canvas canvas, Size size).'], ['size', 'Size', 'Tamanho da área de desenho: Size(200, 100).'], ['child', 'Widget', 'Widget desenhado por cima do painter.']],
+`CustomPaint(
+  size: Size(200, 100),
+  painter: MeuPainter(),
+)`);
+d('BackdropFilter',[['filter', 'ImageFilter', 'ImageFilter.blur(sigmaX: 5, sigmaY: 5) desfoca o que está atrás.'], ['child', 'Widget', 'Normalmente um Container semitransparente.']],
+`BackdropFilter(
+  filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+  child: Container(
+    padding: EdgeInsets.all(16),
+    color: Colors.white24,
+    child: Text('Vidro fosco'),
+  ),
+)`);
+d('ShaderMask',[['shaderCallback', 'Shader Function(Rect)', 'Função que cria o shader, como LinearGradient(...).createShader(bounds).'], ['blendMode', 'BlendMode', 'Como o shader se mistura ao filho. srcIn pinta só onde o filho existe.'], ['child', 'Widget', 'Quem recebe o shader.']],
+`ShaderMask(
+  shaderCallback: (bounds) => LinearGradient(
+    colors: [Colors.purple, Colors.orange],
+  ).createShader(bounds),
+  blendMode: BlendMode.srcIn,
+  child: Text('Degradê', style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold)),
+)`);
+d('ColorFiltered',[['colorFilter', 'ColorFilter', 'ColorFilter.mode(Colors.red, BlendMode.modulate) tinge o filho.'], ['child', 'Widget', 'Quem recebe o filtro.']],
+`ColorFiltered(
+  colorFilter: ColorFilter.mode(Colors.red, BlendMode.modulate),
+  child: Container(width: 80, height: 80, color: Colors.white),
+)`);
+d('ImageFiltered',[['imageFilter', 'ImageFilter', 'ImageFilter.blur(sigmaX: 4, sigmaY: 4).'], ['child', 'Widget', 'Quem recebe o efeito.']],
+`ImageFiltered(
+  imageFilter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+  child: Text('Desfocado'),
+)`);
+d('IntrinsicHeight',[['child', 'Widget', 'Normalmente uma Row com crossAxisAlignment: CrossAxisAlignment.stretch.']],
+`IntrinsicHeight(
+  child: Row(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      Container(width: 40, color: Colors.red),
+      Text('Texto\nem duas linhas'),
+    ],
+  ),
+)`);
+d('IntrinsicWidth',[['child', 'Widget', 'Normalmente uma Column de botões.']],
+`IntrinsicWidth(
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      ElevatedButton(onPressed: () {}, child: Text('Curto')),
+      ElevatedButton(onPressed: () {}, child: Text('Um texto bem maior')),
+    ],
+  ),
+)`);
+d('LimitedBox',[['maxWidth', 'double', 'Largura máxima, só se o espaço for ilimitado.'], ['maxHeight', 'double', 'Altura máxima, só se o espaço for ilimitado.'], ['child', 'Widget', 'Conteúdo.']],
+`LimitedBox(
+  maxHeight: 100,
+  child: Container(color: Colors.teal),
+)`);
+d('UnconstrainedBox',[['alignment', 'Alignment', 'Onde o filho fica (padrão center).'], ['child', 'Widget', 'Conteúdo, que escolhe o próprio tamanho.']],
+`UnconstrainedBox(
+  child: Container(width: 120, height: 60, color: Colors.orange),
+)`);
+d('Baseline',[['baseline', 'double', 'Distância do topo até a linha de base.'], ['baselineType', 'TextBaseline', 'TextBaseline.alphabetic ou ideographic.'], ['child', 'Widget', 'Conteúdo.']],
+`Baseline(
+  baseline: 30,
+  baselineType: TextBaseline.alphabetic,
+  child: Text('Linha de base'),
+)`);
+d('RotatedBox',[['quarterTurns', 'int', 'Quantos quartos de volta (90°) girar.'], ['child', 'Widget', 'Conteúdo.']],
+`RotatedBox(
+  quarterTurns: 3,
+  child: Text('Vertical'),
+)`);
+d('OverflowBox',[['maxWidth', 'double', 'Largura máxima permitida ao filho.'], ['maxHeight', 'double', 'Altura máxima permitida ao filho.'], ['alignment', 'Alignment', 'De onde o filho cresce.'], ['child', 'Widget', 'Conteúdo.']],
+`SizedBox(
+  width: 100,
+  height: 60,
+  child: OverflowBox(
+    maxWidth: 160,
+    child: Container(color: Colors.pink, child: Text('Passa do limite')),
+  ),
+)`);
+d('Flow',[['delegate', 'FlowDelegate', 'Classe sua que calcula a posição dos filhos.'], ['children', 'List<Widget>', 'Os filhos.']],
+`Flow(
+  delegate: MeuFlow(),
+  children: [Icon(Icons.home), Icon(Icons.star), Icon(Icons.map)],
+)`);
+d('Offstage',[['offstage', 'bool', 'true esconde o filho (padrão); false mostra.'], ['child', 'Widget', 'Conteúdo.']],
+`Offstage(
+  offstage: true,
+  child: Text('Escondido, mas existe'),
+)`);
+d('IgnorePointer',[['ignoring', 'bool', 'true: toques atravessam o filho.'], ['child', 'Widget', 'Conteúdo.']],
+`IgnorePointer(
+  ignoring: true,
+  child: ElevatedButton(onPressed: () {}, child: Text('Sem resposta')),
+)`);
+d('AbsorbPointer',[['absorbing', 'bool', 'true: o filho não responde e o toque não passa para trás.'], ['child', 'Widget', 'Conteúdo.']],
+`AbsorbPointer(
+  absorbing: true,
+  child: ElevatedButton(onPressed: () {}, child: Text('Bloqueado')),
+)`);
+d('GridView.extent',[['maxCrossAxisExtent', 'double', 'Largura máxima de cada célula.'], ['crossAxisSpacing', 'double', 'Espaço entre colunas.'], ['mainAxisSpacing', 'double', 'Espaço entre linhas.'], ['children', 'List<Widget>', 'As células.']],
+`GridView.extent(
+  maxCrossAxisExtent: 120,
+  crossAxisSpacing: 8,
+  mainAxisSpacing: 8,
+  children: [
+    Container(color: Colors.red),
+    Container(color: Colors.green),
+    Container(color: Colors.blue),
+  ],
+)`);
+d('ListView.custom',[['childrenDelegate', 'SliverChildDelegate', 'Fonte dos filhos, como SliverChildListDelegate([...]).']],
+`ListView.custom(
+  childrenDelegate: SliverChildListDelegate([
+    ListTile(title: Text('Um')),
+    ListTile(title: Text('Dois')),
+  ]),
+)`);
+d('SliverChildListDelegate',[['children', 'List<Widget>', 'Lista fixa de filhos (primeiro argumento).']],
+`SliverChildListDelegate([
+  Text('A'),
+  Text('B'),
+])`);
+d('NestedScrollView',[['headerSliverBuilder', 'Function', 'Devolve os slivers do cabeçalho (SliverAppBar).'], ['body', 'Widget', 'Conteúdo que rola.']],
+`NestedScrollView(
+  headerSliverBuilder: (context, inner) => [
+    SliverAppBar(title: Text('Título'), floating: true),
+  ],
+  body: ListView(children: [Text('Conteúdo')]),
+)`);
+d('ListWheelScrollView',[['itemExtent', 'double', 'Altura de cada item.'], ['onSelectedItemChanged', 'ValueChanged<int>', 'Recebe o índice do item que parou no centro.'], ['diameterRatio', 'double', 'Curvatura da roda.'], ['children', 'List<Widget>', 'Os itens.']],
+`ListWheelScrollView(
+  itemExtent: 44,
+  onSelectedItemChanged: (i) => print(i),
+  children: [
+    Text('Segunda'),
+    Text('Terça'),
+    Text('Quarta'),
+  ],
+)`);
+d('CarouselView',[['itemExtent', 'double', 'Largura de cada item.'], ['shrinkExtent', 'double', 'Tamanho mínimo dos itens nas pontas.'], ['onTap', 'ValueChanged<int>', 'Recebe o índice do item tocado.'], ['children', 'List<Widget>', 'Os itens.']],
+`SizedBox(
+  height: 160,
+  child: CarouselView(
+    itemExtent: 240,
+    children: [
+      Container(color: Colors.red),
+      Container(color: Colors.green),
+      Container(color: Colors.blue),
+    ],
+  ),
+)`);
+d('Scrollbar',[['controller', 'ScrollController', 'Controla a rolagem (opcional).'], ['thumbVisibility', 'bool', 'true mantém a barra sempre visível.'], ['child', 'Widget', 'ListView ou SingleChildScrollView.']],
+`Scrollbar(
+  thumbVisibility: true,
+  child: ListView(children: [Text('A'), Text('B')]),
+)`);
+d('SliverGrid',[['delegate', 'SliverChildDelegate', 'Os itens: SliverChildListDelegate([...]).'], ['gridDelegate', 'SliverGridDelegate', 'Colunas: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2).']],
+`SliverGrid(
+  delegate: SliverChildListDelegate([
+    Container(color: Colors.red),
+    Container(color: Colors.blue),
+  ]),
+  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+)`);
+d('SliverGrid.count',[['crossAxisCount', 'int', 'Número de colunas.'], ['children', 'List<Widget>', 'As células.']],
+`SliverGrid.count(
+  crossAxisCount: 3,
+  children: [
+    Container(color: Colors.red),
+    Container(color: Colors.green),
+    Container(color: Colors.blue),
+  ],
+)`);
+d('SliverPadding',[['padding', 'EdgeInsets', 'Espaço em volta do sliver.'], ['sliver', 'Widget', 'O sliver que recebe o espaço.']],
+`SliverPadding(
+  padding: EdgeInsets.all(16),
+  sliver: SliverList.list(children: [Text('A'), Text('B')]),
+)`);
+d('SliverFillRemaining',[['hasScrollBody', 'bool', 'false: o filho não rola e ocupa o resto.'], ['child', 'Widget', 'Conteúdo.']],
+`SliverFillRemaining(
+  hasScrollBody: false,
+  child: Center(child: Text('Fim da lista')),
+)`);
+d('SliverPersistentHeader',[['delegate', 'SliverPersistentHeaderDelegate', 'Classe sua, com build, minExtent e maxExtent.'], ['pinned', 'bool', 'true: fica fixo no topo ao rolar.'], ['floating', 'bool', 'true: reaparece ao rolar para cima.']],
+`SliverPersistentHeader(
+  pinned: true,
+  delegate: MeuCabecalho(),
+)`);
+d('PaginatedDataTable',[['header', 'Widget', 'Título acima da tabela.'], ['columns', 'List<DataColumn>', 'Cabeçalhos das colunas.'], ['source', 'DataTableSource', 'Classe sua que entrega as linhas (rowCount, getRow).'], ['rowsPerPage', 'int', 'Linhas por página (padrão 10).']],
+`PaginatedDataTable(
+  header: Text('Alunos'),
+  columns: [
+    DataColumn(label: Text('Nome')),
+    DataColumn(label: Text('Nota')),
+  ],
+  source: MinhaFonte(),
+  rowsPerPage: 5,
+)`);
+d('AnimatedDefaultTextStyle',[['style', 'TextStyle', 'Novo estilo de texto, que anima.'], ['duration', 'Duration', 'Tempo da animação.'], ['child', 'Widget', 'Normalmente um Text.']],
+`AnimatedDefaultTextStyle(
+  duration: Duration(milliseconds: 400),
+  style: TextStyle(fontSize: grande ? 32 : 16, color: Colors.indigo),
+  child: Text('Texto'),
+)`);
+d('TextButton.icon',[['icon', 'Widget', 'Ícone, à esquerda do texto.'], ['label', 'Widget', 'Texto do botão.'], ['onPressed', 'VoidCallback?', 'O que fazer ao tocar. null desativa.']],
+`TextButton.icon(
+  onPressed: () {},
+  icon: Icon(Icons.add),
+  label: Text('Adicionar'),
+)`);
+d('ElevatedButton.icon',[['icon', 'Widget', 'Ícone, à esquerda do texto.'], ['label', 'Widget', 'Texto do botão.'], ['onPressed', 'VoidCallback?', 'O que fazer ao tocar. null desativa.']],
+`ElevatedButton.icon(
+  onPressed: () {},
+  icon: Icon(Icons.add),
+  label: Text('Adicionar'),
+)`);
+d('OutlinedButton.icon',[['icon', 'Widget', 'Ícone, à esquerda do texto.'], ['label', 'Widget', 'Texto do botão.'], ['onPressed', 'VoidCallback?', 'O que fazer ao tocar. null desativa.']],
+`OutlinedButton.icon(
+  onPressed: () {},
+  icon: Icon(Icons.add),
+  label: Text('Adicionar'),
+)`);
+d('FilledButton.icon',[['icon', 'Widget', 'Ícone, à esquerda do texto.'], ['label', 'Widget', 'Texto do botão.'], ['onPressed', 'VoidCallback?', 'O que fazer ao tocar. null desativa.']],
+`FilledButton.icon(
+  onPressed: () {},
+  icon: Icon(Icons.add),
+  label: Text('Adicionar'),
+)`);
+d('FilledButton.tonal',[['child', 'Widget', 'Conteúdo do botão.'], ['onPressed', 'VoidCallback?', 'O que fazer ao tocar.']],
+`FilledButton.tonal(
+  onPressed: () {},
+  child: Text('Tonal'),
+)`);
+d('IconButton.filled',[['icon', 'Widget', 'O ícone.'], ['onPressed', 'VoidCallback?', 'O que fazer ao tocar.']],
+`IconButton.filled(
+  onPressed: () {},
+  icon: Icon(Icons.favorite),
+)`);
+d('IconButton.filledTonal',[['icon', 'Widget', 'O ícone.'], ['onPressed', 'VoidCallback?', 'O que fazer ao tocar.']],
+`IconButton.filledTonal(
+  onPressed: () {},
+  icon: Icon(Icons.favorite),
+)`);
+d('IconButton.outlined',[['icon', 'Widget', 'O ícone.'], ['onPressed', 'VoidCallback?', 'O que fazer ao tocar.']],
+`IconButton.outlined(
+  onPressed: () {},
+  icon: Icon(Icons.favorite),
+)`);
+d('FloatingActionButton.extended',[['icon', 'Widget', 'Ícone à esquerda.'], ['label', 'Widget', 'Texto do botão.'], ['onPressed', 'VoidCallback?', 'O que fazer ao tocar.']],
+`FloatingActionButton.extended(
+  onPressed: () {},
+  icon: Icon(Icons.add),
+  label: Text('Novo'),
+)`);
+d('Card.outlined',[['child', 'Widget', 'Conteúdo do card.']],
+`Card.outlined(
+  child: Padding(padding: EdgeInsets.all(16), child: Text('Com borda')),
+)`);
+d('Card.filled',[['child', 'Widget', 'Conteúdo do card.']],
+`Card.filled(
+  child: Padding(padding: EdgeInsets.all(16), child: Text('Preenchido')),
+)`);
+d('InputChip',[['label', 'Widget', 'Texto do chip.'], ['avatar', 'Widget', 'Ícone ou foto à esquerda.'], ['onDeleted', 'VoidCallback?', 'Se informado, mostra o X para remover.'], ['selected', 'bool', 'Marca o chip como escolhido.']],
+`InputChip(
+  label: Text('ana@email.com'),
+  onDeleted: () {},
+)`);
+d('SelectableText',[['data', 'String', 'Texto que pode ser selecionado.'], ['style', 'TextStyle', 'Estilo do texto.']],
+`SelectableText('Copie este texto')`);
+d('SearchAnchor',[['builder', 'Function', 'Desenha o campo (um SearchBar).'], ['suggestionsBuilder', 'Function', 'Devolve as sugestões para o texto digitado.']],
+`SearchAnchor(
+  builder: (context, controller) => SearchBar(controller: controller, hintText: 'Buscar'),
+  suggestionsBuilder: (context, controller) => [ListTile(title: Text('Sugestão'))],
+)`);
+d('SearchAnchor.bar',[['barHintText', 'String', 'Dica dentro da barra.'], ['suggestionsBuilder', 'Function', 'Devolve as sugestões.']],
+`SearchAnchor.bar(
+  barHintText: 'Buscar aula',
+  suggestionsBuilder: (context, controller) => [ListTile(title: Text('Sugestão'))],
+)`);
+d('CalendarDatePicker',[['initialDate', 'DateTime', 'Dia marcado ao abrir.'], ['firstDate', 'DateTime', 'Primeiro dia permitido.'], ['lastDate', 'DateTime', 'Último dia permitido.'], ['onDateChanged', 'ValueChanged<DateTime>', 'Recebe o dia tocado.']],
+`CalendarDatePicker(
+  initialDate: DateTime(2026, 10, 12),
+  firstDate: DateTime(2026, 1, 1),
+  lastDate: DateTime(2026, 12, 31),
+  onDateChanged: (d) {},
+)`);
+d('Theme',[['data', 'ThemeData', 'Tema que vale só para o filho.'], ['child', 'Widget', 'Conteúdo.']],
+`Theme(
+  data: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal)),
+  child: ElevatedButton(onPressed: () {}, child: Text('Verde')),
+)`);
+d('MediaQuery',[['data', 'MediaQueryData', 'Medidas entregues aos filhos.'], ['child', 'Widget', 'Conteúdo.']],
+`MediaQuery(
+  data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1.2)),
+  child: Text('Texto maior'),
+)`);
+d('Semantics',[['label', 'String', 'Descrição lida pelo leitor de tela.'], ['button', 'bool', 'Marca como botão.'], ['child', 'Widget', 'Conteúdo.']],
+`Semantics(
+  label: 'Voltar à tela anterior',
+  button: true,
+  child: Icon(Icons.arrow_back),
+)`);
+d('Focus',[['autofocus', 'bool', 'Pede o foco ao abrir.'], ['onKeyEvent', 'Function', 'Recebe as teclas apertadas.'], ['child', 'Widget', 'Conteúdo.']],
+`Focus(
+  autofocus: true,
+  child: Text('Com foco'),
+)`);
+d('PopScope',[['canPop', 'bool', 'false impede o Voltar.'], ['onPopInvokedWithResult', 'Function', 'Avisa que o Voltar foi apertado.'], ['child', 'Widget', 'Conteúdo.']],
+`PopScope(
+  canPop: false,
+  child: Text('Não sai daqui'),
+)`);
+d('InkResponse',[['onTap', 'VoidCallback?', 'O que fazer ao tocar.'], ['radius', 'double', 'Raio do efeito de toque.'], ['child', 'Widget', 'Conteúdo.']],
+`InkResponse(
+  onTap: () {},
+  radius: 32,
+  child: Icon(Icons.star),
+)`);
+d('Image.file',[['file', 'File', 'File(caminho) de uma imagem no aparelho.'], ['width', 'double', 'Largura.'], ['height', 'double', 'Altura.'], ['fit', 'BoxFit', 'Como a imagem preenche o espaço.']],
+`Image.file(File('/storage/foto.jpg'), width: 120, fit: BoxFit.cover)`);
+d('ClipRect',[['child','Widget','Conteúdo que será cortado.'],['clipBehavior','Clip','Tipo de corte.']],`ClipRect(
+  child: BackdropFilter(
+    filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+    child: Container(width: 120, height: 50, color: Colors.white24),
+  ),
+)`);
+d('ValueListenableBuilder',[['valueListenable','ValueListenable<T>','O ValueNotifier observado.'],['builder','Widget Function(context, value, child)','Desenha com o valor atual.'],['child','Widget','Parte que não depende do valor.']],`ValueListenableBuilder<int>(
+  valueListenable: contador,
+  builder: (context, valor, child) => Text('Valor: $valor'),
+)`);
+d('ListenableBuilder',[['listenable','Listenable','Um ChangeNotifier (ou ValueNotifier).'],['builder','Widget Function(context, child)','Desenha com o estado atual do objeto.'],['child','Widget','Parte fixa.']],`ListenableBuilder(
+  listenable: carrinho,
+  builder: (context, child) => Text('Itens: \${carrinho.itens}'),
+)`);
+d('AnimatedBuilder',[['animation','Listenable','Normalmente um AnimationController.'],['builder','Widget Function(context, child)','Desenha a cada quadro, lendo controller.value.'],['child','Widget','Parte que não muda durante a animação.']],`AnimatedBuilder(
+  animation: _controle,
+  builder: (context, child) => Transform.rotate(angle: _controle.value * 6.28, child: child),
+  child: Icon(Icons.refresh, size: 48),
+)`);
+d('ScaleTransition',[['scale','Animation<double>','Fator de tamanho. 1 é o normal.'],['alignment','Alignment','Ponto fixo do zoom (padrão center).'],['child','Widget','Quem muda de tamanho.']],`ScaleTransition(
+  scale: _controle,
+  child: Icon(Icons.favorite, size: 48, color: Colors.red),
+)`);
+d('RotationTransition',[['turns','Animation<double>','Quantas voltas girar (0.5 é meia volta).'],['alignment','Alignment','Ponto fixo do giro.'],['child','Widget','Quem gira.']],`RotationTransition(
+  turns: _controle,
+  child: Icon(Icons.refresh, size: 48),
+)`);
+d('SlideTransition',[['position','Animation<Offset>','Deslocamento em frações do tamanho do filho.'],['child','Widget','Quem desliza.']],`SlideTransition(
+  position: Tween<Offset>(begin: Offset(-1, 0), end: Offset.zero).animate(_controle),
+  child: Text('Entrando'),
+)`);
 OF.REF=R;
 })();
 
@@ -12035,11 +12857,53 @@ function fit(){
   var r=stage.getBoundingClientRect(),s=Math.min((r.width-24)/376,(r.height-24)/672);
   s=Math.max(.3,Math.min(s,1.1));wrapEl.style.width=(376*s)+'px';wrapEl.style.height=(672*s)+'px';phone.style.transform='scale('+s+')';
 }
+screen.addEventListener('scroll',function(e){
+  var t=e.target;if(!t.classList||!t.classList.contains('lwi'))return;
+  var w=t.parentNode,ext=+w.dataset.ext||50,k=w.dataset.lk,i=Math.max(0,Math.round(t.scrollTop/ext));
+  R.opts.lws[k]=t.scrollTop;
+  if(R.opts.lsel[k]===i)return;R.opts.lsel[k]=i;
+  var raw=w._n&&M.rawProp(w._n,'onSelectedItemChanged');
+  if(S.run&&ST.active&&raw&&raw.trim()!=='null'){R.opts.keepScroll=true;afterRun(runAt(w,raw,[i]))}
+},true);
+/* ====== laço de animação (AnimationController) e atualização sem recriar a tela ====== */
+function patchEl(a,b){
+  var i,at;
+  if(a.nodeType!==1){if(a.nodeValue!==b.nodeValue)a.nodeValue=b.nodeValue;return}
+  for(i=a.attributes.length-1;i>=0;i--){at=a.attributes[i];if(!b.hasAttribute(at.name))a.removeAttribute(at.name)}
+  for(i=0;i<b.attributes.length;i++){at=b.attributes[i];if(a.getAttribute(at.name)!==at.value)a.setAttribute(at.name,at.value)}
+  Object.keys(b).forEach(function(k){if(k.charAt(0)==='_')a[k]=b[k]});
+  if(a.tagName==='INPUT'&&document.activeElement!==a&&a.value!==b.value)a.value=b.value;
+  patchKids(a,b)}
+function sameKind(a,b){return a.nodeType===b.nodeType&&(a.nodeType!==1||a.tagName===b.tagName)}
+function patchKids(a,b){
+  var bc=[].slice.call(b.childNodes),i;
+  for(i=0;i<bc.length;i++){
+    var x=a.childNodes[i],y=bc[i];
+    if(!x)a.appendChild(y);else if(sameKind(x,y))patchEl(x,y);else a.replaceChild(y,x)}
+  while(a.childNodes.length>bc.length)a.removeChild(a.lastChild)}
+function patchRender(){
+  if(pk){renderCanvas();return}
+  var tmp=document.createElement('div');tmp.className=screen.className;
+  tmp.style.cssText='position:absolute;left:-9999px;top:0;visibility:hidden;pointer-events:none;width:'+screen.clientWidth+'px;height:'+screen.clientHeight+'px';
+  screen.parentNode.appendChild(tmp);
+  try{R.renderScreen(S.root,S.sel,S.xray,tmp);
+    var keep=[].filter.call(screen.children,function(c){return c.classList.contains('ddmenu')||c.classList.contains('pkov')});
+    if(screen.className!==tmp.className)screen.className=tmp.className;
+    patchKids(screen,tmp);
+    keep.forEach(function(k){if(!k.parentNode)screen.appendChild(k)})}
+  finally{tmp.remove()}}
+var animRaf=0;
+function animStep(){animRaf=0;if(!ST.anims||!ST.anims.length)return;
+  var ch=false;try{ch=ST.tick(ST.now())}catch(e){}
+  if(ch)try{patchRender()}catch(e2){}
+  animKick()}
+function animKick(){if(animRaf||!ST.anims||!ST.anims.length)return;animRaf=requestAnimationFrame(animStep)}
 var refocus=null;
 function renderCanvas(){
   R.renderScreen(S.root,S.sel,S.xray,screen);
   if(pk)drawPicker();
   if(refocus){var i=screen.querySelector('input.tfi[data-key="'+refocus.key+'"]');if(i){i.focus();try{i.setSelectionRange(refocus.pos,refocus.pos)}catch(e){}}}
+  animKick()
 }
 R.opts.rerender=function(){renderCanvas()};
 screen.addEventListener('input',function(e){
@@ -12182,6 +13046,7 @@ function afterRun(r){
   else if(r.dirty)renderCanvas();
   else if(r.mutated)toast('A variável mudou, mas sem setState() a tela não é redesenhada.');
   renderStateBar();
+  animKick();
   var pq=R.opts.pgq;R.opts.pgq=null;
   if(pq&&pq.length&&!r.err)pq.forEach(function(it){
     var el=screen.querySelector('.pgdots[data-pk="'+it.pk+'"]');
@@ -12373,6 +13238,13 @@ screen.addEventListener('click',function(e){
   if(e.target.classList.contains('scrim')&&e.target.dataset.dk){var sk=e.target.dataset.dk;R.opts.drawerOpen[sk]=false;
     if(S.sel&&(S.sel===sk||S.sel.indexOf(sk+'>')===0))select(sk.split('>').slice(0,-1).join('>'),false);else renderCanvas();return}
   if(e.target.classList.contains('ovs')){popTop();renderCanvas();return}
+  var cn=e.target.closest&&e.target.closest('[data-h=calnav]');
+  if(cn){var cs0=R.opts.cal[cn.dataset.k];if(cs0){var nm=cs0.m+(+cn.dataset.s),ny=cs0.y;if(nm<1){nm=12;ny--}if(nm>12){nm=1;ny++}cs0.m=nm;cs0.y=ny;renderCanvas()}return}
+  var cd=e.target.closest&&e.target.closest('[data-h=caldy]');
+  if(cd){var cs1=R.opts.cal[cd.dataset.k];if(cs1){cs1.sy=cs1.y;cs1.sm=cs1.m;cs1.sd=+cd.dataset.d;renderCanvas();
+      var cn2=cd._n,craw=cn2&&M.rawProp(cn2,'onDateChanged');
+      var cel=screen.querySelector('[data-h=caldy][data-k="'+cd.dataset.k+'"][data-d="'+cs1.sd+'"]')||screen;
+      if(S.run&&ST.active&&craw&&craw.trim()!=='null')afterRun(runAt(cel,craw,[ST.mkDate(cs1.y,cs1.m,cs1.sd,0,0,0)]))}return}
   var pd=e.target.closest('.pgd');if(pd){var pi2=+pd.dataset.i,pbox=pd.parentNode,pc2=pbox._pc;R.opts.page[pd.dataset.k]=pi2;if(pc2)pc2.page=pi2;renderCanvas();var pcb=pbox._n&&M.rawProp(pbox._n,'onPageChanged');if(pc2&&pcb&&pcb.trim()!=='null')afterRun(runAt(pd,pcb,[pi2]));return}
   if(!e.target.closest('.ddmenu')){var om=screen.querySelector('.ddmenu');if(om)om.remove()}
   if(S.run&&ST.active&&Object.keys(ST.menuOpen).some(function(k){return ST.menuOpen[k]})&&!e.target.closest('.mna')){ST.menuOpen={};renderCanvas();return}
