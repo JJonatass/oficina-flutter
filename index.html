@@ -356,6 +356,31 @@ body:has(main[data-tab="ref"]) .lesson{display:none}
 .screen .rli{position:relative}
 .screen .rdh{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:20px;line-height:1;opacity:.6;cursor:grab;touch-action:none;padding:6px 7px;z-index:3;user-select:none;background:var(--d-surface,#FEF7FF);border-radius:8px}
 .screen .rli.dragging{z-index:6;box-shadow:0 6px 16px rgba(0,0,0,.28);opacity:.96;cursor:grabbing;background:var(--d-surface,#FEF7FF)}
+.nd.nrl{flex-direction:column;align-items:center;gap:12px;width:80px;flex:none;background:var(--d-surface);padding:8px 0;align-self:stretch}
+.nrl .nrlead{margin-bottom:4px}
+.nd.nri{flex-direction:column;align-items:center;gap:4px;width:72px;min-height:56px;color:#49454F;font-size:12px;flex:none}
+.nri .nrp{width:56px;height:32px;border-radius:16px;display:flex;align-items:center;justify-content:center}
+.nri.on .nrp{background:#E8DEF8;color:#1D192B}.nri.on{color:var(--d-primary);font-weight:500}
+.nrl[data-lt=none] .nrt,.nrl[data-lt=selected] .nri:not(.on) .nrt{display:none}
+.nrl[data-lt=none] .nri,.nrl[data-lt=selected] .nri:not(.on){min-height:32px}
+.nd.mbn{background:#F3EDF7;color:var(--d-on);padding:16px 8px 8px 16px;align-items:center;flex-wrap:wrap;gap:8px 16px;box-shadow:0 1px 0 rgba(0,0,0,.12);align-self:stretch;flex:none;font-size:14px}
+.mbn .mbc{flex:1 1 140px;min-width:0}.mbn .mba{display:flex;gap:4px;margin-left:auto}.mbn .mba .nd.btn{background:transparent;box-shadow:none;padding:0 12px;color:var(--d-primary)}
+.ovl.bnw{left:0;right:0;top:92px}
+.nd.bnr{position:relative;overflow:hidden;flex:none}
+.bnrr{position:absolute;width:112px;text-align:center;color:#fff;font-size:11px;font-weight:700;padding:3px 0;line-height:1.2;box-shadow:0 1px 3px rgba(0,0,0,.3);text-transform:none;white-space:nowrap;overflow:hidden}
+.bnrr.topStart{top:16px;left:-34px;transform:rotate(-45deg)}.bnrr.topEnd{top:16px;right:-34px;transform:rotate(45deg)}
+.bnrr.bottomStart{bottom:16px;left:-34px;transform:rotate(45deg)}.bnrr.bottomEnd{bottom:16px;right:-34px;transform:rotate(-45deg)}
+.nd.mna{position:relative;display:inline-flex;flex:none;overflow:visible}
+.mna .mnm{position:absolute;top:100%;left:0;z-index:25;min-width:112px;background:#F3EDF7;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,.3);padding:8px 0;display:flex;flex-direction:column;align-items:stretch}
+.nd.mni{padding:0 12px;min-height:48px;align-items:center;gap:12px;font-size:14px;color:var(--d-on);flex:none;white-space:nowrap}
+.nd.mni.hh:hover{background:rgba(103,80,164,.12)}
+.nd.sdlg{padding:24px 0 16px}.sdlg>.nd:nth-child(1){margin:0 24px 8px;font-size:22px}
+.sdlg .sdo{display:flex;flex-direction:column}
+.nd.sdop{padding:12px 24px;font-size:16px;color:var(--d-on);align-items:center;flex:none}
+.nd.sdop.hh:hover{background:rgba(103,80,164,.12)}
+.nd.tps{gap:12px;flex:none;padding:8px;align-items:center}
+.tps i{width:12px;height:12px;border-radius:50%;border:1px solid #79747E;box-sizing:border-box;display:block}
+.tps i.on{background:var(--d-primary);border-color:var(--d-primary)}
 .screen .nd.rfi{position:relative}
 .screen .nd.tgb{display:flex;flex-direction:row;align-self:flex-start}
 .screen .tgb .tgi{display:flex;align-items:center;justify-content:center;min-width:44px;height:40px;padding:0 12px;border:1px solid #79747E;margin-left:-1px;cursor:pointer;box-sizing:border-box;color:#49454F}
@@ -633,6 +658,15 @@ var W={
  Step:{cat:'layout',slots:{title:'one',subtitle:'one',content:'one'},desc:'Um passo do Stepper, com title e content (o conteúdo só aparece quando o passo está aberto).'},
  ExpansionPanelList:{cat:'layout',slots:{children:'many'},desc:'Lista de painéis que abrem e fecham. expansionCallback(índice, estaAberto) é chamado ao tocar no cabeçalho: inverta o isExpanded do painel em um setState. Os filhos são ExpansionPanel.'},
  ExpansionPanel:{cat:'layout',slots:{body:'one'},desc:'Um painel do ExpansionPanelList. headerBuilder desenha o cabeçalho (recebe isExpanded), body é o que aparece aberto e isExpanded diz se está aberto.'},
+ NavigationRail:{cat:'struct',slots:{destinations:'many',leading:'one'},desc:'Barra de navegação lateral, boa para telas largas (tablet, web). selectedIndex marca o destino atual, onDestinationSelected recebe o índice tocado e labelType controla quando mostrar o texto. Costuma ir num Row, ao lado de um Expanded com o conteúdo.'},
+ NavigationRailDestination:{cat:'struct',slots:{icon:'one',label:'one'},desc:'Um destino da NavigationRail. Diferente da NavigationBar, o label aqui é um widget (geralmente Text).'},
+ MaterialBanner:{cat:'box',slots:{content:'one',leading:'one',actions:'many'},desc:'Faixa de aviso fixa no topo da tela, que fica até a pessoa dispensar. Pode ser usada solta ou aberta com ScaffoldMessenger.of(context).showMaterialBanner(...). actions recebe os botões.'},
+ Banner:{cat:'box',slots:{child:'one'},desc:'Faixa diagonal no canto de um widget, como a etiqueta DEBUG. message é o texto, location escolhe o canto (BannerLocation.topStart, topEnd, bottomStart, bottomEnd) e color a cor.'},
+ MenuAnchor:{cat:'box',slots:{menuChildren:'many',child:'one'},desc:'Menu que abre ao lado de outro widget. builder desenha o botão que abre (recebe context, controller e child) e menuChildren lista os itens, geralmente MenuItemButton. controller.open() e controller.close() abrem e fecham.'},
+ MenuItemButton:{cat:'box',slots:{child:'one',leadingIcon:'one'},desc:'Um item de MenuAnchor. onPressed roda ao tocar e o menu fecha em seguida.'},
+ SimpleDialog:{cat:'box',slots:{title:'one',children:'many'},desc:'Diálogo de escolha: um título e uma lista de opções (SimpleDialogOption). Navigator.pop(context, valor) devolve a opção escolhida para quem chamou showDialog.'},
+ SimpleDialogOption:{cat:'box',slots:{child:'one'},desc:'Uma opção do SimpleDialog. onPressed roda ao tocar.'},
+ TabPageSelector:{cat:'struct',slots:{},desc:'Bolinhas que mostram em qual aba ou página você está. Usa o TabController do DefaultTabController mais próximo.'},
  Hero:{cat:'box',slots:{child:'one'},desc:'Marca um widget para voar entre duas telas na navegação. tag liga os dois lados. Sozinho, só desenha o filho.'},
  LayoutBuilder:{cat:'layout',slots:{},desc:'Entrega ao builder o espaço disponível (constraints.maxWidth, maxHeight) para você escolher o layout. Aqui a largura é 360 e a altura 600.'},
  Builder:{cat:'layout',slots:{},desc:'Cria um widget numa função builder(context). Serve para obter um novo context logo abaixo de outro widget.'},
@@ -647,7 +681,7 @@ var W={
  'Image.network':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem baixada de uma URL. Aqui o canvas desenha um quadro no lugar da imagem. fit controla como ela preenche o espaço.'},
  'Image.asset':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem guardada no projeto (pasta assets). Aqui o canvas desenha um quadro no lugar da imagem.'}
 };
-var GROUPS=[['Estrutura',['Scaffold','AppBar','FloatingActionButton','Drawer','BottomNavigationBar','BottomNavigationBarItem','NavigationBar','NavigationDestination']],['Abas',['DefaultTabController','TabBar','Tab','TabBarView']],['Layout',['Center','Align','Column','Row','Stack','Positioned','Expanded','Flexible','Spacer','Wrap','Form','ListView','GridView.count','SingleChildScrollView','SafeArea','PageView','IndexedStack','Stepper','Step','ExpansionPanelList','ExpansionPanel','DraggableScrollableSheet','TweenAnimationBuilder','LayoutBuilder','Builder','FutureBuilder','StreamBuilder','RefreshIndicator','CustomScrollView','SliverAppBar','SliverToBoxAdapter','SliverList.list','SliverList.builder']],['Listas e tabelas',['ListView.builder','ListView.separated','ReorderableListView','ReorderableListView.builder','AnimatedList','GridView.builder','Table','TableRow','DataTable','DataColumn','DataRow','DataCell']],['Caixas',['Container','ColoredBox','Padding','SizedBox','AspectRatio','ConstrainedBox','FractionallySizedBox','FittedBox','Card','Divider','VerticalDivider','ClipRRect','Opacity','AnimatedOpacity','AnimatedContainer','AnimatedPositioned','AnimatedAlign','AnimatedPadding','AnimatedSize','AnimatedScale','AnimatedRotation','AnimatedSwitcher','AnimatedCrossFade','Visibility','Tooltip','Badge','Hero','FadeTransition','SizeTransition','InteractiveViewer','Transform.rotate','Transform.scale','Transform.translate','Dismissible']],['Conteúdo',['Text','Text.rich','RichText','Icon','Image.network','CircleAvatar','Chip','ChoiceChip','FilterChip','ActionChip','ListTile','ExpansionTile','Image.asset','CircularProgressIndicator','LinearProgressIndicator','SegmentedButton','ButtonSegment','PopupMenuButton']],['Botões e campos',['ElevatedButton','FilledButton','TextButton','OutlinedButton','IconButton','TextField','TextFormField','Checkbox','Switch','Slider','Radio','DropdownButton','DropdownMenuItem','SwitchListTile','CheckboxListTile','RadioListTile','RangeSlider','ToggleButtons','DropdownMenu','DropdownMenuEntry','Autocomplete','SearchBar']],['Interação',['GestureDetector','InkWell']],['Mapas (flutter_map)',['FlutterMap','TileLayer','MarkerLayer','Marker','CircleLayer','CircleMarker','PolylineLayer','Polyline','RichAttributionWidget']],['Janelas',['AlertDialog','SnackBar','SnackBarAction']]];
+var GROUPS=[['Estrutura',['Scaffold','AppBar','FloatingActionButton','Drawer','BottomNavigationBar','BottomNavigationBarItem','NavigationBar','NavigationDestination','NavigationRail','NavigationRailDestination','MenuAnchor','MenuItemButton']],['Abas',['DefaultTabController','TabBar','Tab','TabBarView','TabPageSelector']],['Layout',['Center','Align','Column','Row','Stack','Positioned','Expanded','Flexible','Spacer','Wrap','Form','ListView','GridView.count','SingleChildScrollView','SafeArea','PageView','IndexedStack','Stepper','Step','ExpansionPanelList','ExpansionPanel','DraggableScrollableSheet','TweenAnimationBuilder','LayoutBuilder','Builder','FutureBuilder','StreamBuilder','RefreshIndicator','CustomScrollView','SliverAppBar','SliverToBoxAdapter','SliverList.list','SliverList.builder']],['Listas e tabelas',['ListView.builder','ListView.separated','ReorderableListView','ReorderableListView.builder','AnimatedList','GridView.builder','Table','TableRow','DataTable','DataColumn','DataRow','DataCell']],['Caixas',['Container','ColoredBox','Padding','SizedBox','AspectRatio','ConstrainedBox','FractionallySizedBox','FittedBox','Card','Divider','VerticalDivider','ClipRRect','Opacity','AnimatedOpacity','AnimatedContainer','AnimatedPositioned','AnimatedAlign','AnimatedPadding','AnimatedSize','AnimatedScale','AnimatedRotation','AnimatedSwitcher','AnimatedCrossFade','Visibility','Tooltip','Badge','Hero','FadeTransition','SizeTransition','InteractiveViewer','Transform.rotate','Transform.scale','Transform.translate','Dismissible']],['Conteúdo',['Text','Text.rich','RichText','Icon','Image.network','CircleAvatar','Chip','ChoiceChip','FilterChip','ActionChip','ListTile','ExpansionTile','Image.asset','CircularProgressIndicator','LinearProgressIndicator','SegmentedButton','ButtonSegment','PopupMenuButton']],['Botões e campos',['ElevatedButton','FilledButton','TextButton','OutlinedButton','IconButton','TextField','TextFormField','Checkbox','Switch','Slider','Radio','DropdownButton','DropdownMenuItem','SwitchListTile','CheckboxListTile','RadioListTile','RangeSlider','ToggleButtons','DropdownMenu','DropdownMenuEntry','Autocomplete','SearchBar']],['Interação',['GestureDetector','InkWell']],['Mapas (flutter_map)',['FlutterMap','TileLayer','MarkerLayer','Marker','CircleLayer','CircleMarker','PolylineLayer','Polyline','RichAttributionWidget']],['Janelas',['AlertDialog','SimpleDialog','SimpleDialogOption','SnackBar','SnackBarAction','MaterialBanner','Banner']]];
 var CATVAR={struct:'var(--c-struct)',layout:'var(--c-layout)',box:'var(--c-box)',content:'var(--c-content)'};
 var warns=[];
 
@@ -860,6 +894,15 @@ var DEF={
  DataRow:function(){return N('DataRow',[SL('cells')],{cells:[N('DataCell',[{name:'child',slot:true,positional:true}],{child:txt('Valor')})]})},
  DataTable:function(){function c(s){return N('DataColumn',[SL('label')],{label:txt(s)})}function d(s){return N('DataCell',[{name:'child',slot:true,positional:true}],{child:txt(s)})}function r(a,b){return N('DataRow',[SL('cells')],{cells:[d(a),d(b)]})}return N('DataTable',[SL('columns'),SL('rows')],{columns:[c('Nome'),c('Idade')],rows:[r('Ana','21'),r('Bia','23')]})},
  AnimatedContainer:function(){return N('AnimatedContainer',[A('duration','Duration(milliseconds: 300)'),A('width','100'),A('height','100'),A('color','Colors.indigo'),SL('child')])},
+ NavigationRail:function(){function dst(i,l){return N('NavigationRailDestination',[SL('icon'),SL('label')],{icon:N('Icon',[PO('icon',i)]),label:txt(l)})}return N('NavigationRail',[A('selectedIndex','0'),A('onDestinationSelected','(i) {}'),A('labelType','NavigationRailLabelType.all'),SL('destinations')],{destinations:[dst('Icons.home','Início'),dst('Icons.search','Buscar'),dst('Icons.person','Perfil')]})},
+ NavigationRailDestination:function(){return N('NavigationRailDestination',[SL('icon'),SL('label')],{icon:N('Icon',[PO('icon','Icons.home')]),label:txt('Início')})},
+ MaterialBanner:function(){return N('MaterialBanner',[SL('content'),SL('actions')],{content:txt('Sem conexão com a internet'),actions:[N('TextButton',[A('onPressed','() {}'),SL('child')],{child:txt('OK')})]})},
+ Banner:function(){return N('Banner',[A('message',q('NOVO')),A('location','BannerLocation.topEnd'),A('color','Colors.red'),SL('child')],{child:N('Container',[A('width','120'),A('height','120'),A('color','Colors.grey.shade300')])})},
+ MenuAnchor:function(){function it(l){return N('MenuItemButton',[A('onPressed','() {}'),SL('child')],{child:txt(l)})}return N('MenuAnchor',[A('builder','(context, controller, child) => IconButton(icon: const Icon(Icons.more_vert), onPressed: () => controller.isOpen ? controller.close() : controller.open())'),SL('menuChildren')],{menuChildren:[it('Editar'),it('Duplicar'),it('Excluir')]})},
+ MenuItemButton:function(){return N('MenuItemButton',[A('onPressed','() {}'),SL('child')],{child:txt('Item')})},
+ SimpleDialog:function(){function op(l){return N('SimpleDialogOption',[A('onPressed','() {}'),SL('child')],{child:txt(l)})}return N('SimpleDialog',[SL('title'),SL('children')],{title:txt('Escolha uma opção'),children:[op('Opção 1'),op('Opção 2')]})},
+ SimpleDialogOption:function(){return N('SimpleDialogOption',[A('onPressed','() {}'),SL('child')],{child:txt('Opção')})},
+ TabPageSelector:function(){return N('TabPageSelector')},
  Hero:function(){return N('Hero',[A('tag',q('foto')),SL('child')],{child:N('Icon',[PO('icon','Icons.star')])})},
  LayoutBuilder:function(){return N('LayoutBuilder',[A('builder',"(context, constraints) => Text('Largura: ${constraints.maxWidth}')")])},
  Builder:function(){return N('Builder',[A('builder',"(context) => Text('Olá')")])},
@@ -1041,6 +1084,10 @@ function pickSlot(t,nn){
   if(nn.type==='TabBar'&&s.bottom)return 'bottom';
   if(t.type==='Chip'){var cp=nn.type==='Text'?['label','avatar']:['avatar','label'];for(var j=0;j<cp.length;j++)if(!t.slots[cp[j]])return cp[j];return null}
   if(t.type==='AlertDialog'){if(/Button$/.test(nn.type))return 'actions';if(nn.type==='Text'&&!t.slots.title)return 'title';return t.slots.content?null:'content'}
+  if(t.type==='NavigationRailDestination')return nn.type==='Text'&&!t.slots.label?'label':t.slots.icon?(t.slots.label?null:'label'):'icon';
+  if(t.type==='MaterialBanner'){if(/Button$/.test(nn.type))return 'actions';return t.slots.content?(t.slots.leading?null:'leading'):'content'}
+  if(t.type==='MenuAnchor')return nn.type==='MenuItemButton'?'menuChildren':t.slots.child?null:'child';
+  if(t.type==='SimpleDialog'){if(nn.type==='SimpleDialogOption')return 'children';return nn.type==='Text'&&!t.slots.title?'title':null}
   if(t.type==='SnackBar')return nn.type==='SnackBarAction'?'action':'content';
   if(t.type==='DropdownButton')return nn.type==='DropdownMenuItem'?'items':null;
   if(t.type==='DataTable')return nn.type==='DataRow'?'rows':nn.type==='DataColumn'?'columns':null;
@@ -1606,6 +1653,8 @@ function fxStmt(p,env,run){
   if(/^showDialog\b/.test(txt)){ST.fx.push({k:'dialog',src:bindEnv(builderBody(txt),env),cb:thenCb(txt)});return true}
   if(/^show(Modal)?BottomSheet\b/.test(txt)){ST.fx.push({k:'sheet',src:bindEnv(builderBody(txt),env),cb:thenCb(txt)});return true}
   if(/^ScaffoldMessenger\b/.test(txt)){
+    if(/\.showMaterialBanner\s*\(/.test(txt)){var mb=grabCall(txt,'MaterialBanner');if(!mb)throw new Error('showMaterialBanner sem MaterialBanner(...)');ST.fx.push({k:'banner',src:bindEnv(mb,env)});return true}
+    if(/\.(hide|remove)CurrentMaterialBanner\s*\(|\.clearMaterialBanners\s*\(/.test(txt)){ST.fx.push({k:'hidebanner'});return true}
     if(/\.showSnackBar\s*\(/.test(txt)){var sb=grabCall(txt,'SnackBar');if(!sb)throw new Error('showSnackBar sem SnackBar(...)');ST.fx.push({k:'snack',src:bindEnv(sb,env)})}
     else ST.fx.push({k:'hidesnack'});
     return true}
@@ -1916,7 +1965,7 @@ ST.value=function(raw){return ev(pTern(new Ps(raw)),mkEnv())};
 /* ---- objetos nativos simulados: DateTime, TimeOfDay, GPS, bateria, rede, câmera ---- */
 ST.sensors={osrm:'',http:'sim',gps:true,perm:'granted',lat:-8.0476,lon:-34.877,alt:4,battery:78,charging:false,net:'wifi',photo:'ok'};
 ST.resetSensors=function(){ST.sensors={http:'sim',gps:true,perm:'granted',lat:-8.0476,lon:-34.877,alt:4,battery:78,charging:false,net:'wifi',photo:'ok'}};
-var NATCLS={RangeValues:1,Stream:1,StreamController:1,GlobalKey:1,http:1,Uri:1,LatLng:1,MapController:1,Geolocator:1,Battery:1,Connectivity:1,DateTime:1,TimeOfDay:1,Position:1,ImagePicker:1,HapticFeedback:1,Share:1};
+var NATCLS={MenuCtl:1,RangeValues:1,Stream:1,StreamController:1,GlobalKey:1,http:1,Uri:1,LatLng:1,MapController:1,Geolocator:1,Battery:1,Connectivity:1,DateTime:1,TimeOfDay:1,Position:1,ImagePicker:1,HapticFeedback:1,Share:1};
 var NATCTOR={RangeValues:1,StreamController:1,GlobalKey:1,LatLng:1,MapController:1,DateTime:1,TimeOfDay:1,Position:1,Battery:1,Connectivity:1,ImagePicker:1};
 var ENUMS={LocationPermission:1,ConnectionState:1,ConnectivityResult:1,BatteryState:1,ImageSource:1,LocationAccuracy:1};
 function p2(n){return (n<10?'0':'')+n}
@@ -2005,6 +2054,7 @@ function natMember(v,name,args){
           return mkPos(S.lat,S.lon,S.alt);
         case 'distanceBetween':return new Dbl(haversine(nn(args[0]),nn(args[1]),nn(args[2]),nn(args[3])));
         case 'openAppSettings':case 'openLocationSettings':return true}}
+    if(c==='MenuCtl'){ST.menuOpen[show(args[0])]=name==='open';dirty=true;return null}
     if(c==='Uri'){
       if(name==='parse'){var us=show(args[0]);return{nat:'Uri',f:{},url:us,src:'Uri.parse('+lit(us)+')'}}
       if(name==='https'||name==='http'){
@@ -2196,6 +2246,14 @@ ST.builderTexts=function(n){
     var ibb=ib.names[1]?bindVar(ib.body,ib.names[1],i):ib.body;if(n.type==='AnimatedList'&&ib.names[2])ibb=bindVar(ibb,ib.names[2],1);expandText(ibb,out);
     if(sb&&i<cnt-1)expandText(sb.names[1]?bindVar(sb.body,sb.names[1],i):sb.body,out)}
   return out};
+ST.menuOpen={};
+ST.menuAnchorText=function(n){
+  var br=M.rawProp(n,'builder');if(br==null)return null;
+  var lp=lambdaParts(br.trim()),b=lp.body,key=n._key||'?',op=!!ST.menuOpen[key];
+  if(lp.names[1]){var c=lp.names[1];
+    b=b.replace(new RegExp('\\b'+c+'\\.isOpen\\b','g'),op?'true':'false').replace(new RegExp('\\b'+c+'\\.(open|close)\\s*\\(\\s*\\)','g'),function(m,f){return "MenuCtl."+f+"('"+key+"')"})}
+  if(lp.names[2]){var ch=M.rawProp(n,'child');b=bindVar(b,lp.names[2],{raw:ch==null?'null':ch.trim()})}
+  var out=[];expandText(b,out);return out[0]||null};
 ST.autoOptions=function(n,text){
   var raw=M.rawProp(n,'optionsBuilder');if(raw==null)throw new Error('Autocomplete precisa de optionsBuilder');
   var lf=lamFull(raw.trim()),env=mkEnv({}),body=lf.body.replace(/const\s+Iterable\s*<[^>]*>\s*\.\s*empty\s*\(\s*\)/g,'[]');
@@ -2353,7 +2411,7 @@ ST.makeScope=function(src,old){
   inst.fresh=false;return inst};
 ST.fromSource=function(src){
   var info=null;try{info=ST.extract(src)}catch(e){info=null}
-  ST.load(info);ST.fxOn=/\b(Navigator|StreamBuilder|FutureBuilder|showDialog|showModalBottomSheet|ScaffoldMessenger|TabBar)\b/.test(src);if(ST.fxOn)ST.active=true;return ST.active};
+  ST.load(info);ST.fxOn=/\b(Navigator|StreamBuilder|FutureBuilder|showDialog|showModalBottomSheet|ScaffoldMessenger|TabBar|MenuAnchor|TabPageSelector)\b/.test(src);if(ST.fxOn)ST.active=true;return ST.active};
 
 /* getProp com valores de estado substituídos (só durante o desenho do Canvas) */
 var orig=M.getProp;
@@ -2508,6 +2566,8 @@ function fillV(n){
   switch(ALIAS[n.type]||n.type){
     case 'Column':return !sizeMin(n);
     case 'ListView':case 'ListView.builder':case 'ListView.separated':case 'GridView.builder':case 'PageView':case 'IndexedStack':case 'AnimatedAlign':case 'AnimatedList':case 'DraggableScrollableSheet':case 'InteractiveViewer':case 'ReorderableListView':case 'ReorderableListView.builder':case 'Center':case 'Spacer':case 'Align':case 'GridView.count':case 'SingleChildScrollView':case 'TabBarView':case 'Scaffold':case 'FlutterMap':case 'CustomScrollView':case 'FutureBuilder':case 'StreamBuilder':return true;
+    case 'NavigationRail':return true;
+    case 'Row':return (n.slots.children||[]).some(function(c){return c&&c.type==='NavigationRail'});
     case 'Stack':return stackFill(n);
     case 'Expanded':case 'Flexible':return !!n.slots.child&&fillV(n.slots.child);
     case 'Container':if(dim(n,'height')!=null)return false;if(M.getProp(n,'alignment'))return true;return !n.slots.child||fillV(n.slots.child);
@@ -2791,7 +2851,7 @@ function build(n,path,pt,ppt,sel){
       d.className+=' col';d.style.alignItems='flex-start';var tv=n.slots.children||[],si=0;
       if(R_opts.run)si=Math.min(R_opts.tab[R_opts.tabCtl||'root']||0,Math.max(0,tv.length-1));else tv.forEach(function(c,i){var kk=path.concat('children:'+i).join('>');if(sel&&(sel===kk||sel.indexOf(kk+'>')===0))si=i});
       if(tv[si])d.appendChild(child(tv[si],'children:'+si,'#expanded','Column'));else d.appendChild(ph('children: [ ]'));break}
-    case 'DefaultTabController':{d.className+=' col';d.style.alignItems='flex-start';var ptc=R_opts.tabCtl;R_opts.tabCtl=path.join('>')||'root';try{single('child','#single','child: adicione um widget')}finally{R_opts.tabCtl=ptc}break}
+    case 'DefaultTabController':{d.className+=' col';d.style.alignItems='flex-start';var ptc=R_opts.tabCtl,ptl=R_opts.tabLen;R_opts.tabCtl=path.join('>')||'root';R_opts.tabLen=Math.max(1,Math.min(12,numVal(M.getProp(n,'length'))||2));try{single('child','#single','child: adicione um widget')}finally{R_opts.tabCtl=ptc;R_opts.tabLen=ptl}break}
     case 'SafeArea':case 'GestureDetector':case 'InkWell':case 'Form':case 'FittedBox':{d.className+=' col';d.style.alignItems='flex-start';single('child','#single','child: adicione um widget');break}
     case 'ClipRRect':{
       d.className+=' col clp';d.style.alignItems='flex-start';d.style.overflow='hidden';
@@ -3026,6 +3086,47 @@ function build(n,path,pt,ppt,sel){
           if(pn.slots.body)bd.appendChild(build(pn.slots.body,ep.p.concat('body'),'#single',null,sel));pe.appendChild(bd)}
         d.appendChild(pe)});
       break}
+    case 'NavigationRail':{
+      d.className+=' nrl';var nlt=/(all|selected|none)\s*$/.exec(M.getProp(n,'labelType')||'');d.dataset.lt=nlt?nlt[1]:'none';
+      if(n.slots.leading){var nlw=document.createElement('div');nlw.className='nrlead';nlw.appendChild(child(n.slots.leading,'leading','#none'));d.appendChild(nlw)}
+      var nrb=d.children.length;kids('destinations','#none');
+      var nrs=numVal(M.getProp(n,'selectedIndex'))||0,nri=[].slice.call(d.children,nrb);
+      if(nri[nrs])nri[nrs].classList.add('on');
+      if(R_opts.run)nri.forEach(function(c,i){c.classList.add('hh');c.dataset.h='navd';c.dataset.i=i;c._pn=n});
+      if(!(n.slots.destinations||[]).length)d.appendChild(ph('destinations: [ ]'));break}
+    case 'NavigationRailDestination':{
+      d.className+=' nri';var nrp=document.createElement('div');nrp.className='nrp';
+      if(n.slots.icon)nrp.appendChild(child(n.slots.icon,'icon','#none'));else nrp.appendChild(ph('icon'));d.appendChild(nrp);
+      if(n.slots.label){var nrt=document.createElement('div');nrt.className='nrt';nrt.appendChild(child(n.slots.label,'label','#none'));d.appendChild(nrt)}break}
+    case 'MaterialBanner':{
+      d.className+=' mbn';var mbg=colorVal(M.getProp(n,'backgroundColor'));if(mbg)d.style.background=mbg;
+      if(n.slots.leading){var mbl=document.createElement('div');mbl.className='mbl';mbl.appendChild(child(n.slots.leading,'leading','#none'));d.appendChild(mbl)}
+      var mbc=document.createElement('div');mbc.className='mbc';if(n.slots.content)mbc.appendChild(child(n.slots.content,'content','#none'));else mbc.appendChild(ph('content'));d.appendChild(mbc);
+      var mba=document.createElement('div');mba.className='mba';(n.slots.actions||[]).forEach(function(c,i){mba.appendChild(child(c,'actions:'+i,'#none'))});d.appendChild(mba);break}
+    case 'Banner':{
+      d.className+=' bnr col';d.style.alignItems='flex-start';single('child','#single','child: adicione um widget');
+      var bl=/(topStart|topEnd|bottomStart|bottomEnd)/.exec(M.getProp(n,'location')||'');var rb=document.createElement('span');rb.className='bnrr '+(bl?bl[1]:'topStart');
+      var bmsg=M.getProp(n,'message');rb.textContent=bmsg?strVal(bmsg):'';var bcol=colorVal(M.getProp(n,'color'));rb.style.background=bcol||'#A50000';d.appendChild(rb);break}
+    case 'MenuAnchor':{
+      d.className+=' mna';n._key=path.join('>')||'root';var mak=path.join('>'),mat=null;
+      try{mat=OF.ST.menuAnchorText(n)}catch(e){}
+      var mnd=mat&&OF.parseWidgetText(mat);
+      if(mnd)d.appendChild(build(mnd,path.concat('@0'),'#none',null,sel));else if(n.slots.child)d.appendChild(child(n.slots.child,'child','#none'));else d.appendChild(ph('builder: (context, controller, child) => ...'));
+      var mopen=R_opts.run?!!OF.ST.menuOpen[n._key]:!!(sel&&(sel===mak||sel.indexOf(mak+'>')===0));
+      if(mopen){var mm=document.createElement('div');mm.className='mnm';(n.slots.menuChildren||[]).forEach(function(c,i){mm.appendChild(child(c,'menuChildren:'+i,'#none'))});
+        if(!(n.slots.menuChildren||[]).length)mm.appendChild(ph('menuChildren: [ ]'));d.appendChild(mm)}break}
+    case 'MenuItemButton':{
+      d.className+=' mni';if(n.slots.leadingIcon)d.appendChild(child(n.slots.leadingIcon,'leadingIcon','#none'));
+      if(n.slots.child)d.appendChild(child(n.slots.child,'child','#none'));else d.appendChild(ph('child'));
+      if(R_opts.run){d.classList.add('hh');d.dataset.h='mnui';d._n=n}break}
+    case 'SimpleDialog':{
+      d.className+=' adlg sdlg';single('title','#none');
+      var sdo=document.createElement('div');sdo.className='sdo';(n.slots.children||[]).forEach(function(c,i){sdo.appendChild(child(c,'children:'+i,'#none'))});d.appendChild(sdo);break}
+    case 'SimpleDialogOption':{
+      d.className+=' sdop';if(n.slots.child)d.appendChild(child(n.slots.child,'child','#none'));else d.appendChild(ph('child'));break}
+    case 'TabPageSelector':{
+      d.className+=' tps';var tpl=R_opts.tabLen||3,tpi=R_opts.run?(R_opts.tab[R_opts.tabCtl||'root']||0):0;
+      for(var tpk=0;tpk<tpl;tpk++){var tpd=document.createElement('i');if(tpk===tpi)tpd.className='on';d.appendChild(tpd)}break}
     case 'IndexedStack':{
       d.className+=' col idxs';d.style.alignItems='stretch';
       var ixs=n.slots.children||[],ixi=numVal(M.getProp(n,'index'));ixi=ixi==null?0:Math.trunc(ixi);
@@ -3130,7 +3231,7 @@ OF.ST.strTick=function(n,ms,max){
   return f.i};
 var HANDLERS=['onPressed','onTap','onLongPress','onDoubleTap','onChanged','onSelected'];
 function bindRun(d,n){
-  if(n.type==='PopupMenuButton'||n.type==='SegmentedButton'||n.type==='Dismissible'||n.type==='BottomNavigationBar'||n.type==='ToggleButtons'||n.type==='DropdownMenu'||n.type==='Autocomplete'||n.type==='Stepper'||n.type==='ExpansionPanelList')return;
+  if(n.type==='PopupMenuButton'||n.type==='SegmentedButton'||n.type==='Dismissible'||n.type==='BottomNavigationBar'||n.type==='ToggleButtons'||n.type==='DropdownMenu'||n.type==='Autocomplete'||n.type==='Stepper'||n.type==='ExpansionPanelList'||n.type==='MenuItemButton')return;
   if(n.type==='TextField'||n.type==='TextFormField'||n.type==='SearchBar'){
     var key=d.dataset.path,inp=document.createElement('input');inp.className='tfi'+(d.querySelector('.tl')?' hl':'');inp.dataset.key=key;
     var cr=M.rawProp(n,'controller'),cf=cr&&OF.ST.fields[cr.trim()];cf=cf&&cf.value&&cf.value.ctl?cf.value:null;d._ctl=cf;
@@ -3168,6 +3269,7 @@ function renderScreen(root,selKey,xray,screen){
   try{var th=themeInfo();if(th.dark)screen.classList.add('dark');
     if(th.custom||th.dark){screen.style.setProperty('--d-primary',th.primary);screen.style.setProperty('--d-btn',th.tint)}}catch(e){}
   try{renderInner(root,selKey,screen)}finally{M.ev=false}
+  try{[].forEach.call(screen.querySelectorAll('.mnm'),function(m){var sr=screen.getBoundingClientRect(),mr=m.getBoundingClientRect();if(mr.right>sr.right-4){m.style.left='auto';m.style.right='0'}})}catch(e){}
   if(R_opts.run)try{animPass(screen)}catch(e){}
 }
 function renderInner(root,selKey,screen){
@@ -3185,8 +3287,8 @@ function renderInner(root,selKey,screen){
   screen.appendChild(el);
   R_opts.over.forEach(function(o,i){
     var nd=OF.parseWidgetText(o.src);if(!nd)return;
-    if(o.k!=='snack'){var sc=document.createElement('div');sc.className='ovs';screen.appendChild(sc)}
-    var w=document.createElement('div');w.className=o.k==='dialog'?'ovl dlg':o.k==='sheet'?'ovl sht':'ovl snw';
+    if(o.k!=='snack'&&o.k!=='banner'){var sc=document.createElement('div');sc.className='ovs';screen.appendChild(sc)}
+    var w=document.createElement('div');w.className=o.k==='dialog'?'ovl dlg':o.k==='sheet'?'ovl sht':o.k==='banner'?'ovl bnw':'ovl snw';
     var h=R_opts.depth;R_opts.depth=0;
     OF.ST.enter(o.sc||null);w.dataset.sc=o.sc?o.sc.id:'';
     try{w.appendChild(build(nd,['@ov'+i],null,null,null))}finally{R_opts.depth=h;OF.ST.leave()}
@@ -7378,6 +7480,269 @@ class _DuvidasState extends State<Duvidas> {
   }
 }
 `},
+{t:'x. NavigationRail: menu lateral',
+ text:'Em telas largas (tablet, web), a barra de baixo fica estranha. A NavigationRail é a versão vertical: uma coluna de destinos na lateral. Ela fica num Row, ao lado de um Expanded com o conteúdo. selectedIndex marca o destino atual e onDestinationSelected recebe o índice tocado. Aqui, o labelType all mostra o texto de todos os destinos.',
+ tryit:'Toque nos destinos e veja a página mudar. Troque labelType para NavigationRailLabelType.selected e depois none. Acrescente um quarto destino e um quarto título.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Painel()));
+
+class Painel extends StatefulWidget {
+  const Painel({super.key});
+
+  @override
+  State<Painel> createState() => _PainelState();
+}
+
+class _PainelState extends State<Painel> {
+  int sel = 0;
+  List<String> titulos = ['Início', 'Buscar', 'Perfil'];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Row(
+        children: [
+          NavigationRail(
+            selectedIndex: sel,
+            labelType: NavigationRailLabelType.all,
+            onDestinationSelected: (i) {
+              setState(() {
+                sel = i;
+              });
+            },
+            destinations: const [
+              NavigationRailDestination(icon: Icon(Icons.home), label: Text('Início')),
+              NavigationRailDestination(icon: Icon(Icons.search), label: Text('Buscar')),
+              NavigationRailDestination(icon: Icon(Icons.person), label: Text('Perfil')),
+            ],
+          ),
+          const VerticalDivider(width: 1),
+          Expanded(
+            child: Center(child: Text(titulos[sel], style: const TextStyle(fontSize: 24))),
+          ),
+        ],
+      ),
+    );
+  }
+}
+`},
+{t:'x. MaterialBanner e Banner: avisos fixos',
+ text:'O SnackBar some sozinho; o MaterialBanner fica no topo até a pessoa decidir. Ele é aberto com ScaffoldMessenger.of(context).showMaterialBanner(...) e fechado com hideCurrentMaterialBanner(). Precisa de pelo menos uma ação. O Banner é outra coisa: uma faixa diagonal no canto de um widget, como o selo "NOVO" de um cartão.',
+ tryit:'Toque em "Avisar", leia o aviso no topo e feche com o botão. Troque a location do Banner para BannerLocation.topStart e a cor para Colors.green.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Avisos()));
+
+class Avisos extends StatelessWidget {
+  const Avisos({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Avisos')),
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showMaterialBanner(
+                  MaterialBanner(
+                    content: const Text('Nova versão disponível'),
+                    leading: const Icon(Icons.system_update),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                        },
+                        child: const Text('DEPOIS'),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              child: const Text('Avisar'),
+            ),
+            const SizedBox(height: 24),
+            Banner(
+              message: 'NOVO',
+              location: BannerLocation.topEnd,
+              color: Colors.red,
+              child: Container(width: 160, height: 120, color: Colors.grey.shade300),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+`},
+{t:'x. MenuAnchor: menu que abre ao lado',
+ text:'MenuAnchor desenha um botão (no builder) e, ao abrir, mostra os menuChildren logo abaixo dele. O builder recebe um controller: controller.open() abre, controller.close() fecha e controller.isOpen diz se está aberto. Cada MenuItemButton roda o seu onPressed e o menu fecha em seguida.',
+ tryit:'Abra o menu pelos três pontinhos, escolha uma ação e leia o texto. Acrescente o item "Compartilhar". Troque o ícone do botão por Icons.menu.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Tarefa()));
+
+class Tarefa extends StatefulWidget {
+  const Tarefa({super.key});
+
+  @override
+  State<Tarefa> createState() => _TarefaState();
+}
+
+class _TarefaState extends State<Tarefa> {
+  String acao = 'nenhuma';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Tarefas')),
+      body: Column(
+        children: [
+          Row(
+            children: [
+              const Padding(padding: EdgeInsets.all(16), child: Text('Comprar pão')),
+              const Spacer(),
+              MenuAnchor(
+                builder: (context, controller, child) => IconButton(
+                  icon: const Icon(Icons.more_vert),
+                  onPressed: () => controller.isOpen ? controller.close() : controller.open(),
+                ),
+                menuChildren: [
+                  MenuItemButton(
+                    onPressed: () {
+                      setState(() {
+                        acao = 'Editar';
+                      });
+                    },
+                    child: const Text('Editar'),
+                  ),
+                  MenuItemButton(
+                    onPressed: () {
+                      setState(() {
+                        acao = 'Excluir';
+                      });
+                    },
+                    child: const Text('Excluir'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Text('Última ação: $acao'),
+        ],
+      ),
+    );
+  }
+}
+`},
+{t:'x. SimpleDialog: escolher uma opção',
+ text:'O AlertDialog serve para confirmar; o SimpleDialog serve para escolher. Ele tem um título e uma lista de SimpleDialogOption. Cada opção chama Navigator.pop(context, valor), e esse valor é o resultado do await showDialog. Se a pessoa tocar fora, o resultado é null, por isso o if (cor != null).',
+ tryit:'Abra o diálogo, escolha uma cor e veja o texto mudar. Toque fora do diálogo para fechar sem escolher. Acrescente a opção "Vermelho".',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Escolha()));
+
+class Escolha extends StatefulWidget {
+  const Escolha({super.key});
+
+  @override
+  State<Escolha> createState() => _EscolhaState();
+}
+
+class _EscolhaState extends State<Escolha> {
+  String cor = 'nenhuma';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Cor favorita')),
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Cor escolhida: $cor', style: const TextStyle(fontSize: 20)),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () async {
+                final escolhida = await showDialog<String>(
+                  context: context,
+                  builder: (context) => SimpleDialog(
+                    title: const Text('Escolha uma cor'),
+                    children: [
+                      SimpleDialogOption(
+                        onPressed: () {
+                          Navigator.pop(context, 'Azul');
+                        },
+                        child: const Text('Azul'),
+                      ),
+                      SimpleDialogOption(
+                        onPressed: () {
+                          Navigator.pop(context, 'Verde');
+                        },
+                        child: const Text('Verde'),
+                      ),
+                    ],
+                  ),
+                );
+                if (escolhida != null) {
+                  setState(() {
+                    cor = escolhida;
+                  });
+                }
+              },
+              child: const Text('Escolher'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+`},
+{t:'x. TabPageSelector: bolinhas de página',
+ text:'TabPageSelector mostra uma bolinha por aba e destaca a atual. Ele usa o controller do DefaultTabController mais próximo, então precisa estar dentro dele. Junto com TabBarView forma um carrossel de páginas com indicador, comum em telas de boas-vindas.',
+ tryit:'Toque nas abas do topo e veja a bolinha acompanhar. Mude length para 4, acrescente uma Tab e uma página no TabBarView.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Boasvindas()));
+
+class Boasvindas extends StatelessWidget {
+  const Boasvindas({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Boas-vindas'),
+          bottom: const TabBar(
+            tabs: [Tab(text: 'Um'), Tab(text: 'Dois'), Tab(text: 'Três')],
+          ),
+        ),
+        body: Column(
+          children: [
+            const Expanded(
+              child: TabBarView(
+                children: [
+                  Center(child: Text('Bem-vindo!')),
+                  Center(child: Text('Crie suas listas')),
+                  Center(child: Text('Vamos começar')),
+                ],
+              ),
+            ),
+            const TabPageSelector(),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+}
+`},
 {t:'x. Sensor: pedômetro (passos)',
  demo:true,
  text:'O pacote pedometer conta os passos usando o sensor do aparelho. stepCountStream é um Stream: a cada novo valor, o listen chama o seu código. O número é o total desde o último reinício do aparelho, não do dia. No Android 10 ou mais novo, o app precisa pedir a permissão de reconhecimento de atividade.',
@@ -10113,6 +10478,88 @@ d('ExpansionPanel',[
   body: ListTile(title: Text('Resposta')),
   isExpanded: aberto,
 )`);
+d('NavigationRail',[
+['destinations','List<NavigationRailDestination>','Os destinos, de cima para baixo.'],
+['selectedIndex','int','Número do destino marcado.'],
+['onDestinationSelected','void Function(int)','Chamada com o índice tocado.'],
+['labelType','NavigationRailLabelType','all mostra todos os textos, selected só o do destino marcado, none nenhum.'],
+['leading','Widget','Widget acima dos destinos, como um botão de ação.']],
+`NavigationRail(
+  selectedIndex: sel,
+  labelType: NavigationRailLabelType.all,
+  onDestinationSelected: (i) {
+    setState(() {
+      sel = i;
+    });
+  },
+  destinations: const [
+    NavigationRailDestination(icon: Icon(Icons.home), label: Text('Início')),
+    NavigationRailDestination(icon: Icon(Icons.search), label: Text('Buscar')),
+  ],
+)`);
+d('NavigationRailDestination',[
+['icon','Widget','Ícone do destino.'],
+['label','Widget','Texto do destino (um widget, geralmente Text).']],
+`NavigationRailDestination(icon: Icon(Icons.home), label: Text('Início'))`);
+d('MaterialBanner',[
+['content','Widget','A mensagem do aviso.'],
+['actions','List<Widget>','Botões do aviso (obrigatório ter pelo menos um).'],
+['leading','Widget','Ícone à esquerda da mensagem.'],
+['backgroundColor','Color','Cor de fundo da faixa.']],
+`MaterialBanner(
+  content: Text('Sem conexão com a internet'),
+  leading: Icon(Icons.wifi_off),
+  actions: [
+    TextButton(onPressed: () {}, child: Text('TENTAR DE NOVO')),
+  ],
+)`);
+d('Banner',[
+['message','String','Texto da faixa diagonal.'],
+['location','BannerLocation','Canto: topStart, topEnd, bottomStart ou bottomEnd.'],
+['color','Color','Cor da faixa.'],
+['child','Widget','O widget que recebe a faixa no canto.']],
+`Banner(
+  message: 'NOVO',
+  location: BannerLocation.topEnd,
+  color: Colors.red,
+  child: Container(width: 160, height: 160, color: Colors.grey.shade300),
+)`);
+d('MenuAnchor',[
+['builder','Widget Function(BuildContext, MenuController, Widget?)','Desenha o widget que abre o menu. Use controller.open(), controller.close() e controller.isOpen.'],
+['menuChildren','List<Widget>','Os itens do menu, geralmente MenuItemButton.'],
+['child','Widget','Repassado ao builder como último parâmetro (opcional).']],
+`MenuAnchor(
+  builder: (context, controller, child) => IconButton(
+    icon: Icon(Icons.more_vert),
+    onPressed: () => controller.isOpen ? controller.close() : controller.open(),
+  ),
+  menuChildren: [
+    MenuItemButton(onPressed: () {}, child: Text('Editar')),
+    MenuItemButton(onPressed: () {}, child: Text('Excluir')),
+  ],
+)`);
+d('MenuItemButton',[
+['child','Widget','O texto do item.'],
+['onPressed','VoidCallback','Chamada ao tocar. O menu fecha em seguida.'],
+['leadingIcon','Widget','Ícone antes do texto.']],
+`MenuItemButton(onPressed: () {}, child: Text('Editar'))`);
+d('SimpleDialog',[
+['title','Widget','Título do diálogo.'],
+['children','List<Widget>','As opções, geralmente SimpleDialogOption.']],
+`SimpleDialog(
+  title: Text('Escolha uma cor'),
+  children: [
+    SimpleDialogOption(onPressed: () { Navigator.pop(context, 'Azul'); }, child: Text('Azul')),
+    SimpleDialogOption(onPressed: () { Navigator.pop(context, 'Verde'); }, child: Text('Verde')),
+  ],
+)`);
+d('SimpleDialogOption',[
+['child','Widget','O texto da opção.'],
+['onPressed','VoidCallback','Chamada ao tocar. Costuma chamar Navigator.pop(context, valor).']],
+`SimpleDialogOption(onPressed: () { Navigator.pop(context, 'Azul'); }, child: Text('Azul'))`);
+d('TabPageSelector',[
+['indicatorSize','double','Tamanho de cada bolinha (padrão 12).']],
+`TabPageSelector()`);
 /* Conteúdo */
 d('Text',[
 ['data','String','O texto (primeiro argumento). Aceita interpolação: "Olá, $nome".'],
@@ -10894,13 +11341,13 @@ $('stBar').addEventListener('click',function(e){
   else if(b.dataset.a==='reset'){clearFx();R.opts.typed={};ST.reset();renderStateBar();renderCanvas()}
 });
 var timers=[];
-function clearFx(){pk=null;fxGen++;R.opts.fut={};R.opts.futT.forEach(clearTimeout);R.opts.futT=[];R.opts.rf={};R.opts.str={};R.opts.iv={};R.opts.dss={};R.opts.ddm={};R.opts.acx={};R.opts.anim={};R.opts.sw={};R.opts.tw={};ST.mapView=null;R.opts.nav=[];R.opts.navSc=[];R.opts.navRes=[];R.opts.over=[];R.opts.tab={};R.opts.exp={};clearTimeout(snackT);timers.forEach(clearTimeout);timers=[]}
+function clearFx(){pk=null;fxGen++;R.opts.fut={};R.opts.futT.forEach(clearTimeout);R.opts.futT=[];R.opts.rf={};R.opts.str={};R.opts.iv={};R.opts.dss={};R.opts.ddm={};R.opts.acx={};R.opts.anim={};R.opts.sw={};R.opts.tw={};ST.menuOpen={};ST.mapView=null;R.opts.nav=[];R.opts.navSc=[];R.opts.navRes=[];R.opts.over=[];R.opts.tab={};R.opts.exp={};clearTimeout(snackT);timers.forEach(clearTimeout);timers=[]}
 var snackT=null;
 function runIn(inst,fn){if(!inst)return fn();ST.enter(inst);try{return fn()}finally{ST.leave()}}
 function scopeOfEl(el){var h=el&&el.closest&&el.closest('[data-sc]');if(!h||!h.dataset.sc)return null;var all=R.opts.navSc.concat(R.opts.over.map(function(o){return o.sc}));for(var i=0;i<all.length;i++)if(all[i]&&all[i].id===h.dataset.sc)return all[i];return null}
 function runAt(el,raw,args){var inst=scopeOfEl(el),r=runIn(inst,function(){return ST.run(raw,args)});r.sc=inst;return r}
 function valAt(el,raw){return runIn(scopeOfEl(el),function(){return ST.value(raw)})}
-function topOverlay(){for(var i=R.opts.over.length-1;i>=0;i--)if(R.opts.over[i].k!=='snack')return i;return -1}
+function topOverlay(){for(var i=R.opts.over.length-1;i>=0;i--)if(R.opts.over[i].k!=='snack'&&R.opts.over[i].k!=='banner')return i;return -1}
 function topScope(){var i=topOverlay();if(i>=0)return R.opts.over[i].sc||null;var n=R.opts.nav.length;return n?(R.opts.navSc[n-1]||null):null}
 function resolve(res,val){
   if(!res||!res.fx||!(res.fx.cont||res.fx.cb))return;
@@ -10921,10 +11368,12 @@ function applyFx(fx,sc,rf){
     else if(f.k==='snack'){
       R.opts.over=R.opts.over.filter(function(o){return o.k!=='snack'});R.opts.over.push({k:'snack',src:f.src,sc:sc});
       clearTimeout(snackT);snackT=setTimeout(function(){R.opts.over=R.opts.over.filter(function(o){return o.k!=='snack'});renderCanvas()},4000)}
+    else if(f.k==='banner'){R.opts.over=R.opts.over.filter(function(o){return o.k!=='banner'});R.opts.over.push({k:'banner',src:f.src,sc:sc})}
+    else if(f.k==='hidebanner')R.opts.over=R.opts.over.filter(function(o){return o.k!=='banner'});
     else if(f.k==='hidesnack')R.opts.over=R.opts.over.filter(function(o){return o.k!=='snack'});
     else if(f.k==='push'){
       if(f.replace){var i0=topOverlay();if(i0>=0)R.opts.over.splice(i0,1);else if(R.opts.nav.length){R.opts.nav.pop();R.opts.navSc.pop();R.opts.navRes.pop()}}
-      R.opts.nav.push(f.src);R.opts.navSc.push(ST.makeScope(f.src));R.opts.navRes.push(res);R.opts.over=R.opts.over.filter(function(o){return o.k==='snack'})}
+      R.opts.nav.push(f.src);R.opts.navSc.push(ST.makeScope(f.src));R.opts.navRes.push(res);R.opts.over=R.opts.over.filter(function(o){return o.k==='snack'||o.k==='banner'})}
     else if(f.k==='delay'){var tm=setTimeout(function(){resolve(res,null);setTimeout(function(){},0)},Math.min(f.ms,8000));timers.push(tm)}
     else if(f.k==='toast')toast(f.msg);
     else if(f.k==='http')doHttp(f,res);
@@ -11106,6 +11555,7 @@ function fire(t){
   if(t.dataset.h==='tgl'){var tn=t._n,tr=tn&&M.rawProp(tn,'onPressed');if(tr&&tr.trim()!=='null')afterRun(runAt(t,tr,[+t.dataset.i]));return}
   if(t.dataset.h==='stpt'||t.dataset.h==='stpc'||t.dataset.h==='stpx'){var sn=t._n,rn={stpt:'onStepTapped',stpc:'onStepContinue',stpx:'onStepCancel'}[t.dataset.h],sr=sn&&M.rawProp(sn,rn);if(sr&&sr.trim()!=='null')afterRun(runAt(t,sr,t.dataset.h==='stpt'?[+t.dataset.i]:[]));return}
   if(t.dataset.h==='epl'){var en=t._n,er=en&&M.rawProp(en,'expansionCallback');if(er&&er.trim()!=='null')afterRun(runAt(t,er,[+t.dataset.i,!!t.dataset.o]));return}
+  if(t.dataset.h==='mnui'){var mnn=t._n,mnr=mnn&&M.rawProp(mnn,'onPressed');ST.menuOpen={};if(mnr&&mnr.trim()!=='null')afterRun(runAt(t,mnr,[]));renderCanvas();return}
   if(t.dataset.h==='ddm'){openDdm(t,t._n);return}
   if(t.dataset.h==='aco'){var an=t._n,ak=t.dataset.k,av=t.dataset.v;R.opts.typed[ak]=av;R.opts.acx[ak]=av;renderCanvas();var ar=an&&M.rawProp(an,'onSelected');if(ar&&ar.trim()!=='null')afterRun(runAt(t,ar,[av]));return}
   if(t.dataset.h==='back'){popTop();renderCanvas();renderStateBar();return}
@@ -11173,6 +11623,7 @@ screen.addEventListener('click',function(e){
   if(e.target.classList.contains('ovs')){popTop();renderCanvas();return}
   var pd=e.target.closest('.pgd');if(pd){R.opts.page[pd.dataset.k]=+pd.dataset.i;renderCanvas();return}
   if(!e.target.closest('.ddmenu')){var om=screen.querySelector('.ddmenu');if(om)om.remove()}
+  if(S.run&&ST.active&&Object.keys(ST.menuOpen).some(function(k){return ST.menuOpen[k]})&&!e.target.closest('.mna')){ST.menuOpen={};renderCanvas();return}
   if(S.run&&ST.active){if(lpFired){lpFired=false;return}var h=e.target.closest('.hh');if(h&&!/^(onLongPress|onDoubleTap)$/.test(h.dataset.h||''))fire(h);return}
   var t=e.target.closest('[data-path]');if(!t)return;select(t.dataset.path,true);
 });
