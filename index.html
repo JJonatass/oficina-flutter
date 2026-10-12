@@ -3785,7 +3785,8 @@ function build(n,path,pt,ppt,sel){
     case 'SliverToBoxAdapter':{d.className+=' col';d.style.alignItems='stretch';single('child','Column','child: adicione um widget');break}
     case 'SliverList.list':{d.className+=' col';d.style.alignItems='stretch';kids('children','ListView');break}
     case 'SliverList.builder':{d.className+=' list';genKids('ListView');break}
-    case 'FutureBuilder':case 'StreamBuilder':case 'TweenAnimationBuilder':{d.className+=' col';d.style.alignItems='flex-start';n._key=path.join('>');genKids('#single');[].forEach.call(d.children,function(c){if(c.style&&parseFloat(c.style.flexGrow)>0)c.style.flex=''});if(d.querySelector('.dlin')){d.style.alignSelf='stretch';[].forEach.call(d.children,function(c){if(c.classList.contains('col'))c.style.alignSelf='stretch'})}break}
+    case 'FutureBuilder':case 'StreamBuilder':case 'TweenAnimationBuilder':{d.className+=' col';d.style.alignItems='flex-start';n._key=path.join('>');genKids('#single');[].forEach.call(d.children,function(c){if(c.style&&parseFloat(c.style.flexGrow)>0)c.style.flex=''});d.style.flexShrink='0';d.style.minHeight='min-content';[].forEach.call(d.children,function(c){if(c.style){c.style.flexShrink='0';c.style.minHeight='min-content'}});
+      if(d.querySelector('.dlin')){d.style.alignSelf='stretch';[].forEach.call(d.children,function(c){if(c.classList.contains('col'))c.style.alignSelf='stretch'})}break}
     case 'FlutterMap':{
       d.className+=' fmap';var mo=M.getProp(n,'options')||'',mc=/initialCenter\s*:\s*(?:const\s+)?LatLng\(\s*(-?[\d.]+)\s*,\s*(-?[\d.]+)\s*\)/.exec(mo),mz=/initialZoom\s*:\s*([\d.]+)/.exec(mo);
       var mla=mc?+mc[1]:0,mlo=mc?+mc[2]:0,mzz=mz?+mz[1]:13,mv=OF.ST.mapView;
