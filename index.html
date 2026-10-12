@@ -244,6 +244,7 @@ body:has(main[data-tab="ref"]) .lesson{display:none}
 .psearch{flex:1 1 140px;min-width:120px;max-width:220px;margin-left:auto;border:1px solid var(--line);border-radius:8px;padding:5px 9px;font-size:12.5px;background:var(--panel);color:var(--ink)}
 .pmenu{position:fixed;z-index:90;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.22);padding:8px;display:flex;flex-wrap:wrap;gap:6px;width:min(460px,92vw);overflow:auto}
 .pmenu .pmh{flex:0 0 100%;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2);padding:2px 2px 4px}
+.btn.danger{background:#b3261e;color:#fff;border-color:#b3261e}
 </style>
 <style>
 /* Widgets renderizados dentro do aparelho */
@@ -519,6 +520,7 @@ body:has(main[data-tab="ref"]) .lesson{display:none}
    <h3>Meu progresso</h3>
    <p class="mt">Aluno: gere um código com o seu nome e envie ao professor.</p>
    <div class="mrow"><input id="profName" placeholder="Seu nome" maxlength="40" aria-label="Seu nome"><button class="btn pri" id="profGen">Copiar meu código</button></div>
+   <div class="mrow"><button class="btn" id="profZero" title="Apaga os ✓ de todas as aulas e o código que você salvou nelas">Zerar meu progresso</button></div>
    <h3>Turma</h3>
    <p class="mt">Professor: cole um código por linha e veja quem concluiu cada desafio.</p>
    <textarea id="profIn" rows="4" placeholder="Cole aqui os códigos dos alunos, um por linha" aria-label="Códigos dos alunos"></textarea>
@@ -12347,6 +12349,7 @@ var LS={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}
 function lkey(L){return 'oficina.code.'+L.t.replace(/^\d+\.\s*/,'')}
 function doneSet(){try{return JSON.parse(LS.get('oficina.done')||'[]')}catch(e){return []}}
 function markDone(L){var d=doneSet(),k=L.t.replace(/^\d+\.\s*/,'');if(d.indexOf(k)<0){d.push(k);LS.set('oficina.done',JSON.stringify(d))}refreshOptions()}
+function unmarkDone(L){var d=doneSet(),k=L.t.replace(/^\d+\.\s*/,''),i=d.indexOf(k);if(i<0)return false;d.splice(i,1);LS.set('oficina.done',JSON.stringify(d));refreshOptions();return true}
 function refreshOptions(){var d=doneSet(),sel=$('lessonSel');[].forEach.call(sel.options,function(o,i){var L=OF.LESSONS[i];o.textContent=(d.indexOf(L.t.replace(/^\d+\.\s*/,''))>=0?'✓ ':'')+(L.proj?'🛠 ':'')+L.t})}
 var goalsDone=false;
 function updateGoals(){
@@ -12421,6 +12424,13 @@ $('limBtn').addEventListener('click',function(){var h='<p class="lead">O simulad
 $('limClose').addEventListener('click',function(){$('limModal').hidden=true});
 $('limModal').addEventListener('click',function(e){if(e.target===$('limModal'))$('limModal').hidden=true});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('limModal').hidden)$('limModal').hidden=true});
+var zT=null;
+$('profZero').addEventListener('click',function(){
+  var b=$('profZero');
+  if(!zT){b.textContent='Confirmar: apagar todos os ✓ e códigos salvos';b.classList.add('danger');zT=setTimeout(function(){zT=null;b.textContent='Zerar meu progresso';b.classList.remove('danger')},5000);return}
+  clearTimeout(zT);zT=null;b.textContent='Zerar meu progresso';b.classList.remove('danger');
+  LS.del('oficina.done');OF.LESSONS.forEach(function(L){LS.del(lkey(L))});
+  refreshOptions();loadLesson(S.lesson,true);$('profModal').hidden=true;toast('Progresso zerado: todos os ✓ e códigos salvos foram apagados.')});
 $('profClose').addEventListener('click',function(){$('profModal').hidden=true});
 $('profModal').addEventListener('click',function(e){if(e.target===$('profModal'))$('profModal').hidden=true});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('profModal').hidden)$('profModal').hidden=true});
@@ -12441,7 +12451,7 @@ function applyFold(){var f=isFolded(),b=$('lessonBox');b.classList.toggle('fold'
 function toggleFold(){LS.set('oficina:fold',isFolded()?'0':'1');applyFold();fit()}
 $('lessonBox').addEventListener('click',function(e){if(e.target.closest('h1'))toggleFold()});
 $('lessonBox').addEventListener('keydown',function(e){if((e.key==='Enter'||e.key===' ')&&e.target.closest&&e.target.closest('h1')){e.preventDefault();toggleFold()}});
-$('resetBtn').addEventListener('click',function(){loadLesson(S.lesson,true);toast('Aula restaurada.')});
+$('resetBtn').addEventListener('click',function(){var L=OF.LESSONS[S.lesson],had=unmarkDone(L);loadLesson(S.lesson,true);toast(had?'Aula restaurada. O ✓ desta aula foi removido.':'Aula restaurada.')});
 function tab(which){
   $('main').dataset.tab=which;$('tabCanvas').setAttribute('aria-selected',which==='canvas');$('tabCode').setAttribute('aria-selected',which==='code');$('refBtn').setAttribute('aria-pressed',which==='ref');
   setTimeout(fit,0);
