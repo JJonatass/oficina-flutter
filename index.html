@@ -4159,24 +4159,45 @@ var LESSONS=[
       ),
     )`)},
 {t:'12. Checkbox, Switch e Slider',
- text:'Checkbox, Switch e Slider guardam um valor: value diz se está marcado ou ligado (ou, no Slider, qual a posição entre min e max). onChanged recebe a mudança e, em um app real, guarda o novo valor com setState.',
- tryit:'Mude o value do Checkbox para false. Depois mude o Slider para 0.9 e experimente a Cor ativa no painel de propriedades.',
- code:wrap(`Scaffold(
+ text:'Checkbox, Switch e Slider guardam um valor: value diz se está marcado ou ligado (ou, no Slider, qual a posição entre min e max). onChanged recebe a mudança e guarda o novo valor com setState. Por isso esta tela é um StatefulWidget: os valores ficam em variáveis (aceito, notificar, volume) e os controles passam a funcionar em ▶ Testar.',
+ tryit:'Com ▶ Testar ligado, marque o Checkbox, ligue o Switch e arraste o Slider: veja os valores mudarem na barra de estado e no texto Volume. Depois mude o valor inicial de volume para 0.9 e experimente a Cor ativa no painel de propriedades.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: TelaInicial()));
+
+class TelaInicial extends StatefulWidget {
+  const TelaInicial({super.key});
+
+  @override
+  State<TelaInicial> createState() => _TelaInicialState();
+}
+
+class _TelaInicialState extends State<TelaInicial> {
+  bool aceito = true;
+  bool notificar = true;
+  double volume = 0.6;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
       appBar: AppBar(title: Text('Controles'), backgroundColor: Colors.purple, foregroundColor: Colors.white),
       body: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(children: [Checkbox(value: true, onChanged: (v) {}), Text('Aceito os termos')]),
-            Row(children: [Switch(value: true, onChanged: (v) {}), SizedBox(width: 8), Text('Notificações')]),
+            Row(children: [Checkbox(value: aceito, onChanged: (v) { setState(() { aceito = v!; }); }), Text('Aceito os termos')]),
+            Row(children: [Switch(value: notificar, onChanged: (v) { setState(() { notificar = v; }); }), SizedBox(width: 8), Text('Notificações')]),
             SizedBox(height: 16),
-            Text('Volume'),
-            Slider(value: 0.6, onChanged: (v) {}),
+            Text('Volume: \${(volume * 100).round()}%'),
+            Slider(value: volume, onChanged: (v) { setState(() { volume = v; }); }),
           ],
         ),
       ),
-    )`)},
+    );
+  }
+}
+`},
 {t:'13. Drawer e barra inferior',
  text:'O Scaffold tem lugares para um drawer (painel lateral) e uma bottomNavigationBar (barra inferior). O drawer abre pelo ícone de menu da AppBar; aqui ele aparece aberto enquanto estiver selecionado. A barra inferior usa currentIndex para marcar o destino ativo.',
  tryit:'Clique em drawer: Drawer na árvore de widgets para abri-lo no canvas. Depois mude currentIndex: 0 para currentIndex: 2.',
@@ -11985,7 +12006,7 @@ var ST=OF.ST,Dbl=OF.Dbl;
 function renderStateBar(){
   var bar=$('stBar');
   if(!ST.active){bar.hidden=false;
-    bar.innerHTML='<b>Sem estado</b><span class="sv">Esta tela não tem variáveis nem navegação, então não há o que testar. Com StatefulWidget e setState, os botões ficam ativos.</span><span class="sp"></span><button class="btn" data-a="sens" title="Simular GPS, bateria, rede e câmera">📡 Sensores</button><div class="seg" role="group" aria-label="Modo"><button disabled aria-pressed="false">▶ Testar</button><button disabled aria-pressed="true">✎ Editar</button></div><button class="btn" disabled>↺ Reiniciar</button>';return}
+    bar.innerHTML='<b>Sem estado</b><span class="sv">Esta tela não tem variáveis nem navegação, então não há o que testar.'+(/\b(Checkbox|Switch|Slider|RangeSlider|Radio|CheckboxListTile|SwitchListTile|RadioListTile|TextField|DropdownButton|ElevatedButton|TextButton|IconButton|FloatingActionButton)\(/.test(($('code')||{}).value||'')?' Os controles estão com valores fixos: guarde-os em variáveis de um StatefulWidget e use setState no onChanged/onPressed para o ▶ Testar ficar ativo.':' Com StatefulWidget e setState, os botões ficam ativos.')+'</span><span class="sp"></span><button class="btn" data-a="sens" title="Simular GPS, bateria, rede e câmera">📡 Sensores</button><div class="seg" role="group" aria-label="Modo"><button disabled aria-pressed="false">▶ Testar</button><button disabled aria-pressed="true">✎ Editar</button></div><button class="btn" disabled>↺ Reiniciar</button>';return}
   bar.hidden=false;
   var tsc=topScope(),lst=runIn(tsc,function(){return ST.list()}),hasSt=runIn(tsc,function(){return ST.order.length});
   bar.innerHTML='<b>'+(hasSt?'Estado':'Modo interativo')+(tsc?' · '+esc(tsc.cls):'')+'</b>'+lst.map(function(v){return '<span class="sv"><i>'+esc(v.type)+'</i> '+esc(v.name)+' = <b>'+esc(v.text)+'</b></span>'}).join('')+
@@ -12568,6 +12589,7 @@ function popOpen(){
   w.addEventListener('pagehide',function(){setTimeout(function(){if(!popAlive())popStop()},50)});
   popMO=new MutationObserver(popSched);
   popMO.observe(screen,{subtree:true,childList:true,attributes:true,characterData:true});
+  if(OF.ST.active&&!S.run)setRun(true);
   popFit();popSync()}
 $('vPop').addEventListener('click',popOpen);
 screen.addEventListener('input',popSched);screen.addEventListener('change',popSched);
