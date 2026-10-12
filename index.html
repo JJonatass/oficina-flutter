@@ -1,4 +1,4 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Oficina Flutter</title><title>Oficina Flutter</title>
+<title>Oficina Flutter</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -441,7 +441,7 @@ body:has(main[data-tab="ref"]) .lesson{display:none}
 .screen .nd.mpl{position:absolute;left:0;top:0;right:0;bottom:0;pointer-events:none}
 .screen .nd.mattr{position:absolute;right:0;bottom:0;font-size:10px;background:rgba(255,255,255,.8);padding:2px 5px;color:#333;z-index:4;pointer-events:none}
 </style>
-</head><body><header class="top">
+<header class="top">
   <div class="brand">
     <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect x="2" y="2" width="24" height="24" rx="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="7" y="7" width="14" height="5" rx="1.5" fill="var(--c-struct)"/><rect x="7" y="14" width="6" height="7" rx="1.5" fill="var(--c-layout)"/><rect x="15" y="14" width="6" height="7" rx="1.5" fill="var(--c-box)"/></svg>
     <b>Oficina Flutter</b><span>monte telas arrastando widgets ou escrevendo Dart</span>
@@ -1185,7 +1185,7 @@ function lit(v){
   if(typeof v==='string')return "'"+v.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\$/g,'\\$').replace(/\n/g,'\\n')+"'";
   if(isD(v))return v.v===Infinity?'double.infinity':dstr(v.v);
   if(isRaw(v))return v.raw;
-  if(v&&v.ctl)return lit(v.text);
+  if(v&&v.ctl)return lit(v.text);if(v&&v.pc)return 'PageController';
   if(v&&v.lam)return v.src;
   if(v&&v.nat)return v.nat==='#class'?v.name:v.src;
   if(v&&v.enumv)return v.cls+'.'+v.f.name;
@@ -1664,6 +1664,15 @@ function member(v,name,args){
       case 'isNegative':return dm0<0;case 'abs':return mkDur(Math.abs(dm0));case 'compareTo':{var o0=durMs(args[0]);return dm0<o0?-1:dm0>o0?1:0}}}
   if(isRaw(v))return{raw:v.raw+'.'+name+(args.length?'('+args.map(lit).join(', ')+')':'')};
   if(v&&v.ctl){if(name==='text')return v.text;if(name==='clear'){v.text='';mutated=true;return null}}
+  if(v&&v.pc){
+    switch(name){
+      case 'page':return new Dbl(v.page);
+      case 'initialPage':return v.init;
+      case 'hasClients':return true;
+      case 'nextPage':v.page=v.page+1;dirty=true;v.fire=true;return null;
+      case 'previousPage':v.page=Math.max(0,v.page-1);dirty=true;v.fire=true;return null;
+      case 'animateToPage':case 'jumpToPage':{var pi=nn(args[0]);if(typeof pi==='number'&&isFinite(pi)){v.page=Math.max(0,Math.trunc(pi));dirty=true;v.fire=true}return null}
+      case 'dispose':return null}}
   if(name==='toString')return show(v);
   if(typeof v==='string'&&args.length&&isRe(args[0])){
     var rx=args[0];
@@ -2240,6 +2249,8 @@ ST.reset=function(){
 function initOf(f){
   var v=null;
   var cm=f.init!=null&&/^TextEditingController\s*\(([\s\S]*)\)$/.exec(f.init);
+  var pm=f.init!=null&&/^PageController\s*\(([\s\S]*)\)$/.exec(f.init);
+  if(pm){var im=/initialPage:\s*(\d+)/.exec(pm[1]),ip=im?+im[1]:0;return{pc:true,page:ip,init:ip}}
   if(cm){var tm=/text:\s*('[^']*'|"[^"]*")/.exec(cm[1]);return{ctl:true,text:tm?tm[1].slice(1,-1):''}}
   if(f.init!=null){try{v=ev(pTern(new Ps(f.init.replace(/^([A-Z]\w*)\s*<[^()]*>\s*\(/,'$1('))),mkEnv())}catch(e){v=null}}
   else v=null;
@@ -2280,7 +2291,7 @@ ST.load=function(info){
   ST.re=names.length?new RegExp('\\$|(?:^|[^\\w.$])(?:'+names.join('|')+')(?!\\w)'):null;
   if(fresh&&ST.initState)ST.runInit()};
 ST.runInit=function(){if(!ST.initState)return;steps=0;depth=0;try{runMethod(ST.initState,[],null)}catch(e){}};
-ST.list=function(){return ST.order.map(function(n){var f=ST.fields[n];return{name:n,text:lit(f.value),type:f.value&&f.value.ctl?'Controller':f.type}})};
+ST.list=function(){return ST.order.map(function(n){var f=ST.fields[n];return{name:n,text:lit(f.value),type:f.value&&(f.value.ctl||f.value.pc)?'Controller':f.type}})};
 
 
 /* ---- widgets condicionais: `if (c) A else B` e `c ? A : B` ---- */
@@ -3442,9 +3453,10 @@ function build(n,path,pt,ppt,sel){
     case 'PageView':{
       d.className+=' col pgv';d.style.alignItems='stretch';var pgs=n.slots.children||[],pk=path.join('>'),pc=R_opts.page[pk]||0;
       pgs.forEach(function(c,i){var kk=path.concat('children:'+i).join('>');if(sel&&(sel===kk||sel.indexOf(kk+'>')===0))pc=i});
-      pc=Math.min(pc,Math.max(0,pgs.length-1));R_opts.page[pk]=pc;
+      var pcr=M.rawProp(n,'controller'),pcf=pcr&&OF.ST.fields[pcr.trim()];pcf=pcf&&pcf.value&&pcf.value.pc?pcf.value:null;if(pcf)pc=pcf.page;
+      pc=Math.min(pc,Math.max(0,pgs.length-1));R_opts.page[pk]=pc;if(pcf){pcf.page=pc;if(pcf.fire){pcf.fire=false;if(pcf.shown!==undefined&&pcf.shown!==pc)(R_opts.pgq=R_opts.pgq||[]).push({raw:M.rawProp(n,'onPageChanged'),i:pc,pk:pk})}pcf.shown=pc}
       if(pgs[pc])d.appendChild(child(pgs[pc],'children:'+pc,'#expanded','Column'));else d.appendChild(ph('children: [ ]'));
-      var pdt=document.createElement('div');pdt.className='pgdots';pgs.forEach(function(c,i){var b=document.createElement('i');b.className='pgd'+(i===pc?' on':'');b.dataset.k=pk;b.dataset.i=i;pdt.appendChild(b)});d.appendChild(pdt);break}
+      var pdt=document.createElement('div');pdt.className='pgdots';pgs.forEach(function(c,i){var b=document.createElement('i');b.className='pgd'+(i===pc?' on':'');b.dataset.k=pk;b.dataset.i=i;pdt.appendChild(b)});pdt._n=n;pdt._pc=pcf;pdt.dataset.pk=pk;d.appendChild(pdt);break}
     case 'Table':{
       d.className+=' tbl';var rws=n.slots.children||[],cols=1;rws.forEach(function(r){cols=Math.max(cols,(r.slots&&r.slots.children||[]).length)});
       d.style.gridTemplateColumns='repeat('+cols+',minmax(0,1fr))';
@@ -4693,14 +4705,22 @@ class _TurmaState extends State<Turma> {
 }
 `},
 {t:'x. Tabelas, páginas e layout responsivo',
- text:'Table alinha células em linhas (TableRow) e colunas. DataTable é a versão com cabeçalho: columns lista os DataColumn e cada DataRow traz uma DataCell por coluna. PageView mostra uma página por vez, que o usuário passa deslizando. LayoutBuilder entrega as medidas do espaço disponível em constraints, para decidir o layout.',
- tryit:'Troque as bolinhas do PageView para ver as 3 páginas. No LayoutBuilder, mude o 300 do if e veja o texto mudar de lado.',
+ text:'Table alinha células em linhas (TableRow) e colunas. DataTable é a versão com cabeçalho: columns lista os DataColumn e cada DataRow traz uma DataCell por coluna. PageView mostra uma página por vez, que o usuário passa deslizando. Para mudar de página pelo código, ligue um PageController ao PageView: nextPage(), previousPage() e animateToPage() movem a página, e onPageChanged avisa qual página ficou visível. LayoutBuilder entrega as medidas do espaço disponível em constraints, para decidir o layout.',
+ tryit:'Clique em ▶ Testar e use os botões Anterior e Próxima: o PageController muda a página e o contador se atualiza. Mude initialPage para 2 e veja a tela abrir na terceira página. No LayoutBuilder, mude o 300 do if e veja o texto mudar de lado.',
  code:`import 'package:flutter/material.dart';
 
 void main() => runApp(const MaterialApp(home: Painel()));
 
-class Painel extends StatelessWidget {
+class Painel extends StatefulWidget {
   const Painel({super.key});
+
+  @override
+  State<Painel> createState() => _PainelState();
+}
+
+class _PainelState extends State<Painel> {
+  final _paginas = PageController(initialPage: 0);
+  int _atual = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -4732,12 +4752,34 @@ class Painel extends StatelessWidget {
           SizedBox(
             height: 130,
             child: PageView(
+              controller: _paginas,
+              onPageChanged: (i) => setState(() => _atual = i),
               children: [
                 Container(color: Colors.indigo.shade100, child: Center(child: Text('Página 1'))),
                 Container(color: Colors.teal.shade100, child: Center(child: Text('Página 2'))),
                 Container(color: Colors.orange.shade100, child: Center(child: Text('Página 3'))),
               ],
             ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              TextButton(
+                onPressed: () => _paginas.previousPage(
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                ),
+                child: Text('Anterior'),
+              ),
+              Text('Página \${_atual + 1} de 3'),
+              TextButton(
+                onPressed: () => _paginas.nextPage(
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                ),
+                child: Text('Próxima'),
+              ),
+            ],
           ),
           LayoutBuilder(
             builder: (context, constraints) => Padding(
@@ -10665,7 +10707,7 @@ d('SafeArea',[
 d('PageView',[
 ['children','List<Widget>','Páginas que o usuário troca arrastando para o lado.'],
 ['scrollDirection','Axis','horizontal (padrão) ou vertical.'],
-['controller','PageController','Permite saltar para uma página pelo código.'],
+['controller','PageController','Permite mudar de página pelo código: nextPage(), previousPage(), animateToPage(n) e initialPage. No simulador funciona no ▶ Testar.'],
 ['onPageChanged','ValueChanged<int>','Chamado ao trocar de página; recebe o número da página.']],
 `PageView(children: [
   Center(child: Text('Página 1')),
@@ -12136,6 +12178,10 @@ function afterRun(r){
   else if(r.dirty)renderCanvas();
   else if(r.mutated)toast('A variável mudou, mas sem setState() a tela não é redesenhada.');
   renderStateBar();
+  var pq=R.opts.pgq;R.opts.pgq=null;
+  if(pq&&pq.length&&!r.err)pq.forEach(function(it){
+    var el=screen.querySelector('.pgdots[data-pk="'+it.pk+'"]');
+    if(el&&it.raw&&it.raw.trim()!=='null')afterRun(runAt(el,it.raw,[it.i]))})
 }
 function openMenu(t,n){
   var old=screen.querySelector('.ddmenu');if(old)old.remove();
@@ -12323,7 +12369,7 @@ screen.addEventListener('click',function(e){
   if(e.target.classList.contains('scrim')&&e.target.dataset.dk){var sk=e.target.dataset.dk;R.opts.drawerOpen[sk]=false;
     if(S.sel&&(S.sel===sk||S.sel.indexOf(sk+'>')===0))select(sk.split('>').slice(0,-1).join('>'),false);else renderCanvas();return}
   if(e.target.classList.contains('ovs')){popTop();renderCanvas();return}
-  var pd=e.target.closest('.pgd');if(pd){R.opts.page[pd.dataset.k]=+pd.dataset.i;renderCanvas();return}
+  var pd=e.target.closest('.pgd');if(pd){var pi2=+pd.dataset.i,pbox=pd.parentNode,pc2=pbox._pc;R.opts.page[pd.dataset.k]=pi2;if(pc2)pc2.page=pi2;renderCanvas();var pcb=pbox._n&&M.rawProp(pbox._n,'onPageChanged');if(pc2&&pcb&&pcb.trim()!=='null')afterRun(runAt(pd,pcb,[pi2]));return}
   if(!e.target.closest('.ddmenu')){var om=screen.querySelector('.ddmenu');if(om)om.remove()}
   if(S.run&&ST.active&&Object.keys(ST.menuOpen).some(function(k){return ST.menuOpen[k]})&&!e.target.closest('.mna')){ST.menuOpen={};renderCanvas();return}
   if(S.run&&ST.active){if(lpFired){lpFired=false;return}var h=e.target.closest('.hh');if(h&&!/^(onLongPress|onDoubleTap)$/.test(h.dataset.h||''))fire(h);return}
@@ -12627,4 +12673,3 @@ window.addEventListener('beforeunload',function(){if(popAlive())try{popW.close()
 })();
 
 </script>
-</body></html>
