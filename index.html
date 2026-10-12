@@ -310,6 +310,7 @@ body:has(main[data-tab="ref"]) .lesson{display:none}
 .nd.dchip{height:32px;padding:0 12px;gap:8px;align-items:center;border:1px solid #79747E;border-radius:8px;font-size:14px;color:#1D1B20}
 .nd.dph2{border:1px solid currentColor;color:#8a8590;position:relative}.nd.dph2 svg{position:absolute;inset:0;width:100%;height:100%}
 .nd.cpt{border:1px dashed #8a8590;align-items:center;justify-content:center;position:relative;min-width:24px;min-height:24px;background:repeating-linear-gradient(45deg,transparent 0 8px,rgba(120,110,140,.08) 8px 16px)}
+.nd.cpt.cpd{border:none;background:none}.nd.cpt>.cpsv{position:absolute;left:0;top:0;pointer-events:none;overflow:hidden;width:100%;height:100%}.nd.cpt>.cpsv.cper,.nd.cpt>.cper{color:#B3261E;font-size:11px;padding:4px;position:absolute;left:0;top:0;right:0;background:rgba(255,255,255,.85)}
 .nd.cpt>.cpl{position:absolute;left:4px;top:2px;font-size:10px;opacity:.6;pointer-events:none}
 .nd .cfo{position:absolute;inset:0;pointer-events:none}
 .nd.ovb{overflow:visible}
@@ -324,11 +325,17 @@ body:has(main[data-tab="ref"]) .lesson{display:none}
 .nd.crsl{display:flex;flex-direction:row;overflow-x:auto;gap:8px;padding:4px 0;scroll-snap-type:x mandatory;height:200px;flex:none;align-items:stretch;scrollbar-width:thin}
 .nd.crsl>.crc{flex:none;scroll-snap-align:start;border-radius:28px;overflow:hidden;display:flex}
 .nd.crsl>.crc>.nd{flex:1}
+.screen .nd.nsv{display:flex;flex-direction:column;overflow-y:auto;flex:1 1 0;min-height:0;align-items:stretch}
+.screen .nd.nsv>.nsb{flex:none;align-self:stretch;overflow:visible;min-height:auto}.screen .nd.nsv .nd.list{overflow:visible;flex:none;height:auto;max-height:none}.screen .nd.nsv .nd.csv{overflow:visible;flex:none}
+.nd.fsb{position:relative;align-self:stretch;flex:1;min-height:0}.nd.fsb>.fsbg{position:absolute;inset:0}.nd.fsb>.fstt{position:absolute;left:16px;bottom:14px;color:inherit}
+.nd.sab>.fxs{position:absolute;inset:0;z-index:0}.nd.sab>.nd:not(.fxs){position:relative;z-index:1}
+.nd.sphd{overflow:hidden}.nd.sphd>.nd{flex:1}
 .nd.sph{padding:12px 16px;background:rgba(120,110,140,.18);border-bottom:2px solid rgba(120,110,140,.5);font-size:13px;align-self:stretch}
 .nd.pdt .pdth{padding:12px 16px;font-size:20px}
 .nd.pdt .pdtt{display:grid;font-size:13px;padding:0 8px}
 .nd.pdt .pdtc{font-weight:600;padding:10px 8px;border-bottom:1px solid rgba(120,110,140,.4)}
 .nd.pdt .pdtx{padding:10px 8px;opacity:.5;border-bottom:1px solid rgba(120,110,140,.2)}
+.nd.pdt .pdtx.pdtr{opacity:1}.nd.pdt .pdtb{display:inline-block;padding:0 10px;font-size:16px;opacity:.35}.nd.pdt .pdtb.hh{opacity:1;cursor:pointer}
 .nd.pdt .pdtf{padding:10px 16px;font-size:12px;text-align:right;opacity:.7}
 .nd.btn.tonal{background:#E8DEF8;color:#1D192B;box-shadow:none}
 .nd.ibtn.ibf{background:var(--d-primary,#6750A4);color:#fff}
@@ -339,6 +346,13 @@ body:has(main[data-tab="ref"]) .lesson{display:none}
 .nd.card.cardf{box-shadow:none;background:#E7E0EC}
 .nd.dchip .chx{margin-left:2px;font-size:12px;opacity:.7;cursor:default}
 .nd.sbar2{height:56px;flex:none;border-radius:28px;background:#ECE6F0;flex-direction:row;align-items:center;padding:0 16px;gap:12px;color:#49454F;align-self:stretch}
+.nd.sbar2.sax{height:auto;border-radius:0;padding:0;gap:6px;background:transparent;flex-direction:column;align-items:stretch}
+.sabar{display:flex;align-items:center;gap:12px;height:56px;padding:0 16px;border-radius:28px;background:#ECE6F0;color:#49454F;box-sizing:border-box}
+.sabar .sbh.sat{color:#1D1B20}.sabar .sbh{flex:1}
+.sain{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-size:15px;outline:none;color:#1D1B20}
+.sacl{cursor:pointer;padding:4px 6px}
+.sal{background:#fff;border:1px solid #E6E0E9;border-radius:12px;overflow:hidden;max-height:260px;overflow-y:auto}
+.sae{padding:14px 16px;color:#79747E;font-size:14px}
 .nd.calp{padding:8px;flex-direction:column;width:100%;max-width:328px;align-items:stretch}
 .nd.calp .calh{display:flex;align-items:center;justify-content:space-between;padding:4px 8px 8px;font-size:14px}
 .nd.calp .calb{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:20px}
@@ -635,7 +649,7 @@ var W={
  StreamBuilder:{cat:'layout',slots:{},desc:'Redesenha a tela a cada valor novo de um Stream, ao contrário do FutureBuilder, que recebe um só. snapshot.data é o último valor. No simulador funcionam Stream.periodic, Stream.fromIterable, StreamController e funções async*.'},
  Dismissible:{cat:'box',slots:{child:'one',background:'one'},desc:'Deixa o filho sair da tela ao deslizar. Precisa de uma key única; onDismissed roda depois do deslize e deve remover o item da lista. No simulador, arraste o item para o lado.'},
  CustomScrollView:{cat:'layout',slots:{slivers:'many'},desc:'Rolagem feita de pedaços chamados slivers (SliverAppBar, SliverList...). Permite um cabeçalho que encolhe e some junto com a lista.'},
- SliverAppBar:{cat:'layout',slots:{title:'one'},desc:'AppBar que participa da rolagem. expandedHeight é a altura aberta; com pinned: true ela encolhe e fica presa no topo.'},
+ SliverAppBar:{cat:'layout',slots:{title:'one',flexibleSpace:'one'},desc:'AppBar que participa da rolagem. expandedHeight é a altura aberta; com pinned: true ela encolhe e fica presa no topo.'},
  SliverToBoxAdapter:{cat:'layout',slots:{child:'one'},desc:'Coloca um widget comum (um Card, um Text) dentro de um CustomScrollView.'},
  'SliverList.list':{cat:'layout',slots:{children:'many'},desc:'Lista de widgets dentro de um CustomScrollView, como a ListView(children: ...).'},
  'SliverList.builder':{cat:'layout',slots:{},desc:'Lista sob demanda dentro de um CustomScrollView. itemCount e itemBuilder funcionam como no ListView.builder.'},
@@ -777,8 +791,11 @@ var W={
  AbsorbPointer:{cat:'layout',slots:{child:'one'},desc:'Faz o filho não responder a toques e também não deixa o toque passar para trás. absorbing: true bloqueia.'},
  'GridView.extent':{cat:'layout',slots:{children:'many'},desc:'Grade em que você dá o tamanho máximo de cada célula (maxCrossAxisExtent) em vez do número de colunas. O Flutter calcula quantas colunas cabem.'},
  'ListView.custom':{cat:'layout',slots:{childrenDelegate:'one'},desc:'ListView em que os filhos vêm de um delegate. Com SliverChildListDelegate([...]) é igual a ListView(children: [...]). No simulador só esse delegate é desenhado.'},
+ SliverChildBuilderDelegate:{cat:'layout',pos:['builder'],slots:{},desc:'Entrega os filhos sob demanda para ListView.custom, SliverList ou SliverGrid. O primeiro argumento é a função (context, index) e childCount é a quantidade.'},
+ SliverList:{cat:'layout',slots:{delegate:'one'},desc:'Lista dentro de um CustomScrollView no estilo clássico: delegate recebe SliverChildListDelegate([...]) ou SliverChildBuilderDelegate(builder, childCount: n).'},
+ FlexibleSpaceBar:{cat:'layout',slots:{title:'one',background:'one'},desc:'Conteúdo que fica dentro da área expansível de um SliverAppBar (flexibleSpace). background é o fundo (imagem ou cor) e title o texto no canto de baixo.'},
  SliverChildListDelegate:{cat:'layout',pos:['children'],slots:{children:'many'},desc:'Entrega uma lista fixa de filhos para ListView.custom ou SliverGrid. O primeiro argumento é a lista de widgets.'},
- NestedScrollView:{cat:'layout',slots:{body:'one'},desc:'Cabeçalho que rola junto com o corpo (headerSliverBuilder + body). O simulador desenha só o body.'},
+ NestedScrollView:{cat:'layout',slots:{body:'one'},desc:'Cabeçalho que rola junto com o corpo. headerSliverBuilder devolve os slivers do topo (SliverAppBar…) e body é o conteúdo. No simulador o conjunto rola junto, com o cabeçalho fixo se pinned: true.'},
  ListWheelScrollView:{cat:'layout',slots:{children:'many'},desc:'Lista em forma de roda, como o seletor de hora do iPhone. itemExtent é a altura de cada item. No simulador a roda rola e onSelectedItemChanged dispara.'},
  CarouselView:{cat:'layout',slots:{children:'many'},desc:'Carrossel que rola na horizontal e para no item. itemExtent é a largura de cada item. Os itens ficam com cantos arredondados.'},
  Scrollbar:{cat:'layout',slots:{child:'one'},desc:'Mostra a barra de rolagem ao lado de um conteúdo que rola. O filho precisa ser um ListView ou SingleChildScrollView. No simulador aparece uma barra fina fixa.'},
@@ -786,7 +803,7 @@ var W={
  'SliverGrid.count':{cat:'layout',slots:{children:'many'},desc:'Atalho de SliverGrid: crossAxisCount colunas e children direto.'},
  SliverPadding:{cat:'layout',slots:{sliver:'one'},desc:'Dá espaço em volta de um sliver (um SliverList, por exemplo). padding recebe EdgeInsets.'},
  SliverFillRemaining:{cat:'layout',slots:{child:'one'},desc:'Sliver que ocupa o espaço que sobrar na tela depois dos outros slivers. Bom para um rodapé ou uma mensagem de lista vazia.'},
- SliverPersistentHeader:{cat:'layout',slots:{},desc:'Cabeçalho que fica fixo (pinned) ou reaparece (floating) ao rolar. Precisa de um delegate, que é uma classe sua. O simulador desenha só uma faixa no lugar.'},
+ SliverPersistentHeader:{cat:'layout',slots:{},desc:'Cabeçalho que fica fixo (pinned) ao rolar. delegate é uma classe sua que estende SliverPersistentHeaderDelegate (build, minExtent, maxExtent). O simulador chama o build com shrinkOffset 0 e encolhe o cabeçalho até minExtent ao rolar.'},
  PaginatedDataTable:{cat:'layout',slots:{header:'one',columns:'many'},desc:'DataTable com páginas e rodapé de navegação. Os dados vêm de um DataTableSource. O simulador desenha o cabeçalho, as colunas e linhas de exemplo.'},
  AnimatedDefaultTextStyle:{cat:'box',slots:{child:'one'},desc:'Anima a mudança do estilo de texto (cor, tamanho, peso) do filho durante duration. Troque style em um setState.'},
  'TextButton.icon':{cat:'content',slots:{icon:'one',label:'one'},desc:'Versão do TextButton com ícone ao lado do texto. icon é o ícone, label é o texto e onPressed define a ação.'},
@@ -824,7 +841,7 @@ var W={
  'Image.network':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem baixada de uma URL. O canvas mostra a imagem real quando a URL carrega; sem internet, ou se a página bloquear imagens externas, ele desenha um quadro no lugar. fit controla como ela preenche o espaço.'},
  'Image.asset':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem guardada no projeto (pasta assets). O canvas mostra a imagem real quando a URL carrega; sem internet, ou se a página bloquear imagens externas, ele desenha um quadro no lugar.'}
 };
-var GROUPS=[['Estrutura',['Scaffold','AppBar','FloatingActionButton','Drawer','BottomNavigationBar','BottomNavigationBarItem','NavigationBar','NavigationDestination','NavigationRail','NavigationRailDestination','MenuAnchor','MenuItemButton','FloatingActionButton.extended']],['Abas',['DefaultTabController','TabBar','Tab','TabBarView','TabPageSelector']],['Layout',['ValueListenableBuilder','ListenableBuilder','AnimatedBuilder','Center','Align','Column','Row','Stack','Positioned','Expanded','Flexible','Spacer','Wrap','Form','ListView','GridView.count','SingleChildScrollView','SafeArea','PageView','IndexedStack','Stepper','Step','ExpansionPanelList','ExpansionPanel','DraggableScrollableSheet','TweenAnimationBuilder','LayoutBuilder','Builder','FutureBuilder','StreamBuilder','RefreshIndicator','CustomScrollView','SliverAppBar','SliverToBoxAdapter','SliverList.list','SliverList.builder','IntrinsicHeight','IntrinsicWidth','LimitedBox','UnconstrainedBox','OverflowBox','RotatedBox','Baseline','Flow','Offstage','IgnorePointer','AbsorbPointer','GridView.extent','NestedScrollView','Scrollbar','SliverGrid','SliverGrid.count','SliverPadding','SliverFillRemaining','SliverPersistentHeader']],['Listas e tabelas',['ListView.builder','ListView.separated','ReorderableListView','ReorderableListView.builder','AnimatedList','GridView.builder','Table','TableRow','DataTable','DataColumn','DataRow','DataCell','ListView.custom','SliverChildListDelegate','ListWheelScrollView','CarouselView','PaginatedDataTable']],['Caixas',['Container','ColoredBox','Padding','SizedBox','AspectRatio','ConstrainedBox','FractionallySizedBox','FittedBox','Card','Divider','VerticalDivider','ClipRRect','Opacity','AnimatedOpacity','AnimatedContainer','AnimatedPositioned','AnimatedAlign','AnimatedPadding','AnimatedSize','AnimatedScale','AnimatedRotation','AnimatedSwitcher','AnimatedCrossFade','Visibility','Tooltip','Badge','Hero','FadeTransition','SizeTransition','InteractiveViewer','Transform.rotate','Transform.scale','Transform.translate','Dismissible','ScaleTransition','RotationTransition','SlideTransition','ClipRect','ClipOval','DecoratedBox','Material','Placeholder','CustomPaint','BackdropFilter','ShaderMask','ColorFiltered','ImageFiltered','AnimatedDefaultTextStyle','Card.outlined','Card.filled']],['Conteúdo',['Text','Text.rich','RichText','Icon','Image.network','CircleAvatar','Chip','ChoiceChip','FilterChip','ActionChip','ListTile','ExpansionTile','Image.asset','CircularProgressIndicator','LinearProgressIndicator','SegmentedButton','ButtonSegment','PopupMenuButton','InputChip','SelectableText','Image.file','CalendarDatePicker']],['Botões e campos',['ElevatedButton','FilledButton','TextButton','OutlinedButton','IconButton','TextField','TextFormField','Checkbox','Switch','Slider','Radio','DropdownButton','DropdownMenuItem','SwitchListTile','CheckboxListTile','RadioListTile','RangeSlider','ToggleButtons','DropdownMenu','DropdownMenuEntry','Autocomplete','SearchBar','TextButton.icon','ElevatedButton.icon','OutlinedButton.icon','FilledButton.icon','FilledButton.tonal','IconButton.filled','IconButton.filledTonal','IconButton.outlined','SearchAnchor','SearchAnchor.bar']],['Interação',['GestureDetector','Draggable','LongPressDraggable','DragTarget','InkWell','InkResponse','Focus','Semantics','PopScope','Theme','MediaQuery']],['Mapas (flutter_map)',['FlutterMap','TileLayer','MarkerLayer','Marker','CircleLayer','CircleMarker','PolylineLayer','Polyline','RichAttributionWidget']],['Janelas',['AlertDialog','SimpleDialog','SimpleDialogOption','SnackBar','SnackBarAction','MaterialBanner','Banner']]];
+var GROUPS=[['Estrutura',['Scaffold','AppBar','FloatingActionButton','Drawer','BottomNavigationBar','BottomNavigationBarItem','NavigationBar','NavigationDestination','NavigationRail','NavigationRailDestination','MenuAnchor','MenuItemButton','FloatingActionButton.extended']],['Abas',['DefaultTabController','TabBar','Tab','TabBarView','TabPageSelector']],['Layout',['ValueListenableBuilder','ListenableBuilder','AnimatedBuilder','Center','Align','Column','Row','Stack','Positioned','Expanded','Flexible','Spacer','Wrap','Form','ListView','GridView.count','SingleChildScrollView','SafeArea','PageView','IndexedStack','Stepper','Step','ExpansionPanelList','ExpansionPanel','DraggableScrollableSheet','TweenAnimationBuilder','LayoutBuilder','Builder','FutureBuilder','StreamBuilder','RefreshIndicator','CustomScrollView','SliverAppBar','SliverToBoxAdapter','SliverList.list','SliverList.builder','IntrinsicHeight','IntrinsicWidth','LimitedBox','UnconstrainedBox','OverflowBox','RotatedBox','Baseline','Flow','Offstage','IgnorePointer','AbsorbPointer','GridView.extent','NestedScrollView','Scrollbar','SliverGrid','SliverGrid.count','SliverPadding','SliverFillRemaining','SliverPersistentHeader']],['Listas e tabelas',['ListView.builder','ListView.separated','ReorderableListView','ReorderableListView.builder','AnimatedList','GridView.builder','Table','TableRow','DataTable','DataColumn','DataRow','DataCell','ListView.custom','SliverChildListDelegate','SliverChildBuilderDelegate','SliverList','FlexibleSpaceBar','ListWheelScrollView','CarouselView','PaginatedDataTable']],['Caixas',['Container','ColoredBox','Padding','SizedBox','AspectRatio','ConstrainedBox','FractionallySizedBox','FittedBox','Card','Divider','VerticalDivider','ClipRRect','Opacity','AnimatedOpacity','AnimatedContainer','AnimatedPositioned','AnimatedAlign','AnimatedPadding','AnimatedSize','AnimatedScale','AnimatedRotation','AnimatedSwitcher','AnimatedCrossFade','Visibility','Tooltip','Badge','Hero','FadeTransition','SizeTransition','InteractiveViewer','Transform.rotate','Transform.scale','Transform.translate','Dismissible','ScaleTransition','RotationTransition','SlideTransition','ClipRect','ClipOval','DecoratedBox','Material','Placeholder','CustomPaint','BackdropFilter','ShaderMask','ColorFiltered','ImageFiltered','AnimatedDefaultTextStyle','Card.outlined','Card.filled']],['Conteúdo',['Text','Text.rich','RichText','Icon','Image.network','CircleAvatar','Chip','ChoiceChip','FilterChip','ActionChip','ListTile','ExpansionTile','Image.asset','CircularProgressIndicator','LinearProgressIndicator','SegmentedButton','ButtonSegment','PopupMenuButton','InputChip','SelectableText','Image.file','CalendarDatePicker']],['Botões e campos',['ElevatedButton','FilledButton','TextButton','OutlinedButton','IconButton','TextField','TextFormField','Checkbox','Switch','Slider','Radio','DropdownButton','DropdownMenuItem','SwitchListTile','CheckboxListTile','RadioListTile','RangeSlider','ToggleButtons','DropdownMenu','DropdownMenuEntry','Autocomplete','SearchBar','TextButton.icon','ElevatedButton.icon','OutlinedButton.icon','FilledButton.icon','FilledButton.tonal','IconButton.filled','IconButton.filledTonal','IconButton.outlined','SearchAnchor','SearchAnchor.bar']],['Interação',['GestureDetector','Draggable','LongPressDraggable','DragTarget','InkWell','InkResponse','Focus','Semantics','PopScope','Theme','MediaQuery']],['Mapas (flutter_map)',['FlutterMap','TileLayer','MarkerLayer','Marker','CircleLayer','CircleMarker','PolylineLayer','Polyline','RichAttributionWidget']],['Janelas',['AlertDialog','SimpleDialog','SimpleDialogOption','SnackBar','SnackBarAction','MaterialBanner','Banner']]];
 var CATVAR={struct:'var(--c-struct)',layout:'var(--c-layout)',box:'var(--c-box)',content:'var(--c-content)'};
 var warns=[];
 
@@ -1141,6 +1158,9 @@ var DEF={
  Dismissible:function(){return N('Dismissible',[A('key',"Key('item1')"),A('onDismissed','(direction) {}'),SL('background'),SL('child')],{background:N('ColoredBox',[A('color','Colors.red'),SL('child')],{child:N('Align',[A('alignment','Alignment.centerRight'),SL('child')],{child:N('Icon',[PO('icon','Icons.delete'),A('color','Colors.white')])})}),child:N('ListTile',[SL('title')],{title:txt('Deslize para apagar')})})},
  CustomScrollView:function(){return N('CustomScrollView',[SL('slivers')],{slivers:[]})},
  SliverAppBar:function(){return N('SliverAppBar',[SL('title'),A('pinned','true'),A('expandedHeight','140')],{title:txt('Título que encolhe')})},
+ FlexibleSpaceBar:function(){return N('FlexibleSpaceBar',[SL('title'),SL('background')],{title:txt('Título'),background:N('ColoredBox',[A('color','Colors.indigo'),SL('child')],{})})},
+ SliverChildBuilderDelegate:function(){return N('SliverChildBuilderDelegate',[PO('builder',"(context, index) => ListTile(title: Text('Item $index'))"),A('childCount','10')])},
+ SliverList:function(){return N('SliverList',[SL('delegate')],{delegate:N('SliverChildBuilderDelegate',[PO('builder',"(context, index) => ListTile(title: Text('Item $index'))"),A('childCount','10')])})},
  SliverToBoxAdapter:function(){return N('SliverToBoxAdapter',[SL('child')],{child:txt('Um widget qualquer')})},
  'SliverList.list':function(){return N('SliverList.list',[SL('children')],{children:[N('ListTile',[SL('title')],{title:txt('Item 1')}),N('ListTile',[SL('title')],{title:txt('Item 2')})]})},
  'SliverList.builder':function(){return N('SliverList.builder',[A('itemCount','10'),A('itemBuilder',"(context, index) => ListTile(title: Text('Item $index'))")])},
@@ -1191,7 +1211,7 @@ var DEF={
  'GridView.extent':function(){return N('GridView.extent',[A('maxCrossAxisExtent','120'),A('mainAxisSpacing','8'),A('crossAxisSpacing','8'),SL('children')],{children:[N('Container',[A('color','Colors.red')]),N('Container',[A('color','Colors.green')]),N('Container',[A('color','Colors.blue')])]})},
  'ListView.custom':function(){return N('ListView.custom',[SL('childrenDelegate')],{childrenDelegate:N('SliverChildListDelegate',[{name:'children',slot:true,positional:true}],{children:[N('ListTile',[SL('title')],{title:txt('Um')}),N('ListTile',[SL('title')],{title:txt('Dois')})]})})},
  SliverChildListDelegate:function(){return N('SliverChildListDelegate',[{name:'children',slot:true,positional:true}],{children:[txt('A'),txt('B')]})},
- NestedScrollView:function(){return N('NestedScrollView',[A('headerSliverBuilder','(context, inner) => [SliverAppBar(title: Text(\'Título\'), floating: true)]'),SL('body')],{body:N('ListView',[SL('children')],{children:[txt('Conteúdo')]})})},
+ NestedScrollView:function(){return N('NestedScrollView',[A('headerSliverBuilder','(context, innerBoxIsScrolled) => [SliverAppBar(title: Text(\'Título\'), pinned: true)]'),SL('body')],{body:N('ListView',[SL('children')],{children:[txt('Conteúdo')]})})},
  ListWheelScrollView:function(){return N('ListWheelScrollView',[A('itemExtent','44'),A('onSelectedItemChanged','(i) {}'),SL('children')],{children:[txt('Segunda'),txt('Terça'),txt('Quarta'),txt('Quinta'),txt('Sexta')]})},
  CarouselView:function(){return N('CarouselView',[A('itemExtent','240'),SL('children')],{children:[N('Container',[A('color','Colors.red')]),N('Container',[A('color','Colors.green')]),N('Container',[A('color','Colors.blue')])]})},
  Scrollbar:function(){return N('Scrollbar',[A('thumbVisibility','true'),SL('child')],{child:N('ListView',[SL('children')],{children:[txt('A'),txt('B'),txt('C')]})})},
@@ -1380,13 +1400,21 @@ function nn(x){return x instanceof Dbl?x.v:x}
 function dstr(v){return Number.isInteger(v)?v.toFixed(1):String(v)}
 function isRaw(v){return v!==null&&typeof v==='object'&&!isD(v)&&!Array.isArray(v)&&v.raw!==undefined}
 function show(v){if(v===null||v===undefined)return 'null';if(v&&v.nat)return natStr(v);if(v&&v.cls){var tdc=ST.dataClasses[v.cls];if(tdc&&tdc.methods&&tdc.methods.toString){try{return String(runMethod(tdc.methods.toString,[],v))}catch(e){}}if(v.enumv)return v.cls+'.'+v.f.name;return "Instance of '"+v.cls+"'"}if(v&&v.isSet)return '{'+Array.from(v.s).map(show).join(', ')+'}';if(v&&v.isRec)return '('+v.pos.map(show).join(', ')+')';if(v&&v.isMap)return '{'+Array.from(v.m.entries()).map(function(e){return show(e[0])+': '+show(e[1])}).join(', ')+'}';if(v&&v.lam)return lit(v);if(v&&v.ctl)return v.text;if(isD(v))return dstr(v.v);if(isRaw(v)){if(/^Duration\(/.test(v.raw)){var dmx=durMs(v);if(dmx!==null&&!/[a-zA-Z_]\w*\s*[,)]/.test(v.raw.replace(/\b(days|hours|minutes|seconds|milliseconds|microseconds)\s*:/g,'')))return fmtDur(dmx)}return v.raw}if(Array.isArray(v))return '['+v.map(show).join(', ')+']';return String(v)}
+function capSrc(v){
+  var src=v.src,names={},e=v.cenv,i;
+  while(e){if(e.params)Object.keys(e.params).forEach(function(k){names[k]=e});if(e.locals)Object.keys(e.locals).forEach(function(k){names[k]=e});e=e.parent}
+  Object.keys(names).forEach(function(k){
+    if((v.pn||[]).indexOf(k)>=0||!new RegExp('(^|[^\\w.$])'+k+'(?!\\w)|\\$'+k+'(?!\\w)').test(src))return;
+    var val=lookup(names[k],k);
+    if(typeof val==='string'||typeof val==='number'||typeof val==='boolean'||isD(val))src=bindVar(src,k,val)});
+  return src}
 function lit(v){
   if(v===null||v===undefined)return 'null';
   if(typeof v==='string')return "'"+v.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\$/g,'\\$').replace(/\n/g,'\\n')+"'";
   if(isD(v))return v.v===Infinity?'double.infinity':dstr(v.v);
   if(isRaw(v))return v.raw;
   if(v&&v.ctl)return lit(v.text);if(v&&v.pc)return 'PageController';
-  if(v&&v.lam)return v.src;
+  if(v&&v.lam)return v.cenv?capSrc(v):v.src;
   if(v&&(v.nat==='AnimCtl'||v.nat==='AnimView')){var avl=animRaw(v);return avl&&avl.nat==='Offset'?avl.src:lit(avl)}
   if(v&&v.nat)return v.nat==='#class'?v.name:v.src;
   if(v&&v.enumv)return v.cls+'.'+v.f.name;
@@ -1462,7 +1490,7 @@ function pPost(p){
       var ns=p.is('?.'),name=p.pk(1).v;p.i+=2;var args=null;
       if(p.is('(')){p.i++;args=pArgs(p)}
       a={t:'mem',o:a,name:name,args:args,ns:ns}}
-    else if(p.is('..')){var cops=[];while(p.is('..')){p.i++;var cn=p.pk()&&p.pk().k==='id'?p.pk().v:null;if(!cn)throw new Error('cascata');p.i++;var cargs=null,cset=null;if(p.is('(')){p.i++;cargs=pArgs(p)}else if(p.is('=')){p.i++;cset=pTern(p)}cops.push({name:cn,args:cargs,set:cset})}a={t:'casc',o:a,ops:cops}}
+    else if(p.is('..')&&!p.noCasc){var cops=[];while(p.is('..')){p.i++;var cn=p.pk()&&p.pk().k==='id'?p.pk().v:null;if(!cn)throw new Error('cascata');p.i++;var cargs=null,cset=null;if(p.is('(')){p.i++;cargs=pArgs(p)}else if(p.is('=')){p.i++;var svnc=p.noCasc;p.noCasc=true;try{cset=pTern(p)}finally{p.noCasc=svnc}}cops.push({name:cn,args:cargs,set:cset})}a={t:'casc',o:a,ops:cops}}
     else if(p.is('[')){p.i++;var ix=pTern(p);p.need(']');a={t:'idx',o:a,i:ix}}
     else if(p.is('!')&&!p.is('=',1)){p.i++}
     else if(p.isId('as')&&p.pk(1)&&p.pk(1).k==='id'){p.i+=2;if(p.is('<')){var gd=1;p.i++;while(gd>0&&!p.end()){if(p.is('<'))gd++;else if(p.is('>'))gd--;p.i++}}p.eat('?')}
@@ -1590,6 +1618,7 @@ function lookup(env,n){
   if(ST.globals&&ST.globals[n])return globalVal(n);
   if(NATCLS[n]||ENUMS[n])return{nat:'#class',name:n};
   if(n==='pi')return new Dbl(Math.PI);
+  if(ST.mathAlias&&n===ST.mathAlias)return{nat:'MathNS',f:{},src:'math'};
   if(n==='e'&&false)return new Dbl(Math.E);
   if(n==='this'){if(env.self)return env.self;var tv0=curThis(env);if(tv0!==undefined)return tv0;return{nat:'#vsync',f:{},src:'this'}}
   var tv=curThis(env);if(tv!==undefined){try{return member(tv,n,[])}catch(e1){if(e1.dartExc)throw e1}}
@@ -1718,7 +1747,7 @@ function ev(a,env){
       ARGN=a.args.map(function(x){return x.name});return runMethod(sm,sav,env.self)}
     case 'is':{var iv2=ev(a.a,env),r2=isType(iv2,a.ty);return a.neg?!r2:r2}
     case 'casc':{var co=ev(a.o,env);a.ops.forEach(function(op){
-        if(op.set){var sv2=ev(op.set,env);if(co&&co.cls){co.f[op.name]=sv2;mutated=true}else throw new Error('atribuição '+op.name)}
+        if(op.set){var sv2=ev(op.set,env);if(co&&(co.cls||co.nat==='Paint')){co.f[op.name]=sv2;mutated=true}else throw new Error('atribuição '+op.name)}
         else{var cargs=op.args&&op.args.map(function(x){if(x.ast===undefined)throw new Error('arg');return ev(x.ast,env)});member(co,op.name,cargs)}});return co}
     case 'swx':{var sv3=ev(a.subj,env);for(var si=0;si<a.cases.length;si++){var sc=a.cases[si];
         var okm;if(sc.ptn){var bb={};okm=matchPat(sc.ptn,sv3,env,bb);if(okm){env.locals=env.locals||{};Object.keys(bb).forEach(function(n){env.locals[n]=bb[n]})}}else okm=sc.pat===null||eq(sv3,ev(sc.pat,env));
@@ -1727,6 +1756,7 @@ function ev(a,env){
     case 'un':{var v=ev(a.a,env);if(a.op==='!')return !v;return isD(v)?new Dbl(-v.v):-v}
     case 'tern':return ev(a.c,env)?ev(a.a,env):ev(a.b,env);
     case 'ctor':{
+      if(ST.mathAlias&&a.name.indexOf(ST.mathAlias+'.')===0){a=Object.assign({},a);a.name=a.name.slice(ST.mathAlias.length+1)}
       if(a.name.indexOf('.')>0&&ST.dataClasses[a.name.split('.')[0]])return userStatic(a.name.split('.'),a.args?evalArgs(a,env):[],!!a.args,env);
       if(a.args&&ST.dataClasses[a.name])return construct(a.name,evalArgs(a,env));
       if(a.args&&/^(List\.(generate|filled|from|of)|Set(\.(from|of))?|Random|StringBuffer)$/.test(a.name)){
@@ -1747,7 +1777,7 @@ function ev(a,env){
       return{raw:a.name+(a.args?'('+a.args.map(function(x){return emitArg(x,env)}).join(', ')+')':'')}}
     case 'lam':{
       var cenv=env;
-      return{lam:true,src:a.src,call:function(args){
+      return{lam:true,src:a.src,cenv:cenv,pn:a.params,call:function(args){
         var e2=mkEnv({});e2.parent=cenv;if(cenv.self)e2.self=cenv.self;a.params.forEach(function(n,i){e2.params[n]=args[i]});
         if(a.body)return ev(a.body,e2);
         stmt(new Ps(a.block),e2,true);return e2.ret}}}
@@ -1802,6 +1832,8 @@ function binary(a,env){
   if(dl!==null&&dr!==null){switch(op){case '+':return mkDur(dl+dr);case '-':return mkDur(dl-dr);case '==':return dl===dr;case '!=':return dl!==dr;case '<':return dl<dr;case '>':return dl>dr;case '<=':return dl<=dr;case '>=':return dl>=dr}}
   if(dl!==null&&(op==='*'||op==='~/'||op==='/')&&r!=null&&typeof r!=='object')return mkDur(op==='*'?dl*nn(r):dl/nn(r));
   if(l&&r&&l.nat==='DateTime'&&r.nat==='DateTime'){switch(op){case '==':return l.j.getTime()===r.j.getTime();case '!=':return l.j.getTime()!==r.j.getTime();case '<':return l.j<r.j;case '>':return l.j>r.j;case '<=':return l.j<=r.j;case '>=':return l.j>=r.j}}
+  if(l&&l.nat==='Offset'&&r&&r.nat==='Offset'&&(op==='+'||op==='-')){var sg=op==='+'?1:-1;return mkOffset(nn(l.f.dx)+sg*nn(r.f.dx),nn(l.f.dy)+sg*nn(r.f.dy))}
+  if(l&&l.nat==='Offset'&&r!=null&&typeof nn(r)==='number'&&(op==='*'||op==='/')){var k=nn(r);return op==='*'?mkOffset(nn(l.f.dx)*k,nn(l.f.dy)*k):mkOffset(nn(l.f.dx)/k,nn(l.f.dy)/k)}
   if(op==='==')return eq(l,r);
   if(op==='!=')return !eq(l,r);
   if(l&&l.cls){var odc=ST.dataClasses[l.cls];if(odc&&odc.methods['operator'+op]){ARGN=null;return runMethod(odc.methods['operator'+op],[r],l)}}
@@ -1990,6 +2022,7 @@ function assignTo(ast,val,env){
   if(ast.t==='mem'&&ast.args===null){
     var o=ev(ast.o,env);
     if(o&&o.cls){o.f[ast.name]=coerce(fieldType(ST.dataClasses[o.cls],ast.name),val);mutated=true;return}
+    if(o&&o.nat==='Paint'){o.f[ast.name]=val;return}
     if(o&&o.ctl&&ast.name==='text'){o.text=show(val);mutated=true;return}
     if(o&&o.nat==='AnimCtl'&&ast.name==='value'){o.c.value=Math.max(o.c.lower,Math.min(o.c.upper,nn(val)));dirty=true;return}
     if(o&&o.nat==='ValueNotifier'&&ast.name==='value'){if(o.f.value!==val){o.f.value=val;dirty=true}return}
@@ -2599,8 +2632,8 @@ ST.value=function(raw){return ev(pTern(new Ps(raw)),mkEnv())};
 /* ---- objetos nativos simulados: DateTime, TimeOfDay, GPS, bateria, rede, câmera ---- */
 ST.sensors={osrm:'',http:'sim',gps:true,perm:'granted',lat:-8.0476,lon:-34.877,alt:4,battery:78,charging:false,net:'wifi',photo:'ok'};
 ST.resetSensors=function(){ST.sensors={http:'sim',gps:true,perm:'granted',lat:-8.0476,lon:-34.877,alt:4,battery:78,charging:false,net:'wifi',photo:'ok'}};
-var NATCLS={Curves:1,AnimationStatus:1,Offset:1,IntTween:1,ColorTween:1,ValueNotifier:1,AnimationController:1,Tween:1,CurvedAnimation:1,DateFormat:1,NumberFormat:1,MenuCtl:1,RangeValues:1,Stream:1,StreamController:1,GlobalKey:1,http:1,Uri:1,LatLng:1,MapController:1,Geolocator:1,Battery:1,Connectivity:1,DateTime:1,TimeOfDay:1,Position:1,ImagePicker:1,HapticFeedback:1,Share:1};
-var NATCTOR={AnimationController:1,Tween:1,IntTween:1,ColorTween:1,CurvedAnimation:1,Offset:1,ValueNotifier:1,RegExp:1,DateFormat:1,NumberFormat:1,RangeValues:1,StreamController:1,GlobalKey:1,LatLng:1,MapController:1,DateTime:1,TimeOfDay:1,Position:1,Battery:1,Connectivity:1,ImagePicker:1};
+var NATCLS={Curves:1,AnimationStatus:1,Offset:1,IntTween:1,ColorTween:1,ValueNotifier:1,AnimationController:1,Tween:1,CurvedAnimation:1,DateFormat:1,NumberFormat:1,MenuCtl:1,SearchCtl:1,Size:1,RangeValues:1,Stream:1,StreamController:1,GlobalKey:1,http:1,Uri:1,LatLng:1,MapController:1,Geolocator:1,Battery:1,Connectivity:1,DateTime:1,TimeOfDay:1,Position:1,ImagePicker:1,HapticFeedback:1,Share:1};
+var NATCTOR={'Paint':1,'Size':1,'Size.square':1,'Size.fromWidth':1,'Size.fromHeight':1,'Rect.fromLTWH':1,'Rect.fromLTRB':1,'Rect.fromCircle':1,'Rect.fromCenter':1,'Radius.circular':1,'Radius.elliptical':1,'RRect.fromRectAndRadius':1,'RRect.fromLTRBR':1,'Path':1,'TextPainter':1,'Offset.fromDirection':1,AnimationController:1,Tween:1,IntTween:1,ColorTween:1,CurvedAnimation:1,Offset:1,ValueNotifier:1,RegExp:1,DateFormat:1,NumberFormat:1,RangeValues:1,StreamController:1,GlobalKey:1,LatLng:1,MapController:1,DateTime:1,TimeOfDay:1,Position:1,Battery:1,Connectivity:1,ImagePicker:1};
 var ENUMS={LocationPermission:1,ConnectionState:1,ConnectivityResult:1,BatteryState:1,ImageSource:1,LocationAccuracy:1};
 function p2(n){return (n<10?'0':'')+n}
 function mkDate(y,mo,d,h,mi,s){
@@ -2776,6 +2809,145 @@ var CURVES={linear:function(t){return t},ease:cubicB(.25,.1,.25,1),easeIn:cubicB
   bounceOut:bounceOut,bounceIn:function(t){return 1-bounceOut(1-t)},bounceInOut:function(t){return t<.5?(1-bounceOut(1-t*2))*.5:bounceOut(t*2-1)*.5+.5},
   elasticOut:function(t){return t<=0?0:t>=1?1:Math.pow(2,-10*t)*Math.sin((t-0.1)*(2*Math.PI)/0.4)+1},elasticIn:function(t){return t<=0?0:t>=1?1:-Math.pow(2,10*(t-1))*Math.sin((t-1.1)*(2*Math.PI)/0.4)}};
 function mkOffset(dx,dy){return{nat:'Offset',f:{dx:new Dbl(dx),dy:new Dbl(dy)},src:'Offset('+dstr(dx)+', '+dstr(dy)+')'}}
+
+/* ---- CustomPaint: Size, Rect, RRect, Radius, Paint, Path, Canvas, TextPainter ---- */
+var PAINTM={Size:1,Rect:1,RRect:1,Radius:1,Paint:1,Path:1,Canvas:1,TextPainter:1};
+var PAINTCT={'Paint':1,'Size':1,'Size.square':1,'Size.fromWidth':1,'Size.fromHeight':1,'Rect.fromLTWH':1,'Rect.fromLTRB':1,'Rect.fromCircle':1,'Rect.fromCenter':1,'Radius.circular':1,'Radius.elliptical':1,'RRect.fromRectAndRadius':1,'RRect.fromLTRBR':1,'Path':1,'TextPainter':1,'Offset.fromDirection':1};
+function mkSize(w,h){return{nat:'Size',f:{width:new Dbl(w),height:new Dbl(h)},src:'Size('+dstr(w)+', '+dstr(h)+')'}}
+function mkRect(l,t,w,h){return{nat:'Rect',f:{left:new Dbl(l),top:new Dbl(t),width:new Dbl(w),height:new Dbl(h),right:new Dbl(l+w),bottom:new Dbl(t+h)},src:'Rect.fromLTWH('+[l,t,w,h].map(dstr).join(', ')+')'}}
+function mkRRect(l,t,w,h,r){return{nat:'RRect',f:{left:new Dbl(l),top:new Dbl(t),width:new Dbl(w),height:new Dbl(h),right:new Dbl(l+w),bottom:new Dbl(t+h),r:r},src:'RRect()'}}
+function pcol(v){return v==null?null:isRaw(v)?v.raw:typeof v==='string'?v:show(v)}
+function paintCtor(name,args){
+  var pos=args.filter(function(a){return !a.name}).map(function(a){return a.val}),nm={};
+  args.forEach(function(a){if(a.name)nm[a.name]=a.val});
+  var P=function(i){return nn(pos[i])||0};
+  switch(name){
+    case 'Paint':return{nat:'Paint',f:{color:{raw:'Color(0xFF000000)'},style:'PaintingStyle.fill',strokeWidth:new Dbl(0),strokeCap:'StrokeCap.butt',strokeJoin:'StrokeJoin.miter'},src:'Paint()'};
+    case 'Size':return mkSize(P(0),P(1));
+    case 'Size.square':return mkSize(P(0),P(0));
+    case 'Size.fromWidth':return mkSize(P(0),0);
+    case 'Size.fromHeight':return mkSize(0,P(0));
+    case 'Rect.fromLTWH':return mkRect(P(0),P(1),P(2),P(3));
+    case 'Rect.fromLTRB':return mkRect(P(0),P(1),P(2)-P(0),P(3)-P(1));
+    case 'Rect.fromCircle':{var cc=nm.center,rr=nn(nm.radius)||0;return mkRect(nn(cc.f.dx)-rr,nn(cc.f.dy)-rr,rr*2,rr*2)}
+    case 'Rect.fromCenter':{var c2=nm.center,w2=nn(nm.width)||0,h2=nn(nm.height)||0;return mkRect(nn(c2.f.dx)-w2/2,nn(c2.f.dy)-h2/2,w2,h2)}
+    case 'Radius.circular':return{nat:'Radius',f:{x:new Dbl(P(0)),y:new Dbl(P(0))},src:'Radius.circular('+dstr(P(0))+')'};
+    case 'Radius.elliptical':return{nat:'Radius',f:{x:new Dbl(P(0)),y:new Dbl(P(1))},src:'Radius()'};
+    case 'RRect.fromRectAndRadius':{var rc=pos[0],ra=pos[1];return mkRRect(nn(rc.f.left),nn(rc.f.top),nn(rc.f.width),nn(rc.f.height),nn(ra.f.x))}
+    case 'RRect.fromLTRBR':{return mkRRect(P(0),P(1),P(2)-P(0),P(3)-P(1),nn(pos[4].f.x))}
+    case 'Path':return{nat:'Path',f:{},st:{d:'',cx:0,cy:0,sx:0,sy:0,has:false},src:'Path()'};
+    case 'TextPainter':return{nat:'TextPainter',f:{text:nm.text||null},st:{},src:'TextPainter()'};
+    case 'Offset.fromDirection':return mkOffset(Math.cos(P(0))*(pos.length>1?P(1):1),Math.sin(P(0))*(pos.length>1?P(1):1))}
+  return null}
+function tpInfo(tp){
+  var raw=pcol(tp.f.text)||'',tm=/text:\s*('((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)")/.exec(raw),fs=/fontSize:\s*([\d.]+)/.exec(raw),cl=/color:\s*([\w.]+(?:\([^)]*\))?)/.exec(raw),fw=/fontWeight:\s*FontWeight\.(\w+)/.exec(raw);
+  var txt=tm?(tm[2]!==undefined?tm[2]:tm[3]).replace(/\\n/g,'\n').replace(/\\(.)/g,'$1'):'';
+  var size=fs?+fs[1]:14;return{text:txt,size:size,color:cl?cl[1]:'Colors.black',bold:!!(fw&&/bold|w[6-9]00/.test(fw[1])),w:txt.split('\n').reduce(function(m,l){return Math.max(m,l.length)},0)*size*.55,h:txt.split('\n').length*size*1.2}}
+function arcSeg(cx,cy,rx,ry,a0,sw){
+  var full=Math.abs(sw)>=Math.PI*2-1e-6,out='',p0=[cx+rx*Math.cos(a0),cy+ry*Math.sin(a0)],end;
+  function pt(a){return[cx+rx*Math.cos(a),cy+ry*Math.sin(a)]}
+  if(full){var m=pt(a0+sw/2);end=pt(a0+sw);out='A '+rx+' '+ry+' 0 0 '+(sw>0?1:0)+' '+m[0]+' '+m[1]+' A '+rx+' '+ry+' 0 0 '+(sw>0?1:0)+' '+end[0]+' '+end[1]}
+  else{end=pt(a0+sw);out='A '+rx+' '+ry+' 0 '+(Math.abs(sw)>Math.PI?1:0)+' '+(sw>0?1:0)+' '+end[0]+' '+end[1]}
+  return{start:p0,end:end,cmd:out}}
+function rrPath(l,t,w,h,r){r=Math.max(0,Math.min(r,w/2,h/2));
+  return 'M '+(l+r)+' '+t+' H '+(l+w-r)+' A '+r+' '+r+' 0 0 1 '+(l+w)+' '+(t+r)+' V '+(t+h-r)+' A '+r+' '+r+' 0 0 1 '+(l+w-r)+' '+(t+h)+' H '+(l+r)+' A '+r+' '+r+' 0 0 1 '+l+' '+(t+h-r)+' V '+(t+r)+' A '+r+' '+r+' 0 0 1 '+(l+r)+' '+t+' Z'}
+function mmul(a,b){return[a[0]*b[0]+a[2]*b[1],a[1]*b[0]+a[3]*b[1],a[0]*b[2]+a[2]*b[3],a[1]*b[2]+a[3]*b[3],a[0]*b[4]+a[2]*b[5]+a[4],a[1]*b[4]+a[3]*b[5]+a[5]]}
+function paintMember(v,name,args){
+  var f=v.f,P=function(i){return nn(args[i])||0};
+  switch(v.nat){
+    case 'Size':
+      switch(name){case 'width':case 'height':return f[name];case 'shortestSide':return new Dbl(Math.min(nn(f.width),nn(f.height)));case 'longestSide':return new Dbl(Math.max(nn(f.width),nn(f.height)));
+        case 'aspectRatio':return new Dbl(nn(f.height)?nn(f.width)/nn(f.height):0);case 'center':{var o=args[0];return mkOffset((o?nn(o.f.dx):0)+nn(f.width)/2,(o?nn(o.f.dy):0)+nn(f.height)/2)}
+        case 'isEmpty':return nn(f.width)<=0||nn(f.height)<=0;case 'topLeft':return mkOffset(0,0)}
+      break;
+    case 'Rect':case 'RRect':
+      switch(name){case 'left':case 'top':case 'right':case 'bottom':case 'width':case 'height':return f[name];
+        case 'center':return mkOffset(nn(f.left)+nn(f.width)/2,nn(f.top)+nn(f.height)/2);
+        case 'topLeft':return mkOffset(nn(f.left),nn(f.top));case 'topRight':return mkOffset(nn(f.right),nn(f.top));
+        case 'bottomLeft':return mkOffset(nn(f.left),nn(f.bottom));case 'bottomRight':return mkOffset(nn(f.right),nn(f.bottom));
+        case 'topCenter':return mkOffset(nn(f.left)+nn(f.width)/2,nn(f.top));case 'bottomCenter':return mkOffset(nn(f.left)+nn(f.width)/2,nn(f.bottom));
+        case 'centerLeft':return mkOffset(nn(f.left),nn(f.top)+nn(f.height)/2);case 'centerRight':return mkOffset(nn(f.right),nn(f.top)+nn(f.height)/2);
+        case 'shortestSide':return new Dbl(Math.min(nn(f.width),nn(f.height)));case 'longestSide':return new Dbl(Math.max(nn(f.width),nn(f.height)));
+        case 'size':return mkSize(nn(f.width),nn(f.height));case 'isEmpty':return nn(f.width)<=0||nn(f.height)<=0;
+        case 'deflate':return mkRect(nn(f.left)+P(0),nn(f.top)+P(0),nn(f.width)-2*P(0),nn(f.height)-2*P(0));
+        case 'inflate':return mkRect(nn(f.left)-P(0),nn(f.top)-P(0),nn(f.width)+2*P(0),nn(f.height)+2*P(0));
+        case 'shift':return mkRect(nn(f.left)+nn(args[0].f.dx),nn(f.top)+nn(args[0].f.dy),nn(f.width),nn(f.height));
+        case 'contains':{var px=nn(args[0].f.dx),py=nn(args[0].f.dy);return px>=nn(f.left)&&px<nn(f.right)&&py>=nn(f.top)&&py<nn(f.bottom)}
+        case 'outerRect':return mkRect(nn(f.left),nn(f.top),nn(f.width),nn(f.height))}
+      break;
+    case 'Radius':if(name==='x'||name==='y')return f[name];break;
+    case 'Paint':
+      if(hasOwn(f,name))return f[name];
+      if(name==='toString')return 'Paint()';
+      return null;
+    case 'Path':{
+      var st=v.st;
+      function mv(x,y){st.d+=(st.d?' ':'')+'M '+x+' '+y;st.cx=st.sx=x;st.cy=st.sy=y;st.has=true}
+      function ln(x,y){if(!st.has){mv(x,y);return}st.d+=' L '+x+' '+y;st.cx=x;st.cy=y}
+      switch(name){
+        case 'moveTo':mv(P(0),P(1));return null;
+        case 'lineTo':ln(P(0),P(1));return null;
+        case 'relativeMoveTo':mv(st.cx+P(0),st.cy+P(1));return null;
+        case 'relativeLineTo':ln(st.cx+P(0),st.cy+P(1));return null;
+        case 'quadraticBezierTo':if(!st.has)mv(0,0);st.d+=' Q '+P(0)+' '+P(1)+' '+P(2)+' '+P(3);st.cx=P(2);st.cy=P(3);return null;
+        case 'cubicTo':if(!st.has)mv(0,0);st.d+=' C '+P(0)+' '+P(1)+' '+P(2)+' '+P(3)+' '+P(4)+' '+P(5);st.cx=P(4);st.cy=P(5);return null;
+        case 'close':if(st.has){st.d+=' Z';st.cx=st.sx;st.cy=st.sy}return null;
+        case 'reset':st.d='';st.has=false;return null;
+        case 'addRect':{var r=args[0];st.d+=(st.d?' ':'')+'M '+nn(r.f.left)+' '+nn(r.f.top)+' H '+nn(r.f.right)+' V '+nn(r.f.bottom)+' H '+nn(r.f.left)+' Z';st.has=true;return null}
+        case 'addOval':{var o=args[0],ox=nn(o.f.left),oy=nn(o.f.top),ow=nn(o.f.width),oh=nn(o.f.height);
+          st.d+=(st.d?' ':'')+'M '+ox+' '+(oy+oh/2)+' A '+ow/2+' '+oh/2+' 0 1 0 '+(ox+ow)+' '+(oy+oh/2)+' A '+ow/2+' '+oh/2+' 0 1 0 '+ox+' '+(oy+oh/2)+' Z';st.has=true;return null}
+        case 'addRRect':{var q=args[0];st.d+=(st.d?' ':'')+rrPath(nn(q.f.left),nn(q.f.top),nn(q.f.width),nn(q.f.height),nn(q.f.r));st.has=true;return null}
+        case 'addPolygon':{var pts=toIter(args[0]);pts.forEach(function(p,i){if(i===0){st.d+=(st.d?' ':'')+'M '+nn(p.f.dx)+' '+nn(p.f.dy)}else st.d+=' L '+nn(p.f.dx)+' '+nn(p.f.dy)});if(args[1])st.d+=' Z';st.has=pts.length>0;return null}
+        case 'arcTo':{var ar=args[0],acx=nn(ar.f.left)+nn(ar.f.width)/2,acy=nn(ar.f.top)+nn(ar.f.height)/2,sg=arcSeg(acx,acy,nn(ar.f.width)/2,nn(ar.f.height)/2,P(1),P(2));
+          if(args[3]||!st.has){st.d+=(st.d?' ':'')+'M '+sg.start[0]+' '+sg.start[1]}else st.d+=' L '+sg.start[0]+' '+sg.start[1];
+          st.d+=' '+sg.cmd;st.cx=sg.end[0];st.cy=sg.end[1];st.has=true;return null}
+        case 'addArc':{var ad=args[0],bcx=nn(ad.f.left)+nn(ad.f.width)/2,bcy=nn(ad.f.top)+nn(ad.f.height)/2,sg2=arcSeg(bcx,bcy,nn(ad.f.width)/2,nn(ad.f.height)/2,P(1),P(2));
+          st.d+=(st.d?' ':'')+'M '+sg2.start[0]+' '+sg2.start[1]+' '+sg2.cmd;st.has=true;return null}}
+      break}
+    case 'TextPainter':{
+      var ti=tpInfo(v);
+      switch(name){case 'layout':return null;case 'width':return new Dbl(ti.w);case 'height':return new Dbl(ti.h);case 'size':return mkSize(ti.w,ti.h);
+        case 'paint':{var cs=args[0].st;cs.ops.push({k:'text',x:nn(args[1].f.dx),y:nn(args[1].f.dy),text:ti.text,size:ti.size,color:ti.color,bold:ti.bold,m:cs.m.slice(),clip:cs.clip});return null}}
+      break}
+    case 'Canvas':{
+      var cv=v.st;
+      function pn(p){return{color:pcol(p.f.color),style:/stroke/.test(pcol(p.f.style)||'')?'stroke':'fill',sw:nn(p.f.strokeWidth)||0,cap:(/(round|square)/.exec(pcol(p.f.strokeCap)||'')||[0,'butt'])[1],join:(/(round|bevel)/.exec(pcol(p.f.strokeJoin)||'')||[0,'miter'])[1]}}
+      function add(o,p){o.p=p?pn(p):null;o.m=cv.m.slice();o.clip=cv.clip;cv.ops.push(o);if(cv.ops.length>4000)throw exc('muitos comandos de desenho (limite 4000)')}
+      switch(name){
+        case 'drawCircle':add({k:'circle',cx:nn(args[0].f.dx),cy:nn(args[0].f.dy),r:P(1)},args[2]);return null;
+        case 'drawLine':add({k:'line',x1:nn(args[0].f.dx),y1:nn(args[0].f.dy),x2:nn(args[1].f.dx),y2:nn(args[1].f.dy)},args[2]);return null;
+        case 'drawRect':add({k:'rect',x:nn(args[0].f.left),y:nn(args[0].f.top),w:nn(args[0].f.width),h:nn(args[0].f.height)},args[1]);return null;
+        case 'drawRRect':add({k:'rrect',x:nn(args[0].f.left),y:nn(args[0].f.top),w:nn(args[0].f.width),h:nn(args[0].f.height),r:nn(args[0].f.r)},args[1]);return null;
+        case 'drawOval':add({k:'oval',cx:nn(args[0].f.left)+nn(args[0].f.width)/2,cy:nn(args[0].f.top)+nn(args[0].f.height)/2,rx:nn(args[0].f.width)/2,ry:nn(args[0].f.height)/2},args[1]);return null;
+        case 'drawArc':{var r0=args[0],acx=nn(r0.f.left)+nn(r0.f.width)/2,acy=nn(r0.f.top)+nn(r0.f.height)/2,sg=arcSeg(acx,acy,nn(r0.f.width)/2,nn(r0.f.height)/2,P(1),P(2)),d;
+          d=args[3]===true?'M '+acx+' '+acy+' L '+sg.start[0]+' '+sg.start[1]+' '+sg.cmd+' Z':'M '+sg.start[0]+' '+sg.start[1]+' '+sg.cmd;
+          add({k:'path',d:d},args[4]);return null}
+        case 'drawPath':add({k:'path',d:args[0].st.d},args[1]);return null;
+        case 'drawPoints':{var pm=pcol(args[0])||'',pts=toIter(args[1]),pp=pn(args[2]);
+          if(/lines/.test(pm)){for(var i=0;i+1<pts.length;i+=2)add({k:'line',x1:nn(pts[i].f.dx),y1:nn(pts[i].f.dy),x2:nn(pts[i+1].f.dx),y2:nn(pts[i+1].f.dy)},args[2])}
+          else if(/polygon/.test(pm)){for(var j=0;j+1<pts.length;j++)add({k:'line',x1:nn(pts[j].f.dx),y1:nn(pts[j].f.dy),x2:nn(pts[j+1].f.dx),y2:nn(pts[j+1].f.dy)},args[2])}
+          else pts.forEach(function(p){add({k:'circle',cx:nn(p.f.dx),cy:nn(p.f.dy),r:Math.max(.5,pp.sw/2),pt:true},args[2])});return null}
+        case 'drawColor':{var o2={k:'color'};o2.p={color:pcol(args[0]),style:'fill',sw:0,cap:'butt',join:'miter'};o2.m=cv.m.slice();o2.clip=cv.clip;cv.ops.push(o2);return null}
+        case 'drawPaint':add({k:'color'},args[0]);return null;
+        case 'save':cv.stack.push({m:cv.m.slice(),clip:cv.clip});return null;
+        case 'restore':{var s=cv.stack.pop();if(s){cv.m=s.m;cv.clip=s.clip}return null}
+        case 'translate':cv.m=mmul(cv.m,[1,0,0,1,P(0),P(1)]);return null;
+        case 'scale':cv.m=mmul(cv.m,[P(0),0,0,args.length>1?P(1):P(0),0,0]);return null;
+        case 'rotate':{var a=P(0),c=Math.cos(a),sn=Math.sin(a);cv.m=mmul(cv.m,[c,sn,-sn,c,0,0]);return null}
+        case 'clipRect':cv.clips.push({d:'M '+nn(args[0].f.left)+' '+nn(args[0].f.top)+' H '+nn(args[0].f.right)+' V '+nn(args[0].f.bottom)+' H '+nn(args[0].f.left)+' Z',m:cv.m.slice()});cv.clip=cv.clips.length-1;return null;
+        case 'clipRRect':{var q=args[0];cv.clips.push({d:rrPath(nn(q.f.left),nn(q.f.top),nn(q.f.width),nn(q.f.height),nn(q.f.r)),m:cv.m.slice()});cv.clip=cv.clips.length-1;return null}
+        case 'clipPath':cv.clips.push({d:args[0].st.d,m:cv.m.slice()});cv.clip=cv.clips.length-1;return null}
+      break}}
+  throw new Error('membro '+v.nat+'.'+name)}
+ST.paintOps=function(n,which,w,h){
+  var raw=M.rawProp(n,which);if(raw==null||raw.trim()==='null')return null;
+  var old=ST.sync;ST.sync=true;
+  var cv={nat:'Canvas',f:{},st:{ops:[],clips:[],m:[1,0,0,1,0,0],clip:-1,stack:[]},src:'Canvas()'};
+  try{var obj=ST.value(raw.trim());if(!obj||!obj.cls)throw new Error('painter precisa ser uma classe sua que estende CustomPainter');
+    var dc=ST.dataClasses[obj.cls];if(!dc||!dc.methods.paint)throw new Error('a classe '+obj.cls+' não tem o método paint(Canvas canvas, Size size)');
+    member(obj,'paint',[cv,mkSize(w,h)])}
+  finally{ST.sync=old}
+  return{ops:cv.st.ops,clips:cv.st.clips}};
 function interp(b,e,t){
   if(b&&b.nat==='Offset'&&e&&e.nat==='Offset')return mkOffset(nn(b.f.dx)+(nn(e.f.dx)-nn(b.f.dx))*t,nn(b.f.dy)+(nn(e.f.dy)-nn(b.f.dy))*t);
   var x=nn(b),y=nn(e);if(typeof x==='number'&&typeof y==='number')return new Dbl(x+(y-x)*t);
@@ -2837,6 +3009,7 @@ function ctlMember(v,name,args,named){
 function mkCurve(name){return{nat:'Curve',f:{name:name},src:'Curves.'+name}}
 
 function natCtor(name,args){
+  if(PAINTCT[name])return paintCtor(name,args);
   var pos=args.filter(function(a){return !a.name}).map(function(a){return nn(a.val)}),nm={};
   args.forEach(function(a){if(a.name)nm[a.name]=nn(a.val)});
   if(name==='RegExp'){var fl='';if(nm.caseSensitive===false)fl+='i';var mlt=args.filter(function(a){return a.name==='multiLine'})[0];if(mlt&&mlt.val)fl+='m';var dta=args.filter(function(a){return a.name==='dotAll'})[0];if(dta&&dta.val)fl+='s';
@@ -2869,6 +3042,18 @@ function haversine(a,b,c,d){
   return 2*R*Math.asin(Math.sqrt(h))}
 function natMember(v,name,args){
   var S=ST.sensors;
+  if(PAINTM[v.nat])return paintMember(v,name,args);
+  if(v.nat==='MathNS'){
+    var ma=args.map(nn);
+    switch(name){
+      case 'pi':return new Dbl(Math.PI);case 'e':return new Dbl(Math.E);case 'sqrt2':return new Dbl(Math.SQRT2);case 'ln2':return new Dbl(Math.LN2);case 'ln10':return new Dbl(Math.LN10);
+      case 'max':case 'min':{var mx2=name==='max'?Math.max(ma[0],ma[1]):Math.min(ma[0],ma[1]);return(isD(args[0])||isD(args[1]))?new Dbl(mx2):mx2}
+      case 'sqrt':return new Dbl(Math.sqrt(ma[0]));
+      case 'pow':{var pw2=Math.pow(ma[0],ma[1]);return(isD(args[0])||isD(args[1])||ma[1]<0)?new Dbl(pw2):pw2}
+      case 'sin':case 'cos':case 'tan':case 'asin':case 'acos':case 'atan':case 'log':case 'exp':return new Dbl(Math[name](ma[0]));
+      case 'atan2':return new Dbl(Math.atan2(ma[0],ma[1]));
+      case 'Random':return{nat:'Random',f:{},src:'Random()'}}
+    throw new Error('math.'+name)}
   if(v.nat==='AnimCtl'){var nmv={},posv=[],an=ARGN||[];args.forEach(function(x,i){if(an[i])nmv[an[i]]=x;else posv.push(x)});return ctlMember(v,name,posv,nmv)}
   if(v.nat==='AnimView'){
     switch(name){
@@ -2885,7 +3070,7 @@ function natMember(v,name,args){
   if(v.nat==='DragDetails'){
     switch(name){case 'data':return v.f.data;case 'offset':return mkOffset(0,0)}}
   if(v.nat==='Offset'){
-    switch(name){case 'dx':return v.f.dx;case 'dy':return v.f.dy;case 'distance':return new Dbl(Math.hypot(nn(v.f.dx),nn(v.f.dy)))}}
+    switch(name){case 'dx':return v.f.dx;case 'dy':return v.f.dy;case 'distance':return new Dbl(Math.hypot(nn(v.f.dx),nn(v.f.dy)));case 'direction':return new Dbl(Math.atan2(nn(v.f.dy),nn(v.f.dx)));case 'translate':return mkOffset(nn(v.f.dx)+nn(args[0]),nn(v.f.dy)+nn(args[1]));case 'scale':return mkOffset(nn(v.f.dx)*nn(args[0]),nn(v.f.dy)*nn(args[1]))}}
   if(v.nat==='ValueNotifier'){
     switch(name){
       case 'value':return v.f.value;
@@ -2912,6 +3097,7 @@ function natMember(v,name,args){
     if(c==='Curves')return mkCurve(name);
     if(c==='AnimationStatus')return 'AnimationStatus.'+name;
     if(c==='Offset'&&name==='zero')return mkOffset(0,0);
+    if(c==='Size'&&name==='zero')return mkSize(0,0);
     if(c==='DateTime'&&name==='parse'||c==='DateTime'&&name==='tryParse'){var pm=/^(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{2}):(\d{2})(?::(\d{2}))?)?/.exec(String(args[0]).trim());if(!pm){if(name==='tryParse')return null;throw exc('FormatException: Invalid date format\n'+args[0])}return mkDate(+pm[1],+pm[2],+pm[3],+(pm[4]||0),+(pm[5]||0),+(pm[6]||0))}
     if(c==='DateTime'&&name==='now'){var n=new Date();return mkDate(n.getFullYear(),n.getMonth()+1,n.getDate(),n.getHours(),n.getMinutes(),n.getSeconds())}
     if(c==='TimeOfDay'&&name==='now'){var n2=new Date();return mkTime(n2.getHours(),n2.getMinutes())}
@@ -2926,6 +3112,7 @@ function natMember(v,name,args){
           return mkPos(S.lat,S.lon,S.alt);
         case 'distanceBetween':return new Dbl(haversine(nn(args[0]),nn(args[1]),nn(args[2]),nn(args[3])));
         case 'openAppSettings':case 'openLocationSettings':return true}}
+    if(c==='SearchCtl'){var sk=show(args[0]);ST.search[sk]=ST.search[sk]||{open:false,text:''};if(name==='close'){ST.search[sk].open=false;ST.search[sk].text=args.length>1?show(args[1]):ST.search[sk].text}else ST.search[sk].open=true;dirty=true;return null}
     if(c==='MenuCtl'){ST.menuOpen[show(args[0])]=name==='open';dirty=true;return null}
     if(c==='Uri'){
       if(name==='parse'){var us=show(args[0]);return{nat:'Uri',f:{},url:us,src:'Uri.parse('+lit(us)+')'}}
@@ -3109,7 +3296,7 @@ function lambdaParts(raw){
     body=raw.slice(t[j+1].s,raw.lastIndexOf('}')).trim().replace(/;\s*$/,'')}
   else throw new Error('lambda');
   return{names:names,body:body}}
-var BUILDERS={DragTarget:1,ValueListenableBuilder:1,ListenableBuilder:1,AnimatedBuilder:1,TweenAnimationBuilder:1,AnimatedList:1,DraggableScrollableSheet:1,StreamBuilder:1,'ReorderableListView.builder':1,FutureBuilder:1,'SliverList.builder':1,'ListView.builder':1,'ListView.separated':1,'GridView.builder':1,'LayoutBuilder':1,Builder:1};
+var BUILDERS={SliverChildBuilderDelegate:1,DragTarget:1,ValueListenableBuilder:1,ListenableBuilder:1,AnimatedBuilder:1,TweenAnimationBuilder:1,AnimatedList:1,DraggableScrollableSheet:1,StreamBuilder:1,'ReorderableListView.builder':1,FutureBuilder:1,'SliverList.builder':1,'ListView.builder':1,'ListView.separated':1,'GridView.builder':1,'LayoutBuilder':1,Builder:1};
 ST.futureTexts=futureTexts;
 ST.isBuilder=function(n){return !!BUILDERS[n.type]};
 ST.builderTexts=function(n){
@@ -3149,16 +3336,50 @@ ST.builderTexts=function(n){
     var lp=lambdaParts(raw('builder')),b=lp.body;
     if(n.type==='LayoutBuilder'&&lp.names[1])b=b.replace(new RegExp('\\b'+lp.names[1]+'\\.(maxWidth|maxHeight|minWidth|minHeight)\\b','g'),function(m,k){return k==='maxWidth'?'360.0':k==='maxHeight'?'600.0':'0.0'});
     expandText(b,out);return out}
-  var cr=raw('itemCount'),cnt=cr?Math.min(100,Math.max(0,Math.trunc(nn(ST.value(ST.subst(cr)))))):0;
+  var SCD=n.type==='SliverChildBuilderDelegate',cr=raw(SCD?'childCount':'itemCount'),cnt=cr?Math.min(100,Math.max(0,Math.trunc(nn(ST.value(ST.subst(cr)))))):0;
   if(n.type==='AnimatedList'){
     var ir=raw('initialItemCount'),kr=raw('key'),kf=kr&&ST.fields[kr],kd=kf&&kf.value&&kf.value.st?kf.value.st.delta:0;
     var i0=ir?Math.trunc(nn(ST.value(ST.subst(ir)))):0;if(kf&&kf.value&&kf.value.st){if(kf.value.st.init==null)kf.value.st.init=i0;i0=kf.value.st.init}cnt=Math.min(100,Math.max(0,i0+kd))}
-  var ib=lambdaParts(raw('itemBuilder')),sb=n.type==='ListView.separated'&&raw('separatorBuilder')?lambdaParts(raw('separatorBuilder')):null;
+  if(SCD&&!cr){cnt=60}
+  var ib=lambdaParts(raw(SCD?'builder':'itemBuilder')),sb=n.type==='ListView.separated'&&raw('separatorBuilder')?lambdaParts(raw('separatorBuilder')):null;
   for(var i=0;i<cnt;i++){
     var ibb=ib.names[1]?bindVar(ib.body,ib.names[1],i):ib.body;if(n.type==='AnimatedList'&&ib.names[2])ibb=bindVar(ibb,ib.names[2],1);expandText(ibb,out);
     if(sb&&i<cnt-1)expandText(sb.names[1]?bindVar(sb.body,sb.names[1],i):sb.body,out)}
   return out};
-ST.menuOpen={};
+ST.nestedHeader=function(n){
+  var raw=M.rawProp(n,'headerSliverBuilder');if(raw==null)return[];
+  var lf=lamFull(raw.trim()),env=mkEnv({});env.params[lf.names[0]||'context']=null;env.params[lf.names[1]||'innerBoxIsScrolled']=false;
+  var old=ST.sync;ST.sync=true;
+  try{stmt(new Ps('{'+lf.body+'}'),env,true)}finally{ST.sync=old}
+  var r=env.ret;if(r==null)return[];
+  return(Array.isArray(r)?r:[]).map(function(x){return isRaw(x)?x.raw:null}).filter(Boolean)};
+ST.delegateInfo=function(n){
+  var raw=(M.rawProp(n,'delegate')||'').trim(),m=/^(?:const\s+|new\s+)?([A-Z_]\w*)\s*\(/.exec(raw),ci=m&&ST.dataClasses[m[1]];
+  if(!ci||!ci.build)return null;
+  function ext(nm,d){var g=ci.getters[nm],v=d;if(g){try{var b=g.arrow?g.body:(/return\s+([\s\S]+?);/.exec(g.body)||[0,'0'])[1];v=nn(ST.value(b))}catch(e){}}return v}
+  var body=null;try{body=ST.expandUser(raw)}catch(e){}
+  if(!body)return null;
+  body=bindVar(bindVar(body,'shrinkOffset',new Dbl(0)),'overlapsContent',false);
+  return{text:body,min:ext('minExtent',56),max:ext('maxExtent',120)}};
+ST.tableRows=function(n,from,per){
+  var sr=M.rawProp(n,'source');if(sr==null)return null;
+  var old=ST.sync;ST.sync=true;var total,rows=[];
+  try{var obj=ST.value(sr.trim());
+    total=Math.trunc(nn(member(obj,'rowCount',null)));
+    for(var i=from;i<Math.min(total,from+per);i++){var r=member(obj,'getRow',[i]);if(r!=null&&isRaw(r))rows.push(r.raw)}}
+  finally{ST.sync=old}
+  return{total:total,rows:rows}};
+ST.menuOpen={};ST.search={};
+ST.searchTexts=function(n,key,text){
+  var raw=M.rawProp(n,'suggestionsBuilder');if(raw==null)return[];
+  var lf=lamFull(raw.trim()),cn=lf.names[1]||'controller',body=lf.body;
+  var rx=new RegExp('\\b'+cn+'\\.closeView\\s*\\(','g'),rx2=new RegExp('\\b'+cn+'\\.openView\\s*\\(\\s*\\)','g'),rx3=new RegExp('\\b'+cn+'\\.text\\b','g');
+  body=body.replace(rx,"SearchCtl.close('"+key+"', ").replace(rx2,"SearchCtl.open('"+key+"')").replace(rx3,lit(text));
+  var env=mkEnv({});env.params[lf.names[0]||'context']=null;env.params[cn]={ctl:true,text:text};
+  var old=ST.sync;ST.sync=true;
+  try{stmt(new Ps('{'+body+'}'),env,true)}finally{ST.sync=old}
+  var r=env.ret;if(r==null)return[];if(r.isSet)r=Array.from(r.s||[]);
+  return(Array.isArray(r)?r:[]).map(function(x){return isRaw(x)?x.raw:'ListTile(title: Text('+lit(show(x))+'))'})};
 ST.menuAnchorText=function(n){
   var br=M.rawProp(n,'builder');if(br==null)return null;
   var lp=lambdaParts(br.trim()),b=lp.body,key=n._key||'?',op=!!ST.menuOpen[key];
@@ -3241,7 +3462,7 @@ function buildInfo(block){
     if(/^return\b/.test(chunks[i])){body=chunks[i].replace(/^return\s+/,'').replace(/;\s*$/,'');break}
     var l=LOCAL.exec(chunks[i]);if(l)locals.push({name:l[1],expr:l[2].trim()})}
   return{locals:locals,body:body}}
-var GETA=/^(?:[\w<>?,]+\s+)?get\s+(\w+)\s*=>\s*([\s\S]+?);$/,GETB=/^(?:[\w<>?,]+\s+)?get\s+(\w+)\s*(\{[\s\S]*\})$/;
+var GETA=/^(?:@\w+\s+)?(?:[\w<>?,]+\s+)?get\s+(\w+)\s*=>\s*([\s\S]+?);$/,GETB=/^(?:@\w+\s+)?(?:[\w<>?,]+\s+)?get\s+(\w+)\s*(\{[\s\S]*\})$/;
 function classInfo(name,body){
   var ci={name:name,fields:[],params:[],methods:{},getters:{},build:null,statics:{},smethods:{},ctors:{},cinit:null,cbody:null};
   var CT=new RegExp('^(?:const\\s+)?'+name+'\\s*\\(([\\s\\S]*?)\\)\\s*(?::([^;{]*))?(?:;|(\\{[\\s\\S]*\\}))$');
@@ -3283,7 +3504,7 @@ function stripComments(src){
     if(c==='/'&&src[i+1]==='*'){var j=src.indexOf('*/',i+2);i=j<0?n:j+2;continue}
     out+=c;i++}
   return out}
-ST.extract=function(src){src=stripComments(src);
+ST.extract=function(src){src=stripComments(src);var mal=/import\s+['"]dart:math['"]\s+as\s+(\w+)/.exec(src);ST.mathAlias=mal?mal[1]:null;
   var info={fields:[],methods:[],locals:{},funcs:[],classes:{},exts:[],globals:[],stateOf:null,initState:null,widgetCall:null,widgetClass:null};
   var states=[];
   scan(src).forEach(function(ch){
@@ -3325,7 +3546,7 @@ ST.extract=function(src){src=stripComments(src);
   return info};
 ST.expandUser=function(raw){
   var p=new Ps(raw),c=pPrim(p);if(c.t!=='ctor'||!c.args)return null;
-  var uw=ST.userWidgets[c.name];if(!uw)return null;
+  var uw=ST.userWidgets[c.name]||(ST.dataClasses[c.name]&&ST.dataClasses[c.name].build&&ST.dataClasses[c.name]);if(!uw)return null;
   if(uw.stateful)return(ST.cur&&ST.cur.cls===c.name)?uw.build.body:null;
   var vals=bindArgs(uw.params,evalArgs(c,mkEnv())),order=Object.keys(vals),body=uw.build.body;
   uw.build.locals.forEach(function(l){
@@ -3394,7 +3615,7 @@ OF.ST=ST;OF.Dbl=Dbl;
 (function(){
 'use strict';
 var OF=window.OF,W=OF.W,M=OF.M;
-var COL={red:'#F44336',pink:'#E91E63',purple:'#9C27B0',deepPurple:'#673AB7',indigo:'#3F51B5',blue:'#2196F3',lightBlue:'#03A9F4',cyan:'#00BCD4',teal:'#009688',green:'#4CAF50',lightGreen:'#8BC34A',lime:'#CDDC39',yellow:'#FFEB3B',amber:'#FFC107',orange:'#FF9800',deepOrange:'#FF5722',brown:'#795548',grey:'#9E9E9E',blueGrey:'#607D8B',black:'#000000',white:'#FFFFFF',transparent:'transparent'};
+var COL={red:'#F44336',pink:'#E91E63',purple:'#9C27B0',deepPurple:'#673AB7',indigo:'#3F51B5',blue:'#2196F3',lightBlue:'#03A9F4',cyan:'#00BCD4',teal:'#009688',green:'#4CAF50',lightGreen:'#8BC34A',lime:'#CDDC39',yellow:'#FFEB3B',amber:'#FFC107',orange:'#FF9800',deepOrange:'#FF5722',brown:'#795548',grey:'#9E9E9E',blueGrey:'#607D8B',redAccent:'#FF5252',pinkAccent:'#FF4081',purpleAccent:'#E040FB',deepPurpleAccent:'#7C4DFF',indigoAccent:'#536DFE',blueAccent:'#448AFF',lightBlueAccent:'#40C4FF',cyanAccent:'#18FFFF',tealAccent:'#64FFDA',greenAccent:'#69F0AE',lightGreenAccent:'#B2FF59',limeAccent:'#EEFF41',yellowAccent:'#FFFF00',amberAccent:'#FFD740',orangeAccent:'#FFAB40',deepOrangeAccent:'#FF6E40',black87:'rgba(0,0,0,.87)',black54:'rgba(0,0,0,.54)',black45:'rgba(0,0,0,.45)',black38:'rgba(0,0,0,.38)',black26:'rgba(0,0,0,.26)',black12:'rgba(0,0,0,.12)',white70:'rgba(255,255,255,.7)',white54:'rgba(255,255,255,.54)',white38:'rgba(255,255,255,.38)',white30:'rgba(255,255,255,.3)',white24:'rgba(255,255,255,.24)',white12:'rgba(255,255,255,.12)',white10:'rgba(255,255,255,.1)',black:'#000000',white:'#FFFFFF',transparent:'transparent'};
 var SWATCH=['red','pink','purple','deepPurple','indigo','blue','teal','green','amber','orange','brown','blueGrey','black','white'];
 var SH={50:[1,.9],100:[1,.8],200:[1,.6],300:[1,.4],400:[1,.2],600:[0,.12],700:[0,.25],800:[0,.4],900:[0,.55]};
 function mix(hex,n){var f=SH[n];if(!f)return hex;var t=f[0]?255:0,v=parseInt(hex.slice(1),16),r=v>>16,g=(v>>8)&255,b=v&255,k=f[1];
@@ -3413,6 +3634,44 @@ function colorVal(raw){
   if(m){var a=parseInt(m[1].slice(0,2),16)/255;return a>=.99?'#'+m[1].slice(2):'rgba('+parseInt(m[1].slice(2,4),16)+','+parseInt(m[1].slice(4,6),16)+','+parseInt(m[1].slice(6,8),16)+','+a.toFixed(2)+')'}
   return null;
 }
+
+function pcssColor(raw){
+  if(raw==null)return '#000';raw=String(raw).trim();
+  var m=/^([\s\S]+?)\.withOpacity\(\s*([\d.]+)\s*\)$/.exec(raw)||/^([\s\S]+?)\.withValues\(\s*alpha:\s*([\d.]+)\s*\)$/.exec(raw);
+  if(m)return alphaCss(pcssColor(m[1]),+m[2]);
+  m=/^([\s\S]+?)\.withAlpha\(\s*(\d+)\s*\)$/.exec(raw);if(m)return alphaCss(pcssColor(m[1]),(+m[2])/255);
+  m=/^(?:const\s+)?Color\.fromARGB\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/.exec(raw);if(m)return 'rgba('+m[2]+','+m[3]+','+m[4]+','+(+m[1]/255).toFixed(3)+')';
+  m=/^(?:const\s+)?Color\.fromRGBO\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*([\d.]+)\s*\)$/.exec(raw);if(m)return 'rgba('+m[1]+','+m[2]+','+m[3]+','+m[4]+')';
+  m=/^(?:const\s+)?Color\(\s*(0x[0-9a-fA-F]{1,8}|\d+)\s*\)$/.exec(raw);
+  if(m){var v=Number(m[1]),a=((v>>>24)&255)/255;return a>=.995?'rgb('+((v>>16)&255)+','+((v>>8)&255)+','+(v&255)+')':'rgba('+((v>>16)&255)+','+((v>>8)&255)+','+(v&255)+','+a.toFixed(3)+')'}
+  if(/^Colors\.transparent$/.test(raw))return 'rgba(0,0,0,0)';
+  m=/^Colors\.(black|white)(\d+)$/.exec(raw);if(m){var al={'87':.87,'54':.54,'45':.45,'38':.38,'26':.26,'12':.12,'70':.7,'24':.24,'10':.1}[m[2]];if(al!=null)return alphaCss(m[1]==='black'?'#000000':'#FFFFFF',al)}
+  if(raw==='Colors.black')return '#000000';if(raw==='Colors.white')return '#FFFFFF';
+  return colorVal(raw)||'#888'}
+function alphaCss(c,a){
+  var m=/^#([0-9a-f]{6})$/i.exec(c);if(m){var v=parseInt(m[1],16);return 'rgba('+(v>>16)+','+((v>>8)&255)+','+(v&255)+','+a+')'}
+  m=/^rgba?\(([^)]*)\)$/.exec(c);if(m){var p=m[1].split(',').map(Number);return 'rgba('+p[0]+','+p[1]+','+p[2]+','+((p[3]==null?1:p[3])*a).toFixed(3)+')'}
+  return c}
+function paintSvg(res,w,h){
+  var defs='',body='',uid='cp'+(R_opts.svgId=(R_opts.svgId||0)+1)+'_',f=function(x){return +(+x).toFixed(3)};
+  res.clips.forEach(function(c,i){defs+='<clipPath id="'+uid+i+'"><path d="'+c.d+'" transform="matrix('+c.m.map(f).join(' ')+')"/></clipPath>'});
+  res.ops.forEach(function(o){
+    var p=o.p||{color:'#000',style:'fill',sw:0,cap:'butt',join:'miter'},col=pcssColor(p.color),
+      at=p.style==='stroke'?' fill="none" stroke="'+col+'" stroke-width="'+f(p.sw||1)+'" stroke-linecap="'+p.cap+'" stroke-linejoin="'+p.join+'"':' fill="'+col+'"',
+      m=o.m,tr=(m[0]===1&&m[1]===0&&m[2]===0&&m[3]===1&&m[4]===0&&m[5]===0)?'':' transform="matrix('+m.map(f).join(' ')+')"',el='';
+    switch(o.k){
+      case 'circle':el='<circle cx="'+f(o.cx)+'" cy="'+f(o.cy)+'" r="'+f(Math.max(0,o.r))+'"'+(o.pt?' fill="'+col+'"':at)+tr+'/>';break;
+      case 'line':el='<line x1="'+f(o.x1)+'" y1="'+f(o.y1)+'" x2="'+f(o.x2)+'" y2="'+f(o.y2)+'" stroke="'+col+'" stroke-width="'+f(p.sw||1)+'" stroke-linecap="'+p.cap+'"'+tr+'/>';break;
+      case 'rect':el='<rect x="'+f(o.x)+'" y="'+f(o.y)+'" width="'+f(o.w)+'" height="'+f(o.h)+'"'+at+tr+'/>';break;
+      case 'rrect':el='<rect x="'+f(o.x)+'" y="'+f(o.y)+'" width="'+f(o.w)+'" height="'+f(o.h)+'" rx="'+f(o.r)+'"'+at+tr+'/>';break;
+      case 'oval':el='<ellipse cx="'+f(o.cx)+'" cy="'+f(o.cy)+'" rx="'+f(o.rx)+'" ry="'+f(o.ry)+'"'+at+tr+'/>';break;
+      case 'path':el='<path d="'+o.d+'"'+at+tr+'/>';break;
+      case 'color':el='<rect x="-5000" y="-5000" width="10000" height="10000" fill="'+col+'"'+tr+'/>';break;
+      case 'text':{var tl=String(o.text).split('\n').map(function(t,i){return '<tspan x="'+f(o.x)+'" dy="'+(i?'1.2em':'0')+'">'+esc2(t)+'</tspan>'}).join('');
+        el='<text x="'+f(o.x)+'" y="'+f(o.y)+'" font-size="'+f(o.size)+'" fill="'+pcssColor(o.color)+'"'+(o.bold?' font-weight="700"':'')+' dominant-baseline="hanging" font-family="Roboto,Arial,sans-serif"'+tr+'>'+tl+'</text>';break}}
+    if(o.clip>=0)el='<g clip-path="url(#'+uid+o.clip+')">'+el+'</g>';
+    body+=el});
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" style="overflow:hidden;display:block">'+(defs?'<defs>'+defs+'</defs>':'')+body+'</svg>'}
 function strVal(raw){
   if(raw==null)return '';raw=raw.trim();var m=/^(?:r)?("""|'''|"|')([\s\S]*)\1$/.exec(raw);
   if(!m)return '{'+raw+'}';
@@ -3519,7 +3778,7 @@ function fillV(n){
   if(!n||n.unknown)return false;
   switch(ALIAS[n.type]||n.type){
     case 'Column':return !sizeMin(n);
-    case 'ListView':case 'ListView.builder':case 'ListView.separated':case 'GridView.builder':case 'PageView':case 'IndexedStack':case 'AnimatedAlign':case 'AnimatedList':case 'DraggableScrollableSheet':case 'InteractiveViewer':case 'ReorderableListView':case 'ReorderableListView.builder':case 'Center':case 'Spacer':case 'Align':case 'GridView.count':case 'SingleChildScrollView':case 'TabBarView':case 'Scaffold':case 'FlutterMap':case 'CustomScrollView':case 'FutureBuilder':case 'StreamBuilder':return true;
+    case 'ListView':case 'ListView.builder':case 'ListView.separated':case 'GridView.builder':case 'PageView':case 'IndexedStack':case 'AnimatedAlign':case 'AnimatedList':case 'DraggableScrollableSheet':case 'InteractiveViewer':case 'ReorderableListView':case 'ReorderableListView.builder':case 'Center':case 'Spacer':case 'Align':case 'GridView.count':case 'SingleChildScrollView':case 'TabBarView':case 'Scaffold':case 'FlutterMap':case 'CustomScrollView':case 'NestedScrollView':case 'ListView.custom':case 'SliverList':case 'FutureBuilder':case 'StreamBuilder':return true;
     case 'NavigationRail':case 'ListWheelScrollView':case 'SliverFillRemaining':return true;
     case 'Row':return (n.slots.children||[]).some(function(c){return c&&c.type==='NavigationRail'});
     case 'Stack':return stackFill(n);
@@ -3533,7 +3792,7 @@ function fillH(n){
   if(!n||n.unknown)return false;
   switch(ALIAS[n.type]||n.type){
     case 'Row':return !sizeMin(n);
-    case 'ListView':case 'ListView.builder':case 'ListView.separated':case 'GridView.builder':case 'PageView':case 'IndexedStack':case 'AnimatedAlign':case 'AnimatedList':case 'DraggableScrollableSheet':case 'InteractiveViewer':case 'ReorderableListView':case 'ReorderableListView.builder':case 'FlutterMap':case 'CustomScrollView':case 'FutureBuilder':case 'StreamBuilder':case 'Table':case 'SwitchListTile':case 'CheckboxListTile':case 'RadioListTile':case 'Center':case 'Align':case 'GridView.count':case 'Divider':case 'LinearProgressIndicator':case 'AspectRatio':case 'FractionallySizedBox':case 'TextField':case 'TextFormField':case 'VerticalDivider':case 'ExpansionTile':case 'NavigationBar':case 'ListTile':case 'Wrap':case 'Slider':case 'RangeSlider':case 'SingleChildScrollView':case 'TabBarView':case 'TabBar':case 'BottomNavigationBar':case 'Scaffold':return true;
+    case 'ListView':case 'ListView.builder':case 'ListView.separated':case 'GridView.builder':case 'PageView':case 'IndexedStack':case 'AnimatedAlign':case 'AnimatedList':case 'DraggableScrollableSheet':case 'InteractiveViewer':case 'ReorderableListView':case 'ReorderableListView.builder':case 'FlutterMap':case 'CustomScrollView':case 'NestedScrollView':case 'ListView.custom':case 'SliverList':case 'PaginatedDataTable':case 'FutureBuilder':case 'StreamBuilder':case 'Table':case 'SwitchListTile':case 'CheckboxListTile':case 'RadioListTile':case 'Center':case 'Align':case 'GridView.count':case 'Divider':case 'LinearProgressIndicator':case 'AspectRatio':case 'FractionallySizedBox':case 'TextField':case 'TextFormField':case 'VerticalDivider':case 'ExpansionTile':case 'NavigationBar':case 'ListTile':case 'Wrap':case 'Slider':case 'RangeSlider':case 'SingleChildScrollView':case 'TabBarView':case 'TabBar':case 'BottomNavigationBar':case 'Scaffold':return true;
     case 'Stack':return stackFill(n);
     case 'Column':return /CrossAxisAlignment\.stretch/.test(M.getProp(n,'crossAxisAlignment')||'')||(n.slots.children||[]).some(fillH);
     case 'Expanded':case 'Flexible':return !!n.slots.child&&fillH(n.slots.child);
@@ -4133,11 +4392,12 @@ function build(n,path,pt,ppt,sel){
         else{rfe.className='rfh';rfe.textContent='\u21E3 arraste para baixo para atualizar'}
         d.appendChild(rfe)}
       break}
-    case 'CustomScrollView':{d.className+=' csv';kids('slivers','ListView');if(!(n.slots.slivers||[]).length)d.appendChild(ph('slivers: [ ]'));break}
+    case 'CustomScrollView':{d.className+=' csv';var pas=R_opts.pinAcc;if(!R_opts.nsvD)R_opts.pinAcc=0;kids('slivers','ListView');R_opts.pinAcc=pas;if(!(n.slots.slivers||[]).length)d.appendChild(ph('slivers: [ ]'));break}
     case 'SliverAppBar':{
       d.className+=' appbar sab';var eh=numVal(M.getProp(n,'expandedHeight')),pin=/true/.test(M.getProp(n,'pinned')||'');eh=Math.max(56,eh==null?56:eh);
-      d.style.height=eh+'px';d.style.flex='none';if(pin){d.style.position='sticky';d.style.top=(56-eh)+'px';d.style.zIndex='3'}
+      d.style.height=eh+'px';d.style.flex='none';if(pin){var pa=R_opts.pinAcc||0;d.style.position='sticky';d.style.top=(pa+56-eh)+'px';d.style.zIndex='4';R_opts.pinAcc=pa+56}
       var sb2=colorVal(M.getProp(n,'backgroundColor'));if(sb2)d.style.background=sb2;var sf2=colorVal(M.getProp(n,'foregroundColor'));if(sf2)d.style.color=sf2;
+      if(n.slots.flexibleSpace){var fxs=child(n.slots.flexibleSpace,'flexibleSpace','#none');fxs.classList.add('fxs');d.appendChild(fxs)}
       if(n.slots.title){var stt=child(n.slots.title,'title','#none');d.appendChild(stt)}break}
     case 'SliverToBoxAdapter':{d.className+=' col';d.style.alignItems='stretch';single('child','Column','child: adicione um widget');break}
     case 'SliverList.list':{d.className+=' col';d.style.alignItems='stretch';kids('children','ListView');break}
@@ -4201,11 +4461,24 @@ function build(n,path,pt,ppt,sel){
       d.innerHTML='<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0L100 100M100 0L0 100" stroke="'+(pcl||'currentColor')+'" stroke-width="1.5" vector-effect="non-scaling-stroke" fill="none"/></svg>';
       if(pcl)d.style.borderColor=pcl;break}
     case 'CustomPaint':{
-      d.className+=' cpt';var csz=/Size\(\s*([\d.]+)\s*,\s*([\d.]+)\s*\)/.exec(M.getProp(n,'size')||'');
-      if(csz){d.style.width=csz[1]+'px';d.style.height=csz[2]+'px';d.style.flex='none'}
-      else if(!n.slots.child){d.style.width='120px';d.style.height='80px';d.style.flex='none'}
+      d.className+=' cpt';var szr=M.getProp(n,'size')||'',csz=/Size\(\s*([\d.]+)\s*,\s*([\d.]+)\s*\)/.exec(szr)||/Size\.square\(\s*([\d.]+)\s*\)/.exec(szr),cw=null,chh=null;
+      if(csz){cw=+csz[1];chh=+(csz[2]||csz[1])}
+      else if(n.slots.child){var cc0=n.slots.child;cw=dim(cc0,'width');chh=dim(cc0,'height');if(cw==null||!isFinite(cw))cw=200;if(chh==null||!isFinite(chh))chh=200}
+      var hasP=!!(M.rawProp(n,'painter')&&M.rawProp(n,'painter').trim()!=='null'),hasF=!!(M.rawProp(n,'foregroundPainter')&&M.rawProp(n,'foregroundPainter').trim()!=='null');
+      if(cw!=null){d.style.width=cw+'px';d.style.height=chh+'px';d.style.flex='none'}
+      else if(!hasP&&!hasF){d.style.width='120px';d.style.height='80px';d.style.flex='none'}
+      d.style.position='relative';
+      function paintLayer(which){
+        var res=null,err=null;try{res=OF.ST.paintOps(n,which,cw||0,chh||0)}catch(e){err=e.message}
+        var lay=document.createElement('div');lay.className='cpsv';
+        if(err){lay.className+=' cper';lay.textContent=which+': '+err;return lay}
+        if(res)lay.innerHTML=paintSvg(res,cw||0,chh||0);return lay}
+      if(hasP||hasF){
+        if(cw==null){d.style.width='120px';d.style.height='40px';d.style.flex='none';var nsz=document.createElement('span');nsz.className='cper';nsz.textContent='size 0×0: passe size: Size(largura, altura) ou um child';d.appendChild(nsz)}
+        else{d.classList.add('cpd');if(hasP)d.appendChild(paintLayer('painter'))}}
       var cpl=document.createElement('span');cpl.className='cpl';cpl.textContent='CustomPaint';d.appendChild(cpl);
-      if(n.slots.child){d.style.position='relative';var cch=child(n.slots.child,'child','#single');d.appendChild(cch)}
+      if(n.slots.child){var cch=child(n.slots.child,'child','#single');d.appendChild(cch)}
+      if(hasF&&cw!=null)d.appendChild(paintLayer('foregroundPainter'));
       break}
     case 'BackdropFilter':{
       d.className+=' col';d.style.alignItems='flex-start';var bsg=/blur\(([^)]*)\)/.exec(M.getProp(n,'filter')||''),bsx=bsg&&/sigmaX:\s*([\d.]+)/.exec(bsg[1]),bsy=bsg&&/sigmaY:\s*([\d.]+)/.exec(bsg[1]);
@@ -4262,7 +4535,15 @@ function build(n,path,pt,ppt,sel){
       if(!(n.slots.children||[]).length)d.appendChild(ph('children: [ ]'));kids('children','GridView');break}
     case 'ListView.custom':{d.className+=' list';single('childrenDelegate','ListView','childrenDelegate: SliverChildListDelegate([...])');break}
     case 'SliverChildListDelegate':{d.style.display='contents';kids('children',pt==='GridView'?'GridView':'ListView');break}
-    case 'NestedScrollView':{d.className+=' col';d.style.alignItems='stretch';single('body','#single','body: adicione um widget');break}
+    case 'NestedScrollView':{
+      d.className+=' nsv';var pas2=R_opts.pinAcc;R_opts.pinAcc=0;R_opts.nsvD=(R_opts.nsvD||0)+1;var nht=[];try{nht=OF.ST.nestedHeader(n)}catch(e){d.appendChild(ph('headerSliverBuilder: '+e.message))}
+      nht.forEach(function(tx,i){var nd=OF.parseWidgetText(tx);if(nd)d.appendChild(build(nd,path.concat('@'+i),'ListView',null,sel))});
+      single('body','#single','body: adicione um widget');var nbd=d.lastChild;if(nbd&&nbd.classList)nbd.classList.add('nsb');R_opts.nsvD--;R_opts.pinAcc=pas2;break}
+    case 'SliverList':{d.className+=' list';single('delegate','ListView','delegate: SliverChildBuilderDelegate(...)');break}
+    case 'SliverChildBuilderDelegate':{d.style.display='contents';genKids(pt==='GridView'?'GridView':'ListView');break}
+    case 'FlexibleSpaceBar':{
+      d.className+=' fsb';if(n.slots.background){var fbg=child(n.slots.background,'background','#none');fbg.classList.add('fsbg');d.appendChild(fbg)}
+      if(n.slots.title){var ftt=child(n.slots.title,'title','#none');ftt.classList.add('fstt');d.appendChild(ftt)}break}
     case 'ListWheelScrollView':{
       d.className+=' lws';var lex=Math.max(20,numVal(M.getProp(n,'itemExtent'))||50),lch=expKids('children');d.dataset.ext=lex;d.style.flex='1 1 0';d.style.minHeight='120px';d.style.alignSelf='stretch';
       var lin=document.createElement('div');lin.className='lwi';d.appendChild(lin);d.dataset.lk=path.join('>')||'root';
@@ -4282,14 +4563,28 @@ function build(n,path,pt,ppt,sel){
       single('delegate','GridView','delegate: SliverChildListDelegate([...])');break}
     case 'SliverPadding':{d.className+=' col';d.style.alignItems='stretch';var spd=insets(M.getProp(n,'padding'));if(spd)d.style.padding=px(spd);single('sliver','Column','sliver: adicione um widget');break}
     case 'SliverFillRemaining':{d.className+=' col';d.style.alignItems='flex-start';d.style.minHeight='120px';single('child','#single',null);break}
-    case 'SliverPersistentHeader':{d.className+=' sph';d.textContent='SliverPersistentHeader'+(/pinned:\s*true/.test(n.raw||'')||/true/.test(M.getProp(n,'pinned')||'')?' · fixo':'');break}
+    case 'SliverPersistentHeader':{
+      var spi=null,sppin=/true/.test(M.getProp(n,'pinned')||'');try{spi=OF.ST.delegateInfo(n)}catch(e){}
+      if(!spi){d.className+=' sph';d.textContent='SliverPersistentHeader'+(sppin?' · fixo':'')+' (delegate não encontrado)';break}
+      d.className+=' sphd col';d.style.alignItems='stretch';d.style.height=spi.max+'px';d.style.flex='none';d.style.overflow='hidden';
+      if(sppin){var pb=R_opts.pinAcc||0;d.style.position='sticky';d.style.top=(pb+spi.min-spi.max)+'px';d.style.zIndex='3';R_opts.pinAcc=pb+spi.min}
+      var spn=OF.parseWidgetText(spi.text);if(spn)d.appendChild(build(spn,path.concat('@0'),'#single',null,sel));break}
     case 'PaginatedDataTable':{
-      d.className+=' col pdt';d.style.alignItems='stretch';
+      d.className+=' col pdt';d.style.alignItems='stretch';var pdk=path.join('>')||'root';
       if(n.slots.header){var pdh=child(n.slots.header,'header','#none');pdh.classList.add('pdth');d.appendChild(pdh)}
-      var pcols=n.slots.columns||[],prp=Math.min(6,numVal(M.getProp(n,'rowsPerPage'))||10),ptb=document.createElement('div');ptb.className='pdtt';ptb.style.gridTemplateColumns='repeat('+Math.max(1,pcols.length)+',1fr)';
+      var pcols=n.slots.columns||[],prpn=Math.max(1,Math.min(20,numVal(M.getProp(n,'rowsPerPage'))||10)),ptb=document.createElement('div');ptb.className='pdtt';ptb.style.gridTemplateColumns='repeat('+Math.max(1,pcols.length)+',minmax(0,1fr))';
       pcols.forEach(function(c,i){var ce=child(c,'columns:'+i,'#none');ce.classList.add('pdtc');ptb.appendChild(ce)});
-      for(var pr=0;pr<prp;pr++)pcols.forEach(function(){var cc3=document.createElement('div');cc3.className='pdtx';cc3.textContent='…';ptb.appendChild(cc3)});
-      d.appendChild(ptb);var pft=document.createElement('div');pft.className='pdtf';pft.textContent='Linhas por página: '+(numVal(M.getProp(n,'rowsPerPage'))||10)+'   ‹  ›';d.appendChild(pft);break}
+      var pst=Math.max(0,R_opts.pdt[pdk]||0),ptr=null,pterr='';try{ptr=OF.ST.tableRows(n,pst,prpn)}catch(e){ptr=null;pterr=e.message}
+      if(ptr&&ptr.total>0&&pst>=ptr.total){pst=0;R_opts.pdt[pdk]=0;try{ptr=OF.ST.tableRows(n,0,prpn)}catch(e){}}
+      if(ptr){ptr.rows.forEach(function(tx,ri){var rn=OF.parseWidgetText(tx);if(rn){var re=build(rn,path.concat('@'+ri),'#none',null,sel);[].forEach.call(re.children,function(c){if(c.classList&&c.classList.contains('tc')){c.classList.add('pdtx','pdtr');c.classList.remove('tc')}});ptb.appendChild(re)}})}
+      else for(var pr=0;pr<Math.min(6,prpn);pr++)pcols.forEach(function(){var cc3=document.createElement('div');cc3.className='pdtx';cc3.textContent='…';ptb.appendChild(cc3)});
+      d.appendChild(ptb);var pft=document.createElement('div');pft.className='pdtf';
+      if(ptr){var pen=Math.min(ptr.total,pst+prpn);pft.innerHTML='Linhas por página: '+prpn+' &nbsp; '+(ptr.total?(pst+1)+'–'+pen+' de '+ptr.total:'0 de 0')+' &nbsp; ';
+        var pb1=document.createElement('span'),pb2=document.createElement('span');pb1.textContent='‹';pb2.textContent='›';pb1.className=pb2.className='pdtb';
+        {if(pst>0){pb1.classList.add('hh');pb1.dataset.h='pdtnav';pb1.dataset.k=pdk;pb1.dataset.v=Math.max(0,pst-prpn)}if(pen<ptr.total){pb2.classList.add('hh');pb2.dataset.h='pdtnav';pb2.dataset.k=pdk;pb2.dataset.v=pst+prpn}}
+        pft.appendChild(pb1);pft.appendChild(pb2)}
+      else pft.textContent='Linhas por página: '+prpn+'   ‹  ›  (linhas de exemplo: '+(pterr||'sem source')+')';
+      d.appendChild(pft);break}
     case 'AnimatedDefaultTextStyle':{
       d.className+=' col';d.style.alignItems='flex-start';d.style.cssText+=textCss(M.getProp(n,'style'));single('child','#single','child: adicione um widget');break}
     case 'TextButton.icon':case 'ElevatedButton.icon':case 'OutlinedButton.icon':case 'FilledButton.icon':case 'FilledButton.tonal':{
@@ -4304,7 +4599,22 @@ function build(n,path,pt,ppt,sel){
       if(n.slots.label)d.appendChild(child(n.slots.label,'label','#none'));break}
     case 'SearchAnchor':case 'SearchAnchor.bar':{
       d.className+=' tfld sbar2';var sh2=M.getProp(n,n.type==='SearchAnchor.bar'?'barHintText':'viewHintText');
-      d.innerHTML='<span class="sbi">⌕</span><span class="sbh">'+(sh2?esc2(strVal(sh2)):'Buscar')+'</span>';break}
+      if(!sh2){var shm=/hintText:\s*('[^']*'|"[^"]*")/.exec(M.rawProp(n,'builder')||'');if(shm)sh2=shm[1]}
+      var sak=path.join('>')||'root';n._key=sak;
+      var sas=OF.ST.search&&OF.ST.search[sak]||{open:false,text:''};
+      if(!R_opts.run){d.innerHTML='<span class="sbi">⌕</span><span class="sbh">'+(sh2?esc2(strVal(sh2)):'Buscar')+'</span>';d.title='Entre em ▶ Testar para ver as sugestões';break}
+      d.className+=' sax col';d.style.alignItems='stretch';
+      var sab=document.createElement('div');sab.className='sabar';
+      if(sas.open){sab.innerHTML='<span class="sbi">⌕</span>';var sin=document.createElement('input');sin.className='sain';sin.dataset.key=sak;sin.value=sas.text||'';sin.setAttribute('aria-label','Buscar');sin._n=n;sab.appendChild(sin);
+        var scl=document.createElement('span');scl.className='sacl hh';scl.textContent='✕';scl.dataset.h='saclose';scl.dataset.k=sak;sab.appendChild(scl)}
+      else{var sbt=sas.text||(sh2?strVal(sh2):'Buscar');sab.innerHTML='<span class="sbi">⌕</span><span class="sbh'+(sas.text?' sat':'')+'">'+esc2(sbt)+'</span>';sab.dataset.h='saopen';sab.dataset.k=sak;sab.classList.add('hh')}
+      d.appendChild(sab);
+      if(sas.open){var sal=document.createElement('div');sal.className='sal col';sal.style.alignItems='stretch';
+        var stx=[];try{stx=OF.ST.searchTexts(n,sak,sas.text||'')}catch(e){sal.appendChild(ph('suggestionsBuilder: '+e.message))}
+        if(!stx.length&&!sal.childNodes.length){var sem=document.createElement('div');sem.className='sae';sem.textContent='Sem sugestões';sal.appendChild(sem)}
+        stx.slice(0,30).forEach(function(tx,i){var nd=OF.parseWidgetText(tx);if(nd)sal.appendChild(build(nd,path.concat('@'+i),'#single',null,sel))});
+        d.appendChild(sal)}
+      break}
     case 'Theme':{
       d.className+=' col';d.style.alignItems='flex-start';var tdr=M.getProp(n,'data')||'',tsm=/seedColor:\s*([^,)\s]+(?:\.[\w]+)*)/.exec(tdr)||/(?:primaryColor|primary):\s*([^,)\s]+(?:\.[\w]+)*)/.exec(tdr),tcv=tsm&&colorVal(tsm[1]);
       if(tcv&&tcv[0]==='#'){d.style.setProperty('--d-primary',tcv);d.style.setProperty('--d-btn',mixHex(tcv,.82))}
@@ -4347,7 +4657,7 @@ function build(n,path,pt,ppt,sel){
   if(R_opts.run)bindRun(d,n);
   return d;
 }
-var R_opts={lsel:{},lws:{},cal:{},drawerOpen:{},run:false,xray:false,typed:{},page:{},depth:0,nav:[],navSc:[],over:[],tab:{},tabCtl:null,exp:{},fut:{},futT:[],mapV:null,rf:{},str:{},iv:{},dss:{},ddm:{},acx:{},anim:{},sw:{},tw:{}};
+var R_opts={pdt:{},lsel:{},lws:{},cal:{},drawerOpen:{},run:false,xray:false,typed:{},page:{},depth:0,nav:[],navSc:[],over:[],tab:{},tabCtl:null,exp:{},fut:{},futT:[],mapV:null,rf:{},str:{},iv:{},dss:{},ddm:{},acx:{},anim:{},sw:{},tw:{}};
 OF.ST.futPhase=function(n,ms){
   if(!R_opts.run||ms<=0)return 'done';
   var k=(n._key||'?')+'#'+(OF.ST.futGen||0),f=R_opts.fut[k];
@@ -10868,7 +11178,31 @@ class _TelaState extends State<Tela> {
 {t:"x. Busca e calendário: SearchAnchor.bar e CalendarDatePicker",
  text:"SearchAnchor.bar cria uma barra de busca que abre uma lista de sugestões (aqui sem sugestões, no simulador). CalendarDatePicker mostra um calendário no meio da tela, sem diálogo. onDateChanged avisa o dia escolhido.",
  tryit:"Escolha um dia no calendário e veja o texto abaixo. Mude o mês inicial e o limite lastDate.",
- code:"import 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Agenda()));\n\nclass Agenda extends StatefulWidget {\n  const Agenda({super.key});\n\n  @override\n  State<Agenda> createState() => _AgendaState();\n}\n\nclass _AgendaState extends State<Agenda> {\n  DateTime escolhido = DateTime(2026, 10, 12);\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Busca e calendário')),\n      body: ListView(\n        padding: const EdgeInsets.all(16),\n        children: [\n          SearchAnchor.bar(\n            barHintText: 'Buscar compromisso',\n            suggestionsBuilder: (context, controller) => [],\n          ),\n          const SizedBox(height: 16),\n          CalendarDatePicker(\n            initialDate: DateTime(2026, 10, 12),\n            firstDate: DateTime(2026, 1, 1),\n            lastDate: DateTime(2026, 12, 31),\n            onDateChanged: (d) {\n              setState(() {\n                escolhido = d;\n              });\n            },\n          ),\n          Text('Dia escolhido: ${escolhido.day}/${escolhido.month}/${escolhido.year}', style: const TextStyle(fontSize: 18)),\n        ],\n      ),\n    );\n  }\n}\n"}
+ code:"import 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Agenda()));\n\nclass Agenda extends StatefulWidget {\n  const Agenda({super.key});\n\n  @override\n  State<Agenda> createState() => _AgendaState();\n}\n\nclass _AgendaState extends State<Agenda> {\n  DateTime escolhido = DateTime(2026, 10, 12);\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Busca e calendário')),\n      body: ListView(\n        padding: const EdgeInsets.all(16),\n        children: [\n          SearchAnchor.bar(\n            barHintText: 'Buscar compromisso',\n            suggestionsBuilder: (context, controller) => [],\n          ),\n          const SizedBox(height: 16),\n          CalendarDatePicker(\n            initialDate: DateTime(2026, 10, 12),\n            firstDate: DateTime(2026, 1, 1),\n            lastDate: DateTime(2026, 12, 31),\n            onDateChanged: (d) {\n              setState(() {\n                escolhido = d;\n              });\n            },\n          ),\n          Text('Dia escolhido: ${escolhido.day}/${escolhido.month}/${escolhido.year}', style: const TextStyle(fontSize: 18)),\n        ],\n      ),\n    );\n  }\n}\n"},
+{t:"x. SearchAnchor: busca com sugestões",
+ text:"SearchAnchor abre uma tela de busca. O builder desenha a barra (um SearchBar ligado ao controller) e o suggestionsBuilder devolve a lista de sugestões, e é chamado de novo a cada letra digitada: o controller.text tem o que a pessoa escreveu. Ao tocar numa sugestão, controller.closeView(texto) fecha a tela e deixa o texto escolhido na barra.",
+ tryit:"Em ▶ Testar, toque na barra, digite \"an\" e escolha uma fruta. Depois mude o filtro e acrescente frutas à lista.",
+ code:"import 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Busca()));\n\nclass Busca extends StatefulWidget {\n  const Busca({super.key});\n\n  @override\n  State<Busca> createState() => _BuscaState();\n}\n\nclass _BuscaState extends State<Busca> {\n  final frutas = ['Maçã', 'Banana', 'Uva', 'Laranja', 'Abacaxi', 'Morango'];\n  String escolhida = 'nenhuma';\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('SearchAnchor')),\n      body: Padding(\n        padding: const EdgeInsets.all(16),\n        child: Column(\n          children: [\n            Text('Escolhida: $escolhida'),\n            SearchAnchor(\n              builder: (context, controller) {\n                return SearchBar(\n                  controller: controller,\n                  hintText: 'Buscar fruta',\n                  onTap: () => controller.openView(),\n                );\n              },\n              suggestionsBuilder: (context, controller) {\n                final q = controller.text.toLowerCase();\n                return frutas\n                    .where((f) => f.toLowerCase().contains(q))\n                    .map((f) => ListTile(\n                          title: Text(f),\n                          onTap: () {\n                            setState(() {\n                              escolhida = f;\n                            });\n                            controller.closeView(f);\n                          },\n                        ))\n                    .toList();\n              },\n            ),\n          ],\n        ),\n      ),\n    );\n  }\n}\n"},
+{t:"x. NestedScrollView e SliverPersistentHeader",
+ text:"NestedScrollView une um cabeçalho e um corpo numa só rolagem: headerSliverBuilder devolve os slivers do topo (como um SliverAppBar com flexibleSpace) e body é o conteúdo. SliverPersistentHeader é um cabeçalho seu: o delegate é uma classe que estende SliverPersistentHeaderDelegate, com minExtent, maxExtent e build. Com pinned: true ele fica preso no topo. SliverList com SliverChildBuilderDelegate monta os itens sob demanda.",
+ tryit:"Role a tela no canvas: a barra encolhe e a faixa verde fica presa embaixo dela. Mude as alturas e a quantidade de linhas.",
+ code:"import 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Rolagem()));\n\nclass Cabecalho extends SliverPersistentHeaderDelegate {\n  final String titulo;\n  Cabecalho(this.titulo);\n\n  @override\n  double get minExtent => 48;\n  @override\n  double get maxExtent => 96;\n\n  @override\n  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {\n    return Container(\n      color: Colors.teal,\n      alignment: Alignment.centerLeft,\n      padding: const EdgeInsets.all(16),\n      child: Text(titulo, style: const TextStyle(color: Colors.white, fontSize: 20)),\n    );\n  }\n\n  @override\n  bool shouldRebuild(covariant SliverPersistentHeaderDelegate old) => false;\n}\n\nclass Rolagem extends StatelessWidget {\n  const Rolagem({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      body: NestedScrollView(\n        headerSliverBuilder: (context, innerBoxIsScrolled) => [\n          SliverAppBar(\n            title: const Text('Perfil'),\n            pinned: true,\n            expandedHeight: 140,\n            flexibleSpace: const FlexibleSpaceBar(\n              title: Text('Ana'),\n              background: ColoredBox(color: Colors.indigo),\n            ),\n          ),\n        ],\n        body: CustomScrollView(\n          slivers: [\n            SliverPersistentHeader(pinned: true, delegate: Cabecalho('Tarefas')),\n            SliverList(\n              delegate: SliverChildBuilderDelegate(\n                (context, i) => ListTile(title: Text('Linha $i')),\n                childCount: 30,\n              ),\n            ),\n          ],\n        ),\n      ),\n    );\n  }\n}\n"},
+{t:"x. PaginatedDataTable com DataTableSource",
+ text:"PaginatedDataTable mostra uma tabela dividida em páginas. As linhas não vêm numa lista: vêm de uma classe sua que estende DataTableSource e responde a rowCount (quantas linhas há) e getRow(index) (devolve a DataRow daquela posição). A tabela só pede ao source as linhas da página visível.",
+ tryit:"Use as setas ‹ › do rodapé para trocar de página. Mude rowsPerPage e acrescente alunos à lista.",
+ code:"import 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Tabela()));\n\nclass AlunosFonte extends DataTableSource {\n  final nomes = ['Ana', 'Bruno', 'Carla', 'Davi', 'Elisa', 'Fábio', 'Gisele', 'Hugo'];\n\n  @override\n  int get rowCount => nomes.length;\n  @override\n  bool get isRowCountApproximate => false;\n  @override\n  int get selectedRowCount => 0;\n\n  @override\n  DataRow? getRow(int index) {\n    return DataRow(cells: [\n      DataCell(Text('${index + 1}')),\n      DataCell(Text(nomes[index])),\n      DataCell(Text('${7 + index % 3}.5')),\n    ]);\n  }\n}\n\nclass Tabela extends StatelessWidget {\n  const Tabela({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      body: SingleChildScrollView(\n        child: PaginatedDataTable(\n          header: const Text('Alunos'),\n          rowsPerPage: 3,\n          columns: const [\n            DataColumn(label: Text('Nº')),\n            DataColumn(label: Text('Nome')),\n            DataColumn(label: Text('Nota')),\n          ],\n          source: AlunosFonte(),\n        ),\n      ),\n    );\n  }\n}\n"},
+{t:"x. CustomPaint: Canvas, Paint e formas",
+ text:"CustomPaint dá uma tela em branco para desenhar com código. O painter é uma classe que estende CustomPainter e implementa paint(Canvas canvas, Size size). O Canvas tem drawCircle, drawLine, drawRect, drawArc, drawPath e outros. O Paint diz como pintar: color, style (fill ou stroke) e strokeWidth. O CustomPaint precisa de size ou de um child, senão ocupa 0×0.",
+ tryit:"Mude a cor do rosto, o tamanho dos olhos e a quantidade de raios do sol.",
+ code:"import 'dart:math' as math;\nimport 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Desenho()));\n\nclass Rosto extends CustomPainter {\n  @override\n  void paint(Canvas canvas, Size size) {\n    final centro = Offset(size.width / 2, size.height / 2);\n    final raio = math.min(size.width, size.height) / 2 - 8;\n\n    final rosto = Paint()..color = Colors.amber;\n    canvas.drawCircle(centro, raio, rosto);\n\n    final contorno = Paint()\n      ..color = Colors.brown\n      ..style = PaintingStyle.stroke\n      ..strokeWidth = 4;\n    canvas.drawCircle(centro, raio, contorno);\n\n    final olho = Paint()..color = Colors.black;\n    canvas.drawCircle(centro + const Offset(-30, -25), 8, olho);\n    canvas.drawCircle(centro + const Offset(30, -25), 8, olho);\n\n    final boca = Rect.fromCenter(center: centro + const Offset(0, 15), width: 80, height: 60);\n    canvas.drawArc(boca, 0, math.pi, false, contorno);\n\n    final raios = Paint()\n      ..color = Colors.orange.withOpacity(0.6)\n      ..strokeWidth = 3;\n    for (int i = 0; i < 12; i++) {\n      final a = i * math.pi / 6;\n      canvas.drawLine(\n        centro + Offset.fromDirection(a, raio + 2),\n        centro + Offset.fromDirection(a, raio + 7),\n        raios,\n      );\n    }\n\n    final tp = TextPainter(\n      text: const TextSpan(text: 'Oi!', style: TextStyle(color: Colors.black, fontSize: 18)),\n      textDirection: TextDirection.ltr,\n    )..layout();\n    tp.paint(canvas, Offset(8, 8));\n\n    final seta = Path()\n      ..moveTo(size.width - 40, size.height - 10)\n      ..lineTo(size.width - 10, size.height - 10)\n      ..lineTo(size.width - 25, size.height - 40)\n      ..close();\n    canvas.drawPath(seta, Paint()..color = Colors.teal);\n  }\n\n  @override\n  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;\n}\n\nclass Desenho extends StatelessWidget {\n  const Desenho({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      body: Center(\n        child: CustomPaint(\n          size: const Size(240, 240),\n          painter: Rosto(),\n        ),\n      ),\n    );\n  }\n}\n"},
+{t:"x. CustomPaint: gráfico de pizza com drawArc",
+ text:"drawArc(retângulo, início, varredura, usarCentro, paint) desenha um pedaço de círculo. Os ângulos são em radianos: 0 é a direita, e os valores positivos giram no sentido horário. Um gráfico de pizza é só um laço que soma a varredura de cada fatia (valor / total × 2π) ao ângulo inicial.",
+ tryit:"Acrescente uma quarta fatia, mude o tamanho do furo central e o ponto onde a pizza começa.",
+ code:"import 'dart:math' as math;\nimport 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Grafico()));\n\nclass Pizza extends CustomPainter {\n  final List<double> valores;\n  final List<Color> cores;\n  Pizza(this.valores, this.cores);\n\n  @override\n  void paint(Canvas canvas, Size size) {\n    final area = Rect.fromLTWH(0, 0, size.width, size.height);\n    double total = 0;\n    for (final v in valores) {\n      total += v;\n    }\n    double inicio = -math.pi / 2;\n    for (int i = 0; i < valores.length; i++) {\n      final fatia = valores[i] / total * 2 * math.pi;\n      canvas.drawArc(area, inicio, fatia, true, Paint()..color = cores[i]);\n      inicio += fatia;\n    }\n    canvas.drawCircle(area.center, size.width / 4, Paint()..color = Colors.white);\n  }\n\n  @override\n  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;\n}\n\nclass Grafico extends StatelessWidget {\n  const Grafico({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Gastos do mês')),\n      body: Center(\n        child: Column(\n          mainAxisAlignment: MainAxisAlignment.center,\n          children: [\n            CustomPaint(\n              size: const Size(220, 220),\n              painter: Pizza(\n                [50, 30, 20],\n                [Colors.indigo, Colors.orange, Colors.teal],\n              ),\n            ),\n            const SizedBox(height: 16),\n            const Text('Moradia 50% · Comida 30% · Lazer 20%'),\n          ],\n        ),\n      ),\n    );\n  }\n}\n"},
+{t:"x. CustomPaint animado com AnimationController",
+ text:"Para animar um desenho, passe para o painter um valor que muda a cada quadro. Aqui o AnimatedBuilder escuta o AnimationController e refaz o CustomPaint com um ângulo novo (_c.value × 2π). O shouldRepaint avisa ao Flutter se o desenho mudou de verdade.",
+ tryit:"Em ▶ Testar, veja o radar girar. Mude a duração, o número de círculos e o sentido do giro.",
+ code:"import 'dart:math' as math;\nimport 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Tela()));\n\nclass Radar extends CustomPainter {\n  final double angulo;\n  Radar(this.angulo);\n\n  @override\n  void paint(Canvas canvas, Size size) {\n    final centro = Offset(size.width / 2, size.height / 2);\n    final raio = size.width / 2 - 4;\n    canvas.drawCircle(centro, raio, Paint()..color = Colors.black87);\n    final grade = Paint()\n      ..color = Colors.green\n      ..style = PaintingStyle.stroke\n      ..strokeWidth = 2;\n    for (int i = 1; i <= 3; i++) {\n      canvas.drawCircle(centro, raio * i / 3, grade);\n    }\n    final ponta = centro + Offset.fromDirection(angulo, raio);\n    canvas.drawLine(centro, ponta, Paint()..color = Colors.lightGreenAccent..strokeWidth = 4);\n    canvas.drawCircle(ponta, 6, Paint()..color = Colors.lightGreenAccent);\n  }\n\n  @override\n  bool shouldRepaint(covariant Radar antigo) => antigo.angulo != angulo;\n}\n\nclass Tela extends StatefulWidget {\n  const Tela({super.key});\n\n  @override\n  State<Tela> createState() => _TelaState();\n}\n\nclass _TelaState extends State<Tela> with SingleTickerProviderStateMixin {\n  late AnimationController _c;\n\n  @override\n  void initState() {\n    super.initState();\n    _c = AnimationController(vsync: this, duration: const Duration(seconds: 3));\n    _c.repeat();\n  }\n\n  @override\n  void dispose() {\n    _c.dispose();\n    super.dispose();\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Radar')),\n      body: Center(\n        child: AnimatedBuilder(\n          animation: _c,\n          builder: (context, child) {\n            return CustomPaint(\n              size: const Size(240, 240),\n              painter: Radar(_c.value * 2 * math.pi),\n            );\n          },\n        ),\n      ),\n    );\n  }\n}\n"}
 /*NL-END*/
 ];
 var base=LESSONS.filter(function(l){return !l.after}),placed=LESSONS.filter(function(l){return l.after});
@@ -11065,6 +11399,12 @@ add("ListWheelScrollView",[["Linhas mais altas (itemExtent: 60)","itemExtent é 
 add("Botões modernos",[["Mudar o texto do FAB","O rótulo está em FloatingActionButton.extended.","^(?![\\s\\S]*'Mais 10')"],["Curtir soma 2","No FilledButton.tonal, troque curtidas++ por curtidas += 2.","curtidas\\s*\\+=\\s*2"],["O FAB soma 50","Troque curtidas += 10 por += 50.","curtidas\\s*\\+=\\s*50"],["Ícone de coração no botão de salvar","Troque Icons.bookmark por Icons.favorite (e bookmark_border por favorite_border).","Icons\\.favorite"]]);
 add("Layout avançado",[["Girar três quartos de volta","quarterTurns conta quartos de volta. Use 3.","quarterTurns:\\s*3"],["Começar com o texto escondido","A variável mostrar começa em true.","bool mostrar\\s*=\\s*false"],["Começar com o botão bloqueado","A variável bloqueado começa em false.","bool bloqueado\\s*=\\s*true"]]);
 add("Busca e calendário",[["Mudar o texto da barra de busca","O texto está em barHintText.","^(?![\\s\\S]*Buscar compromisso)"],["Abrir o calendário no dia 20","Em initialDate, use DateTime(2026, 10, 20).","initialDate:\\s*DateTime\\(2026,\\s*10,\\s*20\\)"],["lastDate em 2027","Em lastDate, use DateTime(2027, 12, 31).","lastDate:\\s*DateTime\\(2027"]]);
+add("SearchAnchor: busca com sugestões",[["Mudar a dica da busca","Em SearchBar, o hintText é o texto que aparece antes de digitar.","^(?![\\s\\S]*Buscar fruta)"],["Acrescentar a fruta Pera","Na lista frutas, depois de 'Morango', acrescente 'Pera'.","'Pera'"],["Buscar só pelo começo do nome","Troque contains(q) por startsWith(q) no where.","startsWith\\(q\\)"]]);
+add("NestedScrollView e SliverPersistentHeader",[["Mudar o título da barra","O título da SliverAppBar é o Text('Perfil').","^(?![\\s\\S]*'Perfil')"],["Cabeçalho mais alto (maxExtent 140)","No delegate, maxExtent diz a altura aberta do cabeçalho.","maxExtent\\s*=>\\s*140"],["Sessenta linhas na lista","childCount diz quantos itens o builder monta.","childCount:\\s*60"],["Soltar o cabeçalho (pinned: false)","Em SliverPersistentHeader, pinned: false deixa o cabeçalho rolar junto com a lista.","SliverPersistentHeader\\(pinned:\\s*false"]]);
+add("PaginatedDataTable com DataTableSource",[["Quatro linhas por página","Em rowsPerPage, troque 3 por 4.","rowsPerPage:\\s*4"],["Acrescentar a aluna Iara","Na lista nomes, depois de 'Hugo', acrescente 'Iara'.","'Iara'"],["Trocar o título da coluna Nota","O título está no Text de DataColumn.","^(?![\\s\\S]*'Nota')"],["Notas começando em 5","Em getRow, a nota usa 7 + index % 3. Troque o 7 por 5.","\\$\\{5 \\+ index"]]);
+add("CustomPaint: Canvas, Paint e formas",[["Pintar o rosto de azul-claro","Em rosto, troque Colors.amber por Colors.lightBlue.","rosto = Paint\\(\\)\\.\\.color = Colors\\.(?!amber)"],["Olhos maiores (raio 12)","Os dois drawCircle dos olhos têm raio 8. Troque por 12.","Offset\\(30, -25\\), 12"],["Vinte e quatro raios de sol","O laço for vai de 0 a 11. Troque por 24 raios: i < 24 e o ângulo i * math.pi / 12.","i < 24"],["Trocar o texto Oi!","O TextPainter escreve o texto do TextSpan.","^(?![\\s\\S]*'Oi!')"]]);
+add("CustomPaint: gráfico de pizza",[["Uma quarta fatia","Acrescente 10 em valores e Colors.pink em cores (a lista de cores tem de ter o mesmo tamanho).","^(?=[\\s\\S]*\\[40, 30, 20, 10\\])(?=[\\s\\S]*Colors\\.teal, Colors\\.pink)"],["Furo menor (size.width / 6)","O círculo branco do meio usa size.width / 4. Use / 6.","size\\.width\\s*/\\s*6"],["Começar a pizza à direita","A variável inicio começa em -math.pi / 2 (no topo). Use 0.","double inicio\\s*=\\s*0;"]]);
+add("CustomPaint animado com AnimationController",[["Girar mais devagar (6 segundos)","Em Duration, troque seconds: 3 por seconds: 6.","seconds:\\s*6"],["Cinco círculos no radar","No laço, i <= 3 e raio * i / 3. Troque os dois 3 por 5.","i <= 5"],["Girar para o outro lado","Um sinal de menos antes de _c.value inverte o sentido.","Radar\\(-"]]);
 OF.EX=EX;
 OF.LESSONS.forEach(function(L){
   var st=null,k;
@@ -12421,10 +12761,30 @@ d('Placeholder',[['fallbackWidth', 'double', 'Largura quando o espaço não tem 
   height: 100,
   child: Placeholder(),
 )`);
-d('CustomPaint',[['painter', 'CustomPainter', 'Classe sua, com paint(Canvas canvas, Size size).'], ['size', 'Size', 'Tamanho da área de desenho: Size(200, 100).'], ['child', 'Widget', 'Widget desenhado por cima do painter.']],
+d('CustomPaint',[['painter', 'CustomPainter', 'Objeto de uma classe sua que estende CustomPainter e implementa void paint(Canvas canvas, Size size) e bool shouldRepaint(covariant CustomPainter old). Desenha atrás do child.'], ['foregroundPainter', 'CustomPainter', 'Desenha na frente do child.'], ['size', 'Size', 'Tamanho da área de desenho: Size(200, 100). Sem size nem child a área tem 0×0.'], ['child', 'Widget', 'Widget que dá o tamanho e fica entre os dois painters.']],
 `CustomPaint(
   size: Size(200, 100),
   painter: MeuPainter(),
+)`);
+d('SliverChildBuilderDelegate',[['builder','Widget Function(context, index)','Função que monta o item da posição index. Primeiro argumento posicional.'],['childCount','int','Quantos itens existem. Sem ele a lista é infinita.']],`SliverList(
+  delegate: SliverChildBuilderDelegate(
+    (context, i) => ListTile(title: Text('Linha \${i}')),
+    childCount: 30,
+  ),
+)`);
+d('SliverList',[['delegate','SliverChildDelegate','SliverChildBuilderDelegate(builder, childCount: n) ou SliverChildListDelegate([...]).']],`SliverList(
+  delegate: SliverChildListDelegate([
+    ListTile(title: Text('Um')),
+    ListTile(title: Text('Dois')),
+  ]),
+)`);
+d('FlexibleSpaceBar',[['title','Widget','Texto que fica no canto de baixo da área expandida.'],['background','Widget','Fundo da área expandida, como uma imagem ou cor.'],['centerTitle','bool','Centraliza o título.']],`SliverAppBar(
+  pinned: true,
+  expandedHeight: 140,
+  flexibleSpace: FlexibleSpaceBar(
+    title: Text('Perfil'),
+    background: ColoredBox(color: Colors.indigo),
+  ),
 )`);
 d('BackdropFilter',[['filter', 'ImageFilter', 'ImageFilter.blur(sigmaX: 5, sigmaY: 5) desfoca o que está atrás.'], ['child', 'Widget', 'Normalmente um Container semitransparente.']],
 `BackdropFilter(
@@ -12810,9 +13170,13 @@ OF.LIMITS=[
 {h:'Widgets aproximados ou que não existem',
  p:'Estes widgets funcionam, mas com limites. O que não existe aparece como uma caixa com o nome e (…); o código fica intacto e funciona no celular.',
  li:[
- 'CustomPaint: aparece só um espaço reservado (o CustomPainter não é executado). NestedScrollView: o cabeçalho não recolhe. PaginatedDataTable: linhas de exemplo. SliverPersistentHeader: cabeçalho fixo simples.',
- 'SearchAnchor: abre o campo, mas sem a lista de sugestões. ShaderMask: só age em textos. ColorFiltered e ImageFiltered: só alguns modos de mistura e de filtro.',
- 'ListView.custom: só com SliverChildListDelegate (SliverChildBuilderDelegate não existe). Image.file não existe.',
+ 'CustomPaint: o painter é executado de verdade (drawCircle, drawLine, drawRect, drawRRect, drawOval, drawArc, drawPath, drawPoints, drawColor, save, restore, translate, rotate, scale, clipRect e TextPainter). Não existem: shaders, gradientes no Paint, MaskFilter (desfoque), drawImage, drawParagraph, drawShadow e BlendMode. Cada desenho aceita até 4000 comandos.',
+ 'NestedScrollView: o cabeçalho e o corpo rolam juntos; não há a regra de que a rolagem interna só começa depois do cabeçalho recolher. SliverAppBar encolhe por recorte (não refaz o layout) e floating e snap não têm efeito.',
+ 'SliverPersistentHeader: o build é chamado com shrinkOffset 0 e o cabeçalho encolhe até minExtent por recorte. floating e SliverPersistentHeaderDelegate.minExtent calculado por conta própria são aproximados.',
+ 'PaginatedDataTable: lê rowCount e getRow do seu DataTableSource e pagina com as setas. Não há ordenação (sortColumnIndex), seleção de linhas nem escolha de availableRowsPerPage.',
+ 'SearchAnchor: a tela de sugestões abre embaixo da barra (não em tela cheia) e mostra até 30 sugestões. Funcionam controller.text, openView e closeView; viewLeading, viewTrailing e isFullScreen não têm efeito.',
+ 'ShaderMask: só age em textos. ColorFiltered e ImageFiltered: só alguns modos de mistura e de filtro.',
+ 'ListView.custom e SliverList: SliverChildListDelegate e SliverChildBuilderDelegate (até 60 itens quando não há childCount). Image.file não existe.',
  'Draggable, LongPressDraggable e DragTarget funcionam com o mouse ou o dedo, mas a cópia que acompanha o ponteiro é um clone do widget, o offset em DragTargetDetails é Offset(0, 0) e onMove não é chamado.',
  'AnimationController roda no modo ▶ Testar; Tween e curvas são aproximados (veja Animações e gestos).',
  'Nenhum widget Cupertino existe (CupertinoButton, CupertinoAlertDialog, CupertinoSwitch e outros).'
@@ -13142,7 +13506,7 @@ var refocus=null;
 function renderCanvas(){
   R.renderScreen(S.root,S.sel,S.xray,screen);
   if(pk)drawPicker();
-  if(refocus){var i=screen.querySelector('input.tfi[data-key="'+refocus.key+'"]');if(i){i.focus();try{i.setSelectionRange(refocus.pos,refocus.pos)}catch(e){}}}
+  if(refocus){var i=screen.querySelector('input[data-key="'+refocus.key+'"]');if(i){i.focus();try{i.setSelectionRange(refocus.pos,refocus.pos)}catch(e){}}}
   animKick()
 }
 R.opts.rerender=function(){renderCanvas()};
@@ -13155,6 +13519,11 @@ screen.addEventListener('input',function(e){
 screen.addEventListener('input',function(e){
   var i=e.target;if(!i.classList||!i.classList.contains('acin'))return;
   refocus={key:i.dataset.key,pos:i.selectionStart};R.opts.acx[i.dataset.key]=null;renderCanvas();refocus=null});
+screen.addEventListener('input',function(e){
+  var i=e.target;if(!i.classList||!i.classList.contains('sain'))return;
+  var s=ST.search[i.dataset.key]||(ST.search[i.dataset.key]={open:true,text:''});s.text=i.value;
+  var raw=i._n&&M.rawProp(i._n,'onChanged');
+  refocus={key:i.dataset.key,pos:i.selectionStart};renderCanvas();refocus=null});
 screen.addEventListener('keydown',function(e){
   var i=e.target;if(e.key!=='Enter'||!i.classList||!i.classList.contains('tfi'))return;
   var n=i.parentNode._n,raw=n&&(M.rawProp(n,'onSubmitted')||M.rawProp(n,'onFieldSubmitted'));
@@ -13189,7 +13558,7 @@ $('stBar').addEventListener('click',function(e){
   else if(b.dataset.a==='reset'){clearFx();R.opts.typed={};ST.reset();renderStateBar();renderCanvas()}
 });
 var timers=[];
-function clearFx(){R.opts.drawerOpen={};pk=null;fxGen++;R.opts.fut={};R.opts.futT.forEach(clearTimeout);R.opts.futT=[];R.opts.rf={};R.opts.str={};R.opts.iv={};R.opts.dss={};R.opts.ddm={};R.opts.acx={};R.opts.anim={};R.opts.sw={};R.opts.tw={};ST.menuOpen={};ST.mapView=null;R.opts.nav=[];R.opts.navSc=[];R.opts.navRes=[];R.opts.over=[];R.opts.tab={};R.opts.exp={};clearTimeout(snackT);timers.forEach(clearTimeout);timers=[]}
+function clearFx(){R.opts.drawerOpen={};pk=null;fxGen++;R.opts.fut={};R.opts.futT.forEach(clearTimeout);R.opts.futT=[];R.opts.rf={};R.opts.str={};R.opts.iv={};R.opts.dss={};R.opts.ddm={};R.opts.acx={};R.opts.pdt={};R.opts.anim={};R.opts.sw={};R.opts.tw={};ST.menuOpen={};ST.search={};ST.mapView=null;R.opts.nav=[];R.opts.navSc=[];R.opts.navRes=[];R.opts.over=[];R.opts.tab={};R.opts.exp={};clearTimeout(snackT);timers.forEach(clearTimeout);timers=[]}
 var snackT=null;
 function runIn(inst,fn){if(!inst)return fn();ST.enter(inst);try{return fn()}finally{ST.leave()}}
 function scopeOfEl(el){var h=el&&el.closest&&el.closest('[data-sc]');if(!h||!h.dataset.sc)return null;var all=R.opts.navSc.concat(R.opts.over.map(function(o){return o.sc}));for(var i=0;i<all.length;i++)if(all[i]&&all[i].id===h.dataset.sc)return all[i];return null}
@@ -13410,6 +13779,9 @@ function fire(t){
   if(t.dataset.h==='epl'){var en=t._n,er=en&&M.rawProp(en,'expansionCallback');if(er&&er.trim()!=='null')afterRun(runAt(t,er,[+t.dataset.i,!!t.dataset.o]));return}
   if(t.dataset.h==='mnui'){var mnn=t._n,mnr=mnn&&M.rawProp(mnn,'onPressed');ST.menuOpen={};if(mnr&&mnr.trim()!=='null')afterRun(runAt(t,mnr,[]));renderCanvas();return}
   if(t.dataset.h==='ddm'){openDdm(t,t._n);return}
+  if(t.dataset.h==='pdtnav'){R.opts.pdt[t.dataset.k]=+t.dataset.v;renderCanvas();return}
+  if(t.dataset.h==='saopen'){var sk=t.dataset.k;ST.search[sk]=ST.search[sk]||{open:false,text:''};ST.search[sk].open=true;refocus={key:sk,pos:(ST.search[sk].text||'').length};renderCanvas();refocus=null;return}
+  if(t.dataset.h==='saclose'){var sk2=t.dataset.k;if(ST.search[sk2]){ST.search[sk2].open=false;ST.search[sk2].text=''}renderCanvas();return}
   if(t.dataset.h==='aco'){var an=t._n,ak=t.dataset.k,av=t.dataset.v;R.opts.typed[ak]=av;R.opts.acx[ak]=av;renderCanvas();var ar=an&&M.rawProp(an,'onSelected');if(ar&&ar.trim()!=='null')afterRun(runAt(t,ar,[av]));return}
   if(t.dataset.h==='back'){popTop();renderCanvas();renderStateBar();return}
   if(t.dataset.h==='tab'){R.opts.tab[t.dataset.ctl]=+t.dataset.i;renderCanvas();return}
@@ -13549,6 +13921,7 @@ screen.addEventListener('click',function(e){
       var cel=screen.querySelector('[data-h=caldy][data-k="'+cd.dataset.k+'"][data-d="'+cs1.sd+'"]')||screen;
       if(S.run&&ST.active&&craw&&craw.trim()!=='null')afterRun(runAt(cel,craw,[ST.mkDate(cs1.y,cs1.m,cs1.sd,0,0,0)]))}return}
   var pd=e.target.closest('.pgd');if(pd){var pi2=+pd.dataset.i,pbox=pd.parentNode,pc2=pbox._pc;R.opts.page[pd.dataset.k]=pi2;if(pc2)pc2.page=pi2;renderCanvas();var pcb=pbox._n&&M.rawProp(pbox._n,'onPageChanged');if(pc2&&pcb&&pcb.trim()!=='null')afterRun(runAt(pd,pcb,[pi2]));return}
+  var pdn=e.target.closest('.pdtb.hh');if(pdn){R.opts.pdt[pdn.dataset.k]=+pdn.dataset.v;renderCanvas();return}
   if(!e.target.closest('.ddmenu')){var om=screen.querySelector('.ddmenu');if(om)om.remove()}
   if(S.run&&ST.active&&Object.keys(ST.menuOpen).some(function(k){return ST.menuOpen[k]})&&!e.target.closest('.mna')){ST.menuOpen={};renderCanvas();return}
   if(S.run&&ST.active){if(lpFired){lpFired=false;return}var h=e.target.closest('.hh');if(h&&!/^(onLongPress|onDoubleTap)$/.test(h.dataset.h||''))fire(h);return}
