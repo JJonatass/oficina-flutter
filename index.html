@@ -12497,10 +12497,14 @@ function popFit(){
   if(!popAlive())return;
   var ph=popW.document.getElementById('pphone'),s=Math.max(.3,Math.min((popW.innerWidth-24)/376,(popW.innerHeight-24)/672));
   ph.style.transform='translate(-50%,-50%) scale('+s+')'}
+function popTools(){
+  var d=popW.document,t=d.getElementById('ptog'),r=d.getElementById('prst'),act=!!OF.ST.active;
+  t.hidden=!act;r.hidden=!(act&&S.run);t.textContent=S.run?'✎ Editar':'▶ Testar';t.title=S.run?'Voltar ao modo de edição':'Entrar no modo teste (os controles passam a funcionar)'}
 function popSync(){
   popRaf=0;
   if(!popAlive()){popStop();return}
   var d=popW.document,m=d.getElementById('pmirror');
+  popTools();
   var ae=d.activeElement,fp=null,sel=null;
   if(ae&&ae!==m&&m.contains(ae)){fp=elPath(m,ae);try{sel=[ae.selectionStart,ae.selectionEnd]}catch(e){}}
   m.innerHTML=screen.innerHTML;
@@ -12524,8 +12528,8 @@ function popFwd(e){
   var init={bubbles:true,cancelable:true,clientX:mp.x,clientY:mp.y,pointerId:e.pointerId||1,pointerType:e.pointerType||'mouse',button:e.button||0,buttons:e.buttons||0,isPrimary:true,view:window,deltaY:e.deltaY||0};
   if(t==='click'||t==='dblclick'||t==='contextmenu'){if(mp.el)mp.el.dispatchEvent(new MouseEvent(t,init));return}
   if(t==='pointerdown'){if(!mp.el)return;popDown=true;mp.el.dispatchEvent(new PointerEvent(t,init));return}
-  if(t==='pointermove'){window.dispatchEvent(new PointerEvent(t,init));return}
-  if(t==='pointerup'||t==='pointercancel'){popDown=false;(mp.el||window).dispatchEvent(new PointerEvent(t,init));return}
+  if(t==='pointermove'){document.dispatchEvent(new PointerEvent(t,init));return}
+  if(t==='pointerup'||t==='pointercancel'){popDown=false;(mp.el||document).dispatchEvent(new PointerEvent(t,init));return}
   if(t==='wheel'){if(mp.el&&mp.el.closest('.ivw[data-iv]')){e.preventDefault();mp.el.dispatchEvent(new WheelEvent('wheel',init))}}}
 function popField(e){
   if(!popAlive())return;
@@ -12548,12 +12552,14 @@ function popOpen(){
       th=document.documentElement.getAttribute('data-theme'),bg=getComputedStyle(document.body).backgroundColor;
     w.document.open();
     w.document.write('<!doctype html><html lang="pt-BR"'+(th?' data-theme="'+th+'"':'')+'><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tela — Oficina Flutter</title>'+css+
-      '<style>html,body{margin:0!important;padding:0!important;width:100%;height:100%;overflow:hidden!important;display:block!important;background:'+bg+'}#pphone{left:50%;top:50%;transform-origin:center center}</style></head><body><div class="phone" id="pphone"><div class="screen" id="pmirror"></div></div></body></html>');
+      '<style>html,body{margin:0!important;padding:0!important;width:100%;height:100%;overflow:hidden!important;display:block!important;background:'+bg+'}#pphone{left:50%;top:50%;transform-origin:center center}#ptools{position:fixed;top:8px;right:8px;display:flex;gap:6px;z-index:9}#ptools button{font:600 12px system-ui,sans-serif;padding:6px 11px;border-radius:999px;border:1px solid rgba(128,128,128,.5);background:rgba(20,28,38,.82);color:#fff;cursor:pointer}#ptools button:hover{background:rgba(20,28,38,1)}</style></head><body><div id="ptools"><button id="ptog" type="button" hidden></button><button id="prst" type="button" hidden title="Reiniciar o estado">↺</button></div><div class="phone" id="pphone"><div class="screen" id="pmirror"></div></div></body></html>');
     w.document.close();
     if(!w.document.getElementById('pmirror'))throw new Error('vazio')
   }catch(e){try{w.close()}catch(x){}toast('Este ambiente não deixa a nova janela se ligar ao editor. Abra a Oficina direto no navegador (arquivo ou GitHub Pages) para usar este botão.');return}
   popW=w;$('vPop').classList.add('on');
   var d=w.document;
+  d.getElementById('ptog').addEventListener('click',function(){setRun(!S.run);popSched()});
+  d.getElementById('prst').addEventListener('click',function(){var b=document.querySelector('#stBar [data-a="reset"]');if(b)b.click();popSched()});
   ['click','dblclick','contextmenu','pointerdown','pointermove','pointerup','pointercancel'].forEach(function(n){d.addEventListener(n,popFwd,true)});
   d.addEventListener('wheel',popFwd,{passive:false,capture:true});
   ['input','change','keydown'].forEach(function(n){d.addEventListener(n,popField,true)});
