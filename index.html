@@ -157,6 +157,25 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.02fr) min
 .goals label{display:inline-flex;gap:6px;align-items:center;color:var(--muted,#6B6480)}
 .goals .gk{width:16px;height:16px;border:2px solid var(--line);border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;line-height:1;color:#fff}
 .goals label.on{color:var(--ink)}.goals label.on .gk{background:var(--ok,#2E7D32);border-color:var(--ok,#2E7D32)}
+.goals{display:block}
+.goals .gh{display:flex;gap:8px;align-items:baseline;margin-bottom:4px}
+.goals .gp{font-size:12px;color:var(--muted,#6B6480)}
+.stg{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
+.stg li{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;color:var(--muted,#6B6480)}
+.stg li .gk{width:20px;height:20px;border:2px solid var(--line);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;line-height:1;color:var(--muted,#6B6480);flex:none}
+.stg li.done{color:var(--ink)}.stg li.done .gk{background:var(--ok,#2E7D32);border-color:var(--ok,#2E7D32);color:#fff}
+.stg li.cur{color:var(--ink);font-weight:600}.stg li.cur .gk{border-color:var(--accent);color:var(--accent)}
+.stg li.next{opacity:.65}
+.stg .hb{font:inherit;font-size:12px;font-weight:500;padding:2px 8px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--ink);cursor:pointer}
+.stg .ht{flex-basis:100%;margin:0 0 2px 28px;font-weight:400;font-size:12.5px;background:var(--panel2,#f4f1fb);border-radius:8px;padding:6px 10px;color:var(--ink)}
+.exf{display:flex;gap:6px;margin:8px 0}.exf .btn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.exs{font-size:13px;margin:6px 0}.exbar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:6px}.exbar i{display:block;height:100%;background:var(--ok,#2E7D32)}
+.exl{border:1px solid var(--line);border-radius:10px;margin:6px 0;padding:0 10px}
+.exl summary{cursor:pointer;padding:8px 0;display:flex;gap:8px;align-items:center;font-size:14px}
+.exl summary .exn{flex:1}.exl summary .gp{font-size:12px;color:var(--muted,#6B6480)}
+.exl.ok summary .exn::before{content:"✓ ";color:var(--ok,#2E7D32)}
+.exl .stg{padding:0 0 8px}.exl .stg .ht{display:block}
+.exl .exgo{margin:0 0 10px 0;font-size:12px}
 .goals em{font-style:normal;font-weight:600;color:var(--ok,#2E7D32)}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
 .modal[hidden]{display:none}
@@ -482,6 +501,7 @@ body:has(main[data-tab="ref"]) .lesson{display:none}
 .screen .nd.mcir{position:absolute;transform:translate(-50%,-50%);border-radius:50%;box-sizing:border-box}
 .screen .nd.mpl{position:absolute;left:0;top:0;right:0;bottom:0;pointer-events:none}
 .screen .nd.mattr{position:absolute;right:0;bottom:0;font-size:10px;background:rgba(255,255,255,.8);padding:2px 5px;color:#333;z-index:4;pointer-events:none}
+.drgb{cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none}.dfl{opacity:.92;filter:drop-shadow(0 6px 10px rgba(0,0,0,.3))}.dfl *{pointer-events:none}.dgt{align-self:flex-start}
 </style>
 <header class="top">
   <div class="brand">
@@ -497,6 +517,7 @@ body:has(main[data-tab="ref"]) .lesson{display:none}
   <button class="btn" id="refBtn" title="Catálogo de widgets: o que cada um faz e seus atributos" aria-pressed="false">📖 Widgets</button>
   <button class="btn" id="undoBtn" title="Desfazer (Ctrl+Z)" aria-label="Desfazer" disabled>↶ Desfazer</button>
   <button class="btn" id="redoBtn" title="Refazer (Ctrl+Shift+Z)" aria-label="Refazer" disabled>↷ Refazer</button>
+  <button class="btn" id="exBtn" title="Exercícios por etapa de todas as aulas">🎯 Exercícios</button>
   <button class="btn" id="limBtn" title="O que o simulador não desenha ou não executa">⚠ Limites</button>
   <button class="btn" id="profBtn" title="Progresso da turma">Professor</button>
   <button class="btn" id="themeBtn" aria-label="Alternar tema claro e escuro">Tema</button>
@@ -572,6 +593,9 @@ body:has(main[data-tab="ref"]) .lesson{display:none}
 <div class="modal" id="limModal" hidden role="dialog" aria-modal="true" aria-label="Limites do simulador"><div class="mbox">
   <div class="mh"><b>Limites do simulador</b><button class="btn" id="limClose" aria-label="Fechar">✕</button></div>
   <div class="mb" id="limBody"></div></div></div>
+<div class="modal" id="exModal" hidden role="dialog" aria-modal="true" aria-label="Exercícios"><div class="mbox">
+  <div class="mh"><b>Exercícios por etapa</b><button class="btn" id="exClose" aria-label="Fechar">✕</button></div>
+  <div class="mb"><div id="exSum"></div><div class="exf" id="exFilter"><button class="btn on" data-f="all">Todos</button><button class="btn" data-f="todo">Pendentes</button><button class="btn" data-f="done">Concluídos</button></div><div id="exBody"></div></div></div></div>
 <div class="toast" id="toast" role="status"></div>
 <script>
 (function(){
@@ -790,6 +814,9 @@ var W={
  'Image.file':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem guardada em um arquivo do aparelho (File(path)). O simulador desenha um quadro no lugar.'},
  ValueListenableBuilder:{cat:'layout',slots:{child:'one'},desc:'Redesenha só o que está dentro quando um ValueNotifier muda, sem setState. valueListenable é o notifier e builder recebe (context, value, child). child é um pedaço fixo, que não precisa ser refeito.'},
  ListenableBuilder:{cat:'layout',slots:{child:'one'},desc:'Redesenha quando um ChangeNotifier chama notifyListeners(). listenable é o objeto e builder recebe (context, child). Sem setState.'},
+ Draggable:{cat:'box',slots:{child:'one',feedback:'one',childWhenDragging:'one'},desc:'Faz o filho poder ser arrastado. data é o valor que viaja com ele, feedback é o que aparece sob o dedo e childWhenDragging é o que fica no lugar enquanto arrasta. Funciona com ▶ Testar.'},
+ LongPressDraggable:{cat:'box',slots:{child:'one',feedback:'one',childWhenDragging:'one'},desc:'Igual ao Draggable, mas só começa a arrastar depois de segurar o dedo por um instante. Bom para listas que rolam.'},
+ DragTarget:{cat:'layout',slots:{},desc:'Área que recebe um Draggable solto sobre ela. builder recebe candidateData (o que está passando por cima) e onAcceptWithDetails roda quando soltam. onWillAcceptWithDetails decide se aceita.'},
  AnimatedBuilder:{cat:'layout',slots:{child:'one'},desc:'Redesenha a cada quadro de uma animação (animation: o AnimationController). builder recebe (context, child) e child é a parte que não muda, o que poupa trabalho.'},
  ScaleTransition:{cat:'box',slots:{child:'one'},desc:'Muda o tamanho do filho conforme scale, uma animação (por exemplo, um AnimationController ou um Tween.animate). 1 é o tamanho normal.'},
  RotationTransition:{cat:'box',slots:{child:'one'},desc:'Gira o filho conforme turns, uma animação que conta voltas (0.5 é meia volta, 1 é a volta inteira).'},
@@ -797,7 +824,7 @@ var W={
  'Image.network':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem baixada de uma URL. O canvas mostra a imagem real quando a URL carrega; sem internet, ou se a página bloquear imagens externas, ele desenha um quadro no lugar. fit controla como ela preenche o espaço.'},
  'Image.asset':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem guardada no projeto (pasta assets). O canvas mostra a imagem real quando a URL carrega; sem internet, ou se a página bloquear imagens externas, ele desenha um quadro no lugar.'}
 };
-var GROUPS=[['Estrutura',['Scaffold','AppBar','FloatingActionButton','Drawer','BottomNavigationBar','BottomNavigationBarItem','NavigationBar','NavigationDestination','NavigationRail','NavigationRailDestination','MenuAnchor','MenuItemButton','FloatingActionButton.extended']],['Abas',['DefaultTabController','TabBar','Tab','TabBarView','TabPageSelector']],['Layout',['ValueListenableBuilder','ListenableBuilder','AnimatedBuilder','Center','Align','Column','Row','Stack','Positioned','Expanded','Flexible','Spacer','Wrap','Form','ListView','GridView.count','SingleChildScrollView','SafeArea','PageView','IndexedStack','Stepper','Step','ExpansionPanelList','ExpansionPanel','DraggableScrollableSheet','TweenAnimationBuilder','LayoutBuilder','Builder','FutureBuilder','StreamBuilder','RefreshIndicator','CustomScrollView','SliverAppBar','SliverToBoxAdapter','SliverList.list','SliverList.builder','IntrinsicHeight','IntrinsicWidth','LimitedBox','UnconstrainedBox','OverflowBox','RotatedBox','Baseline','Flow','Offstage','IgnorePointer','AbsorbPointer','GridView.extent','NestedScrollView','Scrollbar','SliverGrid','SliverGrid.count','SliverPadding','SliverFillRemaining','SliverPersistentHeader']],['Listas e tabelas',['ListView.builder','ListView.separated','ReorderableListView','ReorderableListView.builder','AnimatedList','GridView.builder','Table','TableRow','DataTable','DataColumn','DataRow','DataCell','ListView.custom','SliverChildListDelegate','ListWheelScrollView','CarouselView','PaginatedDataTable']],['Caixas',['Container','ColoredBox','Padding','SizedBox','AspectRatio','ConstrainedBox','FractionallySizedBox','FittedBox','Card','Divider','VerticalDivider','ClipRRect','Opacity','AnimatedOpacity','AnimatedContainer','AnimatedPositioned','AnimatedAlign','AnimatedPadding','AnimatedSize','AnimatedScale','AnimatedRotation','AnimatedSwitcher','AnimatedCrossFade','Visibility','Tooltip','Badge','Hero','FadeTransition','SizeTransition','InteractiveViewer','Transform.rotate','Transform.scale','Transform.translate','Dismissible','ScaleTransition','RotationTransition','SlideTransition','ClipRect','ClipOval','DecoratedBox','Material','Placeholder','CustomPaint','BackdropFilter','ShaderMask','ColorFiltered','ImageFiltered','AnimatedDefaultTextStyle','Card.outlined','Card.filled']],['Conteúdo',['Text','Text.rich','RichText','Icon','Image.network','CircleAvatar','Chip','ChoiceChip','FilterChip','ActionChip','ListTile','ExpansionTile','Image.asset','CircularProgressIndicator','LinearProgressIndicator','SegmentedButton','ButtonSegment','PopupMenuButton','InputChip','SelectableText','Image.file','CalendarDatePicker']],['Botões e campos',['ElevatedButton','FilledButton','TextButton','OutlinedButton','IconButton','TextField','TextFormField','Checkbox','Switch','Slider','Radio','DropdownButton','DropdownMenuItem','SwitchListTile','CheckboxListTile','RadioListTile','RangeSlider','ToggleButtons','DropdownMenu','DropdownMenuEntry','Autocomplete','SearchBar','TextButton.icon','ElevatedButton.icon','OutlinedButton.icon','FilledButton.icon','FilledButton.tonal','IconButton.filled','IconButton.filledTonal','IconButton.outlined','SearchAnchor','SearchAnchor.bar']],['Interação',['GestureDetector','InkWell','InkResponse','Focus','Semantics','PopScope','Theme','MediaQuery']],['Mapas (flutter_map)',['FlutterMap','TileLayer','MarkerLayer','Marker','CircleLayer','CircleMarker','PolylineLayer','Polyline','RichAttributionWidget']],['Janelas',['AlertDialog','SimpleDialog','SimpleDialogOption','SnackBar','SnackBarAction','MaterialBanner','Banner']]];
+var GROUPS=[['Estrutura',['Scaffold','AppBar','FloatingActionButton','Drawer','BottomNavigationBar','BottomNavigationBarItem','NavigationBar','NavigationDestination','NavigationRail','NavigationRailDestination','MenuAnchor','MenuItemButton','FloatingActionButton.extended']],['Abas',['DefaultTabController','TabBar','Tab','TabBarView','TabPageSelector']],['Layout',['ValueListenableBuilder','ListenableBuilder','AnimatedBuilder','Center','Align','Column','Row','Stack','Positioned','Expanded','Flexible','Spacer','Wrap','Form','ListView','GridView.count','SingleChildScrollView','SafeArea','PageView','IndexedStack','Stepper','Step','ExpansionPanelList','ExpansionPanel','DraggableScrollableSheet','TweenAnimationBuilder','LayoutBuilder','Builder','FutureBuilder','StreamBuilder','RefreshIndicator','CustomScrollView','SliverAppBar','SliverToBoxAdapter','SliverList.list','SliverList.builder','IntrinsicHeight','IntrinsicWidth','LimitedBox','UnconstrainedBox','OverflowBox','RotatedBox','Baseline','Flow','Offstage','IgnorePointer','AbsorbPointer','GridView.extent','NestedScrollView','Scrollbar','SliverGrid','SliverGrid.count','SliverPadding','SliverFillRemaining','SliverPersistentHeader']],['Listas e tabelas',['ListView.builder','ListView.separated','ReorderableListView','ReorderableListView.builder','AnimatedList','GridView.builder','Table','TableRow','DataTable','DataColumn','DataRow','DataCell','ListView.custom','SliverChildListDelegate','ListWheelScrollView','CarouselView','PaginatedDataTable']],['Caixas',['Container','ColoredBox','Padding','SizedBox','AspectRatio','ConstrainedBox','FractionallySizedBox','FittedBox','Card','Divider','VerticalDivider','ClipRRect','Opacity','AnimatedOpacity','AnimatedContainer','AnimatedPositioned','AnimatedAlign','AnimatedPadding','AnimatedSize','AnimatedScale','AnimatedRotation','AnimatedSwitcher','AnimatedCrossFade','Visibility','Tooltip','Badge','Hero','FadeTransition','SizeTransition','InteractiveViewer','Transform.rotate','Transform.scale','Transform.translate','Dismissible','ScaleTransition','RotationTransition','SlideTransition','ClipRect','ClipOval','DecoratedBox','Material','Placeholder','CustomPaint','BackdropFilter','ShaderMask','ColorFiltered','ImageFiltered','AnimatedDefaultTextStyle','Card.outlined','Card.filled']],['Conteúdo',['Text','Text.rich','RichText','Icon','Image.network','CircleAvatar','Chip','ChoiceChip','FilterChip','ActionChip','ListTile','ExpansionTile','Image.asset','CircularProgressIndicator','LinearProgressIndicator','SegmentedButton','ButtonSegment','PopupMenuButton','InputChip','SelectableText','Image.file','CalendarDatePicker']],['Botões e campos',['ElevatedButton','FilledButton','TextButton','OutlinedButton','IconButton','TextField','TextFormField','Checkbox','Switch','Slider','Radio','DropdownButton','DropdownMenuItem','SwitchListTile','CheckboxListTile','RadioListTile','RangeSlider','ToggleButtons','DropdownMenu','DropdownMenuEntry','Autocomplete','SearchBar','TextButton.icon','ElevatedButton.icon','OutlinedButton.icon','FilledButton.icon','FilledButton.tonal','IconButton.filled','IconButton.filledTonal','IconButton.outlined','SearchAnchor','SearchAnchor.bar']],['Interação',['GestureDetector','Draggable','LongPressDraggable','DragTarget','InkWell','InkResponse','Focus','Semantics','PopScope','Theme','MediaQuery']],['Mapas (flutter_map)',['FlutterMap','TileLayer','MarkerLayer','Marker','CircleLayer','CircleMarker','PolylineLayer','Polyline','RichAttributionWidget']],['Janelas',['AlertDialog','SimpleDialog','SimpleDialogOption','SnackBar','SnackBarAction','MaterialBanner','Banner']]];
 var CATVAR={struct:'var(--c-struct)',layout:'var(--c-layout)',box:'var(--c-box)',content:'var(--c-content)'};
 var warns=[];
 
@@ -1080,6 +1107,9 @@ var DEF={
  ButtonSegment:function(){var n=N('ButtonSegment',[A('value',q('ano')),SL('label')],{label:txt('Ano')});n.generic='<String>';return n},
  PopupMenuButton:function(){var n=N('PopupMenuButton',[A('itemBuilder',"(context) => [PopupMenuItem(value: 'editar', child: Text('Editar')), PopupMenuItem(value: 'apagar', child: Text('Apagar'))]"),A('onSelected','(valor) {}')]);n.generic='<String>';return n},
  InteractiveViewer:function(){return N('InteractiveViewer',[A('minScale','0.5'),A('maxScale','4'),SL('child')],{child:N('Container',[A('width','420'),A('height','420'),A('color','Colors.teal.shade100'),SL('child')],{child:N('Center',[SL('child')],{child:txt('Dê zoom aqui')})})})},
+ Draggable:function(){var n=N('Draggable',[A('data',"'maçã'"),SL('child'),SL('feedback')],{child:N('Container',[A('width','90'),A('height','90'),A('color','Colors.orange'),SL('child')],{child:N('Center',[SL('child')],{child:txt('Arraste')})}),feedback:N('Container',[A('width','90'),A('height','90'),A('color','Colors.orange.shade200')])});n.generic='<String>';return n},
+ LongPressDraggable:function(){var n=N('LongPressDraggable',[A('data',"'maçã'"),SL('child'),SL('feedback')],{child:N('Container',[A('width','90'),A('height','90'),A('color','Colors.orange'),SL('child')],{child:N('Center',[SL('child')],{child:txt('Arraste')})}),feedback:N('Container',[A('width','90'),A('height','90'),A('color','Colors.orange.shade200')])});n.generic='<String>';return n},
+ DragTarget:function(){var n=N('DragTarget',[A('builder',"(context, candidateData, rejectedData) => Container(width: 140, height: 140, color: candidateData.isNotEmpty ? Colors.green.shade200 : Colors.grey.shade300, child: Center(child: Text('Solte aqui')))"),A('onAcceptWithDetails','(details) {}')]);n.generic='<String>';return n},
  AnimatedList:function(){return N('AnimatedList',[A('initialItemCount','3'),A('itemBuilder',"(context, index, animation) => ListTile(title: Text('Item $index'))")])},
  DraggableScrollableSheet:function(){return N('DraggableScrollableSheet',[A('initialChildSize','0.4'),A('minChildSize','0.2'),A('maxChildSize','0.9'),A('builder',"(context, scrollController) => Container(color: Colors.white, child: ListView.builder(controller: scrollController, itemCount: 20, itemBuilder: (context, i) => ListTile(title: Text('Item $i'))))")])},
  FadeTransition:function(){return N('FadeTransition',[A('opacity','const AlwaysStoppedAnimation(0.6)'),SL('child')],{child:txt('Meio transparente')})},
@@ -2422,7 +2452,7 @@ ST.run=function(raw,args){
   }catch(e){err=e.message;isExc=!!e.dartExc}
   return{dirty:dirty,mutated:mutated,err:err,exc:isExc,fx:ST.fx.slice()}};
 ST.reset=function(){
-  ST.anims=[];
+  ST.anims=[];ST.dragHover=null;
   Object.keys(ST.globals||{}).forEach(function(k){ST.globals[k].done=false});
   ST.futExpr={};ST.futGen=0;
   if(ST.onReset)ST.onReset();
@@ -2852,6 +2882,8 @@ function natMember(v,name,args){
       case 'begin':return v.tw.begin;case 'end':return v.tw.end;
       case 'transform':return interp(v.tw.begin,v.tw.end,nn(args[0]));
       case 'chain':return v}}
+  if(v.nat==='DragDetails'){
+    switch(name){case 'data':return v.f.data;case 'offset':return mkOffset(0,0)}}
   if(v.nat==='Offset'){
     switch(name){case 'dx':return v.f.dx;case 'dy':return v.f.dy;case 'distance':return new Dbl(Math.hypot(nn(v.f.dx),nn(v.f.dy)))}}
   if(v.nat==='ValueNotifier'){
@@ -3077,7 +3109,7 @@ function lambdaParts(raw){
     body=raw.slice(t[j+1].s,raw.lastIndexOf('}')).trim().replace(/;\s*$/,'')}
   else throw new Error('lambda');
   return{names:names,body:body}}
-var BUILDERS={ValueListenableBuilder:1,ListenableBuilder:1,AnimatedBuilder:1,TweenAnimationBuilder:1,AnimatedList:1,DraggableScrollableSheet:1,StreamBuilder:1,'ReorderableListView.builder':1,FutureBuilder:1,'SliverList.builder':1,'ListView.builder':1,'ListView.separated':1,'GridView.builder':1,'LayoutBuilder':1,Builder:1};
+var BUILDERS={DragTarget:1,ValueListenableBuilder:1,ListenableBuilder:1,AnimatedBuilder:1,TweenAnimationBuilder:1,AnimatedList:1,DraggableScrollableSheet:1,StreamBuilder:1,'ReorderableListView.builder':1,FutureBuilder:1,'SliverList.builder':1,'ListView.builder':1,'ListView.separated':1,'GridView.builder':1,'LayoutBuilder':1,Builder:1};
 ST.futureTexts=futureTexts;
 ST.isBuilder=function(n){return !!BUILDERS[n.type]};
 ST.builderTexts=function(n){
@@ -3098,6 +3130,11 @@ ST.builderTexts=function(n){
     if(tlp.names[1])tbody=bindVar(tbody,tlp.names[1],new Dbl(Math.round(tcur*1e4)/1e4));
     var tch=raw('child');if(tlp.names[2]&&tch)tbody=bindVar(tbody,tlp.names[2],{raw:tch});
     expandText(tbody,out);return out}
+  if(n.type==='DragTarget'){
+    var dgp=lambdaParts(raw('builder')),dgb=dgp.body,dgh=ST.dragHover&&ST.dragHover.key===n._key;
+    if(dgp.names[1])dgb=bindVar(dgb,dgp.names[1],{raw:'('+lit(dgh&&ST.dragHover.ok?[ST.dragHover.data]:[])+')'});
+    if(dgp.names[2])dgb=bindVar(dgb,dgp.names[2],{raw:'('+lit(dgh&&!ST.dragHover.ok?[ST.dragHover.data]:[])+')'});
+    expandText(dgb,out);return out}
   if(n.type==='ValueListenableBuilder'){
     var vlr=raw('valueListenable'),vlo=null;try{vlo=ST.value(vlr||'null')}catch(e){vlo=null}
     var vlp=lambdaParts(raw('builder')),vbody=vlp.body,vlv=vlo&&vlo.nat==='ValueNotifier'?vlo.f.value:null;
@@ -3138,6 +3175,13 @@ ST.autoOptions=function(n,text){
   var r=env.ret;if(r==null)return[];
   if(r.isSet)r=Array.from(r.s||[]);
   return(Array.isArray(r)?r:[]).map(function(x){return show(x)})};
+ST.dragHover=null;
+ST.apply=function(raw,args){
+  var lf=lamFull(raw.trim()),env=mkEnv({});(lf.names||[]).forEach(function(nm,i){env.params[nm]=(args||[])[i]});
+  var old=ST.sync;ST.sync=true;
+  try{stmt(new Ps('{'+lf.body+'}'),env,true)}finally{ST.sync=old}
+  return env.ret};
+ST.mkDetails=function(v){return{nat:'DragDetails',f:{data:v},src:'DragTargetDetails()'}};
 ST.generate=function(n){return n.unknown?ST.pickAll(n.raw):ST.builderTexts(n)};
 
 /* ---- extração da classe State no código-fonte ---- */
@@ -3599,6 +3643,12 @@ function build(n,path,pt,ppt,sel){
     var texts;try{texts=OF.ST.builderTexts(n)}catch(e){d.appendChild(ph('builder: não consegui desenhar ('+e.message+')'));return}
     if(!texts.length){d.appendChild(ph('lista vazia'));return}
     texts.forEach(function(tx,i){var nd=OF.parseWidgetText(tx);if(nd)d.appendChild(build(nd,path.concat('@'+i),mode,null,sel))})}
+  function expKids(slot){var out=[],arr=n.slots[slot]||[];
+    arr.forEach(function(c,ci){
+      if(c.unknown&&c.type==='expressão'){var tx=[];try{tx=OF.ST.generate(c)}catch(e){d.appendChild(ph(slot+': '+e.message))}
+        tx.forEach(function(t,j){var nd=OF.parseWidgetText(t);if(nd)out.push({n:nd,p:slot+':'+ci+'>@'+j})})}
+      else out.push({n:c,p:slot+':'+ci})});
+    return out}
   function kids(slot,mode){var arr=n.slots[slot];if(!arr){var rw=M.rawProp(n,slot);if(rw&&/\.map\s*\(/.test(rw))arr=[{type:'expressão',unknown:true,raw:rw}]}(arr||[]).forEach(function(c,i){d.appendChild(child(c,slot+':'+i,mode))})}
   if(n.unknown&&(n.type==='expressão'||(OF.ST.userWidgets&&OF.ST.userWidgets[n.type]&&(!OF.ST.userWidgets[n.type].stateful||(OF.ST.cur&&OF.ST.cur.cls===n.type))))&&R_opts.depth<40){R_opts.depth++;var rc;try{rc=resolveCond(n,path,pt,ppt,sel)}finally{R_opts.depth--}if(rc)return rc}
   if(n.unknown){d.className+=' unk';d.textContent=n.type==='expressão'?'{ '+n.raw.replace(/\s+/g,' ').slice(0,40)+' }':n.type+'(…)';lbl(d,n);d.dataset.path=path.join('>');place(d,n,pt,ppt);return d}
@@ -4214,16 +4264,16 @@ function build(n,path,pt,ppt,sel){
     case 'SliverChildListDelegate':{d.style.display='contents';kids('children',pt==='GridView'?'GridView':'ListView');break}
     case 'NestedScrollView':{d.className+=' col';d.style.alignItems='stretch';single('body','#single','body: adicione um widget');break}
     case 'ListWheelScrollView':{
-      d.className+=' lws';var lex=Math.max(20,numVal(M.getProp(n,'itemExtent'))||50),lch=n.slots.children||[];d.dataset.ext=lex;d.style.flex='1 1 0';d.style.minHeight='120px';d.style.alignSelf='stretch';
+      d.className+=' lws';var lex=Math.max(20,numVal(M.getProp(n,'itemExtent'))||50),lch=expKids('children');d.dataset.ext=lex;d.style.flex='1 1 0';d.style.minHeight='120px';d.style.alignSelf='stretch';
       var lin=document.createElement('div');lin.className='lwi';d.appendChild(lin);d.dataset.lk=path.join('>')||'root';
       var lsp=document.createElement('div');lsp.style.cssText='flex:none;height:calc(50% - '+(lex/2)+'px)';lin.appendChild(lsp);
-      lch.forEach(function(c,i){var w=document.createElement('div');w.className='lwc';w.style.height=lex+'px';w.appendChild(child(c,'children:'+i,'#none'));lin.appendChild(w)});
+      lch.forEach(function(c,i){var w=document.createElement('div');w.className='lwc';w.style.height=lex+'px';w.appendChild(build(c.n,path.concat(c.p.split('>')),'#none',null,sel));lin.appendChild(w)});
       var lsp2=lsp.cloneNode();lin.appendChild(lsp2);if(!lch.length)lin.appendChild(ph('children: [ ]'));
       var lwb=document.createElement('div');lwb.className='lwb';lwb.style.height=lex+'px';d.appendChild(lwb);
       d._n=n;(function(lk){requestAnimationFrame(function(){if(lin.isConnected&&R_opts.lws[lk])lin.scrollTop=R_opts.lws[lk]})})(d.dataset.lk);break}
     case 'CarouselView':{
-      d.className+=' crsl';var cex=Math.max(40,numVal(M.getProp(n,'itemExtent'))||250),cch2=n.slots.children||[];
-      cch2.forEach(function(c,i){var w=document.createElement('div');w.className='crc';w.style.width=cex+'px';w.appendChild(child(c,'children:'+i,'#expanded','Column'));d.appendChild(w)});
+      d.className+=' crsl';var cex=Math.max(40,numVal(M.getProp(n,'itemExtent'))||250),cch2=expKids('children');
+      cch2.forEach(function(c,i){var w=document.createElement('div');w.className='crc';w.style.width=cex+'px';w.appendChild(build(c.n,path.concat(c.p.split('>')),'#expanded','Column',sel));d.appendChild(w)});
       if(!cch2.length)d.appendChild(ph('children: [ ]'));break}
     case 'SliverGrid':{
       d.className+=' gridv';var sgx=/crossAxisCount:\s*(\d+)/.exec(M.getProp(n,'gridDelegate')||''),sgm=/maxCrossAxisExtent:\s*([\d.]+)/.exec(M.getProp(n,'gridDelegate')||''),sgnn=sgx?+sgx[1]:sgm?Math.max(1,Math.ceil(360/+sgm[1])):2;
@@ -4274,6 +4324,15 @@ function build(n,path,pt,ppt,sel){
         cdd.textContent=k2;cdd.className='cdy'+(ok2?' hh':' off')+((cst.sy===cst.y&&cst.sm===cst.m&&cst.sd===k2)?' on':'')+((tdy.getFullYear()===cst.y&&tdy.getMonth()+1===cst.m&&tdy.getDate()===k2)?' tdy':'');
         if(ok2&&R_opts.run){cdd.dataset.h='caldy';cdd.dataset.k=ckey;cdd.dataset.d=k2;cdd._n=n}cg.appendChild(cdd)}
       d.appendChild(cg);if(!R_opts.run)d.title='Entre em ▶ Testar para tocar nos dias';break}
+    case 'Draggable':case 'LongPressDraggable':{
+      d.className+=' col drgb';n._key=path.join('>')||'root';
+      var dgOn=!!R_opts.run&&R_opts.dragSrc===n._key;
+      if(dgOn&&n.slots.childWhenDragging)single('childWhenDragging','#single');
+      else single('child','#single','child: adicione o widget que será arrastado');
+      if(n.slots.feedback){var dfb=document.createElement('div');dfb.className='dfbk';dfb.style.display='none';dfb.appendChild(child(n.slots.feedback,'feedback','#single'));d.appendChild(dfb)}
+      if(R_opts.run){d.dataset.dg=n._key;d._n=n}
+      break}
+    case 'DragTarget':{d.className+=' col dgt';n._key=path.join('>')||'root';d.style.alignItems='flex-start';genKids('#single');if(R_opts.run){d.dataset.dt=n._key;d._n=n}break}
     case 'Text':{
       d.className+=' txt';d.textContent=strVal(M.getProp(n,'data'));d.style.cssText+=textCss(M.getProp(n,'style'));break}
     case 'Icon':{
@@ -10773,6 +10832,44 @@ class _TelaState extends State<Tela> {
 }
 `}
 
+/*NL-BEGIN*/,
+{t:"x. Arrastar e soltar: Draggable e DragTarget",
+ text:"Draggable deixa o filho ser arrastado e leva um data junto. DragTarget recebe o que for solto sobre ele: o builder enxerga candidateData (o que está passando por cima e é aceito) e rejectedData (o que foi recusado por onWillAcceptWithDetails). Em ▶ Testar, arraste as frutas com o mouse.",
+ tryit:"Arraste a Maçã e a Banana até a cesta. Tente a Uva: a cesta fica vermelha e recusa. Depois troque a regra em onWillAcceptWithDetails.",
+ code:"import 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Cesta()));\n\nclass Cesta extends StatefulWidget {\n  const Cesta({super.key});\n\n  @override\n  State<Cesta> createState() => _CestaState();\n}\n\nclass _CestaState extends State<Cesta> {\n  List<String> cesta = [];\n  String aviso = 'Arraste uma fruta até a cesta';\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Arrastar e soltar')),\n      body: Padding(\n        padding: const EdgeInsets.all(16),\n        child: Column(\n          crossAxisAlignment: CrossAxisAlignment.start,\n          children: [\n            Row(\n              children: [\n                for (final fruta in ['Maçã', 'Banana', 'Uva'])\n                  Padding(\n                    padding: const EdgeInsets.only(right: 12),\n                    child: Draggable<String>(\n                      data: fruta,\n                      feedback: Material(\n                        child: Chip(label: Text(fruta), backgroundColor: Colors.amber),\n                      ),\n                      childWhenDragging: Opacity(opacity: 0.3, child: Chip(label: Text(fruta))),\n                      child: Chip(label: Text(fruta)),\n                    ),\n                  ),\n              ],\n            ),\n            const SizedBox(height: 24),\n            DragTarget<String>(\n              onWillAcceptWithDetails: (detalhes) => detalhes.data != 'Uva',\n              onAcceptWithDetails: (detalhes) {\n                setState(() {\n                  cesta.add(detalhes.data);\n                  aviso = '${detalhes.data} entrou na cesta';\n                });\n              },\n              builder: (context, candidateData, rejectedData) {\n                return Container(\n                  width: double.infinity,\n                  height: 120,\n                  decoration: BoxDecoration(\n                    color: candidateData.isNotEmpty\n                        ? Colors.green.shade100\n                        : (rejectedData.isNotEmpty ? Colors.red.shade100 : Colors.grey.shade200),\n                    borderRadius: BorderRadius.circular(16),\n                  ),\n                  child: Center(child: Text('Cesta com ${cesta.length} frutas')),\n                );\n              },\n            ),\n            const SizedBox(height: 16),\n            Text(aviso),\n            Text('Dentro: $cesta'),\n          ],\n        ),\n      ),\n    );\n  }\n}\n"},
+{t:"x. AnimationController: animação com Tween e Curves",
+ text:"Uma animação explícita precisa de um AnimationController (o relógio, de 0 a 1), de um Tween (o intervalo de valores) e de um widget que escute, como ScaleTransition ou AnimatedBuilder. O controlador precisa de vsync: this e da mistura SingleTickerProviderStateMixin. Sempre chame dispose() para liberar o relógio.",
+ tryit:"Em ▶ Testar, veja o coração pulsar e os números mudarem. Toque em Parar e Continuar. Troque a duração, a curva e o intervalo do Tween.",
+ code:"import 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Pulso()));\n\nclass Pulso extends StatefulWidget {\n  const Pulso({super.key});\n\n  @override\n  State<Pulso> createState() => _PulsoState();\n}\n\nclass _PulsoState extends State<Pulso> with SingleTickerProviderStateMixin {\n  late AnimationController _c;\n  late Animation<double> _escala;\n\n  @override\n  void initState() {\n    super.initState();\n    _c = AnimationController(vsync: this, duration: const Duration(seconds: 2));\n    _escala = Tween<double>(begin: 0.6, end: 1.4).animate(\n      CurvedAnimation(parent: _c, curve: Curves.easeInOut),\n    );\n    _c.repeat(reverse: true);\n  }\n\n  @override\n  void dispose() {\n    _c.dispose();\n    super.dispose();\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('AnimationController')),\n      body: Center(\n        child: Column(\n          mainAxisAlignment: MainAxisAlignment.center,\n          children: [\n            ScaleTransition(\n              scale: _escala,\n              child: const Icon(Icons.favorite, size: 80, color: Colors.red),\n            ),\n            const SizedBox(height: 24),\n            AnimatedBuilder(\n              animation: _c,\n              builder: (context, child) => Transform.rotate(angle: _c.value * 6.28, child: child),\n              child: const Icon(Icons.refresh, size: 48),\n            ),\n            const SizedBox(height: 24),\n            Text('valor: ${_c.value.toStringAsFixed(2)}'),\n            Text('status: ${_c.status}'),\n            const SizedBox(height: 16),\n            Row(\n              mainAxisAlignment: MainAxisAlignment.center,\n              children: [\n                ElevatedButton(onPressed: () => _c.stop(), child: const Text('Parar')),\n                const SizedBox(width: 12),\n                ElevatedButton(onPressed: () => _c.repeat(reverse: true), child: const Text('Continuar')),\n              ],\n            ),\n          ],\n        ),\n      ),\n    );\n  }\n}\n"},
+{t:"x. ValueNotifier e ValueListenableBuilder: atualizar sem setState",
+ text:"Um ValueNotifier guarda um valor e avisa quem estiver escutando quando ele muda. O ValueListenableBuilder refaz só o pedaço da tela que depende do valor, sem chamar setState e sem refazer o resto. O parâmetro child do builder serve para um trecho fixo que não precisa ser refeito.",
+ tryit:"Toque em Somar 1 e em Zerar. Veja que o Text muda sem setState. Troque o valor inicial do ValueNotifier.",
+ code:"import 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Placar()));\n\nclass Placar extends StatefulWidget {\n  const Placar({super.key});\n\n  @override\n  State<Placar> createState() => _PlacarState();\n}\n\nclass _PlacarState extends State<Placar> {\n  final ValueNotifier<int> pontos = ValueNotifier<int>(0);\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('ValueNotifier')),\n      body: Center(\n        child: Column(\n          mainAxisAlignment: MainAxisAlignment.center,\n          children: [\n            ValueListenableBuilder<int>(\n              valueListenable: pontos,\n              builder: (context, valor, child) {\n                return Text('Pontos: $valor', style: const TextStyle(fontSize: 32));\n              },\n            ),\n            const SizedBox(height: 16),\n            ElevatedButton(onPressed: () => pontos.value += 1, child: const Text('Somar 1')),\n            const SizedBox(height: 8),\n            OutlinedButton(onPressed: () => pontos.value = 0, child: const Text('Zerar')),\n          ],\n        ),\n      ),\n    );\n  }\n}\n"},
+{t:"x. Recortes e efeitos: ClipOval, DecoratedBox, ShaderMask e Material",
+ text:"ClipOval recorta o filho em círculo. DecoratedBox pinta uma decoração atrás do filho, sem mexer no tamanho. ShaderMask aplica um degradê no que está dentro dele. Material desenha uma superfície com sombra (elevation). Placeholder marca um espaço que ainda será preenchido. No simulador, o ShaderMask só afeta textos.",
+ tryit:"Mude as iniciais, o tamanho do círculo, as cores do degradê e a elevação do Material.",
+ code:"import 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Efeitos()));\n\nclass Efeitos extends StatelessWidget {\n  const Efeitos({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Recortes e efeitos')),\n      body: ListView(\n        padding: const EdgeInsets.all(16),\n        children: [\n          Center(\n            child: ClipOval(\n              child: Container(\n                width: 100,\n                height: 100,\n                color: Colors.indigo,\n                child: const Center(child: Text('AS', style: TextStyle(color: Colors.white, fontSize: 32))),\n              ),\n            ),\n          ),\n          const SizedBox(height: 16),\n          DecoratedBox(\n            decoration: BoxDecoration(color: Colors.amber, borderRadius: BorderRadius.circular(12)),\n            child: const Padding(padding: EdgeInsets.all(16), child: Text('Cartão decorado')),\n          ),\n          const SizedBox(height: 16),\n          ShaderMask(\n            shaderCallback: (bounds) => LinearGradient(colors: [Colors.purple, Colors.orange]).createShader(bounds),\n            blendMode: BlendMode.srcIn,\n            child: const Text('Degradê no texto', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),\n          ),\n          const SizedBox(height: 16),\n          Material(\n            elevation: 6,\n            borderRadius: BorderRadius.circular(12),\n            color: Colors.white,\n            child: const Padding(padding: EdgeInsets.all(16), child: Text('Material com sombra')),\n          ),\n          const SizedBox(height: 16),\n          const SizedBox(width: 120, height: 60, child: Placeholder()),\n        ],\n      ),\n    );\n  }\n}\n"},
+{t:"x. Slivers: CustomScrollView com SliverGrid e SliverPadding",
+ text:"CustomScrollView junta vários pedaços roláveis numa só rolagem. Cada pedaço é um sliver: SliverAppBar, SliverPadding (espaço em volta de outro sliver, no parâmetro sliver), SliverGrid, SliverList e SliverToBoxAdapter (um widget comum no meio).",
+ tryit:"Role a tela no canvas e veja a barra encolher. Mude o número de colunas e de fotos.",
+ code:"import 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Galeria()));\n\nclass Galeria extends StatelessWidget {\n  const Galeria({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      body: CustomScrollView(\n        slivers: [\n          SliverAppBar(\n            pinned: true,\n            expandedHeight: 120,\n            title: const Text('Galeria'),\n            backgroundColor: Colors.teal,\n            foregroundColor: Colors.white,\n          ),\n          SliverPadding(\n            padding: const EdgeInsets.all(12),\n            sliver: SliverGrid.count(\n              crossAxisCount: 2,\n              mainAxisSpacing: 8,\n              crossAxisSpacing: 8,\n              children: [\n                for (var i = 1; i <= 6; i++)\n                  Container(\n                    color: Colors.teal.shade100,\n                    child: Center(child: Text('Foto $i')),\n                  ),\n              ],\n            ),\n          ),\n          const SliverToBoxAdapter(\n            child: Padding(padding: EdgeInsets.all(16), child: Text('Fim da galeria')),\n          ),\n        ],\n      ),\n    );\n  }\n}\n"},
+{t:"x. ListWheelScrollView e CarouselView",
+ text:"ListWheelScrollView mostra uma lista como uma roda de relógio: o item do meio é o escolhido, e onSelectedItemChanged avisa qual é. CarouselView mostra cartões lado a lado que passam como um carrossel, cada um com a largura de itemExtent.",
+ tryit:"Gire a roda e veja o texto da hora mudar. Arraste o carrossel de lado.",
+ code:"import 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Seletor()));\n\nclass Seletor extends StatefulWidget {\n  const Seletor({super.key});\n\n  @override\n  State<Seletor> createState() => _SeletorState();\n}\n\nclass _SeletorState extends State<Seletor> {\n  int hora = 0;\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Roda e carrossel')),\n      body: Padding(\n        padding: const EdgeInsets.all(16),\n        child: Column(\n          children: [\n            Text('Hora escolhida: $hora h', style: const TextStyle(fontSize: 20)),\n            SizedBox(\n              height: 150,\n              child: ListWheelScrollView(\n                itemExtent: 44,\n                onSelectedItemChanged: (i) {\n                  setState(() {\n                    hora = i;\n                  });\n                },\n                children: [\n                  for (var h = 0; h < 24; h++)\n                    Center(child: Text('$h h', style: const TextStyle(fontSize: 24))),\n                ],\n              ),\n            ),\n            const SizedBox(height: 16),\n            SizedBox(\n              height: 120,\n              child: CarouselView(\n                itemExtent: 220,\n                children: [\n                  Container(color: Colors.indigo, child: const Center(child: Text('Oferta 1', style: TextStyle(color: Colors.white)))),\n                  Container(color: Colors.teal, child: const Center(child: Text('Oferta 2', style: TextStyle(color: Colors.white)))),\n                  Container(color: Colors.orange, child: const Center(child: Text('Oferta 3', style: TextStyle(color: Colors.white)))),\n                ],\n              ),\n            ),\n          ],\n        ),\n      ),\n    );\n  }\n}\n"},
+{t:"x. Botões modernos: FilledButton.tonal, IconButton.filled e FAB estendido",
+ text:"O Material 3 trouxe novos botões: FilledButton.tonal (tom suave), IconButton.filled e IconButton.outlined (ícones com fundo ou borda), ElevatedButton.icon (botão com ícone e texto) e FloatingActionButton.extended (botão flutuante com rótulo).",
+ tryit:"Toque em cada botão e veja o que muda. Troque os ícones e o quanto cada botão soma.",
+ code:"import 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Botoes()));\n\nclass Botoes extends StatefulWidget {\n  const Botoes({super.key});\n\n  @override\n  State<Botoes> createState() => _BotoesState();\n}\n\nclass _BotoesState extends State<Botoes> {\n  int curtidas = 0;\n  bool salvo = false;\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Botões modernos')),\n      body: Padding(\n        padding: const EdgeInsets.all(16),\n        child: Column(\n          crossAxisAlignment: CrossAxisAlignment.start,\n          children: [\n            Text('Curtidas: $curtidas', style: const TextStyle(fontSize: 22)),\n            const SizedBox(height: 12),\n            Wrap(\n              spacing: 8,\n              runSpacing: 8,\n              children: [\n                FilledButton.tonal(onPressed: () => setState(() => curtidas++), child: const Text('Curtir')),\n                IconButton.filled(\n                  onPressed: () => setState(() => salvo = !salvo),\n                  icon: Icon(salvo ? Icons.bookmark : Icons.bookmark_border),\n                ),\n                IconButton.outlined(onPressed: () => setState(() => curtidas = 0), icon: const Icon(Icons.refresh)),\n                ElevatedButton.icon(onPressed: () {}, icon: const Icon(Icons.share), label: const Text('Compartilhar')),\n              ],\n            ),\n            const SizedBox(height: 12),\n            Text(salvo ? 'Item salvo' : 'Item não salvo'),\n          ],\n        ),\n      ),\n      floatingActionButton: FloatingActionButton.extended(\n        onPressed: () => setState(() => curtidas += 10),\n        icon: const Icon(Icons.add),\n        label: const Text('Mais 10'),\n      ),\n    );\n  }\n}\n"},
+{t:"x. Layout avançado: OverflowBox, RotatedBox, Offstage e IgnorePointer",
+ text:"OverflowBox deixa o filho passar do limite do pai. RotatedBox gira o filho em múltiplos de 90 graus (e muda o tamanho que ele ocupa, ao contrário do Transform.rotate). Offstage esconde o filho sem tirá-lo da árvore. IgnorePointer faz o filho ignorar toques.",
+ tryit:"Esconda e mostre o texto. Ligue o bloqueio e tente tocar no botão de cliques.",
+ code:"import 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Ajustes()));\n\nclass Ajustes extends StatefulWidget {\n  const Ajustes({super.key});\n\n  @override\n  State<Ajustes> createState() => _AjustesState();\n}\n\nclass _AjustesState extends State<Ajustes> {\n  bool mostrar = true;\n  bool bloqueado = false;\n  int cliques = 0;\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Layout avançado')),\n      body: Padding(\n        padding: const EdgeInsets.all(16),\n        child: Column(\n          crossAxisAlignment: CrossAxisAlignment.start,\n          children: [\n            SizedBox(\n              width: 160,\n              height: 40,\n              child: OverflowBox(\n                maxWidth: 260,\n                child: Container(color: Colors.pink.shade100, child: const Text('Este texto passa do limite da caixa')),\n              ),\n            ),\n            const SizedBox(height: 16),\n            RotatedBox(quarterTurns: 1, child: const Text('Girado', style: TextStyle(fontSize: 22))),\n            const SizedBox(height: 16),\n            Offstage(offstage: !mostrar, child: const Text('Eu apareço e sumo')),\n            ElevatedButton(onPressed: () => setState(() => mostrar = !mostrar), child: const Text('Mostrar ou esconder')),\n            const SizedBox(height: 16),\n            IgnorePointer(\n              ignoring: bloqueado,\n              child: ElevatedButton(onPressed: () => setState(() => cliques++), child: Text('Cliques: $cliques')),\n            ),\n            Row(\n              children: [\n                Switch(value: bloqueado, onChanged: (v) => setState(() => bloqueado = v)),\n                Text(bloqueado ? 'Botão bloqueado' : 'Botão livre'),\n              ],\n            ),\n          ],\n        ),\n      ),\n    );\n  }\n}\n"},
+{t:"x. Busca e calendário: SearchAnchor.bar e CalendarDatePicker",
+ text:"SearchAnchor.bar cria uma barra de busca que abre uma lista de sugestões (aqui sem sugestões, no simulador). CalendarDatePicker mostra um calendário no meio da tela, sem diálogo. onDateChanged avisa o dia escolhido.",
+ tryit:"Escolha um dia no calendário e veja o texto abaixo. Mude o mês inicial e o limite lastDate.",
+ code:"import 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Agenda()));\n\nclass Agenda extends StatefulWidget {\n  const Agenda({super.key});\n\n  @override\n  State<Agenda> createState() => _AgendaState();\n}\n\nclass _AgendaState extends State<Agenda> {\n  DateTime escolhido = DateTime(2026, 10, 12);\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Busca e calendário')),\n      body: ListView(\n        padding: const EdgeInsets.all(16),\n        children: [\n          SearchAnchor.bar(\n            barHintText: 'Buscar compromisso',\n            suggestionsBuilder: (context, controller) => [],\n          ),\n          const SizedBox(height: 16),\n          CalendarDatePicker(\n            initialDate: DateTime(2026, 10, 12),\n            firstDate: DateTime(2026, 1, 1),\n            lastDate: DateTime(2026, 12, 31),\n            onDateChanged: (d) {\n              setState(() {\n                escolhido = d;\n              });\n            },\n          ),\n          Text('Dia escolhido: ${escolhido.day}/${escolhido.month}/${escolhido.year}', style: const TextStyle(fontSize: 18)),\n        ],\n      ),\n    );\n  }\n}\n"}
+/*NL-END*/
 ];
 var base=LESSONS.filter(function(l){return !l.after}),placed=LESSONS.filter(function(l){return l.after});
 placed.forEach(function(l){var k=-1;base.forEach(function(b,i){if(b.t.indexOf(l.after)>=0)k=i});
@@ -10850,6 +10947,131 @@ LESSONS.forEach(function(L){LIMS.forEach(function(g){if(L.t.indexOf(g[0])>=0)L.l
 var NOSTATE=['Column: empilhar na vertical','Lista de tarefas','Botões e TextField','Rolagem, recorte e toque','Drawer e barra inferior','habilidades e acabamento'];
 NOSTATE.forEach(function(k){LESSONS.forEach(function(L){if(L.t.indexOf(k)>=0&&L.text.indexOf('não guarda estado')<0)L.text+=' Atenção: nesta aula a tela é só visual e não guarda estado, então o ▶ Testar fica desativado e os botões ainda não fazem nada. Eles passam a funcionar nas aulas de estado, com StatefulWidget e setState.'})});
 window.OF.LESSONS=LESSONS;
+})();
+
+(function(){
+var EX={};
+function add(sub,steps){EX[sub]=steps}
+add("Scaffold e AppBar",[["Mudar o título da AppBar","Dentro de AppBar, troque o texto de Text('Minha primeira tela') por outro.","^(?![\\s\\S]*Minha primeira tela)"],["Trocar a cor da AppBar","Em backgroundColor, troque Colors.indigo por outra cor, como Colors.pink.","backgroundColor:\\s*Colors\\.(?!indigo\\b)"],["Mudar o texto \"Olá, Flutter!\"","O texto está no Text do body. Escreva outra frase entre as aspas.","^(?![\\s\\S]*Olá, Flutter!)"],["Aumentar a letra para 40","No TextStyle do body, mude fontSize: 26 para um valor de 40 ou mais.","fontSize:\\s*(?:[4-9]\\d)"]]);
+add("Center, Padding e Container",[["Trocar o texto da caixa","Mude o que está escrito dentro do Text('Caixa com padding').","^(?![\\s\\S]*Caixa com padding)"],["Usar EdgeInsets.all(48)","O padding do Container controla o espaço entre a borda e o texto.","EdgeInsets\\.all\\(48\\)"],["Pintar a caixa de laranja","Em color, troque Colors.teal.shade100 por Colors.orange.shade100.","color:\\s*Colors\\.orange"],["Deixar a borda mais redonda (raio 40)","Em BorderRadius.circular(16), troque o 16 por 40.","BorderRadius\\.circular\\(\\s*40\\s*\\)"]]);
+add("Column: empilhar",[["Trocar o texto \"Curtir\"","O texto está num Text dentro de children.","^(?![\\s\\S]*Curtir)"],["Acrescentar mais um Text na Column","Dentro de children, acrescente Text('Novo'), com vírgula no final. Ou arraste um Text da paleta.","(?:Text\\([\\s\\S]*?){4}"],["Usar MainAxisAlignment.spaceBetween","mainAxisAlignment define como os filhos se distribuem na vertical.","MainAxisAlignment\\.spaceBetween"]]);
+add("Row e Expanded",[["Pintar o primeiro bloco de verde","No primeiro Container, troque Colors.blue.shade200 por Colors.green.shade200.","Colors\\.green"],["Mudar para flex: 3","Expanded divide o espaço pela proporção do flex. Troque flex: 2 por flex: 3.","flex:\\s*3"],["Acrescentar um terceiro Expanded","Dentro da Row, depois do segundo Expanded, escreva Expanded(child: Container(...)).","(?:Expanded\\([\\s\\S]*?){3}"],["Trocar Row por Column","Troque a palavra Row por Column e veja os blocos empilharem.","^(?![\\s\\S]*\\bRow\\()"]]);
+add("Align e Flexible",[["Trocar o texto do canto","Mude o texto de Text('canto inferior direito').","^(?![\\s\\S]*canto inferior direito)"],["Usar Alignment.topLeft","Troque Alignment.bottomRight por Alignment.topLeft para levar o texto ao canto de cima.","Alignment\\.topLeft"],["Container com width: 120","No Flexible da esquerda, mude width: 60 para width: 120.","width:\\s*120"],["Trocar FlexFit.tight por FlexFit.loose","tight obriga o filho a ocupar o espaço; loose deixa ele com o tamanho que precisa.","FlexFit\\.loose"]]);
+add("Stack e Positioned",[["Mudar o ícone para Icons.favorite","O Icon está dentro do segundo Positioned.","Icons\\.favorite"],["Positioned com left: 8 no lugar de right","O Positioned usa as bordas: troque right: 8 por left: 8.","Positioned\\(\\s*bottom:\\s*8,\\s*left:\\s*8"],["Fazer o quadrado menor ficar escondido","Num Stack, o último filho fica por cima. Mude o container de 60 de lugar para o começo da lista.","children:\\s*\\[\\s*Container\\(width:\\s*60"]]);
+add("Lista de tarefas",[["Trocar o texto de uma tarefa","Mude o texto de Text('Estudar Column e Row').","^(?![\\s\\S]*Estudar Column e Row)"],["Usar Icons.star","Troque Icons.check por Icons.star numa das linhas.","Icons\\.star"],["Ter três tarefas","Duplique uma linha (selecione no canvas e use Duplicar) ou copie um Padding(...) inteiro.","(?:Padding\\(\\s*padding:[\\s\\S]*?){3}"]]);
+add("Botões e TextField",[["Trocar o rótulo do e-mail","O rótulo está em labelText do primeiro TextField.","^(?![\\s\\S]*labelText:\\s*'E-mail')"],["Usar OutlinedButton","Troque ElevatedButton ou TextButton por OutlinedButton.","OutlinedButton\\("],["Tirar a borda do primeiro campo","Apague border: OutlineInputBorder() do primeiro TextField e compare.","^(?![\\s\\S]*TextField\\(decoration:\\s*InputDecoration\\(labelText:\\s*'[^']*',\\s*border:)"]]);
+add("Grade, imagens",[["Trocar o nome no ListTile","O nome está em title: Text('Ana Souza').","^(?![\\s\\S]*Ana Souza)"],["crossAxisCount: 3","crossAxisCount é o número de colunas da grade.","crossAxisCount:\\s*3"],["Cinco imagens na grade","Acrescente mais uma Image.network('https://picsum.photos/204') na lista de children da grade.","(?:Image\\.network\\([\\s\\S]*?){5}"]]);
+add("Wrap, Chip",[["Raio 40 no avatar","No CircleAvatar, mude radius: 28 para radius: 40.","radius:\\s*40"],["spacing: 24","spacing é o espaço horizontal entre os chips. Mude spacing: 8 para spacing: 24.","spacing:\\s*24"],["Sete chips","Acrescente mais um Chip(label: Text('...')) na lista do Wrap.","(?:Chip\\([\\s\\S]*?){7}"]]);
+add("Projeto 1 · etapa 1",[["Trocar o nome no cartão","O nome está no primeiro Text da Column.","^(?![\\s\\S]*Ana Souza)"],["Acrescentar um terceiro Text na Column","Depois da profissão, escreva Text('Recife, PE'), dentro da lista children da Column.","(?:Text\\([\\s\\S]*?){4}"],["crossAxisAlignment: end","crossAxisAlignment alinha os filhos no eixo contrário. Use CrossAxisAlignment.end.","crossAxisAlignment:\\s*CrossAxisAlignment\\.end"]]);
+add("Projeto 1 · etapa 2",[["Mudar o telefone","O número está no primeiro ListTile da seção Contatos.","^(?![\\s\\S]*99999-0000)"],["Contato do site (Icons.language)","Acrescente um ListTile com leading: Icon(Icons.language) e o endereço do site em title.","Icons\\.language"],["Trocar o título \"Contatos\"","O título é o Text logo acima dos ListTile.","^(?![\\s\\S]*'Contatos')"]]);
+add("Projeto 1 · etapa 3",[["Trocar o texto do botão","O botão é o OutlinedButton no fim da lista.","^(?![\\s\\S]*Enviar mensagem)"],["Quatro chips","Acrescente Chip(label: Text('Dart')), dentro do Wrap.","(?:Chip\\([\\s\\S]*?){4}"],["Cor teal","Troque deepPurple por teal. Dá para fazer em vários lugares, comece pelo círculo do avatar.","Colors\\.teal"]]);
+add("Rolagem, recorte",[["Trocar o texto \"Toque aqui\"","O texto está no Container dentro do GestureDetector.","^(?![\\s\\S]*Toque aqui)"],["opacity: 1","Opacity vai de 0 (invisível) a 1 (normal). Troque 0.4 por 1.","opacity:\\s*1(?![\\d.])"],["Imagem com borda de raio 40","No ClipRRect, mude BorderRadius.circular(16) para circular(40).","BorderRadius\\.circular\\(\\s*40\\s*\\)"]]);
+add("Opacidade, recorte",[["Começar com opacidade 0.5","Mude o valor inicial: double opacidade = 0.5;","double opacidade\\s*=\\s*0\\.5"],["divisions: 4","divisions divide o Slider em passos. Troque divisions: 10 por 4.","divisions:\\s*4\\b"],["Raio máximo 100","No segundo Slider, mude max: 60 para max: 100.","max:\\s*100"]]);
+add("Toques: GestureDetector",[["Mudar o texto inicial","A variável gesto começa com um texto. Mude 'Nenhum gesto ainda'.","^(?![\\s\\S]*Nenhum gesto ainda)"],["Toque duplo vale 10 pontos","Em onDoubleTap, troque total += 2 por total += 10.","total\\s*\\+=\\s*10"],["Mudar a cor da caixa","No Container, troque Colors.deepPurple por outra cor.","Container\\(\\s*width:\\s*240,\\s*height:\\s*140,\\s*color:\\s*Colors\\.(?!deepPurple\\b)"]]);
+add("Checkbox, Switch",[["Checkbox começando desmarcado","O valor inicial é a variável aceito. Troque true por false.","bool aceito\\s*=\\s*false"],["Notificações começando desligadas","Mesma ideia, na variável notificar.","bool notificar\\s*=\\s*false"],["Volume começando em 0.9","Mude double volume = 0.6 para 0.9.","double volume\\s*=\\s*0\\.9"]]);
+add("Drawer e barra",[["Trocar o texto do conteúdo","O texto fica no body.","^(?![\\s\\S]*Conteúdo da tela)"],["Quatro itens no Drawer","Acrescente um ListTile(leading: Icon(...), title: Text(...)) na lista do Drawer.","(?:ListTile\\([\\s\\S]*?){4}"],["currentIndex: 2","currentIndex diz qual item da barra inferior está selecionado.","currentIndex:\\s*2"]]);
+add("Abas com TabBar",[["Trocar o nome da primeira aba","O nome está em Tab(text: 'Fotos').","^(?![\\s\\S]*Tab\\(text:\\s*'Fotos')"],["Acrescentar uma quarta aba","Três coisas precisam bater: length: 4, uma nova Tab no TabBar e um novo conteúdo no TabBarView.","length:\\s*4[\\s\\S]*(?:Tab\\(text:[\\s\\S]*?){4}[\\s\\S]*(?:Center\\(child: Text\\('Conte[\\s\\S]*?){4}"],["Mudar a cor da AppBar","Troque Colors.indigo por outra cor em backgroundColor.","backgroundColor:\\s*Colors\\.(?!indigo\\b)"]]);
+add("Estado com setState",[["Começar o contador em 10","A variável contador começa em 0. Troque por 10.","int contador\\s*=\\s*10"],["Criar um botão que subtrai","Depois do botão Somar 1, acrescente ElevatedButton(onPressed: () => setState(() => contador--), child: Text('Menos 1')).","contador--"],["Somar de 5 em 5","Dentro de _incrementar, troque contador++ por contador += 5.","contador\\s*\\+=\\s*5"]]);
+add("Interruptor e controle",[["Começar desligada","A variável ligado começa em true. Troque por false.","bool ligado\\s*=\\s*false"],["Trocar Colors.amber por Colors.pink","A cor da lâmpada ligada está em final cor = ligado ? ... : ...;","Colors\\.pink"],["Trocar o ícone por Icons.star","O ícone está dentro do Opacity.","Icons\\.star"]]);
+add("Condições na interface",[["Trocar o aviso cinza","O aviso é o Text depois dos dois pontos no operador ternário (aceito ? ... : ...).","^(?![\\s\\S]*Marque para continuar)"],["Usar nome.length > 3","A condição do if controla quando a saudação aparece. Troque nome.isNotEmpty por nome.length > 3.","nome\\.length\\s*>\\s*3"],["Saudação em maiúsculas","Dentro da string, use ${nome.toUpperCase()} no lugar de $nome.","toUpperCase\\(\\)"]]);
+add("Listas e laços",[["Começar com três tarefas","A lista tarefas começa com duas. Acrescente uma terceira entre aspas, separada por vírgula.","tarefas\\s*=\\s*\\['[^']*',\\s*'[^']*',\\s*'[^']*'"],["Trocar o rótulo do campo","O rótulo está em labelText do TextField.","^(?![\\s\\S]*labelText:\\s*'Nova tarefa')"],["Usar Icons.star nas tarefas","O ícone fica em leading dentro do ListTile do for.","Icons\\.star"]]);
+add("Gerando widgets com for",[["Começar com nota 5","A variável nota começa em 3.","int nota\\s*=\\s*5"],["Estrelas de outra cor","No Icon das estrelas, troque Colors.amber por outra cor.","Colors\\.(?!amber\\b)"],["Gerar 7 estrelas","O for conta de 1 até 5. Mude a condição para i <= 7.","i\\s*<=\\s*7"]]);
+add("Formulário: menu",[["Cidade inicial Olinda","A variável cidade precisa de um valor que exista no menu.","String cidade\\s*=\\s*'Olinda'"],["Uma quarta cidade no menu","Acrescente mais um DropdownMenuItem(value: ..., child: Text(...)) em items.","(?:DropdownMenuItem\\([\\s\\S]*?){4}"],["Um terceiro turno (Tarde)","Copie um RadioListTile e use value: 3 e title: Text('Tarde').","(?:RadioListTile<int>\\([\\s\\S]*?){3}"],["Avisos desligados no início","A variável avisos começa em true.","bool avisos\\s*=\\s*false"]]);
+add("Listas sob demanda",[["Seis nomes na turma","Acrescente um sexto nome na lista nomes.","nomes\\s*=\\s*\\[('[^']*',\\s*){5}'[^']*'"],["itemCount: nomes.length - 1","itemCount diz quantas linhas o builder cria. Subtraia 1 para esconder a última.","itemCount:\\s*nomes\\.length\\s*-\\s*1"],["Usar ListView.builder (sem divisores)","Troque ListView.separated por ListView.builder e apague a linha separatorBuilder.","ListView\\.builder\\("]]);
+add("Tabelas, páginas",[["Abrir na terceira página","PageController(initialPage: 0) define a página inicial. Use 2.","initialPage:\\s*2"],["Mais uma linha na tabela","Copie um TableRow e escreva outro aluno e nota.","(?:TableRow\\([\\s\\S]*?){4}"],["Uma quarta página","Acrescente mais um Container no PageView com o texto 'Página 4'.","Página 4"]]);
+add("Seus próprios widgets",[["Nota 8 para o Bruno","A nota é um parâmetro da chamada CartaoAluno(nome: 'Bruno', nota: 5, ...).","nome:\\s*'Bruno',\\s*nota:\\s*8"],["Um quarto aluno","Chame CartaoAluno mais uma vez, sem repetir o código do cartão.","(?:CartaoAluno\\(nome:[\\s\\S]*?){4}"],["Aprovar com nota 6","A conta está dentro de CartaoAluno: nota >= 7. Mude para 6.","nota\\s*>=\\s*6"]]);
+add("Classes de dados",[["Uma quarta tarefa","Acrescente Tarefa('...') na lista inicial.","(?:Tarefa\\('[\\s\\S]*?){4}"],["Começar com duas tarefas feitas","Use o parâmetro nomeado feita: true em outra Tarefa.","feita:\\s*true[\\s\\S]*feita:\\s*true|feita:\\s*true[\\s\\S]*feita:\\s*true"],["Mudar o texto \"pendente\"","O texto é o getter resumo, dentro da classe Tarefa.","^(?![\\s\\S]*'pendente')"]]);
+add("Projeto 2 · etapa 1",[["Mudar o texto de uma tarefa","Mude o texto de Tarefa('Estudar Dart').","^(?![\\s\\S]*Estudar Dart)"],["Acrescentar uma quarta Tarefa","Na lista inicial, escreva mais uma Tarefa('...'), com vírgula.","(?:Tarefa\\('[\\s\\S]*?){4}"],["Usar Icons.star no lugar do check","O ícone fica em leading, dentro do ListTile.","Icons\\.star"]]);
+add("Projeto 2 · etapa 2",[["Rótulo do campo","O rótulo está em labelText do TextField.","^(?![\\s\\S]*labelText:\\s*'Nova tarefa')"],["Terceira tarefa na lista inicial","Acrescente mais uma Tarefa('...') na lista.","(?:Tarefa\\('[\\s\\S]*?){3}"],["Título \"Minhas tarefas\"","O título está no Text da AppBar. Troque a interpolação por um texto fixo.","Minhas tarefas"]]);
+add("Projeto 2 · etapa 3",[["Começar com \"Estudar Dart\" já feita","Use o parâmetro nomeado feita: true nessa Tarefa.","Tarefa\\('Estudar Dart',\\s*feita:\\s*true"],["Trocar o texto do botão","O botão é o ElevatedButton ao lado do campo.","^(?![\\s\\S]*'Adicionar')"],["Estrela nas tarefas","Acrescente trailing: Icon(Icons.star) no ListTile.","Icons\\.star"]]);
+add("Map e parâmetros",[["Mudar o título no main()","O título é um parâmetro nomeado: Votacao(titulo: '...').","^(?![\\s\\S]*Enquete da turma)"],["Começar com 5 votos no Flutter","No Map, troque o 0 depois de 'Flutter': por 5.","'Flutter':\\s*5"],["Map com três linguagens","Acrescente 'Kotlin': 0 (ou outra) dentro das chaves, com vírgula.","votos\\s*=\\s*\\{[^}]*,[^}]*,[^}]*\\}"]]);
+add("Lógica: switch",[["Corte de aprovação 6","Na primeira condição, troque n >= 7 por n >= 6.","n\\s*>=\\s*6"],["Acrescentar case 4 (Quinta)","Dentro do switch, escreva case 4: return 'Quinta'; antes do default.","case 4"],["Mudar a mensagem do catch","O texto está no catch (e).","^(?![\\s\\S]*Isso não é um número)"]]);
+add("Projeto 3 · etapa 1",[["Trocar a mensagem inicial","A variável resultado começa com um texto. Mude-o.","^(?![\\s\\S]*Preencha os campos)"],["Título \"Calculadora de IMC\"","O título está no Text dentro da AppBar.","Calculadora de IMC"],["Botão \"Calcular IMC\"","Mude o texto do ElevatedButton.","Calcular IMC"]]);
+add("Projeto 3 · etapa 2",[["Mudar \"Seu IMC é\"","O texto do resultado está dentro do setState, depois da conta.","^(?![\\s\\S]*Seu IMC é)"],["Mensagem de erro nova","A mensagem do catch aparece quando o texto não é número.","^(?![\\s\\S]*Digite apenas números)"],["Mostrar o IMC com duas casas","toStringAsFixed(1) mostra uma casa decimal. Use 2.","toStringAsFixed\\(2\\)"]]);
+add("Projeto 3 · etapa 3",[["Erros em laranja","No TextStyle do resultado, troque Colors.red por Colors.orange.","Colors\\.orange"],["Limite 24.9","Na função classificar, troque imc < 25 por imc <= 24.9.","24\\.9"],["Mais uma faixa de obesidade","Antes do else final, acrescente else if (imc < 35) { return 'Obesidade I'; }.","imc\\s*<\\s*35"]]);
+add("Mensagem rápida: SnackBar",[["Trocar o texto do SnackBar","O texto está em content: Text('Você curtiu!').","^(?![\\s\\S]*Você curtiu!)"],["Trocar o rótulo \"Desfazer\"","O rótulo do botão está em SnackBarAction(label: ...).","^(?![\\s\\S]*label:\\s*'Desfazer')"],["SnackBar de 5 segundos","Acrescente duration: Duration(seconds: 5) dentro do SnackBar.","Duration\\(\\s*seconds:\\s*5\\s*\\)"]]);
+add("Diálogo de confirmação",[["Mudar o título do diálogo","O título está em AlertDialog(title: ...).","^(?![\\s\\S]*Remover tarefa\\?)"],["Quatro tarefas na lista","Acrescente mais um texto na lista tarefas.","tarefas\\s*=\\s*\\[('[^']*',\\s*){3}'[^']*'"],["Ter três botões no diálogo","Em actions, acrescente mais um TextButton (por exemplo, 'Talvez').","(?:TextButton\\([\\s\\S]*?){3}"]]);
+add("Projeto 2 · etapa 4",[["Mudar o título do diálogo","O título está em AlertDialog(title: Text(...)).","^(?![\\s\\S]*Remover tarefa\\?)"],["Mudar a mensagem do SnackBar","A mensagem aparece depois de remover.","^(?![\\s\\S]*Tarefa removida)"],["Botão que limpa as feitas","Crie um TextButton cujo onPressed use tarefas.removeWhere((t) => t.feita) dentro de setState.","removeWhere"]]);
+add("Painel inferior: BottomSheet",[["Cor inicial Verde","A variável cor começa com 'Azul'.","String cor\\s*=\\s*'Verde'"],["Trocar o texto do botão","O botão é o ElevatedButton que abre o painel.","^(?![\\s\\S]*'Escolher')"],["Acrescentar Laranja","Acrescente 'Laranja' na lista usada pelo for.","Laranja"]]);
+add("Navegando entre telas",[["Mudar o texto do botão inicial","O botão está na tela Inicio: Text('Ir para detalhes').","^(?![\\s\\S]*Ir para detalhes)"],["Mudar o título da tela Detalhes","O título está na AppBar da classe Detalhes.","^(?![\\s\\S]*AppBar\\(title:\\s*const Text\\('Detalhes'\\))"],["Criar uma terceira tela","Copie uma classe StatelessWidget inteira e dê outro nome a ela.","(?:extends\\s+StatelessWidget[\\s\\S]*?){3}"],["Navegar até a terceira tela","Na tela Detalhes, faça o botão chamar Navigator.push com MaterialPageRoute(builder: (context) => const Extra()).","(?:MaterialPageRoute\\([\\s\\S]*?){2}"]]);
+add("Passando dados",[["Mudar a saudação do perfil","A saudação está na tela Perfil.","^(?![\\s\\S]*Olá, \\$nome!)"],["Ter quatro nomes na lista","Acrescente um quarto nome na lista do for.","\\[('[^']*',\\s*){3}'[^']*'\\s*\\]"],["Avatar com raio 60","No CircleAvatar da tela Perfil, mude radius: 40 para 60.","radius:\\s*60"]]);
+add("Projeto 4 · etapa 1",[["Mudar a pergunta","A pergunta é o Text grande no começo da Column.","^(?![\\s\\S]*Qual widget empilha filhos na vertical\\?)"],["Mudar o texto de acerto","A mensagem está em responder(), depois do ?.","^(?![\\s\\S]*Acertou!)"],["Acrescentar uma quarta opção","Copie um ElevatedButton e use responder(3).","(?:ElevatedButton\\([\\s\\S]*?){4}"]]);
+add("Projeto 4 · etapa 2",[["Terceira pergunta","Na lista perguntas, acrescente Pergunta('texto', ['a', 'b', 'c'], índiceDaCorreta).","(?:Pergunta\\('[\\s\\S]*?){3}"],["Trocar \"Pontos\" por \"Placar\"","O texto está no fim da Column.","^(?![\\s\\S]*Pontos: \\$pontos)"],["Cada acerto vale 2 pontos","Em responder(), troque pontos++ por pontos += 2.","pontos\\s*\\+=\\s*2"]]);
+add("Projeto 4 · etapa 3",[["Mudar o botão \"Jogar de novo\"","O botão está na tela Resultado.","^(?![\\s\\S]*Jogar de novo)"],["Nova frase de resultado","O texto \"Você acertou $pontos de $total\" está na tela Resultado.","^(?![\\s\\S]*Você acertou)"],["Quarta pergunta (e total: 4)","Acrescente uma Pergunta e lembre de trocar total: 3 por total: 4.","(?:Pergunta\\('[\\s\\S]*?){4}[\\s\\S]*total:\\s*4"]]);
+add("Abas que funcionam",[["Trocar o nome da aba \"Status\"","O nome está em Tab(text: ...).","^(?![\\s\\S]*Tab\\(text:\\s*'Status')"],["Mudar o título da AppBar","O título está no Text da AppBar.","^(?![\\s\\S]*'Mensagens')"],["Acrescentar uma quarta aba","length: 4, uma nova Tab e um novo filho no TabBarView: os três números precisam bater.","length:\\s*4[\\s\\S]*(?:Tab\\(text:[\\s\\S]*?){4}[\\s\\S]*(?:Center\\(child: Text\\([\\s\\S]*?){4}"]]);
+add("Tema do app",[["Mudar o texto do botão","O botão está no Column do body.","^(?![\\s\\S]*Botão com a cor do tema)"],["seedColor laranja","seedColor gera todas as cores do tema. Troque Colors.teal por Colors.orange.","seedColor:\\s*Colors\\.orange"],["Começar no modo escuro","A variável escuro começa em false.","bool escuro\\s*=\\s*true"]]);
+add("Ciclo de vida",[["Mudar a mensagem pronta","No initState, a mensagem é trocada de 'Carregando...' para outra.","^(?![\\s\\S]*Tela pronta!)"],["Começar em 30 segundos","No initState, troque segundos = 10 por segundos = 30.","segundos\\s*=\\s*30"],["Botão que soma 5","No botão, troque segundos++ por segundos += 5.","segundos\\s*\\+=\\s*5"]]);
+add("Tela com estado próprio",[["Segundo contador começando de 50","Na segunda MaterialPageRoute, troque Contador(inicio: 10) por Contador(inicio: 50).","Contador\\(inicio:\\s*50\\)"],["O botão soma 5","Dentro de _ContadorState, troque n++ por n += 5.","n\\s*\\+=\\s*5"],["Um terceiro botão (a partir de 100)","Copie um dos ElevatedButton da tela Inicio e use Contador(inicio: 100).","(?:Contador\\(inicio:[\\s\\S]*?){3}"]]);
+add("Esperando a resposta de outra tela",[["Mudar o texto inicial","A variável escolha começa com 'nenhuma'.","String escolha\\s*=\\s*'(?!nenhuma')"],["Uma terceira opção","Na tela Escolha, copie um botão e use Navigator.pop(context, 'Sopa').","(?:Navigator\\.pop\\(context,[\\s\\S]*?){3}"],["Trocar a opção Salada","Troque o valor devolvido em pop e o texto do botão.","^(?![\\s\\S]*'Salada')"]]);
+add("Esperando com Future",[["Buscar em 4 segundos","Mude Duration(seconds: 2) para Duration(seconds: 4) em _buscar.","Duration\\(seconds:\\s*4\\)"],["Mudar \"Dados chegaram!\"","A mensagem é trocada quando o await termina.","^(?![\\s\\S]*Dados chegaram!)"],["O then espera 3 segundos","Em _buscarComThen, troque seconds: 1 por seconds: 3.","Duration\\(seconds:\\s*3\\)"]]);
+add("Chips, lista que expande",[["Começar com 9 avisos","A variável avisos alimenta o número do selo (Badge).","int avisos\\s*=\\s*9"],["Acrescentar o tamanho G","Copie um ChoiceChip dentro do primeiro Wrap e use 'G'.","(?:ChoiceChip\\([\\s\\S]*?){3}"],["Mudar o texto da entrega","O texto está dentro do ExpansionTile.","^(?![\\s\\S]*Entregamos em até 40 minutos)"]]);
+add("Navegação inferior",[["aspectRatio: 1","AspectRatio mantém a proporção largura/altura. Com 1 o banner fica quadrado.","aspectRatio:\\s*1(?![\\d.])"],["Banner começando escondido","A variável banner começa em true.","bool banner\\s*=\\s*false"],["Um quarto destino na barra","Acrescente um NavigationDestination na lista destinations.","(?:NavigationDestination\\([\\s\\S]*?){4}"]]);
+add("Texto com vários estilos",[["Mudar o valor do total","O valor está no primeiro TextSpan filho.","^(?![\\s\\S]*89,90)"],["Trocar a cor do valor","No trecho em negrito, troque Colors.indigo por outra cor.","FontWeight\\.bold,\\s*color:\\s*Colors\\.(?!indigo)"],["Transform.scale com 0.5","Troque scale: 1.5 por scale: 0.5.","scale:\\s*0\\.5"]]);
+add("Menu de opções",[["Ordem inicial por preço","A variável ordem começa em 'nome'.","String ordem\\s*=\\s*'preço'"],["Terceiro PopupMenuItem","Dentro de itemBuilder, acrescente PopupMenuItem(value: 'data', child: Text('Data')).","(?:PopupMenuItem\\([\\s\\S]*?){3}"],["Terceiro ButtonSegment","Em segments, acrescente ButtonSegment(value: 'mapa', label: Text('Mapa')).","(?:ButtonSegment\\([\\s\\S]*?){3}"]]);
+add("Deslizar para apagar",[["Mudar a mensagem \"apagada\"","A mensagem está no SnackBar dentro de onDismissed.","^(?![\\s\\S]*apagada)"],["Fundo do deslize laranja","No background, troque Colors.red por Colors.orange.","Colors\\.orange"],["Cinco tarefas","Acrescente mais um texto na lista tarefas.","tarefas\\s*=\\s*\\[('[^']*',\\s*){4}'[^']*'"]]);
+add("Cabeçalho que encolhe",[["Mudar o título da loja","O título está no SliverAppBar.","^(?![\\s\\S]*Minha loja)"],["expandedHeight: 240","expandedHeight é a altura do cabeçalho esticado.","expandedHeight:\\s*240"],["pinned: false","Com pinned: false a barra some ao rolar.","pinned:\\s*false"],["50 produtos","Em SliverList.builder, mude itemCount: 30 para 50.","itemCount:\\s*50"]]);
+add("FutureBuilder",[["Esperar 4 segundos","Mude Duration(seconds: 2) para 4 em buscarSaudacao.","Duration\\(seconds:\\s*4\\)"],["Mudar a mensagem do servidor","A mensagem é o return de buscarSaudacao.","^(?![\\s\\S]*Olá, vindo do servidor!)"],["Provocar o erro","Tire as duas barras // da frente do throw e veja o caminho snapshot.hasError.","(?<!//\\s)throw Exception"]]);
+add("Data e hora",[["Mudar o texto inicial da data","A variável data começa com 'Nenhuma data'.","^(?![\\s\\S]*Nenhuma data)"],["Data com traços","Troque as barras da interpolação por traços: ${d.day}-${d.month}-${d.year}.","\\$\\{d\\.day\\}-\\$\\{d\\.month\\}-\\$\\{d\\.year\\}"],["Minutos com dois dígitos","Use ${h.minute.toString().padLeft(2, '0')} para mostrar 9:05 e não 9:5.","padLeft\\(\\s*2"]]);
+add("Sensor: acelerômetro",[["Mudar o título da tela","O título está no Text da AppBar.","^(?![\\s\\S]*'Acelerômetro')"],["Mostrar x com uma casa decimal","toStringAsFixed(2) mostra duas casas. Em x, use 1.","x\\.toStringAsFixed\\(1\\)"],["Letras com fontSize 32","Mude o fontSize do texto de x.","fontSize:\\s*32"]]);
+add("Sensor: giroscópio",[["Trocar \"Direção\" por \"Rumo\"","O texto está no primeiro Text da Column.","^(?![\\s\\S]*Direção:)"],["Ícone maior (size: 140)","O Icon da bússola tem size: 96.","size:\\s*140"],["Mostrar o giro com 3 casas","No texto do giro, use toStringAsFixed(3).","giro\\.toStringAsFixed\\(3\\)"]]);
+add("Saída de som",[["Trocar o texto \"Tocar\"","O texto muda conforme a variável tocando.","^(?![\\s\\S]*'Tocar')"],["Ícone de nota musical ao tocar","No Icon, troque Icons.volume_up por Icons.music_note.","Icons\\.music_note"],["Tocar outro arquivo","AssetSource aponta para o arquivo dentro de assets. Troque som.mp3 por musica.mp3.","^(?![\\s\\S]*som\\.mp3)"]]);
+add("Microfone",[["Mudar o texto inicial","A variável arquivo começa com 'Nenhuma gravação ainda'.","^(?![\\s\\S]*Nenhuma gravação ainda)"],["Gravando em laranja","No Icon, troque Colors.red por Colors.orange.","Colors\\.orange"],["Outro nome de arquivo","O arquivo é salvo em '${pasta.path}/voz.m4a'. Troque voz por aula.","^(?![\\s\\S]*voz\\.m4a)"]]);
+add("Localização: GPS",[["Mensagem amigável para GPS desligado","A mensagem está no primeiro if.","^(?![\\s\\S]*Ligue o GPS do aparelho)"],["Mensagem amigável sem permissão","A mensagem está no if que testa permissao.","^(?![\\s\\S]*Sem permissão de localização)"],["Latitude com 6 casas","Em pos.latitude.toStringAsFixed(4), use 6.","latitude\\.toStringAsFixed\\(6\\)"]]);
+add("Câmera e vibração",[["Mudar a mensagem de cancelamento","Está no if (foto == null).","^(?![\\s\\S]*Você cancelou)"],["Vibração forte","Troque HapticFeedback.lightImpact() por heavyImpact().","heavyImpact"],["Escolher da galeria","Troque ImageSource.camera por ImageSource.gallery.","ImageSource\\.gallery"]]);
+add("Projeto 5 · etapa 1",[["Mudar o preço da Camiseta","O preço é o segundo argumento de Produto('Camiseta', ...).","Produto\\('Camiseta',\\s*59\\.9"],["Quarto produto","Na lista produtos, acrescente Produto('nome', preço), com vírgula.","(?:Produto\\('[\\s\\S]*?){4}"],["Grade com 3 colunas","Em GridView.count, crossAxisCount é o número de colunas.","crossAxisCount:\\s*3"]]);
+add("Projeto 5 · etapa 2",[["Caneca mais barata","Mude o preço de Produto('Caneca', 29.5).","Produto\\('Caneca',\\s*19"],["Nova mensagem no SnackBar","O texto está em adicionar(): '${p.nome} adicionado ao carrinho'.","^(?![\\s\\S]*adicionado ao carrinho)"],["Quarto produto","Acrescente mais um Produto(...) na lista.","(?:Produto\\('[\\s\\S]*?){4}"]]);
+add("Projeto 5 · etapa 3",[["Mudar o título da loja","O título está na AppBar.","^(?![\\s\\S]*Mini loja)"],["Mudar o aviso do carrinho vazio","O texto aparece quando carrinho.isEmpty.","^(?![\\s\\S]*Seu carrinho está vazio)"],["Três abas","Mude length para 3, crie um Tab(text: 'Sobre') e um terceiro filho no TabBarView.","length:\\s*3[\\s\\S]*Tab\\(text:\\s*'Sobre'[\\s\\S]*Text\\('Sobre da loja'\\)"]]);
+add("Projeto 5 · etapa 4",[["Mudar o texto \"Voltar à loja\"","O botão está na tela Detalhe.","^(?![\\s\\S]*Voltar à loja)"],["Avatar maior no detalhe","Na tela Detalhe, mude radius: 48 para radius: 70.","radius:\\s*70"],["AppBar teal","Troque deepOrange por teal nas AppBar das duas telas (comece pela do Detalhe).","Colors\\.teal"]]);
+add("Projeto 5 · etapa 5",[["Mudar o título da loja","O título está na AppBar da tela Loja.","^(?![\\s\\S]*Mini loja)"],["Mais um produto","Acrescente mais um Produto(...) na lista.","(?:Produto\\('[\\s\\S]*?){4}"],["Limite de força 25","Troque forca > 40 por forca > 25.","forca\\s*>\\s*25"]]);
+add("Bateria e rede",[["Mudar o texto \"Dados móveis\"","É o valor inicial da variável texto, em atualizar().","^(?![\\s\\S]*Dados móveis)"],["Mudar o aviso \"Sem rede\"","Está no primeiro if da função atualizar().","^(?![\\s\\S]*'Sem rede')"],["Trocar \"carregando\" por \"na tomada\"","Está no operador ternário que mexe na variável estado.","^(?![\\s\\S]*'carregando')"]]);
+add("Mapa com OpenStreetMap",[["initialZoom: 15","Quanto maior o zoom, mais perto do chão. Troque 13 por 15.","initialZoom:\\s*15"],["Círculo com raio 150","Em CircleMarker, mude radius: 60 para 150.","radius:\\s*150"],["Marcadores azuis","No Icon do Marker, troque Colors.red por Colors.blue.","Icon\\(Icons\\.location_on,\\s*color:\\s*Colors\\.(?!red)"],["Centralizar o mapa em Lisboa","Em initialCenter, use LatLng(38.7223, -9.1393).","initialCenter:\\s*LatLng\\(\\s*38"]]);
+add("Mapa e GPS: você está aqui",[["Distância com 2 casas decimais","No texto do aviso, use toStringAsFixed(2).","toStringAsFixed\\(2\\)\\s*\\}\\s*km"],["Aproximar mais ao localizar","Em controle.move(ponto, 14), use zoom 16.","controle\\.move\\(ponto,\\s*16\\)"],["Bandeira vermelha no Marco Zero","No Icon da bandeira, troque Colors.green por Colors.red.","Icons\\.flag,\\s*color:\\s*Colors\\.(?!green)"]]);
+add("Endereço e rota",[["Rota mais grossa","Em Polyline, troque strokeWidth: 5 por 8.","strokeWidth:\\s*8"],["Rota roxa","No mesmo Polyline, troque Colors.blue por Colors.purple.","Polyline\\(points:\\s*caminho,\\s*strokeWidth:\\s*\\d+,\\s*color:\\s*Colors\\.(?!blue)"],["Começar no modo bicicleta","A variável modo começa em 'carro'.","String modo\\s*=\\s*'bicicleta'"]]);
+add("IndexedStack",[["Mudar o rótulo do campo","O rótulo está em labelText do TextField.","^(?![\\s\\S]*labelText:\\s*'Seu nome')"],["Contar de 5 em 5","No botão, troque cliques += 1 por cliques += 5.","cliques\\s*\\+=\\s*5"],["Uma terceira aba (Sobre)","Precisa de um novo filho no IndexedStack e de um novo BottomNavigationBarItem.","^(?=[\\s\\S]*(?:BottomNavigationBarItem\\([\\s\\S]*?){3})(?=[\\s\\S]*Text\\('Sobre'\\))"]]);
+add("ReorderableListView",[["Mudar o título","O título está na AppBar.","^(?![\\s\\S]*Minhas prioridades)"],["Ícone de estrela","No ListTile, troque Icons.flag por Icons.star.","Icons\\.star"],["Cinco tarefas","Acrescente mais um texto na lista tarefas.","tarefas\\s*=\\s*\\[('[^']*',\\s*){4}'[^']*'"]]);
+add("RefreshIndicator",[["Atualizar em 5 segundos","Troque Duration(seconds: 2) por seconds: 5.","Duration\\(seconds:\\s*5\\)"],["Cada atualização soma 10","Em atualizar(), troque versao += 1 por versao += 10.","versao\\s*\\+=\\s*10"],["Uma quarta manchete","Copie um ListTile e escreva a Manchete D.","(?:ListTile\\(title:[\\s\\S]*?){4}"]]);
+add("StreamBuilder",[["Relógio de 2 em 2 segundos","Em Stream.periodic, troque Duration(seconds: 1) por 2.","Stream\\.periodic\\(const Duration\\(seconds:\\s*2\\)"],["O gerador conta até 5","No for do async*, troque i <= 3 por i <= 5.","i\\s*<=\\s*5"],["Enviar multiplica por 100","No botão Enviar, troque enviados * 10 por enviados * 100.","enviados\\s*\\*\\s*100"]]);
+add("InteractiveViewer",[["maxScale: 8","maxScale é o zoom máximo permitido.","maxScale:\\s*8"],["Prédio começando com 5 salas","A variável salas começa em 3.","int salas\\s*=\\s*5"],["O botão soma 2 salas","No FloatingActionButton, troque salas += 1 por salas += 2.","salas\\s*\\+=\\s*2"]]);
+add("AnimatedList",[["Começar com três itens","Acrescente mais um texto na lista itens. O initialItemCount usa itens.length.","itens\\s*=\\s*\\['[^']*',\\s*'[^']*',\\s*'[^']*'"],["Mudar o texto das novas tarefas","O texto está em adicionar(): 'Tarefa nova $contador'.","^(?![\\s\\S]*Tarefa nova)"],["Ícone de estrela","No ListTile, troque Icons.check_circle_outline por Icons.star.","Icons\\.star"]]);
+add("DraggableScrollableSheet",[["minChildSize: 0.1","minChildSize é o menor tamanho do painel (fração da altura).","minChildSize:\\s*0\\.1\\b"],["initialChildSize: 0.5","initialChildSize é o tamanho com que o painel começa.","initialChildSize:\\s*0\\.5"],["maxChildSize: 1.0","Com 1.0 o painel pode cobrir a tela inteira.","maxChildSize:\\s*1(?:\\.0)?\\s*,"],["20 lugares","No ListView.builder, mude itemCount: 12 para 20.","itemCount:\\s*20"]]);
+add("Hero",[["Uma terceira foto","Acrescente um terceiro nome na lista do for: ['praia', 'serra', 'rio'].","\\['praia',\\s*'serra',\\s*'[^']*'\\]"],["Imagem maior no detalhe","Na tela Detalhe, mude width: 260 para width: 320.","width:\\s*320"],["Fotos verdes","Troque Colors.indigo por Colors.green nos dois lados (comece pela galeria).","Colors\\.green"]]);
+add("AnimatedPositioned e AnimatedAlign",[["duration de 2000","Troque milliseconds: 600 por 2000 no AnimatedPositioned.","milliseconds:\\s*2000"],["Curves.linear","curve define o ritmo do movimento. Troque Curves.easeInOut por Curves.linear.","Curves\\.linear"],["Curves.bounceOut","No AnimatedAlign, use Curves.bounceOut para ele quicar.","Curves\\.bounceOut"],["Mover o quadrado até 250","No AnimatedPositioned, troque left: direita ? 200 por 250.","left:\\s*direita\\s*\\?\\s*250"]]);
+add("AnimatedContainer, AnimatedOpacity",[["Quadrado virando círculo (raio 80)","Em BorderRadius.circular(ativo ? 60 : 8), use 80 no lugar de 60: com metade do lado, vira círculo.","circular\\(ativo\\s*\\?\\s*80"],["AnimatedRotation com 2 voltas","Troque turns: ativo ? 1.0 por 2.0.","turns:\\s*ativo\\s*\\?\\s*2"],["AnimatedScale com escala 3","Troque scale: ativo ? 2.0 por 3.0.","scale:\\s*ativo\\s*\\?\\s*3"]]);
+add("AnimatedSize e AnimatedPadding",[["Mudar o título \"Detalhes\"","O título está no primeiro ListTile.","^(?![\\s\\S]*'Detalhes')"],["Padding de 24 quando aberto","No AnimatedPadding, troque EdgeInsets.all(16) por EdgeInsets.all(24).","EdgeInsets\\.all\\(24\\)"],["A seta gira só um quarto de volta","Em AnimatedRotation, troque turns: aberto ? 0.5 por 0.25.","turns:\\s*aberto\\s*\\?\\s*0\\.25"]]);
+add("AnimatedSwitcher e AnimatedCrossFade",[["Mudar o texto \"Ímpar\"","Está no secondChild do AnimatedCrossFade.","^(?![\\s\\S]*Ímpar)"],["Somar de 2 em 2","No botão, troque contador += 1 por contador += 2. Veja o que acontece com Par/Ímpar!","contador\\s*\\+=\\s*2"],["CrossFade em 2 segundos","Na duration do AnimatedCrossFade, use milliseconds: 2000.","AnimatedCrossFade\\(\\s*duration:\\s*const Duration\\(milliseconds:\\s*2000"]]);
+add("TweenAnimationBuilder",[["Animar em 3 segundos","Troque Duration(seconds: 1) por Duration(seconds: 3).","Duration\\(seconds:\\s*3\\)"],["Barra mais grossa","No LinearProgressIndicator, mude minHeight: 12 para 24.","minHeight:\\s*24"],["Começar em 60%","A variável nota começa em 0.3.","double nota\\s*=\\s*0\\.6"],["O botão vira \"Nota 50\"","No primeiro botão, troque nota = 0.9 por 0.5 (e o texto).","nota\\s*=\\s*0\\.5"]]);
+add("RangeSlider e ToggleButtons",[["divisions: 10","divisions faz o RangeSlider andar em passos. Troque 20 por 10.","divisions:\\s*10\\b"],["Faixa inicial de 30 a 70","A variável preco começa com RangeValues(20, 80).","RangeValues\\(30,\\s*70\\)"],["Uma quarta categoria","A lista de bool e a lista de ícones precisam ter o mesmo tamanho.","^(?=[\\s\\S]*categorias\\s*=\\s*\\[(?:true|false)(?:,\\s*(?:true|false)){3}\\])(?=[\\s\\S]*Icons\\.school)"]]);
+add("DropdownMenu",[["Trocar o rótulo \"Curso\"","O rótulo está em label: Text('Curso').","^(?![\\s\\S]*Text\\('Curso'\\))"],["Uma quarta opção (typescript)","Acrescente DropdownMenuEntry(value: 'typescript', label: 'TypeScript').","(?:DropdownMenuEntry\\([\\s\\S]*?){4}"],["Começar em Dart","Em initialSelection, use 'dart'.","initialSelection:\\s*'dart'"]]);
+add("Autocomplete e SearchBar",[["Mais uma fruta","Acrescente uma sétima fruta na lista frutas.","frutas\\s*=\\s*\\[('[^']*',\\s*){6}'[^']*'"],["Trocar o texto de dica da SearchBar","O texto está em hintText.","^(?![\\s\\S]*Filtrar a lista)"],["Filtrar com startsWith","Na linha final da lista, troque contains por startsWith.","\\.startsWith\\(filtro\\.toLowerCase"]]);
+add("Stepper",[["Mudar o título quando concluído","O título da AppBar usa um operador ternário.","^(?![\\s\\S]*'Cadastro concluído')"],["Um quarto Step","Precisa de mais um Step e de mudar o limite do onStepContinue para passo < 3.","^(?=[\\s\\S]*passo\\s*<\\s*3)(?=[\\s\\S]*(?:Step\\(title:[\\s\\S]*?){4})"]]);
+add("ExpansionPanelList",[["Mudar a resposta do Dart","A resposta está na lista respostas.","^(?![\\s\\S]*Sim, o Flutter usa a linguagem Dart)"],["Um terceiro item","Aumente as quatro listas ao mesmo tempo: abertos, perguntas, respostas e o for-in [0, 1, 2].","^(?=[\\s\\S]*\\[0,\\s*1,\\s*2\\])(?=[\\s\\S]*abertos\\s*=\\s*\\[false,\\s*false,\\s*false\\])(?=[\\s\\S]*perguntas\\s*=\\s*\\[(?:'[^']*',\\s*){2}'[^']*'\\])(?=[\\s\\S]*respostas\\s*=\\s*\\[(?:'[^']*',\\s*){2}'[^']*'\\])"],["Trocar o título \"Dúvidas\"","O título está na AppBar.","^(?![\\s\\S]*'Dúvidas')"]]);
+add("NavigationRail",[["labelType: selected","labelType controla quando os rótulos aparecem. Use NavigationRailLabelType.selected.","NavigationRailLabelType\\.selected"],["Um quarto destino","Acrescente um NavigationRailDestination e mais um título na lista titulos.","^(?=[\\s\\S]*titulos\\s*=\\s*\\[(?:'[^']*',\\s*){3}'[^']*'\\])(?=[\\s\\S]*(?:NavigationRailDestination\\([\\s\\S]*?){4})"],["Começar no segundo destino","A variável sel começa em 0. Use 1.","int sel\\s*=\\s*1"]]);
+add("MaterialBanner e Banner",[["Mudar o texto do aviso","O texto está no content do MaterialBanner.","^(?![\\s\\S]*Nova versão disponível)"],["Trocar \"NOVO\" por \"OFERTA\"","O texto da faixa está em message do Banner.","^(?![\\s\\S]*message:\\s*'NOVO')"],["Banner verde no canto topStart","Duas mudanças no Banner: location e color.","^(?=[\\s\\S]*BannerLocation\\.topStart)(?=[\\s\\S]*color:\\s*Colors\\.green)"]]);
+add("MenuAnchor",[["Mudar o texto \"Comprar pão\"","O texto fica no Padding, antes do menu.","^(?![\\s\\S]*Comprar pão)"],["Ícone Icons.menu","No IconButton do builder, troque Icons.more_vert por Icons.menu.","Icons\\.menu\\b"],["Item \"Compartilhar\"","Copie um MenuItemButton e use acao = 'Compartilhar'.","(?:MenuItemButton\\([\\s\\S]*?){3}"]]);
+add("SimpleDialog",[["Mudar o título do diálogo","O título está em SimpleDialog(title: ...).","^(?![\\s\\S]*Text\\('Escolha uma cor'\\))"],["Começar com a cor \"azul\"","A variável cor começa em 'nenhuma'.","String cor\\s*=\\s*'azul'"],["Acrescentar a opção \"Vermelho\"","Copie um SimpleDialogOption e use Navigator.pop(context, 'Vermelho').","(?:SimpleDialogOption\\([\\s\\S]*?){3}"]]);
+add("TabPageSelector",[["Mudar o texto da primeira página","Está no primeiro Center do TabBarView.","^(?![\\s\\S]*Bem-vindo!)"],["Mudar o título","O título está na AppBar.","^(?![\\s\\S]*Boas-vindas)"],["Uma quarta página","length, Tab e página do TabBarView precisam bater.","^(?=[\\s\\S]*length:\\s*4)(?=[\\s\\S]*Tab\\(text:\\s*'Quatro')(?=[\\s\\S]*Text\\('Fim'\\))"]]);
+add("Sensor: pedômetro",[["Trocar a palavra \"passos\"","O texto está no Text com fontSize: 32.","^(?![\\s\\S]*\\$passos passos)"],["Mostrar a meta de 6000 passos","Acrescente um Text com a porcentagem: ${(passos / 6000 * 100).round()}%.","6000"],["Ícone maior (size: 140)","Mude o size do Icon.","size:\\s*140"]]);
+add("Sensor: barômetro",[["Pressão com 2 casas decimais","Troque pressao.toStringAsFixed(1) por (2).","pressao\\.toStringAsFixed\\(2\\)"],["Campo magnético com 1 casa","Troque campo.toStringAsFixed(0) por (1).","campo\\.toStringAsFixed\\(1\\)"],["Mudar o aviso de erro","O aviso está no onError do barômetro.","^(?![\\s\\S]*Sem barômetro neste aparelho)"]]);
+add("Biometria",[["Mudar o motivo da biometria","O texto está em localizedReason.","^(?![\\s\\S]*Confirme que é você para abrir o cofre)"],["Mudar o aviso de sucesso","A mensagem está no operador ternário depois de authenticate.","^(?![\\s\\S]*Cofre aberto!)"],["Mudar o texto do botão","O botão chama abrir().","^(?![\\s\\S]*Abrir com biometria)"]]);
+add("Lanterna",[["Trocar \"Desligar\" por \"Apagar\"","O texto muda conforme a variável ligada.","^(?![\\s\\S]*'Desligar')"],["Ícone maior (size: 140)","Mude o size do Icon.","size:\\s*140"],["Um botão \"Piscar\"","Acrescente um segundo ElevatedButton com o texto 'Piscar'.","Piscar"]]);
+add("Leitor de QR",[["Mudar o texto inicial","A variável lido começa com uma frase.","^(?![\\s\\S]*Aponte a câmera para um QR code)"],["Alinhar o texto à esquerda","No Text do fim, troque TextAlign.center por TextAlign.left.","TextAlign\\.left"],["Mostrar em um SnackBar","Depois do setState, chame ScaffoldMessenger.of(context).showSnackBar(...).","showSnackBar"]]);
+add("Abrir um link",[["Trocar o endereço do site","Troque o endereço dentro de Uri.parse.","Uri\\.parse\\('(?!https://flutter\\.dev')"],["Mudar o texto compartilhado","O texto está em Share.share.","^(?![\\s\\S]*Estou aprendendo Flutter!)"],["Botão que liga (tel:)","Acrescente um botão que chama launchUrl(Uri.parse('tel:...')).","tel:"]]);
+add("Arrastar e soltar",[["Mudar o texto da cesta","O texto está no Center dentro do builder do DragTarget.","^(?![\\s\\S]*Cesta com)"],["Uma quarta fruta","Acrescente 'Laranja' na lista do for, no começo do Row.","\\['Maçã',\\s*'Banana',\\s*'Uva',\\s*'[^']*'\\]"],["Recusar também a Banana","Em onWillAcceptWithDetails, use && para juntar duas condições: detalhes.data != 'Uva' && detalhes.data != 'Banana'.","detalhes\\.data\\s*!=\\s*'Uva'\\s*&&\\s*detalhes\\.data\\s*!=\\s*'Banana'"],["Cesta azul quando aceita","Em candidateData.isNotEmpty ? ..., troque Colors.green.shade100 por Colors.blue.shade100.","candidateData\\.isNotEmpty\\s*\\?\\s*Colors\\.blue"]]);
+add("AnimationController",[["Duração de 4 segundos","Em AnimationController, troque Duration(seconds: 2) por seconds: 4.","Duration\\(seconds:\\s*4\\)"],["Coração maior: end 2.0","No Tween, troque end: 1.4 por end: 2.0.","end:\\s*2\\.0"],["Curves.bounceOut","Na CurvedAnimation, troque Curves.easeInOut por Curves.bounceOut.","Curves\\.bounceOut"],["A seta gira duas voltas","Em _c.value * 6.28 (uma volta), use 12.56.","_c\\.value\\s*\\*\\s*12\\.56"]]);
+add("ValueNotifier",[["Começar com 10 pontos","No ValueNotifier<int>(0), use 10.","ValueNotifier<int>\\(10\\)"],["Somar de 5 em 5","No primeiro botão, troque pontos.value += 1 por += 5.","pontos\\.value\\s*\\+=\\s*5"],["Trocar \"Pontos\" por \"Placar\"","O texto está dentro do builder.","^(?![\\s\\S]*Pontos: \\$valor)"]]);
+add("Recortes e efeitos",[["Mudar as iniciais","O texto 'AS' está dentro do ClipOval.","^(?![\\s\\S]*'AS')"],["Círculo maior (140)","Mude width e height do Container dentro do ClipOval. Comece pelo width.","width:\\s*140"],["Degradê com verde","Em LinearGradient(colors: [...]), troque Colors.purple por Colors.green.","Colors\\.green"],["Sombra mais forte (elevation 20)","No Material, troque elevation: 6 por 20.","elevation:\\s*20"]]);
+add("Slivers",[["Mudar o título da galeria","O título está no SliverAppBar.","^(?![\\s\\S]*'Galeria'\\))"],["Três colunas","Em SliverGrid.count, troque crossAxisCount: 2 por 3.","crossAxisCount:\\s*3"],["Doze fotos","No for, troque i <= 6 por i <= 12.","i\\s*<=\\s*12"],["Mudar o texto final","O texto está no SliverToBoxAdapter.","^(?![\\s\\S]*Fim da galeria)"]]);
+add("ListWheelScrollView",[["Linhas mais altas (itemExtent: 60)","itemExtent é a altura de cada item da roda.","itemExtent:\\s*60"],["Horas de 6 a 23","No for, comece em h = 6.","var h\\s*=\\s*6"],["Uma quarta oferta no carrossel","Copie um Container do CarouselView e escreva 'Oferta 4'.","Oferta 4"],["Cartões de 300 de largura","No CarouselView, troque itemExtent: 220 por 300.","itemExtent:\\s*300"]]);
+add("Botões modernos",[["Mudar o texto do FAB","O rótulo está em FloatingActionButton.extended.","^(?![\\s\\S]*'Mais 10')"],["Curtir soma 2","No FilledButton.tonal, troque curtidas++ por curtidas += 2.","curtidas\\s*\\+=\\s*2"],["O FAB soma 50","Troque curtidas += 10 por += 50.","curtidas\\s*\\+=\\s*50"],["Ícone de coração no botão de salvar","Troque Icons.bookmark por Icons.favorite (e bookmark_border por favorite_border).","Icons\\.favorite"]]);
+add("Layout avançado",[["Girar três quartos de volta","quarterTurns conta quartos de volta. Use 3.","quarterTurns:\\s*3"],["Começar com o texto escondido","A variável mostrar começa em true.","bool mostrar\\s*=\\s*false"],["Começar com o botão bloqueado","A variável bloqueado começa em false.","bool bloqueado\\s*=\\s*true"]]);
+add("Busca e calendário",[["Mudar o texto da barra de busca","O texto está em barHintText.","^(?![\\s\\S]*Buscar compromisso)"],["Abrir o calendário no dia 20","Em initialDate, use DateTime(2026, 10, 20).","initialDate:\\s*DateTime\\(2026,\\s*10,\\s*20\\)"],["lastDate em 2027","Em lastDate, use DateTime(2027, 12, 31).","lastDate:\\s*DateTime\\(2027"]]);
+OF.EX=EX;
+OF.LESSONS.forEach(function(L){
+  var st=null,k;
+  for(k in EX){if(L.t.indexOf(k)>=0)st=EX[k]}
+  if(!st&&L.goals)st=L.goals.map(function(g){return [g[0],'',g[1]]});
+  if(st){L.steps=st.map(function(s){return {t:s[0],h:s[1],re:s[2]}});L.goals=st.map(function(s){return [s[0],s[2]]})}
+});
 })();
 
 (function(){
@@ -12237,7 +12459,7 @@ d('IntrinsicHeight',[['child', 'Widget', 'Normalmente uma Row com crossAxisAlign
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
       Container(width: 40, color: Colors.red),
-      Text('Texto\nem duas linhas'),
+      Text('Texto\\nem duas linhas'),
     ],
   ),
 )`);
@@ -12552,6 +12774,25 @@ d('SlideTransition',[['position','Animation<Offset>','Deslocamento em frações 
   position: Tween<Offset>(begin: Offset(-1, 0), end: Offset.zero).animate(_controle),
   child: Text('Entrando'),
 )`);
+d('Draggable',[['data','T','Valor que o DragTarget recebe ao soltar.'],['child','Widget','O que aparece parado.'],['feedback','Widget','O que acompanha o dedo durante o arrasto.'],['childWhenDragging','Widget','O que fica no lugar durante o arrasto.'],['onDragCompleted','void Function()','Chamado quando soltou em um alvo que aceitou.']],`Draggable<String>(
+  data: 'maçã',
+  feedback: Material(child: Text('maçã')),
+  childWhenDragging: Opacity(opacity: 0.3, child: Text('maçã')),
+  child: Text('maçã'),
+)`);
+d('LongPressDraggable',[['data','T','Valor que o DragTarget recebe ao soltar.'],['child','Widget','O que aparece parado.'],['feedback','Widget','O que acompanha o dedo durante o arrasto.']],`LongPressDraggable<int>(
+  data: 7,
+  feedback: Icon(Icons.star, size: 48),
+  child: Icon(Icons.star_border, size: 48),
+)`);
+d('DragTarget',[['builder','Widget Function(context, candidateData, rejectedData)','Desenha o alvo; candidateData tem o que está sobre ele agora.'],['onWillAcceptWithDetails','bool Function(details)','Decide se aceita o item que está sobre o alvo.'],['onAcceptWithDetails','void Function(details)','Chamado ao soltar um item aceito; details.data é o valor.']],`DragTarget<String>(
+  onAcceptWithDetails: (d) {
+    setState(() { fruta = d.data; });
+  },
+  builder: (context, candidatos, rejeitados) {
+    return Container(width: 120, height: 120, color: candidatos.isEmpty ? Colors.grey : Colors.green);
+  },
+)`);
 OF.REF=R;
 })();
 
@@ -12566,16 +12807,15 @@ OF.LIMITS=[
  'Pacotes: só os simulados no botão 📡 Sensores (GPS, bateria, rede, câmera, http). Sensores em tempo real, som, microfone, biometria, lanterna e QR só funcionam no celular.',
  'Já funcionam: enum (name, index, values, campos e métodos), static, herança, super, mixin, construtor nomeado, factory, classe genérica, operator +, extension, typedef, if-case e padrões (lista, registro, mapa, objeto, when), RegExp, Duration e DateTime (difference, add, comparações), intl (DateFormat e NumberFormat), sort, métodos de Map, parâmetros nomeados e opcionais em funções, toString e == sobrescritos, exceções próprias, Set, spread, cascata, ??= e ?., do-while, switch como expressão, records, dart:math (incluindo Random), jsonEncode e StringBuffer.'
  ]},
-{h:'Widgets que não existem no simulador',
- p:'Eles aparecem como uma caixa com o nome e (…). O código fica intacto e funciona no celular; só não são desenhados nem editáveis no canvas.',
+{h:'Widgets aproximados ou que não existem',
+ p:'Estes widgets funcionam, mas com limites. O que não existe aparece como uma caixa com o nome e (…); o código fica intacto e funciona no celular.',
  li:[
- 'Desenho e recorte: CustomPaint, ClipOval, BackdropFilter, ShaderMask, ColorFiltered, ImageFiltered, DecoratedBox, Material, Placeholder.',
- 'Layout: IntrinsicHeight, IntrinsicWidth, LimitedBox, OverflowBox, UnconstrainedBox, RotatedBox, Baseline, Flow, Offstage, IgnorePointer, AbsorbPointer, GridView.extent, ListView.custom, NestedScrollView.',
- 'Listas e rolagem: ListWheelScrollView, CarouselView, Scrollbar, SliverGrid, SliverPadding, SliverFillRemaining, SliverPersistentHeader, PaginatedDataTable.',
- 'Arrastar e soltar: Draggable, LongPressDraggable, DragTarget.',
- 'Animação: AnimatedBuilder, AnimatedDefaultTextStyle, SlideTransition, ScaleTransition, RotationTransition, ValueListenableBuilder, ListenableBuilder.',
- 'Botões e campos: TextButton.icon, ElevatedButton.icon, OutlinedButton.icon, FilledButton.tonal, IconButton.filled, FloatingActionButton.extended, Card.outlined, InputChip, SelectableText, SearchAnchor, CalendarDatePicker.',
- 'Outros: Theme, MediaQuery, Semantics, Focus, PopScope, InkResponse, Image.file e todos os widgets Cupertino (CupertinoButton, CupertinoAlertDialog, CupertinoSwitch e outros).'
+ 'CustomPaint: aparece só um espaço reservado (o CustomPainter não é executado). NestedScrollView: o cabeçalho não recolhe. PaginatedDataTable: linhas de exemplo. SliverPersistentHeader: cabeçalho fixo simples.',
+ 'SearchAnchor: abre o campo, mas sem a lista de sugestões. ShaderMask: só age em textos. ColorFiltered e ImageFiltered: só alguns modos de mistura e de filtro.',
+ 'ListView.custom: só com SliverChildListDelegate (SliverChildBuilderDelegate não existe). Image.file não existe.',
+ 'Draggable, LongPressDraggable e DragTarget funcionam com o mouse ou o dedo, mas a cópia que acompanha o ponteiro é um clone do widget, o offset em DragTargetDetails é Offset(0, 0) e onMove não é chamado.',
+ 'AnimationController roda no modo ▶ Testar; Tween e curvas são aproximados (veja Animações e gestos).',
+ 'Nenhum widget Cupertino existe (CupertinoButton, CupertinoAlertDialog, CupertinoSwitch e outros).'
  ]},
 {h:'Propriedades que o simulador ignora',
  p:'O widget aparece, mas estas propriedades não mudam o desenho.',
@@ -13208,6 +13448,69 @@ screen.addEventListener('pointerdown',function(e){
   if(!(S.run&&ST.active))return;var raw=gestureRaw(e.target,'onLongPress');if(!raw)return;
   var lpEl=e.target;lpTimer=setTimeout(function(){lpFired=true;afterRun(runAt(lpEl,raw,[]))},550)});
 ['pointerup','pointerleave','pointercancel'].forEach(function(n){screen.addEventListener(n,function(){clearTimeout(lpTimer)})});
+/* ====== arrastar e soltar: Draggable, LongPressDraggable e DragTarget ====== */
+var dgp=null,dgs=null,dgSup=false,dgTimer=0;
+function dgRaw(n,k){var v=M.rawProp(n,k);return v!=null&&v.trim()!=='null'?v:null}
+function dgStart(){
+  if(!dgp||dgs)return;
+  var el=dgp.el,n=dgp.n,data=null;
+  try{var dr=dgRaw(n,'data');data=dr?valAt(el,dr):null}catch(e){data=null}
+  var rc=el.getBoundingClientRect(),src=el.querySelector(':scope > .dfbk > *')||el.firstElementChild,fl=document.createElement('div');
+  fl.className='dfl'+(screen.classList.contains('dark')?' dark':'');
+  fl.style.cssText='position:fixed;z-index:9999;pointer-events:none;margin:0;width:max-content;max-width:300px;font:14px Roboto,system-ui,sans-serif;color:#1d1b20;left:'+(dgp.x-dgp.ox)+'px;top:'+(dgp.y-dgp.oy)+'px';
+  if(src){var cl=src.cloneNode(true);cl.style.display='';fl.appendChild(cl);if(!el.querySelector(':scope > .dfbk')){fl.style.width=rc.width+'px';fl.style.height=rc.height+'px'}}
+  document.body.appendChild(fl);
+  dgs={key:n._key,n:n,data:data,fl:fl,ox:dgp.ox,oy:dgp.oy,hov:null,done:false};
+  dgp=null;R.opts.dragSrc=dgs.key;
+  var st=dgRaw(n,'onDragStarted');if(st)afterRun(runAt(el,st,[]));
+  renderCanvas()}
+function dgHit(x,y){
+  var els=document.elementsFromPoint(x,y);
+  for(var i=0;i<els.length;i++){var e=els[i];if(e.classList&&e.classList.contains('dgt')&&e.dataset.dt&&screen.contains(e))return e}
+  return null}
+function dgHover(x,y){
+  var t=dgHit(x,y),k=t?t.dataset.dt:null;
+  if(dgs.hov===k)return;
+  if(dgs.hov){var old=screen.querySelector('[data-dt="'+dgs.hov+'"]'),ol=old&&old._n&&dgRaw(old._n,'onLeave');if(ol)afterRun(runAt(old,ol,[dgs.data]))}
+  dgs.hov=k;dgs.ok=false;
+  if(t){var n=t._n,wd=dgRaw(n,'onWillAcceptWithDetails'),w=dgRaw(n,'onWillAccept');
+    try{if(wd)dgs.ok=runIn(scopeOfEl(t),function(){return ST.apply(wd,[ST.mkDetails(dgs.data)])})===true;
+      else if(w)dgs.ok=runIn(scopeOfEl(t),function(){return ST.apply(w,[dgs.data])})===true;
+      else dgs.ok=true}catch(e){dgs.ok=false}
+    ST.dragHover={key:k,data:dgs.data,ok:dgs.ok}}
+  else ST.dragHover=null;
+  renderCanvas()}
+screen.addEventListener('pointerdown',function(e){
+  if(!(S.run&&ST.active)||e.button>0)return;
+  var el=e.target.closest&&e.target.closest('.drgb[data-dg]');if(!el||!el._n)return;
+  var rc=el.getBoundingClientRect();
+  dgp={el:el,n:el._n,x:e.clientX,y:e.clientY,ox:e.clientX-rc.left,oy:e.clientY-rc.top,lp:el._n.type==='LongPressDraggable'};
+  clearTimeout(dgTimer);
+  if(dgp.lp)dgTimer=setTimeout(dgStart,380)});
+document.addEventListener('pointermove',function(e){
+  if(dgp&&!dgs){var dx=e.clientX-dgp.x,dy=e.clientY-dgp.y,ds=Math.hypot(dx,dy);
+    if(dgp.lp){if(ds>10){clearTimeout(dgTimer);dgp=null}}
+    else if(ds>5){dgp.x=e.clientX-dx;dgp.y=e.clientY-dy;dgStart()}}
+  if(dgs){dgs.fl.style.left=(e.clientX-dgs.ox)+'px';dgs.fl.style.top=(e.clientY-dgs.oy)+'px';dgHover(e.clientX,e.clientY)}});
+function dgEnd(cancel){
+  clearTimeout(dgTimer);dgp=null;
+  if(!dgs)return;
+  var g=dgs;dgs=null;g.fl.remove();dgSup=true;setTimeout(function(){dgSup=false},60);
+  var tEl=g.hov&&!cancel?screen.querySelector('[data-dt="'+g.hov+'"]'):null,took=false;
+  if(tEl&&g.ok&&tEl._n){var ad=dgRaw(tEl._n,'onAcceptWithDetails'),ac=dgRaw(tEl._n,'onAccept');
+    if(ad){afterRun(runAt(tEl,ad,[ST.mkDetails(g.data)]));took=true}
+    if(ac){afterRun(runAt(tEl,ac,[g.data]));took=true}
+    took=true}
+  else if(tEl&&tEl._n){var lv=dgRaw(tEl._n,'onLeave');if(lv)afterRun(runAt(tEl,lv,[g.data]))}
+  R.opts.dragSrc=null;ST.dragHover=null;
+  var sEl=screen.querySelector('[data-dg="'+g.key+'"]'),sn=sEl&&sEl._n||g.n;
+  var cb=took?dgRaw(sn,'onDragCompleted'):dgRaw(sn,'onDraggableCanceled'),eb=dgRaw(sn,'onDragEnd');
+  if(cb)afterRun(runAt(sEl||screen,cb,took?[]:[null,null]));
+  if(eb)afterRun(runAt(sEl||screen,eb,[ST.mkDetails(null)]));
+  renderCanvas()}
+document.addEventListener('pointerup',function(){dgEnd(false)});
+document.addEventListener('pointercancel',function(){dgEnd(true)});
+screen.addEventListener('click',function(e){if(dgSup){e.stopPropagation();e.preventDefault();dgSup=false}},true);
 var drag=null,dragThumb=null;
 function slide(e){
   var el=screen.querySelector('[data-path="'+drag+'"].sld.hh'),n=el&&el._n;
@@ -13278,15 +13581,46 @@ function doneSet(){try{return JSON.parse(LS.get('oficina.done')||'[]')}catch(e){
 function markDone(L){var d=doneSet(),k=L.t.replace(/^\d+\.\s*/,'');if(d.indexOf(k)<0){d.push(k);LS.set('oficina.done',JSON.stringify(d))}refreshOptions()}
 function unmarkDone(L){var d=doneSet(),k=L.t.replace(/^\d+\.\s*/,''),i=d.indexOf(k);if(i<0)return false;d.splice(i,1);LS.set('oficina.done',JSON.stringify(d));refreshOptions();return true}
 function refreshOptions(){var d=doneSet(),sel=$('lessonSel');[].forEach.call(sel.options,function(o,i){var L=OF.LESSONS[i];o.textContent=(d.indexOf(L.t.replace(/^\d+\.\s*/,''))>=0?'✓ ':'')+(L.proj?'🛠 ':'')+L.t})}
-var goalsDone=false;
+var goalsDone=false,hintOpen=null;
+function stepKey(L){return L.t.replace(/^\d+\.\s*/,'')}
+function stepsMap(){try{var m=JSON.parse(LS.get('oficina.steps')||'{}');return m&&typeof m==='object'?m:{}}catch(e){return {}}}
+function stepState(L,m){/* etapas concluídas (guardadas); aula marcada antes das etapas existirem conta como completa */
+  var k=stepKey(L),st=(m||stepsMap())[k]||[],all=doneSet().indexOf(k)>=0,r=[];
+  L.steps.forEach(function(s,i){r[i]=!!(st[i]||all)});return r}
 function updateGoals(){
   var L=OF.LESSONS[S.lesson],box=$('goalBox');if(!box)return;
-  if(!L||!L.goals){box.innerHTML='';return}
-  var ok=0,html='<b>Desafio</b>'+L.goals.map(function(g){var r=false;try{r=new RegExp(g[1]).test(S.src)}catch(e){}if(r)ok++;return '<label class="'+(r?'on':'')+'"><span class="gk">'+(r?'✓':'')+'</span> '+esc(g[0])+'</label>'}).join('');
-  var all=ok===L.goals.length;
-  box.innerHTML=html+(all?'<em>🏆 Desafio concluído!</em>':'');
-  if(all&&!goalsDone){goalsDone=true;markDone(L);toast('Desafio concluído! 🏆')}
+  if(!L||!L.steps){box.innerHTML='';return}
+  var m=stepsMap(),k=stepKey(L),st=m[k]||[],ch=false,live=[];
+  L.steps.forEach(function(g,i){var r=false;try{r=new RegExp(g.re).test(S.src)}catch(e){}live[i]=r;if(r&&!st[i]){st[i]=1;ch=true}});
+  if(ch){m[k]=st;LS.set('oficina.steps',JSON.stringify(m))}
+  var dn=stepState(L,m).map(function(v,i){return v||live[i]}),ok=dn.filter(Boolean).length,cur=dn.indexOf(false),all=cur<0;
+  var html='<div class="gh"><b>Exercício</b><span class="gp">'+ok+' de '+L.steps.length+' etapas</span></div><ol class="stg">'+L.steps.map(function(g,i){
+    var cls=dn[i]?'done':(i===cur?'cur':'next'),op=hintOpen===S.lesson+':'+i;
+    return '<li class="'+cls+'"><span class="gk">'+(dn[i]?'✓':(i+1))+'</span><span>Etapa '+(i+1)+': '+esc(g.t)+'</span>'+(i===cur&&g.h?'<button class="hb" data-i="'+i+'" aria-expanded="'+op+'">💡 Dica</button>':'')+(i===cur&&g.h&&op?'<div class="ht">'+esc(g.h)+'</div>':'')+'</li>'}).join('')+'</ol>';
+  box.innerHTML=html+(all?'<em>🏆 Exercício concluído!</em>':'');
+  if(all&&!goalsDone){goalsDone=true;markDone(L);toast('Exercício concluído! 🏆');if(!$('exModal').hidden)renderEx()}
+  else if(ch&&!$('exModal').hidden)renderEx();
   if(!all)goalsDone=false}
+$('lessonBox').addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('#goalBox .hb');if(!b)return;var key=S.lesson+':'+b.dataset.i;hintOpen=hintOpen===key?null:key;updateGoals()});
+var exFilter='all';
+function renderEx(){
+  var m=stepsMap(),tl=0,td=0,ld=0,ln=0,h='';
+  OF.LESSONS.forEach(function(L,i){
+    if(!L.steps)return;var s=stepState(L,m),n=s.filter(Boolean).length,full=n===s.length;
+    ln++;tl+=s.length;td+=n;if(full)ld++;
+    if(exFilter==='todo'&&full)return;if(exFilter==='done'&&!full)return;
+    var cur=s.indexOf(false);
+    h+='<details class="exl'+(full?' ok':'')+'"'+(i===S.lesson&&!full?' open':'')+'><summary><span class="exn">'+esc(L.t)+'</span><span class="gp">'+n+'/'+s.length+'</span></summary><ol class="stg">'+L.steps.map(function(g,j){
+      return '<li class="'+(s[j]?'done':(j===cur?'cur':'next'))+'"><span class="gk">'+(s[j]?'✓':(j+1))+'</span><span>Etapa '+(j+1)+': '+esc(g.t)+'</span>'+(g.h&&!s[j]?'<div class="ht">💡 '+esc(g.h)+'</div>':'')+'</li>'}).join('')+'</ol><button class="btn exgo" data-i="'+i+'">'+(i===S.lesson?'Voltar ao exercício':'Abrir a aula')+'</button></details>'});
+  $('exSum').innerHTML='<div class="exs"><b>'+td+' de '+tl+' etapas</b> concluídas · '+ld+' de '+ln+' exercícios completos</div><div class="exbar"><i style="width:'+(tl?Math.round(td*100/tl):0)+'%"></i></div>';
+  $('exBody').innerHTML=h||'<p class="mt">Nada por aqui neste filtro.</p>';
+  [].forEach.call($('exFilter').children,function(b){b.classList.toggle('on',b.dataset.f===exFilter)})}
+$('exBtn').addEventListener('click',function(){renderEx();$('exModal').hidden=false;$('exClose').focus()});
+$('exClose').addEventListener('click',function(){$('exModal').hidden=true});
+$('exModal').addEventListener('click',function(e){if(e.target===$('exModal'))$('exModal').hidden=true});
+$('exFilter').addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-f]');if(!b)return;exFilter=b.dataset.f;renderEx()});
+$('exBody').addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.exgo');if(!b)return;var i=+b.dataset.i;$('exModal').hidden=true;if(i!==S.lesson){$('lessonSel').value=i;loadLesson(i)}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('exModal').hidden)$('exModal').hidden=true});
 var hist={a:[],i:-1,busy:false};
 function histBtns(){$('undoBtn').disabled=hist.i<=0;$('redoBtn').disabled=hist.i>=hist.a.length-1}
 function histReset(){hist.a=[S.src];hist.i=0;histBtns()}
@@ -13356,7 +13690,7 @@ $('profZero').addEventListener('click',function(){
   var b=$('profZero');
   if(!zT){b.textContent='Confirmar: apagar todos os ✓ e códigos salvos';b.classList.add('danger');zT=setTimeout(function(){zT=null;b.textContent='Zerar meu progresso';b.classList.remove('danger')},5000);return}
   clearTimeout(zT);zT=null;b.textContent='Zerar meu progresso';b.classList.remove('danger');
-  LS.del('oficina.done');OF.LESSONS.forEach(function(L){LS.del(lkey(L))});
+  LS.del('oficina.done');LS.del('oficina.steps');OF.LESSONS.forEach(function(L){LS.del(lkey(L))});
   refreshOptions();loadLesson(S.lesson,true);$('profModal').hidden=true;toast('Progresso zerado: todos os ✓ e códigos salvos foram apagados.')});
 $('profClose').addEventListener('click',function(){$('profModal').hidden=true});
 $('profModal').addEventListener('click',function(e){if(e.target===$('profModal'))$('profModal').hidden=true});
@@ -13378,7 +13712,7 @@ function applyFold(){var f=isFolded(),b=$('lessonBox');b.classList.toggle('fold'
 function toggleFold(){LS.set('oficina:fold',isFolded()?'0':'1');applyFold();fit()}
 $('lessonBox').addEventListener('click',function(e){if(e.target.closest('h1'))toggleFold()});
 $('lessonBox').addEventListener('keydown',function(e){if((e.key==='Enter'||e.key===' ')&&e.target.closest&&e.target.closest('h1')){e.preventDefault();toggleFold()}});
-$('resetBtn').addEventListener('click',function(){var L=OF.LESSONS[S.lesson],had=unmarkDone(L);loadLesson(S.lesson,true);toast(had?'Aula restaurada. O ✓ desta aula foi removido.':'Aula restaurada.')});
+$('resetBtn').addEventListener('click',function(){var L=OF.LESSONS[S.lesson],had=unmarkDone(L),sm=stepsMap();if(sm[stepKey(L)]){delete sm[stepKey(L)];LS.set('oficina.steps',JSON.stringify(sm));had=true}loadLesson(S.lesson,true);toast(had?'Aula restaurada. O ✓ desta aula foi removido.':'Aula restaurada.')});
 function tab(which){
   $('main').dataset.tab=which;$('tabCanvas').setAttribute('aria-selected',which==='canvas');$('tabCode').setAttribute('aria-selected',which==='code');$('refBtn').setAttribute('aria-pressed',which==='ref');
   setTimeout(fit,0);
