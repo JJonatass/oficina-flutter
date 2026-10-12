@@ -310,7 +310,7 @@ body:has(main[data-tab="ref"]) .lesson{display:none}
 .nd.tabi{flex-direction:column;align-items:center;justify-content:center;gap:2px;font-weight:500;font-size:14px;opacity:.72}
 .nd.tabi.on{opacity:1;box-shadow:inset 0 -3px 0 currentColor}
 .abrow{height:56px;flex:none;display:flex;align-items:center;padding:0 16px}
-.ham{display:flex;margin-right:24px}
+.ham{display:flex;margin-right:24px;cursor:pointer}
 .rdo{width:20px;height:20px;border-radius:50%;border:2px solid #49454F;display:flex;align-items:center;justify-content:center;box-sizing:border-box}
 .rdo.on{border-color:var(--act,var(--d-primary))}
 .rdo.on::after{content:'';width:10px;height:10px;border-radius:50%;background:var(--act,var(--d-primary))}
@@ -3292,6 +3292,7 @@ function build(n,path,pt,ppt,sel){
   switch(ALIAS[n.type]||n.type){
     case 'Scaffold':{
       d.className+=' scaf';var bg=colorVal(M.getProp(n,'backgroundColor'));if(bg)d.style.background=bg;
+      if(n.slots.drawer)R_opts.hamKey=path.concat('drawer').join('>');
       if(n.slots.appBar)d.appendChild(child(n.slots.appBar,'appBar','#none',n.slots.drawer?'hasDrawer':null));
       var b=document.createElement('div');b.className='body';
       var bc=n.slots.body;if(bc)b.appendChild(child(bc,'body','#single'));else b.appendChild(ph('body: adicione um widget aqui'));
@@ -3299,7 +3300,7 @@ function build(n,path,pt,ppt,sel){
       if(n.slots.bottomNavigationBar)d.appendChild(child(n.slots.bottomNavigationBar,'bottomNavigationBar','#none'));
       if(n.slots.floatingActionButton){var fabEl=child(n.slots.floatingActionButton,'floatingActionButton','#none');if(n.slots.bottomNavigationBar)fabEl.style.bottom='72px';d.appendChild(fabEl)}
       if(n.slots.drawer){var dk=path.concat('drawer').join('>');
-        if(sel&&(sel===dk||sel.indexOf(dk+'>')===0)){var scr=document.createElement('div');scr.className='scrim';d.appendChild(scr);d.appendChild(child(n.slots.drawer,'drawer','#none'))}}
+        if((sel&&(sel===dk||sel.indexOf(dk+'>')===0))||R_opts.drawerOpen[dk]){var scr=document.createElement('div');scr.className='scrim';scr.dataset.dk=dk;d.appendChild(scr);d.appendChild(child(n.slots.drawer,'drawer','#none'))}}
       break}
     case 'AppBar':{
       d.className+=' appbar';var bg2=colorVal(M.getProp(n,'backgroundColor'));if(bg2)d.style.background=bg2;
@@ -3307,7 +3308,7 @@ function build(n,path,pt,ppt,sel){
       var hasB=!!n.slots.bottom,row=d;
       if(hasB){d.style.height='auto';d.style.flexDirection='column';d.style.alignItems='stretch';d.style.padding='0';row=document.createElement('div');row.className='abrow';d.appendChild(row)}
       if(R_opts.nav.length&&ppt!=='hasDrawer'){var bk=document.createElement('span');bk.className='bkb hh';bk.dataset.h='back';bk.textContent='←';bk.setAttribute('aria-label','Voltar');row.appendChild(bk)}
-      if(ppt==='hasDrawer'){var hb=document.createElement('span');hb.className='ham';hb.innerHTML='<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>';row.appendChild(hb)}
+      if(ppt==='hasDrawer'){var hb=document.createElement('span');hb.className='ham';hb.dataset.dk=R_opts.hamKey||'';hb.setAttribute('role','button');hb.setAttribute('aria-label','Abrir o menu lateral');hb.innerHTML='<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>';row.appendChild(hb)}
       if(/true/.test(M.getProp(n,'centerTitle')||''))row.style.justifyContent='center';
       if(n.slots.title)row.appendChild(child(n.slots.title,'title','#none'));
       if(hasB)d.appendChild(child(n.slots.bottom,'bottom','#none'));
@@ -3827,7 +3828,7 @@ function build(n,path,pt,ppt,sel){
   if(R_opts.run)bindRun(d,n);
   return d;
 }
-var R_opts={run:false,xray:false,typed:{},page:{},depth:0,nav:[],navSc:[],over:[],tab:{},tabCtl:null,exp:{},fut:{},futT:[],mapV:null,rf:{},str:{},iv:{},dss:{},ddm:{},acx:{},anim:{},sw:{},tw:{}};
+var R_opts={drawerOpen:{},run:false,xray:false,typed:{},page:{},depth:0,nav:[],navSc:[],over:[],tab:{},tabCtl:null,exp:{},fut:{},futT:[],mapV:null,rf:{},str:{},iv:{},dss:{},ddm:{},acx:{},anim:{},sw:{},tw:{}};
 OF.ST.futPhase=function(n,ms){
   if(!R_opts.run||ms<=0)return 'done';
   var k=(n._key||'?')+'#'+(OF.ST.futGen||0),f=R_opts.fut[k];
@@ -4214,8 +4215,8 @@ class _TelaInicialState extends State<TelaInicial> {
 }
 `},
 {t:'13. Drawer e barra inferior',
- text:'O Scaffold tem lugares para um drawer (painel lateral) e uma bottomNavigationBar (barra inferior). O drawer abre pelo ícone de menu da AppBar; aqui ele aparece aberto enquanto estiver selecionado. A barra inferior usa currentIndex para marcar o destino ativo.',
- tryit:'Clique em drawer: Drawer na árvore de widgets para abri-lo no canvas. Depois mude currentIndex: 0 para currentIndex: 2.',
+ text:'O Scaffold tem lugares para um drawer (painel lateral) e uma bottomNavigationBar (barra inferior). O drawer abre pelo ícone de menu (☰) da AppBar: clique nele aqui no canvas para abrir e clique fora do painel para fechar. Ele também aparece aberto enquanto estiver selecionado na árvore. A barra inferior usa currentIndex para marcar o destino ativo.',
+ tryit:'Clique no ícone ☰ da AppBar para abrir o drawer (ou em drawer: Drawer na árvore de widgets). Depois mude currentIndex: 0 para currentIndex: 2.',
  code:wrap(`Scaffold(
       appBar: AppBar(title: Text('Navegação'), backgroundColor: Colors.blueGrey, foregroundColor: Colors.white),
       drawer: Drawer(
@@ -12038,7 +12039,7 @@ $('stBar').addEventListener('click',function(e){
   else if(b.dataset.a==='reset'){clearFx();R.opts.typed={};ST.reset();renderStateBar();renderCanvas()}
 });
 var timers=[];
-function clearFx(){pk=null;fxGen++;R.opts.fut={};R.opts.futT.forEach(clearTimeout);R.opts.futT=[];R.opts.rf={};R.opts.str={};R.opts.iv={};R.opts.dss={};R.opts.ddm={};R.opts.acx={};R.opts.anim={};R.opts.sw={};R.opts.tw={};ST.menuOpen={};ST.mapView=null;R.opts.nav=[];R.opts.navSc=[];R.opts.navRes=[];R.opts.over=[];R.opts.tab={};R.opts.exp={};clearTimeout(snackT);timers.forEach(clearTimeout);timers=[]}
+function clearFx(){R.opts.drawerOpen={};pk=null;fxGen++;R.opts.fut={};R.opts.futT.forEach(clearTimeout);R.opts.futT=[];R.opts.rf={};R.opts.str={};R.opts.iv={};R.opts.dss={};R.opts.ddm={};R.opts.acx={};R.opts.anim={};R.opts.sw={};R.opts.tw={};ST.menuOpen={};ST.mapView=null;R.opts.nav=[];R.opts.navSc=[];R.opts.navRes=[];R.opts.over=[];R.opts.tab={};R.opts.exp={};clearTimeout(snackT);timers.forEach(clearTimeout);timers=[]}
 var snackT=null;
 function runIn(inst,fn){if(!inst)return fn();ST.enter(inst);try{return fn()}finally{ST.leave()}}
 function scopeOfEl(el){var h=el&&el.closest&&el.closest('[data-sc]');if(!h||!h.dataset.sc)return null;var all=R.opts.navSc.concat(R.opts.over.map(function(o){return o.sc}));for(var i=0;i<all.length;i++)if(all[i]&&all[i].id===h.dataset.sc)return all[i];return null}
@@ -12317,6 +12318,10 @@ screen.addEventListener('pointerdown',function(e){
 document.addEventListener('pointermove',function(e){if(drag!==null)slide(e)});
 document.addEventListener('pointerup',function(){drag=null});
 screen.addEventListener('click',function(e){
+  var hm=e.target.closest&&e.target.closest('.ham');
+  if(hm&&hm.dataset.dk){var hk=hm.dataset.dk;R.opts.drawerOpen[hk]=!R.opts.drawerOpen[hk];renderCanvas();return}
+  if(e.target.classList.contains('scrim')&&e.target.dataset.dk){var sk=e.target.dataset.dk;R.opts.drawerOpen[sk]=false;
+    if(S.sel&&(S.sel===sk||S.sel.indexOf(sk+'>')===0))select(sk.split('>').slice(0,-1).join('>'),false);else renderCanvas();return}
   if(e.target.classList.contains('ovs')){popTop();renderCanvas();return}
   var pd=e.target.closest('.pgd');if(pd){R.opts.page[pd.dataset.k]=+pd.dataset.i;renderCanvas();return}
   if(!e.target.closest('.ddmenu')){var om=screen.querySelector('.ddmenu');if(om)om.remove()}
