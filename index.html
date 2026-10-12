@@ -357,6 +357,11 @@ body:has(main[data-tab="ref"]) .lesson{display:none}
 .screen .rdh{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:20px;line-height:1;opacity:.6;cursor:grab;touch-action:none;padding:6px 7px;z-index:3;user-select:none;background:var(--d-surface,#FEF7FF);border-radius:8px}
 .screen .rli.dragging{z-index:6;box-shadow:0 6px 16px rgba(0,0,0,.28);opacity:.96;cursor:grabbing;background:var(--d-surface,#FEF7FF)}
 .screen .nd.rfi{position:relative}
+@keyframes swin{from{opacity:0}to{opacity:1}}
+@keyframes swout{from{opacity:1}to{opacity:0}}
+.screen .swin{animation:swin linear both}
+.screen .swg{position:absolute;left:0;top:0;pointer-events:none;animation:swout linear both}
+.screen .nd.col>.aalw{display:flex;flex-direction:column}
 .screen .nd.ivw{position:relative;overflow:hidden;touch-action:none;cursor:grab;min-height:120px}
 .screen .nd.ivw .ivin{transform-origin:0 0;display:inline-block;max-width:none;width:max-content}
 .screen .nd.ivw .ivh{position:absolute;left:6px;bottom:6px;font-size:10px;background:rgba(0,0,0,.55);color:#fff;border-radius:8px;padding:2px 8px;pointer-events:none}
@@ -589,6 +594,15 @@ var W={
  DraggableScrollableSheet:{cat:'layout',slots:{},desc:'Painel que a pessoa puxa para cima e para baixo, como o das apps de mapa. initialChildSize, minChildSize e maxChildSize são frações (0 a 1) da altura. O builder recebe um scrollController, que deve ir para a lista de dentro. No simulador, arraste a alça do topo.'},
  FadeTransition:{cat:'box',slots:{child:'one'},desc:'Mostra o filho com a opacidade de uma animação (opacity). Costuma ser usada dentro do itemBuilder do AnimatedList. No simulador aparece já no estado final.'},
  SizeTransition:{cat:'box',slots:{child:'one'},desc:'Faz o filho crescer ou encolher conforme sizeFactor, uma animação de 0 a 1. Usada no AnimatedList para o item abrir espaço. No simulador aparece já no tamanho final.'},
+ AnimatedPositioned:{cat:'box',slots:{child:'one'},desc:'Como Positioned, mas anima a mudança de left, top, width e height durante duration. Só funciona dentro de um Stack. Troque os valores em um setState e o filho desliza até a nova posição.'},
+ AnimatedAlign:{cat:'box',slots:{child:'one'},desc:'Como Align, mas anima a mudança de alignment durante duration. Troque alignment (por exemplo Alignment.topLeft para Alignment.bottomRight) em um setState e o filho desliza.'},
+ AnimatedPadding:{cat:'box',slots:{child:'one'},desc:'Como Padding, mas anima a mudança de padding durante duration.'},
+ AnimatedSize:{cat:'box',slots:{child:'one'},desc:'Anima o próprio tamanho quando o filho muda de tamanho (por exemplo, um texto que aparece). Só precisa de duration. Não é preciso trocar nenhum valor nele: ele observa o filho.'},
+ AnimatedScale:{cat:'box',slots:{child:'one'},desc:'Anima o zoom do filho: scale 1 é o tamanho normal, 2 é o dobro, 0.5 a metade. Troque scale em um setState.'},
+ AnimatedRotation:{cat:'box',slots:{child:'one'},desc:'Anima a rotação do filho. turns conta voltas: 0.25 é um quarto de volta (90 graus), 1 é a volta inteira. Troque turns em um setState.'},
+ AnimatedSwitcher:{cat:'box',slots:{child:'one'},desc:'Troca de um filho por outro com uma animação (por padrão, um fade). Ela só percebe a troca se o novo filho tiver outro tipo ou outra key, por isso use key: ValueKey(valor) no filho.'},
+ AnimatedCrossFade:{cat:'box',slots:{firstChild:'one',secondChild:'one'},desc:'Faz um fade entre dois filhos. crossFadeState diz qual aparece: CrossFadeState.showFirst ou CrossFadeState.showSecond. Troque em um setState.'},
+ TweenAnimationBuilder:{cat:'layout',slots:{},desc:'Anima um valor de begin até end durante duration e chama o builder a cada passo com o valor atual. Serve para animar qualquer coisa, como a largura de uma barra de progresso. Se end mudar, anima do valor atual até o novo. No simulador funcionam Tween numéricos.'},
  Hero:{cat:'box',slots:{child:'one'},desc:'Marca um widget para voar entre duas telas na navegação. tag liga os dois lados. Sozinho, só desenha o filho.'},
  LayoutBuilder:{cat:'layout',slots:{},desc:'Entrega ao builder o espaço disponível (constraints.maxWidth, maxHeight) para você escolher o layout. Aqui a largura é 360 e a altura 600.'},
  Builder:{cat:'layout',slots:{},desc:'Cria um widget numa função builder(context). Serve para obter um novo context logo abaixo de outro widget.'},
@@ -603,7 +617,7 @@ var W={
  'Image.network':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem baixada de uma URL. Aqui o canvas desenha um quadro no lugar da imagem. fit controla como ela preenche o espaço.'},
  'Image.asset':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem guardada no projeto (pasta assets). Aqui o canvas desenha um quadro no lugar da imagem.'}
 };
-var GROUPS=[['Estrutura',['Scaffold','AppBar','FloatingActionButton','Drawer','BottomNavigationBar','BottomNavigationBarItem','NavigationBar','NavigationDestination']],['Abas',['DefaultTabController','TabBar','Tab','TabBarView']],['Layout',['Center','Align','Column','Row','Stack','Positioned','Expanded','Flexible','Spacer','Wrap','Form','ListView','GridView.count','SingleChildScrollView','SafeArea','PageView','IndexedStack','DraggableScrollableSheet','LayoutBuilder','Builder','FutureBuilder','StreamBuilder','RefreshIndicator','CustomScrollView','SliverAppBar','SliverToBoxAdapter','SliverList.list','SliverList.builder']],['Listas e tabelas',['ListView.builder','ListView.separated','ReorderableListView','ReorderableListView.builder','AnimatedList','GridView.builder','Table','TableRow','DataTable','DataColumn','DataRow','DataCell']],['Caixas',['Container','ColoredBox','Padding','SizedBox','AspectRatio','ConstrainedBox','FractionallySizedBox','FittedBox','Card','Divider','VerticalDivider','ClipRRect','Opacity','AnimatedOpacity','AnimatedContainer','Visibility','Tooltip','Badge','Hero','FadeTransition','SizeTransition','InteractiveViewer','Transform.rotate','Transform.scale','Transform.translate','Dismissible']],['Conteúdo',['Text','Text.rich','RichText','Icon','Image.network','CircleAvatar','Chip','ChoiceChip','FilterChip','ActionChip','ListTile','ExpansionTile','Image.asset','CircularProgressIndicator','LinearProgressIndicator','SegmentedButton','ButtonSegment','PopupMenuButton']],['Botões e campos',['ElevatedButton','FilledButton','TextButton','OutlinedButton','IconButton','TextField','TextFormField','Checkbox','Switch','Slider','Radio','DropdownButton','DropdownMenuItem','SwitchListTile','CheckboxListTile','RadioListTile']],['Interação',['GestureDetector','InkWell']],['Mapas (flutter_map)',['FlutterMap','TileLayer','MarkerLayer','Marker','CircleLayer','CircleMarker','PolylineLayer','Polyline','RichAttributionWidget']],['Janelas',['AlertDialog','SnackBar','SnackBarAction']]];
+var GROUPS=[['Estrutura',['Scaffold','AppBar','FloatingActionButton','Drawer','BottomNavigationBar','BottomNavigationBarItem','NavigationBar','NavigationDestination']],['Abas',['DefaultTabController','TabBar','Tab','TabBarView']],['Layout',['Center','Align','Column','Row','Stack','Positioned','Expanded','Flexible','Spacer','Wrap','Form','ListView','GridView.count','SingleChildScrollView','SafeArea','PageView','IndexedStack','DraggableScrollableSheet','TweenAnimationBuilder','LayoutBuilder','Builder','FutureBuilder','StreamBuilder','RefreshIndicator','CustomScrollView','SliverAppBar','SliverToBoxAdapter','SliverList.list','SliverList.builder']],['Listas e tabelas',['ListView.builder','ListView.separated','ReorderableListView','ReorderableListView.builder','AnimatedList','GridView.builder','Table','TableRow','DataTable','DataColumn','DataRow','DataCell']],['Caixas',['Container','ColoredBox','Padding','SizedBox','AspectRatio','ConstrainedBox','FractionallySizedBox','FittedBox','Card','Divider','VerticalDivider','ClipRRect','Opacity','AnimatedOpacity','AnimatedContainer','AnimatedPositioned','AnimatedAlign','AnimatedPadding','AnimatedSize','AnimatedScale','AnimatedRotation','AnimatedSwitcher','AnimatedCrossFade','Visibility','Tooltip','Badge','Hero','FadeTransition','SizeTransition','InteractiveViewer','Transform.rotate','Transform.scale','Transform.translate','Dismissible']],['Conteúdo',['Text','Text.rich','RichText','Icon','Image.network','CircleAvatar','Chip','ChoiceChip','FilterChip','ActionChip','ListTile','ExpansionTile','Image.asset','CircularProgressIndicator','LinearProgressIndicator','SegmentedButton','ButtonSegment','PopupMenuButton']],['Botões e campos',['ElevatedButton','FilledButton','TextButton','OutlinedButton','IconButton','TextField','TextFormField','Checkbox','Switch','Slider','Radio','DropdownButton','DropdownMenuItem','SwitchListTile','CheckboxListTile','RadioListTile']],['Interação',['GestureDetector','InkWell']],['Mapas (flutter_map)',['FlutterMap','TileLayer','MarkerLayer','Marker','CircleLayer','CircleMarker','PolylineLayer','Polyline','RichAttributionWidget']],['Janelas',['AlertDialog','SnackBar','SnackBarAction']]];
 var CATVAR={struct:'var(--c-struct)',layout:'var(--c-layout)',box:'var(--c-box)',content:'var(--c-content)'};
 var warns=[];
 
@@ -881,6 +895,15 @@ var DEF={
  DraggableScrollableSheet:function(){return N('DraggableScrollableSheet',[A('initialChildSize','0.4'),A('minChildSize','0.2'),A('maxChildSize','0.9'),A('builder',"(context, scrollController) => Container(color: Colors.white, child: ListView.builder(controller: scrollController, itemCount: 20, itemBuilder: (context, i) => ListTile(title: Text('Item $i'))))")])},
  FadeTransition:function(){return N('FadeTransition',[A('opacity','const AlwaysStoppedAnimation(0.6)'),SL('child')],{child:txt('Meio transparente')})},
  SizeTransition:function(){return N('SizeTransition',[A('sizeFactor','const AlwaysStoppedAnimation(1.0)'),SL('child')],{child:txt('Tamanho animado')})},
+ AnimatedPositioned:function(){return N('AnimatedPositioned',[A('duration','const Duration(milliseconds: 500)'),A('left','20'),A('top','20'),A('width','80'),A('height','80'),SL('child')],{child:N('Container',[A('color','Colors.orange')])})},
+ AnimatedAlign:function(){return N('AnimatedAlign',[A('duration','const Duration(milliseconds: 500)'),A('alignment','Alignment.topLeft'),SL('child')],{child:N('Icon',[PO('icon','Icons.star')])})},
+ AnimatedPadding:function(){return N('AnimatedPadding',[A('duration','const Duration(milliseconds: 400)'),A('padding','EdgeInsets.all(8)'),SL('child')],{child:N('Container',[A('color','Colors.indigo.shade200'),A('height','60')])})},
+ AnimatedSize:function(){return N('AnimatedSize',[A('duration','const Duration(milliseconds: 400)'),SL('child')],{child:N('Container',[A('width','100'),A('height','60'),A('color','Colors.teal')])})},
+ AnimatedScale:function(){return N('AnimatedScale',[A('duration','const Duration(milliseconds: 400)'),A('scale','1.0'),SL('child')],{child:N('Icon',[PO('icon','Icons.favorite')])})},
+ AnimatedRotation:function(){return N('AnimatedRotation',[A('duration','const Duration(milliseconds: 400)'),A('turns','0.0'),SL('child')],{child:N('Icon',[PO('icon','Icons.refresh')])})},
+ AnimatedSwitcher:function(){return N('AnimatedSwitcher',[A('duration','const Duration(milliseconds: 300)'),SL('child')],{child:N('Text',[PO('data',q('Olá')),A('key','ValueKey(1)')])})},
+ AnimatedCrossFade:function(){return N('AnimatedCrossFade',[A('duration','const Duration(milliseconds: 300)'),A('crossFadeState','CrossFadeState.showFirst'),SL('firstChild'),SL('secondChild')],{firstChild:txt('Primeiro'),secondChild:txt('Segundo')})},
+ TweenAnimationBuilder:function(){return N('TweenAnimationBuilder',[A('tween','Tween<double>(begin: 0, end: 1)'),A('duration','const Duration(seconds: 1)'),A('builder',"(context, value, child) => Opacity(opacity: value, child: Text('Aparecendo'))")])},
  IndexedStack:function(){function pg(t,c){return N('Container',[A('color',c),SL('child')],{child:N('Center',[SL('child')],{child:txt(t)})})}return N('IndexedStack',[A('index','0'),SL('children')],{children:[pg('Tela 1','Colors.indigo.shade100'),pg('Tela 2','Colors.teal.shade100')]})},
  ReorderableListView:function(){function it(t){return N('ListTile',[A('key',"ValueKey('"+t+"')"),SL('title')],{title:txt(t)})}return N('ReorderableListView',[A('onReorder','(oldIndex, newIndex) {}'),SL('children')],{children:[it('Item A'),it('Item B'),it('Item C')]})},
  'ReorderableListView.builder':function(){return N('ReorderableListView.builder',[A('itemCount','5'),A('itemBuilder',"(context, index) => ListTile(key: ValueKey(index), title: Text('Item $index'))"),A('onReorder','(oldIndex, newIndex) {}')])},
@@ -2096,7 +2119,7 @@ function lambdaParts(raw){
     body=raw.slice(t[j+1].s,raw.lastIndexOf('}')).trim().replace(/;\s*$/,'')}
   else throw new Error('lambda');
   return{names:names,body:body}}
-var BUILDERS={AnimatedList:1,DraggableScrollableSheet:1,StreamBuilder:1,'ReorderableListView.builder':1,FutureBuilder:1,'SliverList.builder':1,'ListView.builder':1,'ListView.separated':1,'GridView.builder':1,'LayoutBuilder':1,Builder:1};
+var BUILDERS={TweenAnimationBuilder:1,AnimatedList:1,DraggableScrollableSheet:1,StreamBuilder:1,'ReorderableListView.builder':1,FutureBuilder:1,'SliverList.builder':1,'ListView.builder':1,'ListView.separated':1,'GridView.builder':1,'LayoutBuilder':1,Builder:1};
 ST.futureTexts=futureTexts;
 ST.isBuilder=function(n){return !!BUILDERS[n.type]};
 ST.builderTexts=function(n){
@@ -2104,6 +2127,14 @@ ST.builderTexts=function(n){
   function raw(k){var v=M.rawProp(n,k);return v==null?null:v.trim()}
   if(n.type==='FutureBuilder')return futureTexts(n);
   if(n.type==='StreamBuilder')return streamTexts(n);
+  if(n.type==='TweenAnimationBuilder'){
+    var twr=raw('tween')||'',twm=/^[\w.<>?]*\s*\(([\s\S]*)\)\s*$/.exec(twr),tb=0,te=1;
+    if(twm)splitTopStr(twm[1],',').forEach(function(a){var m=/^\s*(begin|end)\s*:\s*([\s\S]+?)\s*$/.exec(a);if(m){var v=nn(ST.value(ST.subst(m[2])));if(m[1]==='begin')tb=v;else te=v}});
+    var tms=mkDelay(raw('duration')||'',mkEnv({})).ms,tcv=raw('curve')||'',tcur=ST.twVal?ST.twVal(n,tb,te,tms,tcv):te;
+    var tlp=lambdaParts(raw('builder')),tbody=tlp.body;
+    if(tlp.names[1])tbody=bindVar(tbody,tlp.names[1],new Dbl(Math.round(tcur*1e4)/1e4));
+    var tch=raw('child');if(tlp.names[2]&&tch)tbody=bindVar(tbody,tlp.names[2],{raw:tch});
+    expandText(tbody,out);return out}
   if(n.type==='LayoutBuilder'||n.type==='Builder'||n.type==='DraggableScrollableSheet'){
     var lp=lambdaParts(raw('builder')),b=lp.body;
     if(n.type==='LayoutBuilder'&&lp.names[1])b=b.replace(new RegExp('\\b'+lp.names[1]+'\\.(maxWidth|maxHeight|minWidth|minHeight)\\b','g'),function(m,k){return k==='maxWidth'?'360.0':k==='maxHeight'?'600.0':'0.0'});
@@ -2411,15 +2442,15 @@ function numExpr(raw){
 function llOf(raw){var m=/LatLng\s*\(\s*(-?[\d.]+)\s*,\s*(-?[\d.]+)\s*\)/.exec(raw||'');return m?[+m[1],+m[2]]:null}
 function lamArg(raw,key){var m=new RegExp('\\b'+key+'\\s*:\\s*').exec(raw||'');if(!m)return null;var s=raw.slice(m.index+m[0].length),d=0,q=null;for(var i=0;i<s.length;i++){var c=s[i];if(q){if(c==='\\')i++;else if(c===q)q=null;continue}if(c==="'"||c==='"'){q=c;continue}if('([{'.indexOf(c)>=0)d++;else if(')]}'.indexOf(c)>=0){if(d===0)return s.slice(0,i).trim();d--}else if(c===','&&d===0)return s.slice(0,i).trim()}return s.trim()}
 function wmerc(lat,lon,z){var sc=256*Math.pow(2,z),sn=Math.sin(lat*Math.PI/180);return[(lon+180)/360*sc,(0.5-Math.log((1+sn)/(1-sn))/(4*Math.PI))*sc]}
-var ALIAS={AnimatedContainer:'Container',FadeTransition:'Opacity',SizeTransition:'Padding',Hero:'Padding',AnimatedOpacity:'Opacity'};
+var ALIAS={AnimatedContainer:'Container',AnimatedPositioned:'Positioned',AnimatedPadding:'Padding',FadeTransition:'Opacity',SizeTransition:'Padding',Hero:'Padding',AnimatedOpacity:'Opacity'};
 function dim(n,k){return numVal(M.getProp(n,k))}
 function sizeMin(n){return /MainAxisSize\.min/.test(M.getProp(n,'mainAxisSize')||'')}
-function stackFill(n){var ch=n.slots.children||[];return !ch.some(function(c){return c.type!=='Positioned'})||ch.some(function(c){return c.type==='DraggableScrollableSheet'})}
+function stackFill(n){var ch=n.slots.children||[];return !ch.some(function(c){return c.type!=='Positioned'&&c.type!=='AnimatedPositioned'})||ch.some(function(c){return c.type==='DraggableScrollableSheet'})}
 function fillV(n){
   if(!n||n.unknown)return false;
   switch(ALIAS[n.type]||n.type){
     case 'Column':return !sizeMin(n);
-    case 'ListView':case 'ListView.builder':case 'ListView.separated':case 'GridView.builder':case 'PageView':case 'IndexedStack':case 'AnimatedList':case 'DraggableScrollableSheet':case 'InteractiveViewer':case 'ReorderableListView':case 'ReorderableListView.builder':case 'Center':case 'Spacer':case 'Align':case 'GridView.count':case 'SingleChildScrollView':case 'TabBarView':case 'Scaffold':case 'FlutterMap':case 'CustomScrollView':case 'FutureBuilder':case 'StreamBuilder':return true;
+    case 'ListView':case 'ListView.builder':case 'ListView.separated':case 'GridView.builder':case 'PageView':case 'IndexedStack':case 'AnimatedAlign':case 'AnimatedList':case 'DraggableScrollableSheet':case 'InteractiveViewer':case 'ReorderableListView':case 'ReorderableListView.builder':case 'Center':case 'Spacer':case 'Align':case 'GridView.count':case 'SingleChildScrollView':case 'TabBarView':case 'Scaffold':case 'FlutterMap':case 'CustomScrollView':case 'FutureBuilder':case 'StreamBuilder':return true;
     case 'Stack':return stackFill(n);
     case 'Expanded':case 'Flexible':return !!n.slots.child&&fillV(n.slots.child);
     case 'Container':if(dim(n,'height')!=null)return false;if(M.getProp(n,'alignment'))return true;return !n.slots.child||fillV(n.slots.child);
@@ -2431,7 +2462,7 @@ function fillH(n){
   if(!n||n.unknown)return false;
   switch(ALIAS[n.type]||n.type){
     case 'Row':return !sizeMin(n);
-    case 'ListView':case 'ListView.builder':case 'ListView.separated':case 'GridView.builder':case 'PageView':case 'IndexedStack':case 'AnimatedList':case 'DraggableScrollableSheet':case 'InteractiveViewer':case 'ReorderableListView':case 'ReorderableListView.builder':case 'FlutterMap':case 'CustomScrollView':case 'FutureBuilder':case 'StreamBuilder':case 'Table':case 'SwitchListTile':case 'CheckboxListTile':case 'RadioListTile':case 'Center':case 'Align':case 'GridView.count':case 'Divider':case 'AspectRatio':case 'FractionallySizedBox':case 'TextField':case 'TextFormField':case 'VerticalDivider':case 'ExpansionTile':case 'NavigationBar':case 'ListTile':case 'Wrap':case 'Slider':case 'SingleChildScrollView':case 'TabBarView':case 'TabBar':case 'BottomNavigationBar':case 'Scaffold':return true;
+    case 'ListView':case 'ListView.builder':case 'ListView.separated':case 'GridView.builder':case 'PageView':case 'IndexedStack':case 'AnimatedAlign':case 'AnimatedList':case 'DraggableScrollableSheet':case 'InteractiveViewer':case 'ReorderableListView':case 'ReorderableListView.builder':case 'FlutterMap':case 'CustomScrollView':case 'FutureBuilder':case 'StreamBuilder':case 'Table':case 'SwitchListTile':case 'CheckboxListTile':case 'RadioListTile':case 'Center':case 'Align':case 'GridView.count':case 'Divider':case 'AspectRatio':case 'FractionallySizedBox':case 'TextField':case 'TextFormField':case 'VerticalDivider':case 'ExpansionTile':case 'NavigationBar':case 'ListTile':case 'Wrap':case 'Slider':case 'SingleChildScrollView':case 'TabBarView':case 'TabBar':case 'BottomNavigationBar':case 'Scaffold':return true;
     case 'Stack':return stackFill(n);
     case 'Column':return /CrossAxisAlignment\.stretch/.test(M.getProp(n,'crossAxisAlignment')||'')||(n.slots.children||[]).some(fillH);
     case 'Expanded':case 'Flexible':return !!n.slots.child&&fillH(n.slots.child);
@@ -2441,10 +2472,49 @@ function fillH(n){
   }return false;
 }
 function flexOf(n){if(n.type==='Spacer')return numVal(M.getProp(n,'flex'))||1;return numVal(M.getProp(n,'flex'))||1}
+var ANIM={AnimatedContainer:1,AnimatedOpacity:1,AnimatedPadding:1,AnimatedPositioned:1,AnimatedSize:1,AnimatedScale:1,AnimatedRotation:1};
+function durMs(raw){var ms=0,m=/Duration\s*\(([^)]*)\)/.exec(raw||'');if(!m)return 300;
+  m[1].split(',').forEach(function(a){var x=/^\s*(\w+)\s*:\s*([\d.]+)\s*$/.exec(a);if(!x)return;var u={days:864e5,hours:36e5,minutes:6e4,seconds:1e3,milliseconds:1,microseconds:0.001}[x[1]];if(u)ms+=+x[2]*u});return ms}
+function curveCss(raw){var c=/Curves\.(\w+)/.exec(raw||'');c=c?c[1]:'linear';
+  var M2={linear:'linear',easeIn:'ease-in',easeOut:'ease-out',easeInOut:'ease-in-out',ease:'ease',fastOutSlowIn:'cubic-bezier(.4,0,.2,1)',bounceOut:'cubic-bezier(.34,1.56,.64,1)',elasticOut:'cubic-bezier(.34,1.56,.64,1)',decelerate:'cubic-bezier(0,0,.2,1)'};return M2[c]||'ease-in-out'}
+function alXY(raw){raw=raw||'';var nm={topLeft:[-1,-1],topCenter:[0,-1],topRight:[1,-1],centerLeft:[-1,0],center:[0,0],centerRight:[1,0],bottomLeft:[-1,1],bottomCenter:[0,1],bottomRight:[1,1]},m=/Alignment\.(\w+)/.exec(raw);
+  if(m&&nm[m[1]])return nm[m[1]];var c=/Alignment\s*\(\s*(-?[\d.]+)\s*,\s*(-?[\d.]+)\s*\)/.exec(raw);return c?[+c[1],+c[2]]:[0,0]}
+var AN_PROPS=['width','height','left','top','opacity','backgroundColor','borderRadius','paddingTop','paddingRight','paddingBottom','paddingLeft','marginTop','marginLeft','transform'];
+function kebab(p){return p.replace(/[A-Z]/g,function(c){return '-'+c.toLowerCase()})}
+function animPass(screen){
+  [].forEach.call(screen.querySelectorAll('[data-an]'),function(el){
+    var k=el.dataset.ank,ms=+el.dataset.an,cur={},cs=getComputedStyle(el);
+    AN_PROPS.forEach(function(p){cur[p]=cs[p]});
+    if(el.dataset.tf)cur.transform=el.dataset.tf;
+    var prev=R_opts.anim[k];R_opts.anim[k]=cur;
+    if(!prev||!(ms>0))return;
+    var ch=AN_PROPS.filter(function(p){return prev[p]!==cur[p]});if(!ch.length)return;
+    var orig={};ch.forEach(function(p){orig[p]=el.style[p];el.style[p]=prev[p]});
+    void el.offsetWidth;
+    el.style.transition=ch.map(function(p){return kebab(p)+' '+ms+'ms '+(el.dataset.anc||'ease-in-out')}).join(',');
+    ch.forEach(function(p){el.style[p]=cur[p]});
+    setTimeout(function(){el.style.transition='';ch.forEach(function(p){el.style[p]=orig[p]})},ms+40)})}
+function swapFx(d,from,key,sig,ms){
+  var nodes=[].slice.call(d.childNodes,from);if(!R_opts.run||!nodes.length)return;
+  var clones=nodes.map(function(c){return c.cloneNode(true)}),prev=R_opts.sw[key];
+  if(prev&&prev.sig!==sig&&ms>0){
+    d.style.position='relative';
+    prev.nodes.forEach(function(g){if(g.classList)g.classList.add('swg');g.style.animationDuration=ms+'ms';d.appendChild(g);setTimeout(function(){if(g.parentNode)g.parentNode.removeChild(g)},ms+40)});
+    nodes.forEach(function(c){if(c.classList){c.classList.add('swin');c.style.animationDuration=ms+'ms'}})}
+  R_opts.sw[key]={sig:sig,nodes:clones}}
+OF.ST.twVal=function(n,from,to,ms,cv){
+  if(!R_opts.run||!(ms>0))return to;
+  var k=(n._key||'?')+'#'+(OF.ST.futGen||0),a=R_opts.tw[k],now=performance.now();
+  if(!a)a=R_opts.tw[k]={from:from,to:to,t0:now,cur:from,t:0};
+  if(a.to!==to){a.from=a.cur;a.to=to;a.t0=now}
+  var p=Math.min(1,(now-a.t0)/ms),e=/ease|fastOut|bounce|elastic|decel/.test(cv||'')?p*p*(3-2*p):p;
+  a.cur=a.from+(a.to-a.from)*e;
+  if(p<1&&!a.t){a.t=setTimeout(function(){a.t=0;if(R_opts.rerender)R_opts.rerender()},33);R_opts.futT.push(a.t)}
+  return a.cur};
 function place(d,n,pt,ppt){
   /* pt: tipo do pai ('Column','Row','ListView','#single','#expanded','#center'); ppt: tipo do pai do Expanded */
-  if(pt==='Stack'&&n.type!=='Positioned')d.style.gridArea='1 / 1';
-  if(pt==='Stack'&&n.type==='Positioned'){
+  if(pt==='Stack'&&n.type!=='Positioned'&&n.type!=='AnimatedPositioned')d.style.gridArea='1 / 1';
+  if(pt==='Stack'&&(n.type==='Positioned'||n.type==='AnimatedPositioned')){
     d.style.position='absolute';var any={};
     ['left','top','right','bottom','width','height'].forEach(function(k){var v=numVal(M.getProp(n,k));if(v!=null&&isFinite(v)){d.style[k]=v+'px';any[k]=1}});
     if(!any.left&&!any.right)d.style.left='0px';if(!any.top&&!any.bottom)d.style.top='0px';
@@ -2802,6 +2872,24 @@ function build(n,path,pt,ppt,sel){
       dsh.appendChild(dsb);d.appendChild(dsh);
       if(R_opts.run){d.dataset.ds=dsk;d._n=n}
       break}
+    case 'AnimatedAlign':{
+      d.className+=' col';d.style.position='relative';d.style.alignItems='stretch';
+      var aab=d.childNodes.length;single('child','#single','child: adicione um widget');
+      var aaw=document.createElement('div');aaw.className='aalw';[].slice.call(d.childNodes,aab).forEach(function(c){aaw.appendChild(c)});
+      var axy=alXY(M.getProp(n,'alignment')),ax=(axy[0]+1)/2*100,ay=(axy[1]+1)/2*100;
+      aaw.style.position='absolute';aaw.style.left=ax+'%';aaw.style.top=ay+'%';aaw.style.transform='translate('+(-ax)+'%,'+(-ay)+'%)';
+      if(R_opts.run){aaw.dataset.an=durMs(M.getProp(n,'duration'));aaw.dataset.anc=curveCss(M.getProp(n,'curve'));aaw.dataset.ank=path.join('>')}
+      d.appendChild(aaw);break}
+    case 'AnimatedSize':{d.className+=' col';d.style.alignItems='flex-start';d.style.overflow='hidden';d.style.width='max-content';d.style.maxWidth='100%';single('child','#single','child: adicione um widget');break}
+    case 'AnimatedScale':{d.className+=' col';d.style.alignItems='flex-start';var asc=numVal(M.getProp(n,'scale'));d.style.transform='scale('+(asc==null?1:asc)+')';single('child','#single','child: adicione um widget');break}
+    case 'AnimatedRotation':{d.className+=' col';d.style.alignItems='flex-start';var art=numVal(M.getProp(n,'turns'));d.style.transform='rotate('+((art==null?0:art)*360)+'deg)';single('child','#single','child: adicione um widget');break}
+    case 'AnimatedSwitcher':{
+      d.className+=' col';d.style.alignItems='flex-start';var swb=d.childNodes.length;single('child','#single','child: adicione um widget');
+      var swc=n.slots.child;swapFx(d,swb,path.join('>'),swc?swc.type+'|'+(M.getProp(swc,'key')||''):'',durMs(M.getProp(n,'duration')));break}
+    case 'AnimatedCrossFade':{
+      d.className+=' col';d.style.alignItems='flex-start';var cfb=d.childNodes.length,cf2=/showSecond/.test(M.getProp(n,'crossFadeState')||'');
+      single(cf2?'secondChild':'firstChild','#single',(cf2?'secondChild':'firstChild')+': adicione um widget');
+      swapFx(d,cfb,path.join('>'),cf2?'2':'1',durMs(M.getProp(n,'duration')));break}
     case 'IndexedStack':{
       d.className+=' col idxs';d.style.alignItems='stretch';
       var ixs=n.slots.children||[],ixi=numVal(M.getProp(n,'index'));ixi=ixi==null?0:Math.trunc(ixi);
@@ -2834,7 +2922,7 @@ function build(n,path,pt,ppt,sel){
     case 'SliverToBoxAdapter':{d.className+=' col';d.style.alignItems='stretch';single('child','Column','child: adicione um widget');break}
     case 'SliverList.list':{d.className+=' col';d.style.alignItems='stretch';kids('children','ListView');break}
     case 'SliverList.builder':{d.className+=' list';genKids('ListView');break}
-    case 'FutureBuilder':case 'StreamBuilder':{d.className+=' col';d.style.alignItems='flex-start';n._key=path.join('>');genKids('#single');break}
+    case 'FutureBuilder':case 'StreamBuilder':case 'TweenAnimationBuilder':{d.className+=' col';d.style.alignItems='flex-start';n._key=path.join('>');genKids('#single');break}
     case 'FlutterMap':{
       d.className+=' fmap';var mo=M.getProp(n,'options')||'',mc=/initialCenter\s*:\s*(?:const\s+)?LatLng\(\s*(-?[\d.]+)\s*,\s*(-?[\d.]+)\s*\)/.exec(mo),mz=/initialZoom\s*:\s*([\d.]+)/.exec(mo);
       var mla=mc?+mc[1]:0,mlo=mc?+mc[2]:0,mzz=mz?+mz[1]:13,mv=OF.ST.mapView;
@@ -2886,12 +2974,13 @@ function build(n,path,pt,ppt,sel){
     case 'ElevatedButton':case 'TextButton':case 'OutlinedButton':case 'FilledButton':{
       d.className+=' btn'+(n.type==='TextButton'?' tbtn':n.type==='OutlinedButton'?' obtn':n.type==='FilledButton'?' fbtn':'');d.style.flex='none';if(n.slots.child)d.appendChild(child(n.slots.child,'child','#none'));else d.appendChild(ph('child'));break}
   }
+  if(R_opts.run&&ANIM[n.type]){d.dataset.an=durMs(M.getProp(n,'duration'));d.dataset.anc=curveCss(M.getProp(n,'curve'));d.dataset.ank=path.join('>');if(n.type==='AnimatedScale'||n.type==='AnimatedRotation')d.dataset.tf=d.style.transform}
   lbl(d,n);
   if(pt&&pt!=='#none')place(d,n,pt,ppt);
   if(R_opts.run)bindRun(d,n);
   return d;
 }
-var R_opts={run:false,xray:false,typed:{},page:{},depth:0,nav:[],navSc:[],over:[],tab:{},tabCtl:null,exp:{},fut:{},futT:[],mapV:null,rf:{},str:{},iv:{},dss:{}};
+var R_opts={run:false,xray:false,typed:{},page:{},depth:0,nav:[],navSc:[],over:[],tab:{},tabCtl:null,exp:{},fut:{},futT:[],mapV:null,rf:{},str:{},iv:{},dss:{},anim:{},sw:{},tw:{}};
 OF.ST.futPhase=function(n,ms){
   if(!R_opts.run||ms<=0)return 'done';
   var k=(n._key||'?')+'#'+(OF.ST.futGen||0),f=R_opts.fut[k];
@@ -2943,6 +3032,7 @@ function renderScreen(root,selKey,xray,screen){
   try{var th=themeInfo();if(th.dark)screen.classList.add('dark');
     if(th.custom||th.dark){screen.style.setProperty('--d-primary',th.primary);screen.style.setProperty('--d-btn',th.tint)}}catch(e){}
   try{renderInner(root,selKey,screen)}finally{M.ev=false}
+  if(R_opts.run)try{animPass(screen)}catch(e){}
 }
 function renderInner(root,selKey,screen){
   var sb=document.createElement('div');sb.className='sbar';sb.innerHTML='<span>9:41</span><span>●●● 100%</span>';screen.appendChild(sb);
@@ -6555,6 +6645,330 @@ class Detalhe extends StatelessWidget {
   }
 }
 `},
+{t:'x. AnimatedPositioned e AnimatedAlign: movimento suave',
+ text:'Os widgets "Animated" fazem animação implícita: você só troca um valor em um setState e o Flutter anima do valor antigo para o novo, durante a duration. Não precisa de controller. AnimatedPositioned move um filho dentro de um Stack (left, top, width, height). AnimatedAlign move o filho trocando o alignment. O curve controla o ritmo: easeInOut começa e termina devagar.',
+ tryit:'Toque em Mover e em Canto e veja o movimento. Troque a duration de 600 para 2000. Troque Curves.easeInOut por Curves.linear e depois por Curves.bounceOut.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Movimento()));
+
+class Movimento extends StatefulWidget {
+  const Movimento({super.key});
+
+  @override
+  State<Movimento> createState() => _MovimentoState();
+}
+
+class _MovimentoState extends State<Movimento> {
+  bool direita = false;
+  bool canto = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Movimento')),
+      body: Column(
+        children: [
+          SizedBox(
+            height: 140,
+            child: Stack(
+              children: [
+                AnimatedPositioned(
+                  duration: const Duration(milliseconds: 600),
+                  curve: Curves.easeInOut,
+                  left: direita ? 200 : 10,
+                  top: 30,
+                  width: 80,
+                  height: 80,
+                  child: Container(color: Colors.orange),
+                ),
+              ],
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                direita = !direita;
+              });
+            },
+            child: const Text('Mover'),
+          ),
+          Expanded(
+            child: AnimatedAlign(
+              duration: const Duration(milliseconds: 600),
+              curve: Curves.easeInOut,
+              alignment: canto ? Alignment.bottomRight : Alignment.topLeft,
+              child: const Icon(Icons.star, size: 48, color: Colors.amber),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                canto = !canto;
+              });
+            },
+            child: const Text('Canto'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+`},
+{t:'x. AnimatedContainer, AnimatedOpacity, AnimatedScale e AnimatedRotation',
+ text:'AnimatedContainer é um Container que anima mudanças de largura, altura, cor, bordas e padding. AnimatedOpacity anima a transparência. AnimatedScale anima o zoom (scale 2 é o dobro). AnimatedRotation anima o giro em voltas: turns 0.25 é um quarto de volta e 1 é a volta inteira. Todos têm duration e curve, e todos se animam sozinhos quando o valor muda em um setState.',
+ tryit:'Toque em Animar: o quadrado muda de tamanho, cor e borda ao mesmo tempo. Troque o raio da borda para 60 para virar um círculo. Mude turns de 1 para 0.5.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Efeitos()));
+
+class Efeitos extends StatefulWidget {
+  const Efeitos({super.key});
+
+  @override
+  State<Efeitos> createState() => _EfeitosState();
+}
+
+class _EfeitosState extends State<Efeitos> {
+  bool ativo = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Efeitos')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 600),
+              curve: Curves.easeInOut,
+              width: ativo ? 160 : 80,
+              height: ativo ? 160 : 80,
+              decoration: BoxDecoration(
+                color: ativo ? Colors.deepPurple : Colors.blue,
+                borderRadius: BorderRadius.circular(ativo ? 60 : 8),
+              ),
+            ),
+            const SizedBox(height: 20),
+            AnimatedOpacity(
+              duration: const Duration(milliseconds: 600),
+              opacity: ativo ? 0.2 : 1.0,
+              child: const Text('Estou sumindo', style: TextStyle(fontSize: 20)),
+            ),
+            const SizedBox(height: 20),
+            AnimatedScale(
+              duration: const Duration(milliseconds: 600),
+              scale: ativo ? 2.0 : 1.0,
+              child: const Icon(Icons.favorite, color: Colors.red),
+            ),
+            const SizedBox(height: 20),
+            AnimatedRotation(
+              duration: const Duration(milliseconds: 600),
+              turns: ativo ? 1.0 : 0.0,
+              child: const Icon(Icons.refresh, size: 32),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  ativo = !ativo;
+                });
+              },
+              child: const Text('Animar'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+`},
+{t:'x. AnimatedSize e AnimatedPadding: painel que abre',
+ text:'AnimatedSize não tem valor para trocar: ele observa o filho e anima o seu próprio tamanho quando o filho cresce ou encolhe, como um texto que aparece. Combine com AnimatedRotation para girar a seta, e com AnimatedPadding para mudar o espaço em volta. Esse é o truque dos painéis que abrem e fecham sem usar ExpansionTile.',
+ tryit:'Toque no título "Detalhes" para abrir e fechar o painel. Troque o padding de 8 para 24 quando aberto. Acrescente mais uma linha de texto e veja o painel crescer.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Painel()));
+
+class Painel extends StatefulWidget {
+  const Painel({super.key});
+
+  @override
+  State<Painel> createState() => _PainelState();
+}
+
+class _PainelState extends State<Painel> {
+  bool aberto = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Painel')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Card(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTile(
+                title: const Text('Detalhes'),
+                trailing: AnimatedRotation(
+                  duration: const Duration(milliseconds: 300),
+                  turns: aberto ? 0.5 : 0.0,
+                  child: const Icon(Icons.expand_more),
+                ),
+                onTap: () {
+                  setState(() {
+                    aberto = !aberto;
+                  });
+                },
+              ),
+              AnimatedSize(
+                duration: const Duration(milliseconds: 300),
+                child: aberto
+                    ? AnimatedPadding(
+                        duration: const Duration(milliseconds: 300),
+                        padding: const EdgeInsets.all(16),
+                        child: const Text('Aqui ficam as informações extras do item. Elas aparecem com uma animação suave.'),
+                      )
+                    : const SizedBox(width: double.infinity),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+`},
+{t:'x. AnimatedSwitcher e AnimatedCrossFade: trocar conteúdo',
+ text:'AnimatedSwitcher troca um filho por outro com um fade. Ele só percebe a troca se o novo filho tiver outro tipo ou outra key, por isso o texto leva key: ValueKey(contador). Sem a key, o número mudaria sem animação. AnimatedCrossFade faz o fade entre dois filhos conhecidos, escolhidos por crossFadeState (showFirst ou showSecond).',
+ tryit:'Toque em Somar e veja o número trocar com fade. Apague o key: ValueKey(contador) e veja a animação sumir. Troque a duration do CrossFade para 1500.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Troca()));
+
+class Troca extends StatefulWidget {
+  const Troca({super.key});
+
+  @override
+  State<Troca> createState() => _TrocaState();
+}
+
+class _TrocaState extends State<Troca> {
+  int contador = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final par = contador % 2 == 0;
+    return Scaffold(
+      appBar: AppBar(title: const Text('Troca')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 500),
+              child: Text(
+                '$contador',
+                key: ValueKey(contador),
+                style: const TextStyle(fontSize: 56),
+              ),
+            ),
+            const SizedBox(height: 16),
+            AnimatedCrossFade(
+              duration: const Duration(milliseconds: 500),
+              crossFadeState: par ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+              firstChild: const Text('Par', style: TextStyle(fontSize: 24, color: Colors.blue)),
+              secondChild: const Text('Ímpar', style: TextStyle(fontSize: 24, color: Colors.red)),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  contador += 1;
+                });
+              },
+              child: const Text('Somar'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+`},
+{t:'x. TweenAnimationBuilder: animar qualquer valor',
+ text:'Quando não existe um widget Animated pronto para o que você quer, use TweenAnimationBuilder. Você diz de onde (begin) até onde (end) o valor vai e por quanto tempo. O builder é chamado a cada passo, com o valor atual, e desenha a tela com ele. Se end mudar depois, a animação recomeça do valor atual até o novo, sem salto.',
+ tryit:'Toque em Nota 90 e Nota 30 e veja a barra e a porcentagem animarem juntas. Troque a duration para 3 segundos. Troque LinearProgressIndicator por Opacity(opacity: valor, child: Text(...)).',
+ setup:'1. No simulador funcionam Tween numéricos (double e int). ColorTween e outros tipos ainda não.\n\n2. O parâmetro child do builder é opcional e serve para um pedaço que não muda durante a animação, para o Flutter não reconstruí-lo.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Nota()));
+
+class Nota extends StatefulWidget {
+  const Nota({super.key});
+
+  @override
+  State<Nota> createState() => _NotaState();
+}
+
+class _NotaState extends State<Nota> {
+  double nota = 0.3;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Desempenho')),
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TweenAnimationBuilder<double>(
+              tween: Tween<double>(begin: 0, end: nota),
+              duration: const Duration(seconds: 1),
+              builder: (context, valor, child) {
+                return Column(
+                  children: [
+                    Text('\${(valor * 100).round()}%', style: const TextStyle(fontSize: 40)),
+                    const SizedBox(height: 12),
+                    LinearProgressIndicator(value: valor, minHeight: 12),
+                  ],
+                );
+              },
+            ),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      nota = 0.9;
+                    });
+                  },
+                  child: const Text('Nota 90'),
+                ),
+                const SizedBox(width: 12),
+                OutlinedButton(
+                  onPressed: () {
+                    setState(() {
+                      nota = 0.3;
+                    });
+                  },
+                  child: const Text('Nota 30'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+`},
 {t:'x. Sensor: pedômetro (passos)',
  demo:true,
  text:'O pacote pedometer conta os passos usando o sensor do aparelho. stepCountStream é um Stream: a cada novo valor, o listen chama o seu código. O número é o total desde o último reinício do aparelho, não do dia. No Android 10 ou mais novo, o app precisa pedir a permissão de reconhecimento de atividade.',
@@ -9044,6 +9458,107 @@ d('SizeTransition',[
   sizeFactor: animation,
   child: ListTile(title: Text('Novo item')),
 )`);
+d('AnimatedPositioned',[
+['duration','Duration','Quanto tempo dura a animação.'],
+['curve','Curve','O ritmo do movimento, como Curves.easeInOut.'],
+['left','double','Distância da borda esquerda do Stack.'],
+['top','double','Distância do topo do Stack.'],
+['width','double','Largura do filho.'],
+['height','double','Altura do filho.'],
+['child','Widget','O widget que se move.']],
+`AnimatedPositioned(
+  duration: const Duration(milliseconds: 500),
+  curve: Curves.easeInOut,
+  left: direita ? 200 : 20,
+  top: 40,
+  width: 80,
+  height: 80,
+  child: Container(color: Colors.orange),
+)`);
+d('AnimatedAlign',[
+['duration','Duration','Quanto tempo dura a animação.'],
+['alignment','AlignmentGeometry','Onde o filho fica. Ao mudar, ele desliza até lá.'],
+['curve','Curve','O ritmo do movimento.'],
+['child','Widget','O widget que se move.']],
+`AnimatedAlign(
+  duration: const Duration(milliseconds: 500),
+  alignment: canto ? Alignment.bottomRight : Alignment.topLeft,
+  child: Icon(Icons.star),
+)`);
+d('AnimatedPadding',[
+['duration','Duration','Quanto tempo dura a animação.'],
+['padding','EdgeInsetsGeometry','O espaço em volta do filho. Ao mudar, o espaço cresce ou encolhe suavemente.'],
+['child','Widget','O widget com o espaço em volta.']],
+`AnimatedPadding(
+  duration: const Duration(milliseconds: 400),
+  padding: EdgeInsets.all(aberto ? 32 : 8),
+  child: Container(height: 60, color: Colors.indigo),
+)`);
+d('AnimatedSize',[
+['duration','Duration','Quanto tempo dura a animação.'],
+['alignment','AlignmentGeometry','Para que lado o filho cresce.'],
+['child','Widget','O widget cujo tamanho pode mudar. Nada precisa ser trocado em AnimatedSize.']],
+`AnimatedSize(
+  duration: const Duration(milliseconds: 400),
+  child: Container(
+    width: grande ? 200 : 100,
+    height: 60,
+    color: Colors.teal,
+  ),
+)`);
+d('AnimatedScale',[
+['duration','Duration','Quanto tempo dura a animação.'],
+['scale','double','O zoom: 1 é o normal, 2 é o dobro, 0.5 é a metade.'],
+['child','Widget','O widget que muda de tamanho.']],
+`AnimatedScale(
+  duration: const Duration(milliseconds: 300),
+  scale: curtido ? 1.5 : 1.0,
+  child: Icon(Icons.favorite, color: Colors.red),
+)`);
+d('AnimatedRotation',[
+['duration','Duration','Quanto tempo dura a animação.'],
+['turns','double','Voltas: 0.25 é um quarto de volta, 1 é a volta inteira.'],
+['child','Widget','O widget que gira.']],
+`AnimatedRotation(
+  duration: const Duration(milliseconds: 400),
+  turns: aberto ? 0.5 : 0,
+  child: Icon(Icons.expand_more),
+)`);
+d('AnimatedSwitcher',[
+['duration','Duration','Quanto tempo dura a troca.'],
+['child','Widget','O filho atual. Quando ele muda de tipo ou de key, a troca é animada.']],
+`AnimatedSwitcher(
+  duration: const Duration(milliseconds: 300),
+  child: Text(
+    '$contador',
+    key: ValueKey(contador),
+    style: const TextStyle(fontSize: 40),
+  ),
+)`);
+d('AnimatedCrossFade',[
+['duration','Duration','Quanto tempo dura o fade.'],
+['crossFadeState','CrossFadeState','showFirst mostra o primeiro filho, showSecond mostra o segundo.'],
+['firstChild','Widget','O widget do estado showFirst.'],
+['secondChild','Widget','O widget do estado showSecond.']],
+`AnimatedCrossFade(
+  duration: const Duration(milliseconds: 300),
+  crossFadeState: ligado ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+  firstChild: Text('Desligado'),
+  secondChild: Text('Ligado'),
+)`);
+d('TweenAnimationBuilder',[
+['tween','Tween<T>','De onde (begin) até onde (end) o valor anima.'],
+['duration','Duration','Quanto tempo dura a animação.'],
+['curve','Curve','O ritmo da animação.'],
+['builder','Widget Function(BuildContext, T, Widget?)','Recebe o valor atual a cada passo e devolve o widget.'],
+['child','Widget?','Parte que não muda durante a animação (opcional).']],
+`TweenAnimationBuilder<double>(
+  tween: Tween<double>(begin: 0, end: nota),
+  duration: const Duration(seconds: 1),
+  builder: (context, valor, child) {
+    return LinearProgressIndicator(value: valor);
+  },
+)`);
 /* Conteúdo */
 d('Text',[
 ['data','String','O texto (primeiro argumento). Aceita interpolação: "Olá, $nome".'],
@@ -9822,7 +10337,7 @@ $('stBar').addEventListener('click',function(e){
   else if(b.dataset.a==='reset'){clearFx();R.opts.typed={};ST.reset();renderStateBar();renderCanvas()}
 });
 var timers=[];
-function clearFx(){pk=null;fxGen++;R.opts.fut={};R.opts.futT.forEach(clearTimeout);R.opts.futT=[];R.opts.rf={};R.opts.str={};R.opts.iv={};R.opts.dss={};ST.mapView=null;R.opts.nav=[];R.opts.navSc=[];R.opts.navRes=[];R.opts.over=[];R.opts.tab={};R.opts.exp={};clearTimeout(snackT);timers.forEach(clearTimeout);timers=[]}
+function clearFx(){pk=null;fxGen++;R.opts.fut={};R.opts.futT.forEach(clearTimeout);R.opts.futT=[];R.opts.rf={};R.opts.str={};R.opts.iv={};R.opts.dss={};R.opts.anim={};R.opts.sw={};R.opts.tw={};ST.mapView=null;R.opts.nav=[];R.opts.navSc=[];R.opts.navRes=[];R.opts.over=[];R.opts.tab={};R.opts.exp={};clearTimeout(snackT);timers.forEach(clearTimeout);timers=[]}
 var snackT=null;
 function runIn(inst,fn){if(!inst)return fn();ST.enter(inst);try{return fn()}finally{ST.leave()}}
 function scopeOfEl(el){var h=el&&el.closest&&el.closest('[data-sc]');if(!h||!h.dataset.sc)return null;var all=R.opts.navSc.concat(R.opts.over.map(function(o){return o.sc}));for(var i=0;i<all.length;i++)if(all[i]&&all[i].id===h.dataset.sc)return all[i];return null}
