@@ -686,8 +686,8 @@ var W={
  IconButton:{cat:'content',slots:{icon:'one'},desc:'Botão redondo que contém só um ícone, passado em icon.'},
  ListTile:{cat:'content',slots:{leading:'one',title:'one',subtitle:'one',trailing:'one'},desc:'Linha de lista pronta: leading (início), title, subtitle e trailing (fim).'},
  TextField:{cat:'content',slots:{},desc:'Campo de texto. A decoration (InputDecoration) define rótulo, dica e borda; obscureText: true esconde o conteúdo.'},
- 'Image.network':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem baixada de uma URL. Aqui o canvas desenha um quadro no lugar da imagem. fit controla como ela preenche o espaço.'},
- 'Image.asset':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem guardada no projeto (pasta assets). Aqui o canvas desenha um quadro no lugar da imagem.'}
+ 'Image.network':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem baixada de uma URL. O canvas mostra a imagem real quando a URL carrega; sem internet, ou se a página bloquear imagens externas, ele desenha um quadro no lugar. fit controla como ela preenche o espaço.'},
+ 'Image.asset':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem guardada no projeto (pasta assets). O canvas mostra a imagem real quando a URL carrega; sem internet, ou se a página bloquear imagens externas, ele desenha um quadro no lugar.'}
 };
 var GROUPS=[['Estrutura',['Scaffold','AppBar','FloatingActionButton','Drawer','BottomNavigationBar','BottomNavigationBarItem','NavigationBar','NavigationDestination','NavigationRail','NavigationRailDestination','MenuAnchor','MenuItemButton']],['Abas',['DefaultTabController','TabBar','Tab','TabBarView','TabPageSelector']],['Layout',['Center','Align','Column','Row','Stack','Positioned','Expanded','Flexible','Spacer','Wrap','Form','ListView','GridView.count','SingleChildScrollView','SafeArea','PageView','IndexedStack','Stepper','Step','ExpansionPanelList','ExpansionPanel','DraggableScrollableSheet','TweenAnimationBuilder','LayoutBuilder','Builder','FutureBuilder','StreamBuilder','RefreshIndicator','CustomScrollView','SliverAppBar','SliverToBoxAdapter','SliverList.list','SliverList.builder']],['Listas e tabelas',['ListView.builder','ListView.separated','ReorderableListView','ReorderableListView.builder','AnimatedList','GridView.builder','Table','TableRow','DataTable','DataColumn','DataRow','DataCell']],['Caixas',['Container','ColoredBox','Padding','SizedBox','AspectRatio','ConstrainedBox','FractionallySizedBox','FittedBox','Card','Divider','VerticalDivider','ClipRRect','Opacity','AnimatedOpacity','AnimatedContainer','AnimatedPositioned','AnimatedAlign','AnimatedPadding','AnimatedSize','AnimatedScale','AnimatedRotation','AnimatedSwitcher','AnimatedCrossFade','Visibility','Tooltip','Badge','Hero','FadeTransition','SizeTransition','InteractiveViewer','Transform.rotate','Transform.scale','Transform.translate','Dismissible']],['Conteúdo',['Text','Text.rich','RichText','Icon','Image.network','CircleAvatar','Chip','ChoiceChip','FilterChip','ActionChip','ListTile','ExpansionTile','Image.asset','CircularProgressIndicator','LinearProgressIndicator','SegmentedButton','ButtonSegment','PopupMenuButton']],['Botões e campos',['ElevatedButton','FilledButton','TextButton','OutlinedButton','IconButton','TextField','TextFormField','Checkbox','Switch','Slider','Radio','DropdownButton','DropdownMenuItem','SwitchListTile','CheckboxListTile','RadioListTile','RangeSlider','ToggleButtons','DropdownMenu','DropdownMenuEntry','Autocomplete','SearchBar']],['Interação',['GestureDetector','InkWell']],['Mapas (flutter_map)',['FlutterMap','TileLayer','MarkerLayer','Marker','CircleLayer','CircleMarker','PolylineLayer','Polyline','RichAttributionWidget']],['Janelas',['AlertDialog','SimpleDialog','SimpleDialogOption','SnackBar','SnackBarAction','MaterialBanner','Banner']]];
 var CATVAR={struct:'var(--c-struct)',layout:'var(--c-layout)',box:'var(--c-box)',content:'var(--c-content)'};
@@ -3379,7 +3379,20 @@ function build(n,path,pt,ppt,sel){
     case 'Image.network':case 'Image.asset':{
       d.className+=' img';var iw=numVal(M.getProp(n,'width')),ih=numVal(M.getProp(n,'height'));
       d.style.width=(iw!=null&&isFinite(iw)?iw:200)+'px';d.style.height=(ih!=null&&isFinite(ih)?ih:120)+'px';
-      d.innerHTML='<svg viewBox="0 0 40 24" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><circle cx="29" cy="8" r="3.2" fill="#fff" fill-opacity=".85"/><path d="M0 24V17l9-7 8 6 6-4 17 9v3z" fill="#fff" fill-opacity=".6"/></svg>';break}
+      d.innerHTML='<svg viewBox="0 0 40 24" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><circle cx="29" cy="8" r="3.2" fill="#fff" fill-opacity=".85"/><path d="M0 24V17l9-7 8 6 6-4 17 9v3z" fill="#fff" fill-opacity=".6"/></svg>';
+      if(n.type==='Image.network'){
+        var isrc=null;try{isrc=M.evalProp?M.evalProp(n,'src'):M.getProp(n,'src')}catch(e){isrc=null}
+        isrc=isrc==null?'':strVal(isrc);
+        if(/^https?:\/\/[^\s'"<>]+$/i.test(isrc)){
+          var im=document.createElement('img'),fv=String(M.getProp(n,'fit')||''),fm={'BoxFit.cover':'cover','BoxFit.fill':'fill','BoxFit.fitWidth':'cover','BoxFit.fitHeight':'cover','BoxFit.none':'none','BoxFit.scaleDown':'scale-down','BoxFit.contain':'contain'},svg=d.querySelector('svg');
+          d.style.position='relative';
+          im.alt='';im.referrerPolicy='no-referrer';im.decoding='async';
+          im.style.cssText='position:absolute;left:0;top:0;width:100%;height:100%;object-fit:'+(fm[fv]||'contain')+';display:none';
+          im.onload=function(){im.style.display='block';if(svg)svg.style.visibility='hidden'};
+          im.onerror=function(){im.remove()};
+          im.src=isrc;d.appendChild(im);
+          if(im.complete&&im.naturalWidth){im.style.display='block';if(svg)svg.style.visibility='hidden'}}}
+      break}
     case 'IconButton':{d.className+=' ibtn';if(n.slots.icon)d.appendChild(child(n.slots.icon,'icon','#none'));else d.appendChild(ph('icon'));break}
     case 'Drawer':d.className+=' drawer';single('child','#single','child: adicione um ListView');break;
     case 'BottomNavigationBar':{
@@ -4061,7 +4074,7 @@ var LESSONS=[
       ),
     )`)},
 {t:'9. Grade, imagens e ListTile',
- text:'ListTile é uma linha de lista pronta, com leading, title, subtitle e trailing. Divider separa itens. GridView.count monta uma grade com crossAxisCount colunas. Image.network mostra uma imagem de uma URL; aqui o canvas desenha um quadro no lugar dela.',
+ text:'ListTile é uma linha de lista pronta, com leading, title, subtitle e trailing. Divider separa itens. GridView.count monta uma grade com crossAxisCount colunas. Image.network mostra uma imagem de uma URL; aqui o canvas mostra a imagem real quando consegue baixá-la; sem internet, aparece um quadro no lugar.',
  tryit:'Mude crossAxisCount: 2 para 3. Depois selecione o GridView.count e arraste um Image.network da paleta para dentro dele.',
  code:wrap(`Scaffold(
       appBar: AppBar(title: Text('Galeria'), backgroundColor: Colors.pink, foregroundColor: Colors.white),
