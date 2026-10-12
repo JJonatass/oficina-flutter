@@ -357,6 +357,26 @@ body:has(main[data-tab="ref"]) .lesson{display:none}
 .screen .rdh{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:20px;line-height:1;opacity:.6;cursor:grab;touch-action:none;padding:6px 7px;z-index:3;user-select:none;background:var(--d-surface,#FEF7FF);border-radius:8px}
 .screen .rli.dragging{z-index:6;box-shadow:0 6px 16px rgba(0,0,0,.28);opacity:.96;cursor:grabbing;background:var(--d-surface,#FEF7FF)}
 .screen .nd.rfi{position:relative}
+.screen .nd.tgb{display:flex;flex-direction:row;align-self:flex-start}
+.screen .tgb .tgi{display:flex;align-items:center;justify-content:center;min-width:44px;height:40px;padding:0 12px;border:1px solid #79747E;margin-left:-1px;cursor:pointer;box-sizing:border-box;color:#49454F}
+.screen .tgb .tgi:first-child{margin-left:0;border-radius:8px 0 0 8px}.screen .tgb .tgi:last-child{border-radius:0 8px 8px 0}
+.screen .tgb .tgi.on{background:var(--d-btn,#E8DEF8);color:var(--d-primary,#6750A4)}
+.screen .nd.ddm{display:flex;flex-direction:row;align-items:center;gap:8px;height:56px;padding:0 12px;border:1px solid #79747E;border-radius:4px;flex:none;cursor:pointer;box-sizing:border-box;min-width:160px}
+.screen .ddm .dmb{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}.screen .ddm .dml{font-size:16px;color:#49454F}.screen .ddm .dml.up{font-size:12px}.screen .ddm .dmv{font-size:16px}
+.screen .nd.ddme{padding:8px 12px;font-size:14px}
+.screen .acp .aco{background:#F3EDF7;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.25);margin-top:2px;padding:4px 0}
+.screen .acp .aoi{padding:10px 16px;font-size:15px;cursor:pointer;color:#1D1B20}.screen .acp .aoi:hover{background:rgba(103,80,164,.12)}
+.screen .nd.sbr{flex-direction:row;align-items:center;gap:10px;border-radius:28px;background:#ECE6F0;border:0;height:48px;padding:0 16px}
+.screen .sbr .sbi{font-size:16px;z-index:1;pointer-events:none}.screen .sbr .tfi{padding-left:44px}
+.screen .nd.stp{gap:0}
+.screen .stp .sti{display:flex;flex-direction:row;gap:10px;padding:6px 0;align-items:flex-start}
+.screen .stp .stn{width:24px;height:24px;border-radius:50%;background:#79747E;color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center;flex:none;margin-top:2px}
+.screen .stp .sti.cur .stn,.screen .stp .sti.done .stn{background:var(--d-primary,#6750A4)}
+.screen .stp .stb{flex:1;min-width:0}.screen .stp .stt{font-size:16px;font-weight:500}.screen .stp .stt.hh{cursor:pointer}
+.screen .stp .stc{padding:6px 0}.screen .stp .stctl{display:flex;flex-direction:row;gap:8px;margin-top:12px}
+.screen .stp .stbtn{padding:8px 16px;border-radius:4px;font-size:14px;font-weight:500;cursor:pointer}.screen .stp .stbp{background:var(--d-primary,#6750A4);color:#fff}.screen .stp .stbq{color:#49454F}
+.screen .nd.epl{gap:2px}.screen .epl .epp{background:var(--d-card,#F7F2FA);border-radius:4px}
+.screen .epl .eph{display:flex;flex-direction:row;align-items:center;padding:0 8px 0 0}.screen .epl .eph.hh{cursor:pointer}.screen .epl .epb{padding:8px 16px 12px}
 @keyframes swin{from{opacity:0}to{opacity:1}}
 @keyframes swout{from{opacity:1}to{opacity:0}}
 .screen .swin{animation:swin linear both}
@@ -603,6 +623,16 @@ var W={
  AnimatedSwitcher:{cat:'box',slots:{child:'one'},desc:'Troca de um filho por outro com uma animação (por padrão, um fade). Ela só percebe a troca se o novo filho tiver outro tipo ou outra key, por isso use key: ValueKey(valor) no filho.'},
  AnimatedCrossFade:{cat:'box',slots:{firstChild:'one',secondChild:'one'},desc:'Faz um fade entre dois filhos. crossFadeState diz qual aparece: CrossFadeState.showFirst ou CrossFadeState.showSecond. Troque em um setState.'},
  TweenAnimationBuilder:{cat:'layout',slots:{},desc:'Anima um valor de begin até end durante duration e chama o builder a cada passo com o valor atual. Serve para animar qualquer coisa, como a largura de uma barra de progresso. Se end mudar, anima do valor atual até o novo. No simulador funcionam Tween numéricos.'},
+ RangeSlider:{cat:'content',slots:{},desc:'Controle deslizante com dois pontos, para escolher uma faixa (por exemplo, preço mínimo e máximo). values é um RangeValues(início, fim); onChanged recebe o novo RangeValues. min e max definem os limites.'},
+ ToggleButtons:{cat:'content',slots:{children:'many'},desc:'Fileira de botões que se ligam e desligam, como negrito, itálico e sublinhado. isSelected é uma lista de bool, um para cada filho, e onPressed recebe o índice tocado: troque o bool dele em um setState.'},
+ DropdownMenu:{cat:'content',slots:{dropdownMenuEntries:'many',label:'one'},desc:'Menu de escolha do Material 3, com campo e lista. dropdownMenuEntries traz os DropdownMenuEntry, initialSelection escolhe o inicial e onSelected recebe o valor escolhido. Diferente do DropdownButton, ele guarda a escolha sozinho.'},
+ DropdownMenuEntry:{cat:'content',slots:{},desc:'Uma opção do DropdownMenu: value é o valor guardado e label é o texto mostrado.'},
+ Autocomplete:{cat:'content',slots:{},desc:'Campo de texto com sugestões. optionsBuilder recebe o que foi digitado (TextEditingValue, use .text) e devolve as opções que combinam; onSelected recebe a opção escolhida.'},
+ SearchBar:{cat:'content',slots:{},desc:'Barra de busca arredondada do Material 3, com ícone de lupa. hintText é a dica; onChanged e onSubmitted recebem o texto.'},
+ Stepper:{cat:'layout',slots:{steps:'many'},desc:'Passo a passo vertical, como um cadastro em etapas. currentStep é o passo aberto; onStepContinue e onStepCancel respondem aos botões; onStepTapped, ao toque no título. Troque currentStep em um setState.'},
+ Step:{cat:'layout',slots:{title:'one',subtitle:'one',content:'one'},desc:'Um passo do Stepper, com title e content (o conteúdo só aparece quando o passo está aberto).'},
+ ExpansionPanelList:{cat:'layout',slots:{children:'many'},desc:'Lista de painéis que abrem e fecham. expansionCallback(índice, estaAberto) é chamado ao tocar no cabeçalho: inverta o isExpanded do painel em um setState. Os filhos são ExpansionPanel.'},
+ ExpansionPanel:{cat:'layout',slots:{body:'one'},desc:'Um painel do ExpansionPanelList. headerBuilder desenha o cabeçalho (recebe isExpanded), body é o que aparece aberto e isExpanded diz se está aberto.'},
  Hero:{cat:'box',slots:{child:'one'},desc:'Marca um widget para voar entre duas telas na navegação. tag liga os dois lados. Sozinho, só desenha o filho.'},
  LayoutBuilder:{cat:'layout',slots:{},desc:'Entrega ao builder o espaço disponível (constraints.maxWidth, maxHeight) para você escolher o layout. Aqui a largura é 360 e a altura 600.'},
  Builder:{cat:'layout',slots:{},desc:'Cria um widget numa função builder(context). Serve para obter um novo context logo abaixo de outro widget.'},
@@ -617,7 +647,7 @@ var W={
  'Image.network':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem baixada de uma URL. Aqui o canvas desenha um quadro no lugar da imagem. fit controla como ela preenche o espaço.'},
  'Image.asset':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem guardada no projeto (pasta assets). Aqui o canvas desenha um quadro no lugar da imagem.'}
 };
-var GROUPS=[['Estrutura',['Scaffold','AppBar','FloatingActionButton','Drawer','BottomNavigationBar','BottomNavigationBarItem','NavigationBar','NavigationDestination']],['Abas',['DefaultTabController','TabBar','Tab','TabBarView']],['Layout',['Center','Align','Column','Row','Stack','Positioned','Expanded','Flexible','Spacer','Wrap','Form','ListView','GridView.count','SingleChildScrollView','SafeArea','PageView','IndexedStack','DraggableScrollableSheet','TweenAnimationBuilder','LayoutBuilder','Builder','FutureBuilder','StreamBuilder','RefreshIndicator','CustomScrollView','SliverAppBar','SliverToBoxAdapter','SliverList.list','SliverList.builder']],['Listas e tabelas',['ListView.builder','ListView.separated','ReorderableListView','ReorderableListView.builder','AnimatedList','GridView.builder','Table','TableRow','DataTable','DataColumn','DataRow','DataCell']],['Caixas',['Container','ColoredBox','Padding','SizedBox','AspectRatio','ConstrainedBox','FractionallySizedBox','FittedBox','Card','Divider','VerticalDivider','ClipRRect','Opacity','AnimatedOpacity','AnimatedContainer','AnimatedPositioned','AnimatedAlign','AnimatedPadding','AnimatedSize','AnimatedScale','AnimatedRotation','AnimatedSwitcher','AnimatedCrossFade','Visibility','Tooltip','Badge','Hero','FadeTransition','SizeTransition','InteractiveViewer','Transform.rotate','Transform.scale','Transform.translate','Dismissible']],['Conteúdo',['Text','Text.rich','RichText','Icon','Image.network','CircleAvatar','Chip','ChoiceChip','FilterChip','ActionChip','ListTile','ExpansionTile','Image.asset','CircularProgressIndicator','LinearProgressIndicator','SegmentedButton','ButtonSegment','PopupMenuButton']],['Botões e campos',['ElevatedButton','FilledButton','TextButton','OutlinedButton','IconButton','TextField','TextFormField','Checkbox','Switch','Slider','Radio','DropdownButton','DropdownMenuItem','SwitchListTile','CheckboxListTile','RadioListTile']],['Interação',['GestureDetector','InkWell']],['Mapas (flutter_map)',['FlutterMap','TileLayer','MarkerLayer','Marker','CircleLayer','CircleMarker','PolylineLayer','Polyline','RichAttributionWidget']],['Janelas',['AlertDialog','SnackBar','SnackBarAction']]];
+var GROUPS=[['Estrutura',['Scaffold','AppBar','FloatingActionButton','Drawer','BottomNavigationBar','BottomNavigationBarItem','NavigationBar','NavigationDestination']],['Abas',['DefaultTabController','TabBar','Tab','TabBarView']],['Layout',['Center','Align','Column','Row','Stack','Positioned','Expanded','Flexible','Spacer','Wrap','Form','ListView','GridView.count','SingleChildScrollView','SafeArea','PageView','IndexedStack','Stepper','Step','ExpansionPanelList','ExpansionPanel','DraggableScrollableSheet','TweenAnimationBuilder','LayoutBuilder','Builder','FutureBuilder','StreamBuilder','RefreshIndicator','CustomScrollView','SliverAppBar','SliverToBoxAdapter','SliverList.list','SliverList.builder']],['Listas e tabelas',['ListView.builder','ListView.separated','ReorderableListView','ReorderableListView.builder','AnimatedList','GridView.builder','Table','TableRow','DataTable','DataColumn','DataRow','DataCell']],['Caixas',['Container','ColoredBox','Padding','SizedBox','AspectRatio','ConstrainedBox','FractionallySizedBox','FittedBox','Card','Divider','VerticalDivider','ClipRRect','Opacity','AnimatedOpacity','AnimatedContainer','AnimatedPositioned','AnimatedAlign','AnimatedPadding','AnimatedSize','AnimatedScale','AnimatedRotation','AnimatedSwitcher','AnimatedCrossFade','Visibility','Tooltip','Badge','Hero','FadeTransition','SizeTransition','InteractiveViewer','Transform.rotate','Transform.scale','Transform.translate','Dismissible']],['Conteúdo',['Text','Text.rich','RichText','Icon','Image.network','CircleAvatar','Chip','ChoiceChip','FilterChip','ActionChip','ListTile','ExpansionTile','Image.asset','CircularProgressIndicator','LinearProgressIndicator','SegmentedButton','ButtonSegment','PopupMenuButton']],['Botões e campos',['ElevatedButton','FilledButton','TextButton','OutlinedButton','IconButton','TextField','TextFormField','Checkbox','Switch','Slider','Radio','DropdownButton','DropdownMenuItem','SwitchListTile','CheckboxListTile','RadioListTile','RangeSlider','ToggleButtons','DropdownMenu','DropdownMenuEntry','Autocomplete','SearchBar']],['Interação',['GestureDetector','InkWell']],['Mapas (flutter_map)',['FlutterMap','TileLayer','MarkerLayer','Marker','CircleLayer','CircleMarker','PolylineLayer','Polyline','RichAttributionWidget']],['Janelas',['AlertDialog','SnackBar','SnackBarAction']]];
 var CATVAR={struct:'var(--c-struct)',layout:'var(--c-layout)',box:'var(--c-box)',content:'var(--c-content)'};
 var warns=[];
 
@@ -904,6 +934,16 @@ var DEF={
  AnimatedSwitcher:function(){return N('AnimatedSwitcher',[A('duration','const Duration(milliseconds: 300)'),SL('child')],{child:N('Text',[PO('data',q('Olá')),A('key','ValueKey(1)')])})},
  AnimatedCrossFade:function(){return N('AnimatedCrossFade',[A('duration','const Duration(milliseconds: 300)'),A('crossFadeState','CrossFadeState.showFirst'),SL('firstChild'),SL('secondChild')],{firstChild:txt('Primeiro'),secondChild:txt('Segundo')})},
  TweenAnimationBuilder:function(){return N('TweenAnimationBuilder',[A('tween','Tween<double>(begin: 0, end: 1)'),A('duration','const Duration(seconds: 1)'),A('builder',"(context, value, child) => Opacity(opacity: value, child: Text('Aparecendo'))")])},
+ RangeSlider:function(){return N('RangeSlider',[A('values','const RangeValues(20, 80)'),A('min','0'),A('max','100'),A('onChanged','(v) {}')])},
+ ToggleButtons:function(){function ic(i){return N('Icon',[PO('icon',i)])}return N('ToggleButtons',[SL('children'),A('isSelected','[true, false, false]'),A('onPressed','(i) {}')],{children:[ic('Icons.format_bold'),ic('Icons.format_italic'),ic('Icons.format_underlined')]})},
+ DropdownMenu:function(){function en(v,l){return N('DropdownMenuEntry',[A('value',q(v)),A('label',q(l))])}var n=N('DropdownMenu',[A('initialSelection',q('azul')),SL('dropdownMenuEntries'),A('onSelected','(v) {}')],{dropdownMenuEntries:[en('azul','Azul'),en('verde','Verde'),en('rosa','Rosa')]});n.generic='<String>';return n},
+ DropdownMenuEntry:function(){return N('DropdownMenuEntry',[A('value',q('a')),A('label',q('Opção'))])},
+ Autocomplete:function(){var n=N('Autocomplete',[A('optionsBuilder',"(TextEditingValue v) { return ['maçã', 'banana', 'uva'].where((o) => o.contains(v.text)); }"),A('onSelected','(s) {}')]);n.generic='<String>';return n},
+ SearchBar:function(){return N('SearchBar',[A('hintText',q('Buscar')),A('onChanged','(t) {}')])},
+ Stepper:function(){function st(t,c){return N('Step',[SL('title'),SL('content')],{title:txt(t),content:txt(c)})}return N('Stepper',[A('currentStep','0'),SL('steps'),A('onStepContinue','() {}'),A('onStepCancel','() {}')],{steps:[st('Conta','Informe seu e-mail'),st('Perfil','Escolha um nome'),st('Pronto','Tudo certo!')]})},
+ Step:function(){return N('Step',[SL('title'),SL('content')],{title:txt('Passo'),content:txt('Conteúdo do passo')})},
+ ExpansionPanelList:function(){return N('ExpansionPanelList',[A('expansionCallback','(i, aberto) {}'),SL('children')],{children:[N('ExpansionPanel',[A('headerBuilder',"(context, aberto) => ListTile(title: Text('Painel'))"),A('isExpanded','true'),SL('body')],{body:txt('Conteúdo do painel')})]})},
+ ExpansionPanel:function(){return N('ExpansionPanel',[A('headerBuilder',"(context, aberto) => ListTile(title: Text('Painel'))"),A('isExpanded','false'),SL('body')],{body:txt('Conteúdo do painel')})},
  IndexedStack:function(){function pg(t,c){return N('Container',[A('color',c),SL('child')],{child:N('Center',[SL('child')],{child:txt(t)})})}return N('IndexedStack',[A('index','0'),SL('children')],{children:[pg('Tela 1','Colors.indigo.shade100'),pg('Tela 2','Colors.teal.shade100')]})},
  ReorderableListView:function(){function it(t){return N('ListTile',[A('key',"ValueKey('"+t+"')"),SL('title')],{title:txt(t)})}return N('ReorderableListView',[A('onReorder','(oldIndex, newIndex) {}'),SL('children')],{children:[it('Item A'),it('Item B'),it('Item C')]})},
  'ReorderableListView.builder':function(){return N('ReorderableListView.builder',[A('itemCount','5'),A('itemBuilder',"(context, index) => ListTile(key: ValueKey(index), title: Text('Item $index'))"),A('onReorder','(oldIndex, newIndex) {}')])},
@@ -1876,8 +1916,8 @@ ST.value=function(raw){return ev(pTern(new Ps(raw)),mkEnv())};
 /* ---- objetos nativos simulados: DateTime, TimeOfDay, GPS, bateria, rede, câmera ---- */
 ST.sensors={osrm:'',http:'sim',gps:true,perm:'granted',lat:-8.0476,lon:-34.877,alt:4,battery:78,charging:false,net:'wifi',photo:'ok'};
 ST.resetSensors=function(){ST.sensors={http:'sim',gps:true,perm:'granted',lat:-8.0476,lon:-34.877,alt:4,battery:78,charging:false,net:'wifi',photo:'ok'}};
-var NATCLS={Stream:1,StreamController:1,GlobalKey:1,http:1,Uri:1,LatLng:1,MapController:1,Geolocator:1,Battery:1,Connectivity:1,DateTime:1,TimeOfDay:1,Position:1,ImagePicker:1,HapticFeedback:1,Share:1};
-var NATCTOR={StreamController:1,GlobalKey:1,LatLng:1,MapController:1,DateTime:1,TimeOfDay:1,Position:1,Battery:1,Connectivity:1,ImagePicker:1};
+var NATCLS={RangeValues:1,Stream:1,StreamController:1,GlobalKey:1,http:1,Uri:1,LatLng:1,MapController:1,Geolocator:1,Battery:1,Connectivity:1,DateTime:1,TimeOfDay:1,Position:1,ImagePicker:1,HapticFeedback:1,Share:1};
+var NATCTOR={RangeValues:1,StreamController:1,GlobalKey:1,LatLng:1,MapController:1,DateTime:1,TimeOfDay:1,Position:1,Battery:1,Connectivity:1,ImagePicker:1};
 var ENUMS={LocationPermission:1,ConnectionState:1,ConnectivityResult:1,BatteryState:1,ImageSource:1,LocationAccuracy:1};
 function p2(n){return (n<10?'0':'')+n}
 function mkDate(y,mo,d,h,mi,s){
@@ -1889,6 +1929,8 @@ function mkTime(h,mi){return{nat:'TimeOfDay',f:{hour:h,minute:mi},src:'TimeOfDay
 ST.mkTime=mkTime;
 function mkPos(lat,lon,alt){return{nat:'Position',f:{latitude:new Dbl(lat),longitude:new Dbl(lon),altitude:new Dbl(alt||0),accuracy:new Dbl(12.5),speed:new Dbl(0)},src:'Position(latitude: '+lat+', longitude: '+lon+')'}}
 ST.mkLL=function(a,b){return mkLL(a,b)};
+function mkRV(a,b){return{nat:'RangeValues',f:{start:new Dbl(a),end:new Dbl(b)},src:'RangeValues('+dstr(a)+', '+dstr(b)+')'}}
+ST.mkRV=mkRV;
 function mkLL(a,b){return{nat:'LatLng',f:{latitude:new Dbl(a),longitude:new Dbl(b)},src:'LatLng('+a+', '+b+')'}}
 function mkResp(code,body){return{nat:'Response',f:{statusCode:code,body:body},src:'Response()'}}
 ST.mkResp=mkResp;
@@ -1937,6 +1979,7 @@ function natCtor(name,args){
   if(name==='TimeOfDay')return mkTime(nm.hour!==undefined?nm.hour:pos[0]||0,nm.minute!==undefined?nm.minute:pos[1]||0);
   if(name==='Position')return mkPos(nm.latitude||0,nm.longitude||0,nm.altitude||0);
   if(name==='LatLng')return mkLL(pos[0]||0,pos[1]||0);
+  if(name==='RangeValues')return mkRV(nn(pos[0])||0,nn(pos[1])||0);
   if(name==='GlobalKey')return{nat:'GlobalKey',f:{},st:{delta:0},src:'GlobalKey()'};
   if(name==='StreamController')return{nat:'StreamController',f:{},st:{has:false,last:null,closed:false,err:null},src:'StreamController()'};
   return{nat:name,f:{},src:name+'()'}}
@@ -2127,6 +2170,11 @@ ST.builderTexts=function(n){
   function raw(k){var v=M.rawProp(n,k);return v==null?null:v.trim()}
   if(n.type==='FutureBuilder')return futureTexts(n);
   if(n.type==='StreamBuilder')return streamTexts(n);
+  if(n.type==='ExpansionPanel'){
+    var hlp=lambdaParts(raw('headerBuilder')),hb=hlp.body,hv=false;
+    try{hv=ST.value(ST.subst(raw('isExpanded')||'false'))===true}catch(e){}
+    if(hlp.names[1])hb=bindVar(hb,hlp.names[1],hv);
+    expandText(hb,out);return out}
   if(n.type==='TweenAnimationBuilder'){
     var twr=raw('tween')||'',twm=/^[\w.<>?]*\s*\(([\s\S]*)\)\s*$/.exec(twr),tb=0,te=1;
     if(twm)splitTopStr(twm[1],',').forEach(function(a){var m=/^\s*(begin|end)\s*:\s*([\s\S]+?)\s*$/.exec(a);if(m){var v=nn(ST.value(ST.subst(m[2])));if(m[1]==='begin')tb=v;else te=v}});
@@ -2148,6 +2196,15 @@ ST.builderTexts=function(n){
     var ibb=ib.names[1]?bindVar(ib.body,ib.names[1],i):ib.body;if(n.type==='AnimatedList'&&ib.names[2])ibb=bindVar(ibb,ib.names[2],1);expandText(ibb,out);
     if(sb&&i<cnt-1)expandText(sb.names[1]?bindVar(sb.body,sb.names[1],i):sb.body,out)}
   return out};
+ST.autoOptions=function(n,text){
+  var raw=M.rawProp(n,'optionsBuilder');if(raw==null)throw new Error('Autocomplete precisa de optionsBuilder');
+  var lf=lamFull(raw.trim()),env=mkEnv({}),body=lf.body.replace(/const\s+Iterable\s*<[^>]*>\s*\.\s*empty\s*\(\s*\)/g,'[]');
+  env.params[lf.names[0]||'v']={nat:'TextEditingValue',f:{text:text,selection:null},src:'TextEditingValue()'};
+  var old=ST.sync;ST.sync=true;
+  try{stmt(new Ps('{'+body+'}'),env,true)}finally{ST.sync=old}
+  var r=env.ret;if(r==null)return[];
+  if(r.isSet)r=Array.from(r.s||[]);
+  return(Array.isArray(r)?r:[]).map(function(x){return show(x)})};
 ST.generate=function(n){return n.unknown?ST.pickAll(n.raw):ST.builderTexts(n)};
 
 /* ---- extração da classe State no código-fonte ---- */
@@ -2462,7 +2519,7 @@ function fillH(n){
   if(!n||n.unknown)return false;
   switch(ALIAS[n.type]||n.type){
     case 'Row':return !sizeMin(n);
-    case 'ListView':case 'ListView.builder':case 'ListView.separated':case 'GridView.builder':case 'PageView':case 'IndexedStack':case 'AnimatedAlign':case 'AnimatedList':case 'DraggableScrollableSheet':case 'InteractiveViewer':case 'ReorderableListView':case 'ReorderableListView.builder':case 'FlutterMap':case 'CustomScrollView':case 'FutureBuilder':case 'StreamBuilder':case 'Table':case 'SwitchListTile':case 'CheckboxListTile':case 'RadioListTile':case 'Center':case 'Align':case 'GridView.count':case 'Divider':case 'AspectRatio':case 'FractionallySizedBox':case 'TextField':case 'TextFormField':case 'VerticalDivider':case 'ExpansionTile':case 'NavigationBar':case 'ListTile':case 'Wrap':case 'Slider':case 'SingleChildScrollView':case 'TabBarView':case 'TabBar':case 'BottomNavigationBar':case 'Scaffold':return true;
+    case 'ListView':case 'ListView.builder':case 'ListView.separated':case 'GridView.builder':case 'PageView':case 'IndexedStack':case 'AnimatedAlign':case 'AnimatedList':case 'DraggableScrollableSheet':case 'InteractiveViewer':case 'ReorderableListView':case 'ReorderableListView.builder':case 'FlutterMap':case 'CustomScrollView':case 'FutureBuilder':case 'StreamBuilder':case 'Table':case 'SwitchListTile':case 'CheckboxListTile':case 'RadioListTile':case 'Center':case 'Align':case 'GridView.count':case 'Divider':case 'AspectRatio':case 'FractionallySizedBox':case 'TextField':case 'TextFormField':case 'VerticalDivider':case 'ExpansionTile':case 'NavigationBar':case 'ListTile':case 'Wrap':case 'Slider':case 'RangeSlider':case 'SingleChildScrollView':case 'TabBarView':case 'TabBar':case 'BottomNavigationBar':case 'Scaffold':return true;
     case 'Stack':return stackFill(n);
     case 'Column':return /CrossAxisAlignment\.stretch/.test(M.getProp(n,'crossAxisAlignment')||'')||(n.slots.children||[]).some(fillH);
     case 'Expanded':case 'Flexible':return !!n.slots.child&&fillH(n.slots.child);
@@ -2890,6 +2947,85 @@ function build(n,path,pt,ppt,sel){
       d.className+=' col';d.style.alignItems='flex-start';var cfb=d.childNodes.length,cf2=/showSecond/.test(M.getProp(n,'crossFadeState')||'');
       single(cf2?'secondChild':'firstChild','#single',(cf2?'secondChild':'firstChild')+': adicione um widget');
       swapFx(d,cfb,path.join('>'),cf2?'2':'1',durMs(M.getProp(n,'duration')));break}
+    case 'RangeSlider':{
+      d.className+=' sld rsl';var rmn=numVal(M.getProp(n,'min')),rmx=numVal(M.getProp(n,'max')),rvm=/RangeValues\(\s*(-?[\d.]+)\s*,\s*(-?[\d.]+)\s*\)/.exec(M.getProp(n,'values')||'');
+      rmn=rmn==null?0:rmn;rmx=rmx==null?1:rmx;var ra=rvm?+rvm[1]:rmn,rb=rvm?+rvm[2]:rmx,rsp=rmx>rmn?rmx-rmn:1,rfa=Math.max(0,Math.min(1,(ra-rmn)/rsp)),rfb=Math.max(0,Math.min(1,(rb-rmn)/rsp));
+      d.innerHTML='<span class="tk"><span class="ac" style="left:'+(rfa*100)+'%;width:'+((rfb-rfa)*100)+'%"></span><span class="thm" style="left:'+(rfa*100)+'%"></span><span class="thm" style="left:'+(rfb*100)+'%"></span></span>';
+      d.dataset.ra=ra;d.dataset.rb=rb;break}
+    case 'ToggleButtons':{
+      d.className+=' tgb';var tsel=(M.evalProp(n,'isSelected')||M.getProp(n,'isSelected')||'').match(/true|false/g)||[],tch=n.slots.children||[];
+      tch.forEach(function(c,i){var w=document.createElement('div');w.className='tgi'+(tsel[i]==='true'?' on':'');w.appendChild(child(c,'children:'+i,'#none'));
+        if(R_opts.run){w.classList.add('hh');w.dataset.h='tgl';w.dataset.i=i;w._n=n}d.appendChild(w)});
+      if(!tch.length)d.appendChild(ph('children: [ ]'));break}
+    case 'DropdownMenu':{
+      d.className+=' ddm';var dme=n.slots.dropdownMenuEntries||[],dmk=path.join('>')||'root',dmv=R_opts.ddm[dmk],dmi=M.getProp(n,'initialSelection'),dms=-1;
+      if(dmv!==undefined)dms=dmv;else if(dmi!=null)dme.forEach(function(e,i){var ev=M.getProp(e,'value');if(dms<0&&ev!=null&&ev.trim()===dmi.trim())dms=i});
+      var dml='';if(n.slots.label)M.walk(n.slots.label,[],function(x){if(!dml&&x.type==='Text')dml=strVal(M.getProp(x,'data'))});
+      var dmt=dms>=0&&dme[dms]?strVal(M.getProp(dme[dms],'label')||"''"):'';
+      d.innerHTML='<span class="dmb"><span class="dml'+(dmt?' up':'')+'"></span><span class="dmv"></span></span><span class="dda">▾</span>';
+      d.querySelector('.dml').textContent=dml;d.querySelector('.dmv').textContent=dmt;
+      if(!dme.length)d.querySelector('.dmv').textContent='dropdownMenuEntries: [ ]';
+      if(R_opts.run){d.classList.add('hh');d.dataset.h='ddm';d.dataset.k=dmk;d._n=n}break}
+    case 'DropdownMenuEntry':{d.className+=' ddme';d.textContent=strVal(M.getProp(n,'label')||"''");break}
+    case 'Autocomplete':{
+      d.className+=' col acp';d.style.alignItems='stretch';var ack=path.join('>')||'root';
+      var af=document.createElement('div');af.className='nd tf ol acf';af.style.position='relative';
+      var ah=document.createElement('span');ah.className='th';ah.textContent='Digite para buscar';af.appendChild(ah);
+      if(R_opts.run){var ain=document.createElement('input');ain.className='tfi acin';ain.dataset.key=ack;ain.value=R_opts.typed[ack]||'';ain.setAttribute('aria-label','Campo com sugestões');af.appendChild(ain);af._n=n;af.classList.toggle('typed',!!ain.value)}
+      d.appendChild(af);
+      if(R_opts.run){var atx=R_opts.typed[ack]||'';
+        if(atx&&R_opts.acx[ack]!==atx){var aos=[];try{aos=OF.ST.autoOptions(n,atx)}catch(e){var aer=ph('optionsBuilder: '+e.message);d.appendChild(aer)}
+          if(aos.length){var ao=document.createElement('div');ao.className='aco';aos.slice(0,8).forEach(function(o){var oi=document.createElement('div');oi.className='aoi hh';oi.dataset.h='aco';oi.dataset.v=o;oi.dataset.k=ack;oi.textContent=o;oi._n=n;ao.appendChild(oi)});d.appendChild(ao)}}}
+      break}
+    case 'SearchBar':{
+      d.className+=' tf ol sbr';var sbh=M.getProp(n,'hintText'),sbi=document.createElement('span');sbi.className='sbi';sbi.textContent='🔍';d.appendChild(sbi);
+      var sbl=document.createElement('span');sbl.className='th';sbl.textContent=sbh?strVal(sbh):'Buscar';d.appendChild(sbl);break}
+    case 'Step':{
+      d.className+=' col stpn';d.style.alignItems='stretch';
+      var stt=document.createElement('div');stt.className='stt';
+      if(n.slots.title)stt.appendChild(child(n.slots.title,'title','#none'));else stt.appendChild(ph('title'));
+      if(n.slots.subtitle){var sts=child(n.slots.subtitle,'subtitle','#none');sts.classList.add('sts');stt.appendChild(sts)}
+      d.appendChild(stt);var stc=document.createElement('div');stc.className='stc col';stc.style.alignItems='flex-start';
+      if(n.slots.content)stc.appendChild(child(n.slots.content,'content','#single'));else stc.appendChild(ph('content'));d.appendChild(stc);break}
+    case 'Stepper':{
+      d.className+=' col stp';d.style.alignItems='stretch';
+      var sps=n.slots.steps||[],scur=numVal(M.getProp(n,'currentStep'));scur=scur==null?0:Math.trunc(scur);
+      if(!R_opts.run)sps.forEach(function(c,i){var kk=path.concat('steps:'+i).join('>');if(sel&&(sel===kk||sel.indexOf(kk+'>')===0))scur=i});
+      scur=Math.min(Math.max(0,scur),Math.max(0,sps.length-1));
+      if(!sps.length)d.appendChild(ph('steps: [ ]'));
+      sps.forEach(function(c,i){
+        var row=document.createElement('div');row.className='sti'+(i===scur?' cur':'')+(i<scur?' done':'');
+        var num=document.createElement('div');num.className='stn';num.textContent=i<scur?'✓':String(i+1);row.appendChild(num);
+        var se=child(c,'steps:'+i,'#single');se.classList.add('stb');
+        var sc=se.querySelector('.stc');if(sc&&i!==scur)sc.style.display='none';
+        if(R_opts.run){var sh=se.querySelector('.stt');if(sh){sh.classList.add('hh');sh.dataset.h='stpt';sh.dataset.i=i;sh._n=n}}
+        row.appendChild(se);
+        if(i===scur&&sc){var ctr=document.createElement('div');ctr.className='stctl';
+          [['Continuar','stpc','stbp'],['Cancelar','stpx','stbq']].forEach(function(b){var be=document.createElement('span');be.className='stbtn '+b[2];be.textContent=b[0];
+            if(R_opts.run){be.classList.add('hh');be.dataset.h=b[1];be._n=n}ctr.appendChild(be)});
+          sc.appendChild(ctr)}
+        d.appendChild(row)});
+      break}
+    case 'ExpansionPanelList':{
+      d.className+=' col epl';d.style.alignItems='stretch';var eps0=n.slots.children||[],eps=[];
+      if(!eps0.length){var erw=M.rawProp(n,'children');if(erw&&/\.map\s*\(/.test(erw))eps0=[{type:'expressão',unknown:true,raw:erw}]}
+      eps0.forEach(function(c,ci){
+        if(c.unknown){var etx=[];try{etx=OF.ST.generate(c)}catch(e){d.appendChild(ph('children: '+e.message))}
+          etx.forEach(function(t,j){var nd=OF.parseWidgetText(t);if(nd)eps.push({n:nd,p:path.concat('children:'+ci,'@'+j)})})}
+        else eps.push({n:c,p:path.concat('children:'+ci)})});
+      if(!eps.length)d.appendChild(ph('children: [ ] (ExpansionPanel)'));
+      eps.forEach(function(ep,i){
+        var pn=ep.n,pe=document.createElement('div');pe.className='epp';var open=/true/.test(M.evalProp(pn,'isExpanded')||'');
+        var hd=document.createElement('div');hd.className='eph';var htx=[];
+        try{htx=OF.ST.builderTexts(pn)}catch(e){hd.appendChild(ph('headerBuilder: '+e.message))}
+        htx.forEach(function(tx,j){var nd=OF.parseWidgetText(tx);if(nd){var he=build(nd,ep.p.concat('@h'+j),'#none',null,sel);he.style.flex='1';hd.appendChild(he)}});
+        var cv=document.createElement('span');cv.className='chev';cv.textContent=open?'\u25B4':'\u25BE';hd.appendChild(cv);
+        if(R_opts.run){hd.classList.add('hh');hd.dataset.h='epl';hd.dataset.i=i;hd.dataset.o=open?'1':'';hd._n=n}
+        pe.appendChild(hd);
+        if(open){var bd=document.createElement('div');bd.className='epb';
+          if(pn.slots.body)bd.appendChild(build(pn.slots.body,ep.p.concat('body'),'#single',null,sel));pe.appendChild(bd)}
+        d.appendChild(pe)});
+      break}
     case 'IndexedStack':{
       d.className+=' col idxs';d.style.alignItems='stretch';
       var ixs=n.slots.children||[],ixi=numVal(M.getProp(n,'index'));ixi=ixi==null?0:Math.trunc(ixi);
@@ -2980,7 +3116,7 @@ function build(n,path,pt,ppt,sel){
   if(R_opts.run)bindRun(d,n);
   return d;
 }
-var R_opts={run:false,xray:false,typed:{},page:{},depth:0,nav:[],navSc:[],over:[],tab:{},tabCtl:null,exp:{},fut:{},futT:[],mapV:null,rf:{},str:{},iv:{},dss:{},anim:{},sw:{},tw:{}};
+var R_opts={run:false,xray:false,typed:{},page:{},depth:0,nav:[],navSc:[],over:[],tab:{},tabCtl:null,exp:{},fut:{},futT:[],mapV:null,rf:{},str:{},iv:{},dss:{},ddm:{},acx:{},anim:{},sw:{},tw:{}};
 OF.ST.futPhase=function(n,ms){
   if(!R_opts.run||ms<=0)return 'done';
   var k=(n._key||'?')+'#'+(OF.ST.futGen||0),f=R_opts.fut[k];
@@ -2994,8 +3130,8 @@ OF.ST.strTick=function(n,ms,max){
   return f.i};
 var HANDLERS=['onPressed','onTap','onLongPress','onDoubleTap','onChanged','onSelected'];
 function bindRun(d,n){
-  if(n.type==='PopupMenuButton'||n.type==='SegmentedButton'||n.type==='Dismissible'||n.type==='BottomNavigationBar')return;
-  if(n.type==='TextField'||n.type==='TextFormField'){
+  if(n.type==='PopupMenuButton'||n.type==='SegmentedButton'||n.type==='Dismissible'||n.type==='BottomNavigationBar'||n.type==='ToggleButtons'||n.type==='DropdownMenu'||n.type==='Autocomplete'||n.type==='Stepper'||n.type==='ExpansionPanelList')return;
+  if(n.type==='TextField'||n.type==='TextFormField'||n.type==='SearchBar'){
     var key=d.dataset.path,inp=document.createElement('input');inp.className='tfi'+(d.querySelector('.tl')?' hl':'');inp.dataset.key=key;
     var cr=M.rawProp(n,'controller'),cf=cr&&OF.ST.fields[cr.trim()];cf=cf&&cf.value&&cf.value.ctl?cf.value:null;d._ctl=cf;
     inp.value=cf?cf.text:(R_opts.typed[key]||'');inp.setAttribute('aria-label','Campo de texto');d.classList.toggle('typed',!!inp.value);d.appendChild(inp);d._n=n;d.classList.add('hh')}
@@ -6969,6 +7105,279 @@ class _NotaState extends State<Nota> {
   }
 }
 `},
+{t:'x. RangeSlider e ToggleButtons: filtros',
+ text:'RangeSlider é um Slider com dois pontos, para escolher uma faixa, como preço mínimo e máximo. O valor é um RangeValues(início, fim) e o onChanged devolve um RangeValues novo, que você guarda em um setState. ToggleButtons é uma fileira de botões que ligam e desligam: isSelected é uma lista de bool, um para cada filho, e onPressed recebe o índice tocado.',
+ tryit:'Arraste os dois pontos da faixa e veja o texto mudar. Toque nos botões de categoria. Troque divisions: 20 por 10 e veja os pontos andarem de 10 em 10.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Filtros()));
+
+class Filtros extends StatefulWidget {
+  const Filtros({super.key});
+
+  @override
+  State<Filtros> createState() => _FiltrosState();
+}
+
+class _FiltrosState extends State<Filtros> {
+  RangeValues preco = const RangeValues(20, 80);
+  List<bool> categorias = [true, false, false];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Filtros')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Preço: de R$ \${preco.start.round()} a R$ \${preco.end.round()}'),
+            RangeSlider(
+              values: preco,
+              min: 0,
+              max: 100,
+              divisions: 20,
+              onChanged: (novo) {
+                setState(() {
+                  preco = novo;
+                });
+              },
+            ),
+            const SizedBox(height: 16),
+            Text('Categorias marcadas: $categorias'),
+            const SizedBox(height: 8),
+            ToggleButtons(
+              isSelected: categorias,
+              onPressed: (i) {
+                setState(() {
+                  categorias[i] = !categorias[i];
+                });
+              },
+              children: const [
+                Icon(Icons.restaurant),
+                Icon(Icons.directions_bus),
+                Icon(Icons.local_hospital),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+`},
+{t:'x. DropdownMenu: menu de escolha',
+ text:'DropdownMenu é o menu de escolha do Material 3. Ele guarda a opção escolhida sozinho: você só passa a lista de DropdownMenuEntry (value é o que o código usa, label é o texto da tela), o initialSelection e o onSelected, que recebe o valor escolhido. Diferente do DropdownButton, você não precisa informar o valor atual a cada reconstrução.',
+ tryit:'Abra o menu e escolha outro curso: o texto de baixo acompanha. Acrescente uma terceira opção, "typescript". Troque o initialSelection para "dart".',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Matricula()));
+
+class Matricula extends StatefulWidget {
+  const Matricula({super.key});
+
+  @override
+  State<Matricula> createState() => _MatriculaState();
+}
+
+class _MatriculaState extends State<Matricula> {
+  String curso = 'flutter';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Matrícula')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            DropdownMenu<String>(
+              label: const Text('Curso'),
+              initialSelection: 'flutter',
+              dropdownMenuEntries: const [
+                DropdownMenuEntry(value: 'flutter', label: 'Flutter'),
+                DropdownMenuEntry(value: 'dart', label: 'Dart'),
+                DropdownMenuEntry(value: 'next', label: 'Next.js'),
+              ],
+              onSelected: (valor) {
+                setState(() {
+                  curso = valor ?? '';
+                });
+              },
+            ),
+            const SizedBox(height: 24),
+            Text('Você escolheu: $curso', style: const TextStyle(fontSize: 18)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+`},
+{t:'x. Autocomplete e SearchBar: busca com sugestões',
+ text:'Autocomplete mostra sugestões enquanto a pessoa digita. O optionsBuilder recebe o texto digitado (valor.text) e devolve as opções que combinam, em geral com where e contains. Devolva uma lista vazia quando o campo estiver vazio. O onSelected recebe a opção tocada. SearchBar é a barra de busca arredondada do Material 3: o onChanged recebe o texto a cada letra, e você filtra a sua lista com ele.',
+ tryit:'Digite "ma" no Autocomplete e toque em uma sugestão. Digite na SearchBar e veja a lista filtrar. Troque contains por startsWith para só aceitar quem começa com o texto.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Busca()));
+
+class Busca extends StatefulWidget {
+  const Busca({super.key});
+
+  @override
+  State<Busca> createState() => _BuscaState();
+}
+
+class _BuscaState extends State<Busca> {
+  final List<String> frutas = ['Maçã', 'Banana', 'Manga', 'Uva', 'Mamão', 'Laranja'];
+  String fruta = 'nenhuma';
+  String filtro = '';
+
+  @override
+  Widget build(BuildContext context) {
+    final lista = frutas.where((f) => f.toLowerCase().contains(filtro.toLowerCase())).toList();
+    return Scaffold(
+      appBar: AppBar(title: const Text('Busca')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Autocomplete escolheu: $fruta'),
+            const SizedBox(height: 8),
+            Autocomplete<String>(
+              optionsBuilder: (TextEditingValue valor) {
+                if (valor.text.isEmpty) {
+                  return const Iterable<String>.empty();
+                }
+                return frutas.where((f) => f.toLowerCase().contains(valor.text.toLowerCase()));
+              },
+              onSelected: (escolha) {
+                setState(() {
+                  fruta = escolha;
+                });
+              },
+            ),
+            const SizedBox(height: 24),
+            SearchBar(
+              hintText: 'Filtrar a lista',
+              onChanged: (texto) {
+                setState(() {
+                  filtro = texto;
+                });
+              },
+            ),
+            const SizedBox(height: 8),
+            Text('Encontradas: \${lista.length}'),
+            for (final f in lista) Text(f),
+          ],
+        ),
+      ),
+    );
+  }
+}
+`},
+{t:'x. Stepper: passo a passo',
+ text:'Stepper divide uma tarefa longa em passos, como um cadastro. currentStep diz qual passo está aberto. Os botões Continuar e Cancelar chamam onStepContinue e onStepCancel, e tocar no título de um passo chama onStepTapped. Em todos os casos, o seu código só muda o número do passo em um setState: o Stepper não decide nada sozinho. Lembre de não passar do último passo nem voltar antes do primeiro.',
+ tryit:'Use os botões e toque nos títulos. Acrescente um quarto Step. Faça o último Continuar mostrar a mensagem "Cadastro concluído".',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Cadastro()));
+
+class Cadastro extends StatefulWidget {
+  const Cadastro({super.key});
+
+  @override
+  State<Cadastro> createState() => _CadastroState();
+}
+
+class _CadastroState extends State<Cadastro> {
+  int passo = 0;
+  bool concluido = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(concluido ? 'Cadastro concluído' : 'Cadastro')),
+      body: Stepper(
+        currentStep: passo,
+        onStepContinue: () {
+          setState(() {
+            if (passo < 2) {
+              passo += 1;
+            } else {
+              concluido = true;
+            }
+          });
+        },
+        onStepCancel: () {
+          setState(() {
+            if (passo > 0) {
+              passo -= 1;
+            }
+          });
+        },
+        onStepTapped: (i) {
+          setState(() {
+            passo = i;
+          });
+        },
+        steps: const [
+          Step(title: Text('Conta'), content: Text('Informe seu e-mail e uma senha.')),
+          Step(title: Text('Perfil'), content: Text('Escolha seu nome e uma foto.')),
+          Step(title: Text('Revisão'), content: Text('Confira os dados e finalize.')),
+        ],
+      ),
+    );
+  }
+}
+`},
+{t:'x. ExpansionPanelList: perguntas frequentes',
+ text:'ExpansionPanelList mostra painéis que abrem e fecham, e só um cabeçalho por painel fica sempre à vista. Cada ExpansionPanel tem um headerBuilder (que recebe se está aberto), um body e o isExpanded. Quando a pessoa toca no cabeçalho, o expansionCallback recebe o índice e o estado atual: você inverte o bool correspondente em um setState. Sem isso o painel não muda, porque quem manda no estado é o seu código.',
+ tryit:'Toque nas perguntas para abrir e fechar. Acrescente um terceiro item na lista de abertos e um terceiro número em for-in. Troque o ListTile do body por um Padding com Text.',
+ code:`import 'package:flutter/material.dart';
+
+void main() => runApp(const MaterialApp(home: Duvidas()));
+
+class Duvidas extends StatefulWidget {
+  const Duvidas({super.key});
+
+  @override
+  State<Duvidas> createState() => _DuvidasState();
+}
+
+class _DuvidasState extends State<Duvidas> {
+  List<bool> abertos = [false, false];
+  List<String> perguntas = ['O que é Flutter?', 'Preciso saber Dart?'];
+  List<String> respostas = ['Um kit para criar apps com uma base de código só.', 'Sim, o Flutter usa a linguagem Dart.'];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Dúvidas')),
+      body: SingleChildScrollView(
+        child: ExpansionPanelList(
+          expansionCallback: (i, aberto) {
+            setState(() {
+              abertos[i] = !aberto;
+            });
+          },
+          children: [
+            for (final i in [0, 1])
+              ExpansionPanel(
+                headerBuilder: (context, aberto) => ListTile(title: Text(perguntas[i])),
+                body: ListTile(title: Text(respostas[i])),
+                isExpanded: abertos[i],
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+`},
 {t:'x. Sensor: pedômetro (passos)',
  demo:true,
  text:'O pacote pedometer conta os passos usando o sensor do aparelho. stepCountStream é um Stream: a cada novo valor, o listen chama o seu código. O número é o total desde o último reinício do aparelho, não do dia. No Android 10 ou mais novo, o app precisa pedir a permissão de reconhecimento de atividade.',
@@ -9559,6 +9968,151 @@ d('TweenAnimationBuilder',[
     return LinearProgressIndicator(value: valor);
   },
 )`);
+d('RangeSlider',[
+['values','RangeValues','O início e o fim da faixa escolhida, como RangeValues(20, 80).'],
+['min','double','Menor valor possível.'],
+['max','double','Maior valor possível.'],
+['divisions','int','Em quantos passos a barra se divide (opcional).'],
+['labels','RangeLabels','Rótulos que aparecem ao arrastar (opcional).'],
+['onChanged','void Function(RangeValues)','Chamada ao arrastar. Guarde o novo RangeValues em um setState.']],
+`RangeSlider(
+  values: faixa,
+  min: 0,
+  max: 100,
+  divisions: 20,
+  onChanged: (novo) {
+    setState(() {
+      faixa = novo;
+    });
+  },
+)`);
+d('ToggleButtons',[
+['children','List<Widget>','Os botões, em geral Icon ou Text.'],
+['isSelected','List<bool>','Um bool para cada botão: true deixa o botão ligado.'],
+['onPressed','void Function(int)','Chamada com o índice do botão tocado.']],
+`ToggleButtons(
+  isSelected: ligados,
+  onPressed: (i) {
+    setState(() {
+      ligados[i] = !ligados[i];
+    });
+  },
+  children: const [
+    Icon(Icons.format_bold),
+    Icon(Icons.format_italic),
+    Icon(Icons.format_underlined),
+  ],
+)`);
+d('DropdownMenu',[
+['dropdownMenuEntries','List<DropdownMenuEntry<T>>','As opções do menu.'],
+['initialSelection','T?','Valor escolhido no começo.'],
+['label','Widget?','Rótulo do campo.'],
+['onSelected','void Function(T?)','Chamada com o valor escolhido.']],
+`DropdownMenu<String>(
+  label: const Text('Curso'),
+  initialSelection: 'flutter',
+  dropdownMenuEntries: const [
+    DropdownMenuEntry(value: 'flutter', label: 'Flutter'),
+    DropdownMenuEntry(value: 'dart', label: 'Dart'),
+  ],
+  onSelected: (valor) {
+    setState(() {
+      curso = valor ?? '';
+    });
+  },
+)`);
+d('DropdownMenuEntry',[
+['value','T','O valor guardado quando a opção é escolhida.'],
+['label','String','O texto que aparece no menu.']],
+`DropdownMenuEntry(value: 'flutter', label: 'Flutter')`);
+d('Autocomplete',[
+['optionsBuilder','Iterable<T> Function(TextEditingValue)','Recebe o texto digitado e devolve as opções que combinam.'],
+['onSelected','void Function(T)','Chamada com a opção escolhida.'],
+['displayStringForOption','String Function(T)','Como mostrar cada opção (opcional).']],
+`Autocomplete<String>(
+  optionsBuilder: (TextEditingValue valor) {
+    if (valor.text.isEmpty) {
+      return const Iterable<String>.empty();
+    }
+    return frutas.where((f) => f.toLowerCase().contains(valor.text.toLowerCase()));
+  },
+  onSelected: (escolha) {
+    setState(() {
+      fruta = escolha;
+    });
+  },
+)`);
+d('SearchBar',[
+['hintText','String','Dica que aparece enquanto o campo está vazio.'],
+['leading','Widget','Widget no início (a lupa por padrão).'],
+['onChanged','void Function(String)','Chamada a cada letra digitada.'],
+['onSubmitted','void Function(String)','Chamada ao confirmar a busca.']],
+`SearchBar(
+  hintText: 'Buscar aluno',
+  onChanged: (texto) {
+    setState(() {
+      busca = texto;
+    });
+  },
+)`);
+d('Stepper',[
+['steps','List<Step>','Os passos, na ordem.'],
+['currentStep','int','Número do passo aberto (começa em 0).'],
+['onStepContinue','VoidCallback','Chamada pelo botão Continuar.'],
+['onStepCancel','VoidCallback','Chamada pelo botão Cancelar.'],
+['onStepTapped','void Function(int)','Chamada ao tocar no título de um passo.']],
+`Stepper(
+  currentStep: passo,
+  onStepContinue: () {
+    setState(() {
+      passo += 1;
+    });
+  },
+  onStepCancel: () {
+    setState(() {
+      passo -= 1;
+    });
+  },
+  steps: const [
+    Step(title: Text('Conta'), content: Text('Informe seu e-mail')),
+    Step(title: Text('Perfil'), content: Text('Escolha um nome')),
+  ],
+)`);
+d('Step',[
+['title','Widget','O título do passo.'],
+['content','Widget','O conteúdo, mostrado quando o passo está aberto.'],
+['subtitle','Widget','Linha menor abaixo do título (opcional).'],
+['isActive','bool','Destaca o passo (opcional).']],
+`Step(
+  title: Text('Conta'),
+  content: Text('Informe seu e-mail'),
+)`);
+d('ExpansionPanelList',[
+['children','List<ExpansionPanel>','Os painéis.'],
+['expansionCallback','void Function(int, bool)','Chamada ao tocar no cabeçalho, com o índice e se o painel está aberto agora.']],
+`ExpansionPanelList(
+  expansionCallback: (i, aberto) {
+    setState(() {
+      abertos[i] = !aberto;
+    });
+  },
+  children: [
+    ExpansionPanel(
+      headerBuilder: (context, aberto) => ListTile(title: Text('Pergunta')),
+      body: ListTile(title: Text('Resposta')),
+      isExpanded: abertos[0],
+    ),
+  ],
+)`);
+d('ExpansionPanel',[
+['headerBuilder','Widget Function(BuildContext, bool)','Desenha o cabeçalho. Recebe se o painel está aberto.'],
+['body','Widget','O conteúdo que aparece com o painel aberto.'],
+['isExpanded','bool','Se o painel está aberto agora.']],
+`ExpansionPanel(
+  headerBuilder: (context, aberto) => ListTile(title: Text('Pergunta')),
+  body: ListTile(title: Text('Resposta')),
+  isExpanded: aberto,
+)`);
 /* Conteúdo */
 d('Text',[
 ['data','String','O texto (primeiro argumento). Aceita interpolação: "Olá, $nome".'],
@@ -10303,6 +10857,9 @@ screen.addEventListener('input',function(e){
   var raw=n&&M.rawProp(n,'onChanged');
   if(raw&&raw.trim()!=='null'){refocus={key:i.dataset.key,pos:i.selectionStart};afterRun(runAt(i,raw,[i.value]));refocus=null}
 });
+screen.addEventListener('input',function(e){
+  var i=e.target;if(!i.classList||!i.classList.contains('acin'))return;
+  refocus={key:i.dataset.key,pos:i.selectionStart};R.opts.acx[i.dataset.key]=null;renderCanvas();refocus=null});
 screen.addEventListener('keydown',function(e){
   var i=e.target;if(e.key!=='Enter'||!i.classList||!i.classList.contains('tfi'))return;
   var n=i.parentNode._n,raw=n&&(M.rawProp(n,'onSubmitted')||M.rawProp(n,'onFieldSubmitted'));
@@ -10337,7 +10894,7 @@ $('stBar').addEventListener('click',function(e){
   else if(b.dataset.a==='reset'){clearFx();R.opts.typed={};ST.reset();renderStateBar();renderCanvas()}
 });
 var timers=[];
-function clearFx(){pk=null;fxGen++;R.opts.fut={};R.opts.futT.forEach(clearTimeout);R.opts.futT=[];R.opts.rf={};R.opts.str={};R.opts.iv={};R.opts.dss={};R.opts.anim={};R.opts.sw={};R.opts.tw={};ST.mapView=null;R.opts.nav=[];R.opts.navSc=[];R.opts.navRes=[];R.opts.over=[];R.opts.tab={};R.opts.exp={};clearTimeout(snackT);timers.forEach(clearTimeout);timers=[]}
+function clearFx(){pk=null;fxGen++;R.opts.fut={};R.opts.futT.forEach(clearTimeout);R.opts.futT=[];R.opts.rf={};R.opts.str={};R.opts.iv={};R.opts.dss={};R.opts.ddm={};R.opts.acx={};R.opts.anim={};R.opts.sw={};R.opts.tw={};ST.mapView=null;R.opts.nav=[];R.opts.navSc=[];R.opts.navRes=[];R.opts.over=[];R.opts.tab={};R.opts.exp={};clearTimeout(snackT);timers.forEach(clearTimeout);timers=[]}
 var snackT=null;
 function runIn(inst,fn){if(!inst)return fn();ST.enter(inst);try{return fn()}finally{ST.leave()}}
 function scopeOfEl(el){var h=el&&el.closest&&el.closest('[data-sc]');if(!h||!h.dataset.sc)return null;var all=R.opts.navSc.concat(R.opts.over.map(function(o){return o.sc}));for(var i=0;i<all.length;i++)if(all[i]&&all[i].id===h.dataset.sc)return all[i];return null}
@@ -10444,6 +11001,17 @@ function openMenu(t,n){
     o.addEventListener('click',function(e){e.stopPropagation();m.remove();try{afterRun(runAt(t,M.rawProp(n,'onChanged'),[valAt(t,M.rawProp(it,'value'))]))}catch(x){afterRun({err:'valor do item'})}});
     m.appendChild(o)});
   screen.appendChild(m)}
+function openDdm(t,n){
+  var old=screen.querySelector('.ddmenu');if(old)old.remove();
+  var sr=screen.getBoundingClientRect(),tr=t.getBoundingClientRect(),k=sr.width/360;
+  var m=document.createElement('div');m.className='ddmenu';
+  m.style.left=((tr.left-sr.left)/k)+'px';m.style.top=((tr.bottom-sr.top)/k)+'px';m.style.minWidth=(tr.width/k)+'px';
+  (n.slots.dropdownMenuEntries||[]).forEach(function(it,i){
+    var o=document.createElement('div');o.textContent=R.strVal(M.evalProp(it,'label')||"''");
+    o.addEventListener('click',function(e){e.stopPropagation();m.remove();R.opts.ddm[t.dataset.k]=i;renderCanvas();
+      var raw=M.rawProp(n,'onSelected');if(raw&&raw.trim()!=='null'){try{afterRun(runAt(t,raw,[valAt(t,M.rawProp(it,'value'))]))}catch(x){afterRun({err:'valor do item'})}}});
+    m.appendChild(o)});
+  screen.appendChild(m)}
 function openPopup(t,n){
   var old=screen.querySelector('.ddmenu');if(old)old.remove();
   var sr=screen.getBoundingClientRect(),tr=t.getBoundingClientRect(),k=sr.width/360;
@@ -10535,6 +11103,11 @@ window.addEventListener('pointerup',function(){
     if(pe)pe.remove();renderCanvas()}});
 window.addEventListener('click',function(e){if(rfSup){rfSup=false;e.stopPropagation();e.preventDefault()}},true);
 function fire(t){
+  if(t.dataset.h==='tgl'){var tn=t._n,tr=tn&&M.rawProp(tn,'onPressed');if(tr&&tr.trim()!=='null')afterRun(runAt(t,tr,[+t.dataset.i]));return}
+  if(t.dataset.h==='stpt'||t.dataset.h==='stpc'||t.dataset.h==='stpx'){var sn=t._n,rn={stpt:'onStepTapped',stpc:'onStepContinue',stpx:'onStepCancel'}[t.dataset.h],sr=sn&&M.rawProp(sn,rn);if(sr&&sr.trim()!=='null')afterRun(runAt(t,sr,t.dataset.h==='stpt'?[+t.dataset.i]:[]));return}
+  if(t.dataset.h==='epl'){var en=t._n,er=en&&M.rawProp(en,'expansionCallback');if(er&&er.trim()!=='null')afterRun(runAt(t,er,[+t.dataset.i,!!t.dataset.o]));return}
+  if(t.dataset.h==='ddm'){openDdm(t,t._n);return}
+  if(t.dataset.h==='aco'){var an=t._n,ak=t.dataset.k,av=t.dataset.v;R.opts.typed[ak]=av;R.opts.acx[ak]=av;renderCanvas();var ar=an&&M.rawProp(an,'onSelected');if(ar&&ar.trim()!=='null')afterRun(runAt(t,ar,[av]));return}
   if(t.dataset.h==='back'){popTop();renderCanvas();renderStateBar();return}
   if(t.dataset.h==='tab'){R.opts.tab[t.dataset.ctl]=+t.dataset.i;renderCanvas();return}
   if(t.dataset.h==='exp'){var ek=t.dataset.k,wasOpen=!!t.querySelector('.chev')&&t.querySelector('.chev').textContent==='\u25B4';R.opts.exp[ek]=!wasOpen;renderCanvas();return}
@@ -10572,7 +11145,7 @@ screen.addEventListener('pointerdown',function(e){
   if(!(S.run&&ST.active))return;var raw=gestureRaw(e.target,'onLongPress');if(!raw)return;
   var lpEl=e.target;lpTimer=setTimeout(function(){lpFired=true;afterRun(runAt(lpEl,raw,[]))},550)});
 ['pointerup','pointerleave','pointercancel'].forEach(function(n){screen.addEventListener(n,function(){clearTimeout(lpTimer)})});
-var drag=null;
+var drag=null,dragThumb=null;
 function slide(e){
   var el=screen.querySelector('[data-path="'+drag+'"].sld.hh'),n=el&&el._n;
   if(!el||!n)return;
@@ -10582,12 +11155,17 @@ function slide(e){
   var f=Math.max(0,Math.min(1,(e.clientX-rc.left)/rc.width));
   if(dv)f=Math.round(f*dv)/dv;
   var v=mn+f*(mx-mn);v=Math.round(v*1e6)/1e6;
+  if(n.type==='RangeSlider'){var ra=+el.dataset.ra,rb=+el.dataset.rb;if(dragThumb==='a')ra=Math.min(v,rb);else rb=Math.max(v,ra);
+    afterRun(runAt(el,M.rawProp(n,'onChanged'),[ST.mkRV(ra,rb)]));return}
   afterRun(runAt(el,M.rawProp(n,'onChanged'),[new Dbl(v)]));
 }
 screen.addEventListener('pointerdown',function(e){
   if(!(S.run&&ST.active))return;
   var t=e.target.closest('.sld.hh');if(!t)return;
-  drag=t.dataset.path;e.preventDefault();slide(e);
+  drag=t.dataset.path;e.preventDefault();
+  if(t._n&&t._n.type==='RangeSlider'){var tk=t.querySelector('.tk'),rc=tk.getBoundingClientRect(),n=t._n,mn=R.numVal(M.evalProp(n,'min')),mx=R.numVal(M.evalProp(n,'max'));mn=mn==null?0:mn;mx=mx==null?1:mx;
+    var vv=mn+Math.max(0,Math.min(1,(e.clientX-rc.left)/rc.width))*(mx-mn),ra=+t.dataset.ra,rb=+t.dataset.rb;dragThumb=Math.abs(vv-ra)<Math.abs(vv-rb)||(Math.abs(vv-ra)===Math.abs(vv-rb)&&vv<ra)?'a':'b'}
+  slide(e);
 });
 document.addEventListener('pointermove',function(e){if(drag!==null)slide(e)});
 document.addEventListener('pointerup',function(){drag=null});
