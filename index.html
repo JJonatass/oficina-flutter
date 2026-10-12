@@ -1176,7 +1176,7 @@ function isD(x){return x instanceof Dbl}
 function nn(x){return x instanceof Dbl?x.v:x}
 function dstr(v){return Number.isInteger(v)?v.toFixed(1):String(v)}
 function isRaw(v){return v!==null&&typeof v==='object'&&!isD(v)&&!Array.isArray(v)&&v.raw!==undefined}
-function show(v){if(v===null||v===undefined)return 'null';if(v&&v.nat)return natStr(v);if(v&&v.cls){var tdc=ST.dataClasses[v.cls];if(tdc&&tdc.methods&&tdc.methods.toString){try{return String(runMethod(tdc.methods.toString,[],v))}catch(e){}}return "Instance of '"+v.cls+"'"}if(v&&v.isSet)return '{'+Array.from(v.s).map(show).join(', ')+'}';if(v&&v.isRec)return '('+v.pos.map(show).join(', ')+')';if(v&&v.isMap)return '{'+Array.from(v.m.entries()).map(function(e){return show(e[0])+': '+show(e[1])}).join(', ')+'}';if(v&&v.lam)return lit(v);if(v&&v.ctl)return v.text;if(isD(v))return dstr(v.v);if(isRaw(v))return v.raw;if(Array.isArray(v))return '['+v.map(show).join(', ')+']';return String(v)}
+function show(v){if(v===null||v===undefined)return 'null';if(v&&v.nat)return natStr(v);if(v&&v.cls){var tdc=ST.dataClasses[v.cls];if(tdc&&tdc.methods&&tdc.methods.toString){try{return String(runMethod(tdc.methods.toString,[],v))}catch(e){}}if(v.enumv)return v.cls+'.'+v.f.name;return "Instance of '"+v.cls+"'"}if(v&&v.isSet)return '{'+Array.from(v.s).map(show).join(', ')+'}';if(v&&v.isRec)return '('+v.pos.map(show).join(', ')+')';if(v&&v.isMap)return '{'+Array.from(v.m.entries()).map(function(e){return show(e[0])+': '+show(e[1])}).join(', ')+'}';if(v&&v.lam)return lit(v);if(v&&v.ctl)return v.text;if(isD(v))return dstr(v.v);if(isRaw(v))return v.raw;if(Array.isArray(v))return '['+v.map(show).join(', ')+']';return String(v)}
 function lit(v){
   if(v===null||v===undefined)return 'null';
   if(typeof v==='string')return "'"+v.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\$/g,'\\$').replace(/\n/g,'\\n')+"'";
@@ -1185,6 +1185,7 @@ function lit(v){
   if(v&&v.ctl)return lit(v.text);
   if(v&&v.lam)return v.src;
   if(v&&v.nat)return v.nat==='#class'?v.name:v.src;
+  if(v&&v.enumv)return v.cls+'.'+v.f.name;
   if(v&&v.cls)return v.cls+'('+Object.keys(v.f).map(function(k){return k+': '+lit(v.f[k])}).join(', ')+')';
   if(v&&v.isSet)return v.s.size?'{'+Array.from(v.s).map(lit).join(', ')+'}':'<dynamic>{}';
   if(v&&v.isRec)return '('+v.pos.map(lit).join(', ')+')';
@@ -1341,12 +1342,17 @@ function pPrim(p){
     if(k.v==='switch'&&p.is('(',1)){p.i+=2;var sj=pTern(p);p.need(')');p.need('{');var scs=[];
       while(!p.is('}')){if(p.end())throw new Error('switch');var pat=null;if(p.isId('_')&&(p.is('=>',1)||p.isId('when'))){p.i++}else pat=pTern(p);var gd=null;if(p.isId('when')){p.i++;gd=pTern(p)}p.need('=>');scs.push({pat:pat,guard:gd,body:pTern(p)});if(!p.eat(','))break}
       p.need('}');return{t:'swx',subj:sj,cases:scs}}
+    if(k.v==='super'&&p.is('.',1)&&p.pk(2)&&p.pk(2).k==='id'){p.i+=3;var snm=p.t[p.i-1].v;if(p.is('(')){p.i++;return{t:'sup',name:snm,args:pArgs(p)}}return{t:'id',name:snm}}
     if(k.v==='this'&&p.is('.',1)&&p.pk(2)&&p.pk(2).k==='id'){p.i+=3;return{t:'id',name:p.t[p.i-1].v}}
     if((k.v==='double'||k.v==='int')&&p.is('.',1)&&p.pk(2)&&p.pk(2).v==='infinity'){p.i+=3;return{t:'lit',v:new Dbl(Infinity)}}
     p.i++;
     if(/^[A-Z]/.test(k.v)){
       var name=k.v;
       while(p.is('.')&&p.pk(1)&&p.pk(1).k==='id'){name+='.'+p.pk(1).v;p.i+=2}
+      if(p.is('<')){var gj=p.i,gdp=0,gok=false;
+        while(p.t[gj]){var gt=p.t[gj];if(gt.k==='p'&&gt.v==='<')gdp++;else if(gt.k==='p'&&gt.v==='>')gdp--;else if(gt.k==='p'&&gt.v==='>>')gdp-=2;else if(!(gt.k==='id'||(gt.k==='p'&&(gt.v===','||gt.v==='?'||gt.v==='.')))){break}
+          gj++;if(gdp<=0){gok=gdp===0&&p.t[gj]&&p.t[gj].k==='p'&&(p.t[gj].v==='('||p.t[gj].v==='.');break}}
+        if(gok){p.i=gj;while(p.is('.')&&p.pk(1)&&p.pk(1).k==='id'){name+='.'+p.pk(1).v;p.i+=2}}}
       var args=null;if(p.is('(')){p.i++;args=pArgs(p)}
       return{t:'ctor',name:name,args:args}}
     if(p.is('(')){p.i++;return{t:'fn',name:k.v,args:pArgs(p)}}
@@ -1367,6 +1373,7 @@ function lookup(env,n){
   if(env.self){
     if(hasOwn(env.self.f,n))return env.self.f[n];
     var dg=ST.dataClasses[env.self.cls];if(dg&&dg.getters[n])return evalGetter(env.self,dg.getters[n])}
+  var scn=curCls(env);if(scn){var ssx=staticOf(scn,n);if(ssx)return staticGet(ssx)}
   if(ST.fields[n])return ST.fields[n].value;
   if(n==='widget')return WIDGETOBJ;
   if(ST.locals[n]){
@@ -1379,6 +1386,38 @@ function lookup(env,n){
   if(n==='pi')return new Dbl(Math.PI);
   if(n==='e'&&false)return new Dbl(Math.E);
   throw new Error('desconhecido '+n)}
+function superMethod(cn,m){
+  var dc=ST.dataClasses[cn];if(!dc)return null;
+  var cands=[];if(dc.ext)cands.push(dc.ext);(dc.withs||[]).slice().reverse().forEach(function(w){cands.push(w)});
+  for(var i=0;i<cands.length;i++){var pc=ST.dataClasses[cands[i]];if(pc&&pc.methods[m])return pc.methods[m]}
+  return null}
+function isSub(cn,ty){var seen=0;while(cn&&seen++<20){if(cn===ty)return true;var dc=ST.dataClasses[cn];if(!dc)return false;if((dc.withs||[]).indexOf(ty)>=0)return true;
+  var im=(dc.withs||[]).some(function(w){return isSub(w,ty)});if(im)return true;cn=dc.ext}return false}
+function curCls(env){while(env){if(env.cls)return env.cls;env=env.parent}return null}
+function staticOf(cn,n){var dc=ST.dataClasses[cn];return dc&&dc.statics&&hasOwn(dc.statics,n)?dc.statics[n]:null}
+function staticGet(s){if(!s.done){s.done=true;var e=mkEnv({});e.cls=s.owner;try{s.value=coerce(s.type,s.init!=null?ev(pTern(new Ps(s.init)),e):null)}catch(x){if(x.dartExc)throw x;s.value=null}}return s.value}
+function enumObjs(cn){
+  var dc=ST.dataClasses[cn];if(!dc||!dc.enumVals)return null;
+  if(!dc.enumObjs){dc.enumObjs=[];dc.enumVals.forEach(function(ev0,i){
+    var o;try{var node=pPrim(new Ps(cn+'('+ev0.args+')'));o=construct(cn,evalArgs(node,mkEnv()))}catch(x){if(x.dartExc)throw x;o={cls:cn,f:{}}}
+    o.f.name=ev0.name;o.f.index=i;o.enumv=true;dc.enumObjs.push(o)})}
+  return dc.enumObjs}
+function userStatic(parts,argv,hasArgs,env){
+  var cn=parts[0],dc=ST.dataClasses[cn],cur,i=1,nm=parts[1],last=parts.length-1;
+  var eo=enumObjs(cn);
+  if(eo&&nm==='values'){cur=eo.slice();i=2}
+  else if(eo&&eo.some(function(o){return o.f.name===nm})){cur=eo.filter(function(o){return o.f.name===nm})[0];i=2}
+  else if(dc.statics&&hasOwn(dc.statics,nm)){cur=staticGet(dc.statics[nm]);i=2}
+  else if(dc.smethods&&dc.smethods[nm]){
+    if(last!==1)throw new Error('membro '+cn+'.'+nm);
+    ARGN=argv.map(function(x){return x.name});return runMethod(dc.smethods[nm],argv.map(function(x){return x.val}),null)}
+  else if(dc.ctors&&dc.ctors[nm]){
+    var cs=dc.ctors[nm];
+    if(cs.factory){var fm={name:nm,params:cs.params,body:cs.body,arrow:cs.arrow,owner:cn};ARGN=argv.map(function(x){return x.name});cur=runMethod(fm,argv.map(function(x){return x.val}),null);i=2}
+    else{cur=construct(cn,argv,{params:cs.dparams,init:cs.init,body:cs.body});i=2}}
+  else throw new Error('membro '+cn+'.'+nm);
+  for(var j=i;j<=last;j++)cur=member(cur,parts[j],(j===last&&hasArgs)?argv.map(function(x){return x.val}):[]);
+  return cur}
 function globalVal(n){var g=ST.globals[n];if(!g.done){g.done=true;try{g.value=coerce(g.type,g.init!=null?ev(pTern(new Ps(g.init)),mkEnv()):null)}catch(e){g.value=null}}return g.value}
 function evalGetter(o,g){
   var env=mkEnv({});env.self=o;
@@ -1394,15 +1433,31 @@ function bindArgs(params,args){
     if(found)vals[pr.name]=val});
   return vals}
 function fieldType(dc,n){var f=dc.fields.filter(function(x){return x.name===n})[0];return f?f.type:'var'}
-function construct(name,args){
+function construct(name,args,spec){
   var dc=ST.dataClasses[name],o={cls:name,f:{}};
   dc.fields.forEach(function(f){o.f[f.name]=null});
-  var envO=mkEnv({});envO.self=o;
+  var envO=mkEnv({});envO.self=o;envO.cls=name;
   dc.fields.forEach(function(f){if(f.init!=null){try{o.f[f.name]=coerce(f.type,ev(pTern(new Ps(f.init)),envO))}catch(e){}}});
-  var vals=bindArgs(dc.params,args);
-  Object.keys(vals).forEach(function(k){o.f[k]=coerce(fieldType(dc,k),vals[k])});
-  args.forEach(function(a){if(a.name&&!hasOwn(vals,a.name)&&hasOwn(o.f,a.name))o.f[a.name]=coerce(fieldType(dc,a.name),a.val)});
+  var params=spec?spec.params:dc.params,init=spec?spec.init:dc.cinit,body=spec?spec.body:dc.cbody;
+  var vals=initFrom(dc,params,init,args,o);
+  if(!spec||!spec.factory)args.forEach(function(a){if(a.name&&!hasOwn(vals,a.name)&&hasOwn(o.f,a.name))o.f[a.name]=coerce(fieldType(dc,a.name),a.val)});
+  if(body&&body.length>2){try{var cm={name:'<ctor>',params:'',body:body,arrow:false,owner:name};ARGN=null;var envB=null;runCtorBody(cm,vals,o)}catch(e){if(e.dartExc)throw e}}
   return o}
+function runCtorBody(m,vals,o){
+  var env=mkEnv({});env.self=o;env.cls=m.owner;Object.keys(vals).forEach(function(k){env.params[k]=vals[k]});
+  stmt(new Ps(m.body),env,true)}
+function plainP(ps,k){return ps.some(function(x){return x.name===k&&x.plain})}
+function initFrom(dc,params,init,args,o){
+  var vals=bindArgs(params,args);
+  Object.keys(vals).forEach(function(k){if(!plainP(params,k))o.f[k]=coerce(fieldType(dc,k),vals[k])});
+  if(init){
+    var envI=mkEnv(vals);envI.self=o;envI.cls=dc.name;
+    splitTopStr(init,',').forEach(function(it){
+      it=it.trim();if(!it)return;
+      var sm=/^super\s*\(([\s\S]*)\)$/.exec(it),am=/^(?:this\.)?(\w+)\s*=\s*([\s\S]+)$/.exec(it);
+      if(sm){var pc=dc.ext&&ST.dataClasses[dc.ext];if(pc){var pa=evalArgs(pPrim(new Ps('X('+sm[1]+')')),envI);initFrom(pc,pc.params,pc.cinit,pa,o)}}
+      else if(am&&!/^assert/.test(it)){try{o.f[am[1]]=coerce(fieldType(dc,am[1]),ev(pTern(new Ps(am[2])),envI))}catch(e){if(e.dartExc)throw e}}})}
+  return vals}
 function eq(a,b){
   if(isRaw(a)&&isRaw(b))return a.raw===b.raw;
   if(a&&a.cls){var edc=ST.dataClasses[a.cls];if(edc&&edc.methods['operator=='])return !!runMethod(edc.methods['operator=='],[b],a)}
@@ -1427,7 +1482,7 @@ function isType(v,ty){
     case 'List':case 'Iterable':return Array.isArray(v);
     case 'Map':return !!v.isMap;
     case 'Set':return !!v.isSet}
-  return !!v.cls&&v.cls===ty}
+  return !!v.cls&&isSub(v.cls,ty)}
 function emitArg(a,env){
   var pre=a.name?a.name+': ':'';
   if(a.rawText!==undefined)return pre+a.rawText;
@@ -1440,6 +1495,10 @@ function ev(a,env){
     case 'list':return evItems(a.items,env,[]);
     case 'set':return{isSet:true,s:new Set(evItems(a.items,env,[]).map(nn))};
     case 'rec':return{isRec:true,pos:a.items.map(function(x){return ev(x,env)})};
+    case 'sup':{
+      var sav=a.args.map(function(x){if(x.ast===undefined)throw new Error('arg');return ev(x.ast,env)}),scl=curCls(env),sm=scl&&superMethod(scl,a.name);
+      if(!sm){if(a.name==='toString'&&env.self)return "Instance of '"+env.self.cls+"'";throw new Error('super.'+a.name)}
+      ARGN=a.args.map(function(x){return x.name});return runMethod(sm,sav,env.self)}
     case 'is':{var iv2=ev(a.a,env),r2=isType(iv2,a.ty);return a.neg?!r2:r2}
     case 'casc':{var co=ev(a.o,env);a.ops.forEach(function(op){
         if(op.set){var sv2=ev(op.set,env);if(co&&co.cls){co.f[op.name]=sv2;mutated=true}else throw new Error('atribuição '+op.name)}
@@ -1450,6 +1509,7 @@ function ev(a,env){
     case 'un':{var v=ev(a.a,env);if(a.op==='!')return !v;return isD(v)?new Dbl(-v.v):-v}
     case 'tern':return ev(a.c,env)?ev(a.a,env):ev(a.b,env);
     case 'ctor':{
+      if(a.name.indexOf('.')>0&&ST.dataClasses[a.name.split('.')[0]])return userStatic(a.name.split('.'),a.args?evalArgs(a,env):[],!!a.args,env);
       if(a.args&&ST.dataClasses[a.name])return construct(a.name,evalArgs(a,env));
       if(a.args&&/^(List\.(generate|filled|from|of)|Set(\.(from|of))?|Random|StringBuffer)$/.test(a.name)){
         var ca=evalArgs(a,env).map(function(x){return x.val});
@@ -1481,6 +1541,7 @@ function ev(a,env){
       var av=a.args.map(function(x){if(x.ast===undefined)throw new Error('arg');return ev(x.ast,env)});
       var fnames=a.args.map(function(x){return x.name});
       if(env.self){var dc0=ST.dataClasses[env.self.cls];if(dc0&&dc0.methods[a.name]){ARGN=fnames;return runMethod(dc0.methods[a.name],av,env.self)}}
+      var fcn=curCls(env);if(fcn){var fdc=ST.dataClasses[fcn];if(fdc&&fdc.smethods&&fdc.smethods[a.name]){ARGN=fnames;return runMethod(fdc.smethods[a.name],av,null)}}
       if(ST.methods[a.name]){ARGN=fnames;return runMethod(ST.methods[a.name],av,null)}
       if(a.name==='print'||a.name==='debugPrint')return null;
       if(a.name==='jsonDecode')return jsonDec(av[0]);
@@ -1660,6 +1721,7 @@ function setVar(env,n,v){
   if(env.params&&hasOwn(env.params,n)){env.params[n]=v;return}
   if(env.parent){setVar(env.parent,n,v);return}
   if(env.self&&hasOwn(env.self.f,n)){env.self.f[n]=coerce(fieldType(ST.dataClasses[env.self.cls],n),v);mutated=true;return}
+  var scn2=curCls(env),ssx2=scn2&&staticOf(scn2,n);if(ssx2){staticGet(ssx2);ssx2.value=coerce(ssx2.type,v);mutated=true;return}
   if(ST.fields[n]){ST.fields[n].value=coerce(ST.fields[n].type,v);mutated=true;return}
   if(ST.globals&&ST.globals[n]){globalVal(n);ST.globals[n].value=coerce(ST.globals[n].type,v);mutated=true;return}
   throw new Error('variável '+n)}
@@ -1668,6 +1730,7 @@ function arith(l,op,r){return binary({op:op,a:{t:'lit',v:l},b:{t:'lit',v:r}},nul
 var ASG=/^(=|\+=|-=|\*=|\/=|\?\?=)$/;
 function assignTo(ast,val,env){
   if(ast.t==='id'){setVar(env,ast.name,val);return}
+  if(ast.t==='ctor'&&!ast.args&&ast.name.split('.').length===2){var ap=ast.name.split('.'),asx=staticOf(ap[0],ap[1]);if(asx){staticGet(asx);asx.value=coerce(asx.type,val);mutated=true;return}}
   if(ast.t==='mem'&&ast.args===null){
     var o=ev(ast.o,env);
     if(o&&o.cls){o.f[ast.name]=coerce(fieldType(ST.dataClasses[o.cls],ast.name),val);mutated=true;return}
@@ -1825,16 +1888,16 @@ function simple(p,env,run){
     if(k.v==='setState'&&p.is('(',1)){stmt(p,env,run);return}
     if(k.v==='await'){p.i++;simple(p,env,run);return}
     if(k.v==='throw'){p.i++;var te=pTern(p);if(run){var tv=ev(te,env),ex2=exc(excMsg(tv));if(tv&&tv.cls)ex2.val=tv;throw ex2}return}
-    if(k.v==='super'&&p.is('.',1)){skipToEnd(p);return}}
+    if(k.v==='super'&&p.is('.',1)&&!(curCls(env)&&p.pk(2)&&superMethod(curCls(env),p.pk(2).v))){skipToEnd(p);return}}
   if(k&&k.k==='p'&&(k.v==='++'||k.v==='--')){
     p.i++;var pa=pPost(p);if(run)assignTo(pa,arith(ev(pa,env),k.v==='++'?'+':'-',1),env);return}
   var st=p.i,ast=pPost(p),nx=p.pk();
-  if(nx&&nx.k==='p'&&ASG.test(nx.v)&&(ast.t==='id'||ast.t==='idx'||(ast.t==='mem'&&ast.args===null))){
+  if(nx&&nx.k==='p'&&ASG.test(nx.v)&&(ast.t==='id'||ast.t==='idx'||(ast.t==='ctor'&&!ast.args&&ast.name.indexOf('.')>0)||(ast.t==='mem'&&ast.args===null))){
     p.i++;var es0=p.i;var ex=pTern(p);
     if(run&&ast.t==='id'&&nx.v==='='&&ST.fields[ast.name]&&/Future/.test(ST.fields[ast.name].type||'')){(ST.futExpr=ST.futExpr||{})[ast.name]=p.src.slice(p.t[es0].s,p.t[p.i-1].e);ST.futGen=(ST.futGen||0)+1}
     if(run){if(nx.v==='??='){if(ev(ast,env)==null)assignTo(ast,ev(ex,env),env);return}var val=ev(ex,env);if(nx.v!=='=')val=arith(ev(ast,env),nx.v[0],val);assignTo(ast,val,env)}
     return}
-  if(nx&&nx.k==='p'&&(nx.v==='++'||nx.v==='--')&&(ast.t==='id'||ast.t==='idx'||(ast.t==='mem'&&ast.args===null))){
+  if(nx&&nx.k==='p'&&(nx.v==='++'||nx.v==='--')&&(ast.t==='id'||ast.t==='idx'||(ast.t==='ctor'&&!ast.args&&ast.name.indexOf('.')>0)||(ast.t==='mem'&&ast.args===null))){
     p.i++;if(run)assignTo(ast,arith(ev(ast,env),nx.v==='++'?'+':'-',1),env);return}
   p.i=st;var a2=pTern(p);
   if(run){try{ev(a2,env)}catch(e){if(e.dartExc)throw e}}}
@@ -1987,7 +2050,7 @@ function runMethod(m,args,self){
   var an=ARGN;ARGN=null;
   if(++depth>25){depth=0;throw exc('Stack Overflow: recursão demais')}
   try{
-    var env=mkEnv({});env.self=self||null;
+    var env=mkEnv({});env.self=self||null;if(m.owner)env.cls=m.owner;
     if(!m._dp)m._dp=declParams(m.params);
     var simplePos=!/[{\[]/.test(m.params)&&!(an&&an.some(function(x){return x}));
     if(simplePos)m._dp.forEach(function(pr,i){env.params[pr.name]=args[i]});
@@ -2046,6 +2109,17 @@ ST.load=function(info){
   if(!info){ST.active=false;ST.re=null;return}
   (info.states||[]).forEach(function(sx){var wc=info.classes[sx.of];if(wc&&wc.kind==='StatefulWidget'&&sx.ci.build&&sx.ci.build.body){ST.statefuls[sx.of]={state:sx.ci,widget:wc.ci};ST.userWidgets[sx.of]={params:wc.ci.params,build:sx.ci.build,stateful:true}}});
   info.funcs.forEach(function(f){ST.funcs[f.name]=f});
+  (function(){var done={};function mg(n){var c=info.classes[n];if(!c||c.kind!=='data'||done[n])return;done[n]=1;var ci=c.ci,bases=[];
+    if(ci.ext&&info.classes[ci.ext]&&info.classes[ci.ext].kind==='data'){mg(ci.ext);bases.push(info.classes[ci.ext].ci)}else ci.ext=null;
+    ci.withs=(ci.withs||[]).filter(function(w){return info.classes[w]&&info.classes[w].kind==='data'});
+    ci.withs.forEach(function(w){mg(w);bases.push(info.classes[w].ci)});
+    var fl=[],ms={},gs={},sts={},sms={};
+    bases.forEach(function(b){b.fields.forEach(function(f){fl=fl.filter(function(x){return x.name!==f.name});fl.push(f)});Object.assign(ms,b.methods);Object.assign(gs,b.getters);Object.assign(sts,b.statics);Object.assign(sms,b.smethods)});
+    ci.fields.forEach(function(f){fl=fl.filter(function(x){return x.name!==f.name});fl.push(f)});
+    Object.assign(ms,ci.methods);Object.assign(gs,ci.getters);Object.assign(sts,ci.statics);Object.assign(sms,ci.smethods);
+    ci.fields=fl;ci.methods=ms;ci.getters=gs;ci.statics=sts;ci.smethods=sms;
+    if(!ci.params.length&&!ci.cinit&&ci.ext){var pc=info.classes[ci.ext].ci;ci.params=pc.params;ci.cinit=pc.cinit}}
+    Object.keys(info.classes).forEach(mg)})();
   Object.keys(info.classes).forEach(function(n){var c=info.classes[n];if(c.kind==='data')ST.dataClasses[n]=c.ci;else if(c.kind==='StatelessWidget'&&c.ci.build&&c.ci.build.body)ST.userWidgets[n]=c.ci});
   info.funcs.forEach(function(f){ST.methods[f.name]=f});
   info.methods.forEach(function(m){ST.methods[m.name]=m});
@@ -2530,8 +2604,10 @@ function parseParams(txt){
   [pos.replace(/[\[\]]/g,''),nm].forEach(function(seg,idx){
     splitTopStr(seg,',').forEach(function(p){
       p=p.trim();if(!p)return;
-      var m=/this\.(\w+)\s*(?:=\s*([\s\S]+))?$/.exec(p);
-      if(m)out.push({name:m[1],named:idx===1,def:m[2]?m[2].trim():null})})});
+      var m=/(?:this|super)\.(\w+)\s*(?:=\s*([\s\S]+))?$/.exec(p);
+      if(m){out.push({name:m[1],named:idx===1,def:m[2]?m[2].trim():null});return}
+      var eqp=p.indexOf('='),lf=(eqp>=0?p.slice(0,eqp):p).trim().replace(/^required\s+/,''),pm=/(\w+)\s*$/.exec(lf);
+      if(pm&&!/^(this|super)$/.test(pm[1]))out.push({name:pm[1],named:idx===1,def:eqp>=0?p.slice(eqp+1).trim():null,plain:true})})});
   return out}
 function buildInfo(block){
   var inner=block.slice(1,-1),chunks=scan(inner),locals=[],body=null;
@@ -2541,9 +2617,24 @@ function buildInfo(block){
   return{locals:locals,body:body}}
 var GETA=/^(?:[\w<>?,]+\s+)?get\s+(\w+)\s*=>\s*([\s\S]+?);$/,GETB=/^(?:[\w<>?,]+\s+)?get\s+(\w+)\s*(\{[\s\S]*\})$/;
 function classInfo(name,body){
-  var ci={name:name,fields:[],params:[],methods:{},getters:{},build:null};
-  var CT=new RegExp('^(?:const\\s+)?'+name+'\\s*\\(([\\s\\S]*?)\\)\\s*(?::[^;{]*)?(?:;|\\{[\\s\\S]*\\})$');
+  var ci={name:name,fields:[],params:[],methods:{},getters:{},build:null,statics:{},smethods:{},ctors:{},cinit:null,cbody:null};
+  var CT=new RegExp('^(?:const\\s+)?'+name+'\\s*\\(([\\s\\S]*?)\\)\\s*(?::([^;{]*))?(?:;|(\\{[\\s\\S]*\\}))$');
+  var NCT=new RegExp('^(?:const\\s+)?(factory\\s+)?'+name+'\\.(\\w+)\\s*\\(([\\s\\S]*?)\\)\\s*(?::([^;{]*))?(?:=>\\s*([\\s\\S]+?);|;|(\\{[\\s\\S]*\\}))$');
   scan(body).forEach(function(ch){
+    var stc=/^(?:@\w+\s+)?static\s+([\s\S]*)$/.exec(ch);
+    if(stc){
+      var sf=FIELD.exec(ch)||null;
+      if(sf){ci.statics[sf[2]]={type:normType(sf[1]),init:sf[3]?sf[3].trim():null,owner:name};return}
+      var sf2=FIELD2.exec(ch);if(sf2){ci.statics[sf2[1]]={type:'var',init:sf2[2].trim(),owner:name};return}
+      var sa=MARROW.exec(stc[1]);if(sa){ci.smethods[sa[1]]={name:sa[1],params:sa[2],body:sa[3],arrow:true,owner:name};return}
+      var sb=MBLOCK.exec(stc[1]);if(sb){ci.smethods[sb[1]]={name:sb[1],params:sb[2],body:sb[3],arrow:false,owner:name};return}
+      return}
+    var opm=/^(?:@\w+\s+)?(?:[\w<>?,]+\s+)?operator\s*(==|<=|>=|[-+*\/%<>]|~\/|\[\]=?)\s*\(([^)]*)\)\s*(?:=>\s*([\s\S]+?);|(\{[\s\S]*\}))$/.exec(ch);
+    if(opm){ci.methods['operator'+opm[1]]={name:'operator'+opm[1],params:opm[2],body:opm[3]!==undefined?opm[3]:opm[4],arrow:opm[3]!==undefined,owner:name};return}
+    var nc=NCT.exec(ch);
+    if(nc){ci.ctors[nc[2]]={factory:!!nc[1],params:nc[3].replace(/this\./g,'this.'),init:nc[4]||null,body:nc[5]!==undefined?nc[5]:(nc[6]||''),arrow:nc[5]!==undefined,owner:name};
+      if(!nc[1]){ci.ctors[nc[2]].dparams=parseParams(nc[3])}
+      return}
     var b=BUILD.exec(ch);if(b){ci.build=buildInfo(b[1]);return}
     var g=GETA.exec(ch);if(g){ci.getters[g[1]]={body:g[2],arrow:true};return}
     var g2=GETB.exec(ch);if(g2){ci.getters[g2[1]]={body:g2[2],arrow:false};return}
@@ -2551,11 +2642,12 @@ function classInfo(name,body){
     if(f){ci.fields.push({type:normType(f[1]),name:f[2],init:f[3]?f[3].trim():null});return}
     var f2=FIELD2.exec(ch);
     if(f2&&!/\(\s*[^)]*\)\s*(\{|=>)/.test(ch)){ci.fields.push({type:'var',name:f2[1],init:f2[2].trim()});return}
-    var ct=CT.exec(ch);if(ct){ci.params=parseParams(ct[1]);return}
-    var a=MARROW.exec(ch);if(a){ci.methods[a[1]]={name:a[1],params:a[2],body:a[3],arrow:true};return}
-    var bl=MBLOCK.exec(ch);if(bl)ci.methods[bl[1]]={name:bl[1],params:bl[2],body:bl[3],arrow:false}});
+    var ct=CT.exec(ch);if(ct){ci.params=parseParams(ct[1]);ci.cinit=ct[2]||null;ci.cbody=ct[3]||null;return}
+    var a=MARROW.exec(ch);if(a){ci.methods[a[1]]={name:a[1],params:a[2],body:a[3],arrow:true,owner:name};return}
+    var bl=MBLOCK.exec(ch);if(bl)ci.methods[bl[1]]={name:bl[1],params:bl[2],body:bl[3],arrow:false,owner:name}});
   return ci}
-var CLASSDECL=/^(?:abstract\s+)?class\s+(\w+)(\s+extends\s+([\w<>]+))?(?:\s+(?:with|implements)\s+[^{]+)?\s*\{/;
+var CLASSDECL=/^(?:(?:abstract|base|sealed|final|interface)\s+)*(?:class|mixin(?:\s+class)?)\s+(\w+)(?:<[^>{]*>)?(\s+extends\s+([\w<>]+))?(?:\s+on\s+[^{]+?)?(?:\s+with\s+([^{]+?))?(?:\s+implements\s+[^{]+)?\s*\{/;
+var ENUMDECL=/^enum\s+(\w+)(?:<[^>{]*>)?(?:\s+with\s+[^{]+?)?(?:\s+implements\s+[^{]+?)?\s*\{([\s\S]*)\}$/;
 function stripComments(src){
   var out='',i=0,n=src.length,q=null;
   while(i<n){var c=src[i];
@@ -2572,9 +2664,18 @@ ST.extract=function(src){src=stripComments(src);
     var cm=CLASSDECL.exec(ch);
     if(cm){
       var name=cm[1],ext=cm[3]||'',open=cm[0].length-1,body=ch.slice(open+1,ch.lastIndexOf('}')),ci=classInfo(name,body);
+      ci.ext=ext.replace(/<.*$/,'')||null;ci.withs=cm[4]?cm[4].split(',').map(function(x){return x.trim().replace(/<.*$/,'')}).filter(Boolean):[];
       if(/^State</.test(ext)){states.push({of:ext.replace(/^State</,'').replace(/>$/,''),ci:ci})
       }else info.classes[name]={kind:ext==='StatelessWidget'||ext==='StatefulWidget'?ext:'data',ci:ci};
       return}
+    var em=ENUMDECL.exec(ch);
+    if(em){
+      var eb=em[2],cut=-1,dd=0,qq=null;
+      for(var ei=0;ei<eb.length;ei++){var ec=eb[ei];if(qq){if(ec==='\\')ei++;else if(ec===qq)qq=null;continue}if(ec==="'"||ec==='"'){qq=ec;continue}if('([{<'.indexOf(ec)>=0)dd++;else if(')]}>'.indexOf(ec)>=0)dd--;else if(ec===';'&&dd===0){cut=ei;break}}
+      var vtxt=cut<0?eb:eb.slice(0,cut),rest=cut<0?'':eb.slice(cut+1),eci=classInfo(em[1],rest);
+      eci.enumVals=splitTopStr(vtxt,',').map(function(x){x=x.trim();var mm=/^(\w+)(?:<[^>]*>)?\s*(?:\(([\s\S]*)\))?$/.exec(x);return mm?{name:mm[1],args:mm[2]||''}:null}).filter(Boolean);
+      eci.ext=null;eci.withs=[];
+      info.classes[em[1]]={kind:'data',ci:eci};return}
     if(/^(import|export|part|library|typedef|enum|mixin|extension)\b/.test(ch))return;
     var gf=FIELD.exec(ch),gu=/^(?:const|final|var)\s+(\w+)\s*=\s*([\s\S]+);$/.exec(ch);
     if(gf&&gf[3]!=null){info.globals.push({name:gf[2],type:normType(gf[1]),init:gf[3].trim()});return}
@@ -11280,12 +11381,11 @@ OF.LIMITS=[
 {h:'Dart que o simulador não executa',
  p:'Aparece a mensagem "Este comando ainda não é suportado no simulador", ou o texto da interpolação fica cru na tela (por exemplo, Cor.verde.name aparece escrito assim). O código continua válido para o celular.',
  li:[
- 'Enum: .name, .index, .values e enum com campos. Enum simples com switch funciona.',
- 'Classes: membros static (A.n, A.metodo()), herança (extends com método herdado) e super.metodo(), mixin, extension, factory, construtor nomeado, operador sobrecarregado (operator +), classe genérica (Box<int>) e typedef.',
+ 'Classes: extension (métodos de extensão) e typedef.',
  'Padrões: if-case e padrões com when.',
  'Bibliotecas: DateTime.difference, Duration.inMinutes e semelhantes, intl (DateFormat e NumberFormat), RegExp.',
  'Pacotes: só os simulados no botão 📡 Sensores (GPS, bateria, rede, câmera, http). Sensores em tempo real, som, microfone, biometria, lanterna e QR só funcionam no celular.',
- 'Já funcionam: sort, métodos de Map, parâmetros nomeados e opcionais em funções, toString e == sobrescritos, exceções próprias, Set, spread, cascata, ??= e ?., do-while, switch como expressão, records, dart:math (incluindo Random), jsonEncode e StringBuffer.'
+ 'Já funcionam: enum (name, index, values, campos e métodos), static, herança, super, mixin, construtor nomeado, factory, classe genérica, operator +, sort, métodos de Map, parâmetros nomeados e opcionais em funções, toString e == sobrescritos, exceções próprias, Set, spread, cascata, ??= e ?., do-while, switch como expressão, records, dart:math (incluindo Random), jsonEncode e StringBuffer.'
  ]},
 {h:'Widgets que não existem no simulador',
  p:'Eles aparecem como uma caixa com o nome e (…). O código fica intacto e funciona no celular; só não são desenhados nem editáveis no canvas.',
