@@ -1480,6 +1480,7 @@ function pBin(p,l){
     if(k&&k.k==='p'&&LV[l].indexOf(k.v)>=0){p.i++;a={t:'bin',op:k.v,a:a,b:pBin(p,l+1)}}else break}
   return a}
 function pUn(p){
+  if(p.isId('await')&&p.pk(1)&&!(p.pk(1).k==='p'&&/^[=;,)]$/.test(p.pk(1).v))){p.i++;return pUn(p)}
   if(p.is('!')){p.i++;return{t:'un',op:'!',a:pUn(p)}}
   if(p.is('-')){p.i++;return{t:'un',op:'-',a:pUn(p)}}
   return pPost(p)}
@@ -1536,9 +1537,10 @@ function pLambda(p){
   var t=p.t,j=p.i,d=0;
   if(!p.is('('))return null;
   while(j<t.length){var tk=t[j];if(tk.k==='p'&&tk.v==='(')d++;else if(tk.k==='p'&&tk.v===')'){d--;if(d===0)break}j++}
-  var nx=t[j+1];
+  var nx=t[j+1],jr=j;
+  if(nx&&nx.k==='id'&&nx.v==='async'){j++;nx=t[j+1]}
   if(!nx||nx.k!=='p'||(nx.v!=='=>'&&nx.v!=='{'))return null;
-  var startTok=t[p.i],names=paramNames(p.src.slice(t[p.i+1]?t[p.i+1].s:0,t[j].s));
+  var startTok=t[p.i],names=paramNames(p.src.slice(t[p.i+1]?t[p.i+1].s:0,t[jr].s));
   p.i=j+1;var lam={t:'lam',params:names};
   if(p.eat('=>')){lam.body=pTern(p);lam.src=p.src.slice(startTok.s,p.t[p.i-1].e)}
   else{var bs=p.i,dd=0;while(p.pk()){var q=p.pk();if(q.k==='p'&&q.v==='{')dd++;else if(q.k==='p'&&q.v==='}'){dd--;if(dd===0){p.i++;break}}p.i++}
@@ -1806,6 +1808,10 @@ function ev(a,env){
         case 'atan':return new Dbl(Math.atan(nn(av[0])));case 'atan2':return new Dbl(Math.atan2(nn(av[0]),nn(av[1])));
         case 'log':return new Dbl(Math.log(nn(av[0])));case 'exp':return new Dbl(Math.exp(nn(av[0])))}
       if(a.name==='initializeDateFormatting')return null;
+      if(a.name==='openDatabase'){var odn={};fnames.forEach(function(x,i){if(x)odn[x]=av[i]});return dbOpen(av.filter(function(x,i){return !fnames[i]}),odn)}
+      if(a.name==='getDatabasesPath')return '/data/user/0/app/databases';
+      if(a.name==='join'&&av.length>=1&&av.every(function(x){return typeof x==='string'}))return av.join('/').replace(/\/+/g,'/');
+      if(a.name==='deleteDatabase'){delete DBP.dbs[show(av[0])];dbSave();return null}
       var fv;try{fv=lookup(env,a.name)}catch(e0){fv=undefined}
       if(fv&&fv.lam)return callLam(fv,av);
       var tvf=curThis(env);if(tvf!==undefined){ARGN=null;return member(tvf,a.name,av)}
@@ -2535,7 +2541,7 @@ ST.load=function(info){
   ST.active=ST.order.length>0;
   ST.re=names.length?new RegExp('\\$|(?:^|[^\\w.$])(?:'+names.join('|')+')(?!\\w)'):null;
   if(fresh&&ST.initState)ST.runInit()};
-ST.runInit=function(){if(!ST.initState)return;steps=0;depth=0;try{runMethod(ST.initState,[],null)}catch(e){}};
+ST.runInit=function(){if(!ST.initState)return;steps=0;depth=0;try{runMethod(ST.initState,[],null)}catch(e){ST.initErr=e.message}};
 ST.list=function(){return ST.order.map(function(n){var f=ST.fields[n];return{name:n,text:lit(f.value),type:f.value&&(f.value.ctl||f.value.pc)?'Controller':f.type}})};
 
 
@@ -2632,9 +2638,9 @@ ST.value=function(raw){return ev(pTern(new Ps(raw)),mkEnv())};
 /* ---- objetos nativos simulados: DateTime, TimeOfDay, GPS, bateria, rede, câmera ---- */
 ST.sensors={osrm:'',http:'sim',gps:true,perm:'granted',lat:-8.0476,lon:-34.877,alt:4,battery:78,charging:false,net:'wifi',photo:'ok'};
 ST.resetSensors=function(){ST.sensors={http:'sim',gps:true,perm:'granted',lat:-8.0476,lon:-34.877,alt:4,battery:78,charging:false,net:'wifi',photo:'ok'}};
-var NATCLS={Curves:1,AnimationStatus:1,Offset:1,IntTween:1,ColorTween:1,ValueNotifier:1,AnimationController:1,Tween:1,CurvedAnimation:1,DateFormat:1,NumberFormat:1,MenuCtl:1,SearchCtl:1,Size:1,RangeValues:1,Stream:1,StreamController:1,GlobalKey:1,http:1,Uri:1,LatLng:1,MapController:1,Geolocator:1,Battery:1,Connectivity:1,DateTime:1,TimeOfDay:1,Position:1,ImagePicker:1,HapticFeedback:1,Share:1};
+var NATCLS={SharedPreferences:1,Sqflite:1,ConflictAlgorithm:1,Curves:1,AnimationStatus:1,Offset:1,IntTween:1,ColorTween:1,ValueNotifier:1,AnimationController:1,Tween:1,CurvedAnimation:1,DateFormat:1,NumberFormat:1,MenuCtl:1,SearchCtl:1,Size:1,RangeValues:1,Stream:1,StreamController:1,GlobalKey:1,http:1,Uri:1,LatLng:1,MapController:1,Geolocator:1,Battery:1,Connectivity:1,DateTime:1,TimeOfDay:1,Position:1,ImagePicker:1,HapticFeedback:1,Share:1};
 var NATCTOR={'Paint':1,'Size':1,'Size.square':1,'Size.fromWidth':1,'Size.fromHeight':1,'Rect.fromLTWH':1,'Rect.fromLTRB':1,'Rect.fromCircle':1,'Rect.fromCenter':1,'Radius.circular':1,'Radius.elliptical':1,'RRect.fromRectAndRadius':1,'RRect.fromLTRBR':1,'Path':1,'TextPainter':1,'Offset.fromDirection':1,AnimationController:1,Tween:1,IntTween:1,ColorTween:1,CurvedAnimation:1,Offset:1,ValueNotifier:1,RegExp:1,DateFormat:1,NumberFormat:1,RangeValues:1,StreamController:1,GlobalKey:1,LatLng:1,MapController:1,DateTime:1,TimeOfDay:1,Position:1,Battery:1,Connectivity:1,ImagePicker:1};
-var ENUMS={LocationPermission:1,ConnectionState:1,ConnectivityResult:1,BatteryState:1,ImageSource:1,LocationAccuracy:1};
+var ENUMS={ConflictAlgorithm:1,LocationPermission:1,ConnectionState:1,ConnectivityResult:1,BatteryState:1,ImageSource:1,LocationAccuracy:1};
 function p2(n){return (n<10?'0':'')+n}
 function mkDate(y,mo,d,h,mi,s){
   var j=new Date(y,mo-1,d,h,mi,s);
@@ -3008,6 +3014,227 @@ function ctlMember(v,name,args,named){
   throw new Error('AnimationController.'+name)}
 function mkCurve(name){return{nat:'Curve',f:{name:name},src:'Curves.'+name}}
 
+/* ===== Banco simulado: SharedPreferences e sqflite (mini SQL) ===== */
+var DBP=(function(){var s={prefs:{},dbs:{}};try{var r=localStorage.getItem('oficina_db');if(r){var o=JSON.parse(r,function(k,v){return v&&typeof v==='object'&&v.$d!==undefined?new Dbl(v.$d):v});if(o&&o.prefs&&o.dbs)s=o}}catch(e){}return s})();
+function dbSave(){try{localStorage.setItem('oficina_db',JSON.stringify(DBP,function(k,v){return v instanceof Dbl?{$d:v.v}:v}))}catch(e){}}
+ST.dbClear=function(){DBP.prefs={};DBP.dbs={};dbSave()};
+ST.dbDump=function(){return DBP};
+function dbU(x){return x instanceof Dbl?x.v:x}
+function dbMapOf(o,order){var mp={isMap:true,m:new Map()};(order||Object.keys(o)).forEach(function(k){mp.m.set(k,o[k])});return mp}
+function dbErr(m,sql){return exc('DatabaseException('+m+')'+(sql?' sql \''+sql+'\'':''))}
+/* --- SharedPreferences --- */
+function prefsMember(v,name,a){
+  var P=DBP.prefs;
+  switch(name){
+    case 'getString':case 'getInt':case 'getDouble':case 'getBool':case 'get':{var x=P[show(a[0])];return x===undefined?null:x}
+    case 'getStringList':{var y=P[show(a[0])];return y===undefined?null:y.slice()}
+    case 'setString':case 'setInt':case 'setDouble':case 'setBool':{
+      var val=a[1],nm2=name;
+      if(nm2==='setInt'&&typeof val!=='number')throw exc("type '"+(typeof val==='string'?'String':'Object')+"' is not a subtype of type 'int'");
+      if(nm2==='setString'&&typeof val!=='string')throw exc("type '"+(typeof val==='number'?'int':'Object')+"' is not a subtype of type 'String'");
+      if(nm2==='setDouble'&&!(val instanceof Dbl))val=new Dbl(nn(val));
+      P[show(a[0])]=val;dbSave();return true}
+    case 'setStringList':P[show(a[0])]=(a[1]||[]).slice();dbSave();return true;
+    case 'remove':delete P[show(a[0])];dbSave();return true;
+    case 'clear':DBP.prefs={};dbSave();return true;
+    case 'containsKey':return P[show(a[0])]!==undefined;
+    case 'getKeys':return Object.keys(P);
+    case 'reload':return null}
+  throw new Error('membro SharedPreferences.'+name)}
+/* --- mini SQL --- */
+function sqlTok(s){var t=[],i=0,m;
+  while(i<s.length){var c=s[i];
+    if(/\s/.test(c)){i++;continue}
+    if(c==="'"){var j=i+1,str='';while(j<s.length){if(s[j]==="'"){if(s[j+1]==="'"){str+="'";j+=2;continue}break}str+=s[j++]}t.push({k:'s',v:str});i=j+1;continue}
+    if(c==='"'||c==='`'||c==='['){var e=c==='['?']':c,j2=s.indexOf(e,i+1);t.push({k:'i',v:s.slice(i+1,j2),q:1});i=j2+1;continue}
+    if((m=/^\d+(\.\d+)?/.exec(s.slice(i)))){t.push({k:'n',v:m[0].indexOf('.')>=0?new Dbl(parseFloat(m[0])):parseInt(m[0],10)});i+=m[0].length;continue}
+    if((m=/^[A-Za-z_][A-Za-z_0-9.]*/.exec(s.slice(i)))){t.push({k:'i',v:m[0]});i+=m[0].length;continue}
+    if((m=/^(<=|>=|<>|!=|==|\|\|)/.exec(s.slice(i)))){t.push({k:'p',v:m[0]});i+=2;continue}
+    t.push({k:'p',v:c});i++}
+  return t}
+function SQ(sql,args){this.t=sqlTok(sql);this.i=0;this.sql=sql;this.args=args||[];this.ai=0}
+SQ.prototype={
+ pk:function(o){return this.t[this.i+(o||0)]},
+ kw:function(w,o){var x=this.pk(o);return !!x&&x.k==='i'&&!x.q&&x.v.toUpperCase()===w},
+ eatKw:function(w){if(this.kw(w)){this.i++;return true}return false},
+ needKw:function(w){if(!this.eatKw(w))throw dbErr('near "'+(this.pk()?this.pk().v:'fim')+'": syntax error, esperado '+w,this.sql)},
+ isP:function(v){var x=this.pk();return !!x&&x.k==='p'&&x.v===v},
+ eatP:function(v){if(this.isP(v)){this.i++;return true}return false},
+ needP:function(v){if(!this.eatP(v))throw dbErr('near "'+(this.pk()?this.pk().v:'fim')+'": syntax error, esperado '+v,this.sql)},
+ ident:function(){var x=this.pk();if(!x||x.k!=='i')throw dbErr('syntax error',this.sql);this.i++;return x.v},
+ /* expressões: devolvem função(linha) */
+ expr:function(){return this.or()},
+ or:function(){var l=this.and();while(this.eatKw('OR')){var r=this.and();l=(function(a,b){return function(w){return (dbU(a(w))&&true)||(dbU(b(w))&&true)?1:0}})(l,r)}return l},
+ and:function(){var l=this.not();while(this.eatKw('AND')){var r=this.not();l=(function(a,b){return function(w){return a(w)&&b(w)?1:0}})(l,r)}return l},
+ not:function(){if(this.eatKw('NOT')){var e=this.not();return function(w){return e(w)?0:1}}return this.cmp()},
+ cmp:function(){var l=this.add();
+  while(true){var x=this.pk();if(!x)break;
+   if(x.k==='p'&&/^(=|==|!=|<>|<|>|<=|>=)$/.test(x.v)){this.i++;var r=this.add();l=(function(a,b,o){return function(w){var p=dbU(a(w)),q=dbU(b(w));if(p==null||q==null)return null;
+      switch(o){case '=':case '==':return p===q?1:0;case '!=':case '<>':return p!==q?1:0;case '<':return p<q?1:0;case '>':return p>q?1:0;case '<=':return p<=q?1:0;default:return p>=q?1:0}}})(l,r,x.v);continue}
+   if(this.kw('IS')){this.i++;var neg=this.eatKw('NOT');this.needKw('NULL');l=(function(a,n){return function(w){var z=dbU(a(w))==null;return (n?!z:z)?1:0}})(l,neg);continue}
+   var ng=false;if(this.kw('NOT')&&(this.kw('LIKE',1)||this.kw('IN',1)||this.kw('BETWEEN',1))){this.i++;ng=true}
+   if(this.eatKw('LIKE')){var pt=this.add();l=(function(a,b,n){return function(w){var s=dbU(a(w)),p=dbU(b(w));if(s==null||p==null)return null;
+      var re=new RegExp('^'+String(p).replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/%/g,'.*').replace(/_/g,'.')+'$','i');var ok=re.test(String(s));return (n?!ok:ok)?1:0}})(l,pt,ng);continue}
+   if(this.eatKw('IN')){this.needP('(');var ls=[];do{ls.push(this.add())}while(this.eatP(','));this.needP(')');
+     l=(function(a,L,n){return function(w){var s=dbU(a(w));var ok=L.some(function(f){return dbU(f(w))===s});return (n?!ok:ok)?1:0}})(l,ls,ng);continue}
+   if(this.eatKw('BETWEEN')){var lo=this.add();this.needKw('AND');var hi=this.add();l=(function(a,b,c,n){return function(w){var s=dbU(a(w)),ok=s>=dbU(b(w))&&s<=dbU(c(w));return (n?!ok:ok)?1:0}})(l,lo,hi,ng);continue}
+   break}
+  return l},
+ add:function(){var l=this.mul();while(this.isP('+')||this.isP('-')||this.isP('||')){var o=this.pk().v;this.i++;var r=this.mul();
+   l=(function(a,b,o){return function(w){var p=a(w),q=b(w);if(o==='||')return show(p)+show(q);var r2=o==='+'?dbU(p)+dbU(q):dbU(p)-dbU(q);return (p instanceof Dbl||q instanceof Dbl)?new Dbl(r2):r2}})(l,r,o)}return l},
+ mul:function(){var l=this.un();while(this.isP('*')||this.isP('/')||this.isP('%')){var o=this.pk().v;this.i++;var r=this.un();
+   l=(function(a,b,o){return function(w){var p=a(w),q=b(w),x=dbU(p),y=dbU(q);var z=o==='*'?x*y:o==='/'?((p instanceof Dbl||q instanceof Dbl)?x/y:Math.trunc(x/y)):x%y;return (p instanceof Dbl||q instanceof Dbl)?new Dbl(z):z}})(l,r,o)}return l},
+ un:function(){if(this.eatP('-')){var e=this.un();return function(w){var v=e(w);return v instanceof Dbl?new Dbl(-v.v):-v}}return this.prim()},
+ prim:function(){var x=this.pk();if(!x)throw dbErr('syntax error',this.sql);var self=this;
+  if(x.k==='n'){this.i++;return function(){return x.v}}
+  if(x.k==='s'){this.i++;return function(){return x.v}}
+  if(x.k==='p'&&x.v==='?'){this.i++;if(this.ai>=this.args.length)throw dbErr('Bind or column index out of range (args insuficientes)',this.sql);var bv=this.args[this.ai++];if(typeof bv==='boolean')throw exc('Invalid argument true: Only num, String and Uint8List are supported (bool não existe no SQLite: use 0 e 1)');return function(){return bv}}
+  if(x.k==='p'&&x.v==='('){this.i++;var e=this.expr();this.needP(')');return e}
+  if(x.k==='i'){
+   if(!x.q&&x.v.toUpperCase()==='NULL'){this.i++;return function(){return null}}
+   if(!x.q&&/^(TRUE|FALSE)$/i.test(x.v)){this.i++;var tv=x.v.toUpperCase()==='TRUE'?1:0;return function(){return tv}}
+   if(!x.q&&this.t[this.i+1]&&this.t[this.i+1].v==='('&&/^(COUNT|SUM|AVG|MIN|MAX|LOWER|UPPER|LENGTH|ABS|ROUND|COALESCE|IFNULL)$/i.test(x.v)){
+     var fn=x.v.toUpperCase();this.i+=2;
+     if(/^(COUNT|SUM|AVG|MIN|MAX)$/.test(fn)){var star=false,ar=null;if(this.eatP('*'))star=true;else ar=this.expr();this.needP(')');return {agg:fn,star:star,arg:ar}}
+     var as=[];if(!this.isP(')')){do{as.push(this.expr())}while(this.eatP(','))}this.needP(')');
+     return function(w){var v=as.map(function(f){return f(w)});var u=dbU(v[0]);
+       switch(fn){case 'LOWER':return u==null?null:String(u).toLowerCase();case 'UPPER':return u==null?null:String(u).toUpperCase();case 'LENGTH':return u==null?null:String(u).length;case 'ABS':return v[0] instanceof Dbl?new Dbl(Math.abs(u)):Math.abs(u);
+        case 'ROUND':{var d=v[1]!=null?dbU(v[1]):0,f=Math.pow(10,d);return new Dbl(Math.round(u*f)/f)}
+        default:for(var k=0;k<v.length;k++)if(dbU(v[k])!=null)return v[k];return null}}}
+   this.i++;var nm=x.v.replace(/^.*\./,'');
+   return function(w){if(!(nm in w))throw dbErr('no such column: '+nm,self.sql);return w[nm]}}
+  throw dbErr('near "'+x.v+'": syntax error',this.sql)}
+};
+function sqlTable(db,name,sql){var t=db.tables[name];if(!t)throw dbErr('no such table: '+name,sql);return t}
+function sqlCoerce(col,v){if(v==null)return null;var ty=(col.type||'').toUpperCase();
+  if(/REAL|DOUB|FLOA/.test(ty))return v instanceof Dbl?v:(typeof v==='number'?new Dbl(v):v);
+  if(/INT/.test(ty))return v instanceof Dbl?(Number.isInteger(v.v)?v.v:v):v;
+  return v}
+function sqlWhere(q){if(q.eatKw('WHERE')){var e=q.expr();if(e.agg)throw dbErr('misuse of aggregate',q.sql);return e}return null}
+function sqlRun(db,sql,args,mode){
+  var q=new SQ(sql,args),kw=q.pk()&&q.pk().v.toUpperCase();
+  if(!kw)throw dbErr('syntax error',sql);
+  var T=db.tables;
+  if(kw==='CREATE'){q.i++;if(q.kw('INDEX')||q.kw('UNIQUE')||q.kw('VIEW')){return null}q.needKw('TABLE');var ine=false;if(q.eatKw('IF')){q.needKw('NOT');q.needKw('EXISTS');ine=true}
+    var nm=q.ident();if(T[nm]){if(ine)return null;throw dbErr('table '+nm+' already exists',sql)}
+    q.needP('(');var cols=[],pkc=null;
+    while(true){
+      if(q.kw('PRIMARY')||q.kw('FOREIGN')||q.kw('UNIQUE')||q.kw('CHECK')||q.kw('CONSTRAINT')){var d=0;while(q.pk()&&!(d===0&&(q.isP(',')||q.isP(')')))){if(q.isP('('))d++;if(q.isP(')'))d--;q.i++}}
+      else{var c={n:q.ident(),type:'',pk:false,ai:false,nn:false,def:undefined};
+        while(q.pk()&&!q.isP(',')&&!q.isP(')')){
+          if(q.pk().k==='i'&&!q.kw('PRIMARY')&&!q.kw('NOT')&&!q.kw('DEFAULT')&&!q.kw('AUTOINCREMENT')&&!q.kw('UNIQUE')&&!q.kw('REFERENCES')&&!q.kw('NULL')&&!q.kw('CHECK')){c.type+=(c.type?' ':'')+q.pk().v;q.i++}
+          else if(q.eatKw('PRIMARY')){q.needKw('KEY');c.pk=true}
+          else if(q.eatKw('AUTOINCREMENT'))c.ai=true;
+          else if(q.eatKw('NOT')){q.needKw('NULL');c.nn=true}
+          else if(q.eatKw('DEFAULT')){var de=q.prim();c.def=de({})}
+          else if(q.eatKw('UNIQUE')||q.eatKw('NULL')){}
+          else if(q.eatKw('REFERENCES')){q.ident();if(q.isP('(')){while(!q.isP(')'))q.i++;q.i++}}
+          else if(q.isP('(')){var d2=0;do{if(q.isP('('))d2++;if(q.isP(')'))d2--;q.i++}while(d2>0&&q.pk())}
+          else q.i++}
+        cols.push(c)}
+      if(!q.eatP(','))break}
+    q.needP(')');T[nm]={cols:cols,rows:[],seq:0};return null}
+  if(kw==='DROP'){q.i++;q.needKw('TABLE');var ie=false;if(q.eatKw('IF')){q.needKw('EXISTS');ie=true}var dn=q.ident();if(!T[dn]){if(ie)return null;throw dbErr('no such table: '+dn,sql)}delete T[dn];return null}
+  if(kw==='INSERT'||kw==='REPLACE'){q.i++;var conf='abort';if(kw==='INSERT'&&q.eatKw('OR')){conf=q.ident().toLowerCase()}if(kw==='REPLACE')conf='replace';q.needKw('INTO');
+    var tn=q.ident(),tb=sqlTable(db,tn,sql),names=tb.cols.map(function(c){return c.n});
+    if(q.eatP('(')){names=[];do{names.push(q.ident())}while(q.eatP(','));q.needP(')')}
+    if(mode&&mode.values){names=Object.keys(mode.values);}
+    var tuples=[];
+    if(mode&&mode.values){tuples.push(names.map(function(k){return mode.values[k]}))}
+    else{q.needKw('VALUES');do{q.needP('(');var tp=[];do{tp.push(q.expr()({}))}while(q.eatP(','));q.needP(')');tuples.push(tp)}while(q.eatP(','))}
+    var lastId=0;
+    tuples.forEach(function(tp){var seq0=tb.seq;try{
+      if(tp.length!==names.length)throw dbErr(tp.length+' values for '+names.length+' columns',sql);
+      var row={};tb.cols.forEach(function(c){row[c.n]=c.def!==undefined?c.def:null});
+      names.forEach(function(n,i){var c=tb.cols.filter(function(x){return x.n===n})[0];if(!c)throw dbErr('table '+tn+' has no column named '+n,sql);row[n]=sqlCoerce(c,tp[i])});
+      var pkc=tb.cols.filter(function(c){return c.pk})[0];
+      if(pkc){var isInt=/INT/i.test(pkc.type);
+        if(row[pkc.n]==null&&isInt){row[pkc.n]=++tb.seq}
+        else if(row[pkc.n]==null&&!isInt&&pkc.type===''){row[pkc.n]=++tb.seq}
+        else{
+          var dup=tb.rows.filter(function(r){return dbU(r[pkc.n])===dbU(row[pkc.n])})[0];
+          if(dup){if(conf==='replace'){tb.rows.splice(tb.rows.indexOf(dup),1)}else if(conf==='ignore'){lastId=0;return}else throw dbErr('UNIQUE constraint failed: '+tn+'.'+pkc.n+' (code 1555)',sql)}
+          if(typeof row[pkc.n]==='number'&&row[pkc.n]>tb.seq)tb.seq=row[pkc.n]}}
+      tb.cols.forEach(function(c){if(c.nn&&row[c.n]==null&&!(c.pk))throw dbErr('NOT NULL constraint failed: '+tn+'.'+c.n+' (code 1299)',sql)});
+      tb.rows.push(row);lastId=pkc?row[pkc.n]:tb.rows.length}catch(e){tb.seq=seq0;throw e}});
+    return lastId}
+  if(kw==='UPDATE'){q.i++;var un=q.ident(),ut=sqlTable(db,un,sql);q.needKw('SET');var sets=[];
+    if(mode&&mode.values){Object.keys(mode.values).forEach(function(k){var v=mode.values[k];sets.push([k,function(){return v}])});q.i=q.t.length}
+    else{do{var cn=q.ident();q.needP('=');sets.push([cn,q.expr()])}while(q.eatP(','))}
+    var wh=mode&&mode.where?mode.where(q):sqlWhere(q),cnt=0;
+    ut.rows.forEach(function(r){if(!wh||wh(r)){var nv={};sets.forEach(function(s){var c=ut.cols.filter(function(x){return x.n===s[0]})[0];if(!c)throw dbErr('no such column: '+s[0],sql);nv[s[0]]=sqlCoerce(c,s[1](r))});Object.assign(r,nv);cnt++}});return cnt}
+  if(kw==='DELETE'){q.i++;q.needKw('FROM');var dn2=q.ident(),dt=sqlTable(db,dn2,sql),w2=sqlWhere(q),before=dt.rows.length;
+    dt.rows=dt.rows.filter(function(r){return w2&&!w2(r)||false}).concat(w2?[]:[]);if(!w2)dt.rows=[];return before-dt.rows.length}
+  if(kw==='SELECT'){q.i++;q.eatKw('DISTINCT');var items=[],star=false;
+    do{if(q.eatP('*')){star=true;continue}var st=q.i,ex=q.expr(),al=null;if(q.eatKw('AS'))al=q.ident();var txt=q.t.slice(st,q.i).map(function(t){return t.v instanceof Dbl?t.v.v:t.v}).join('');items.push({e:ex,al:al||txt.replace(/^.*\./,''),txt:txt})}while(q.eatP(','));
+    var rows;
+    if(q.eatKw('FROM')){var sn=q.ident(),stb=sqlTable(db,sn,sql);if(q.pk()&&q.pk().k==='i'&&!/^(WHERE|ORDER|LIMIT|GROUP|AS|JOIN|INNER|LEFT)$/i.test(q.pk().v)&&!q.pk().q)q.i++;
+      if(q.kw('JOIN')||q.kw('INNER')||q.kw('LEFT'))throw dbErr('JOIN ainda não é simulado: use duas consultas',sql);
+      var sw=sqlWhere(q);rows=stb.rows.filter(function(r){return !sw||sw(r)});
+      var cn2=stb.cols.map(function(c){return c.n});
+      if(star){items=cn2.map(function(n){return{e:function(w){return w[n]},al:n}}).concat(items)}}
+    else rows=[{}];
+    var hasAgg=items.some(function(it){return it.e&&it.e.agg}),grp=null;
+    if(q.eatKw('GROUP')){q.needKw('BY');grp=[];do{grp.push(q.expr())}while(q.eatP(','))}
+    var out;
+    function aggOf(it,rs){var a=it.e;if(!a.agg)return a(rs[0]||{});var vals=a.star?rs:rs.map(function(r){return a.arg(r)}).filter(function(v){return dbU(v)!=null});
+      switch(a.agg){case 'COUNT':return vals.length;case 'SUM':{if(!vals.length)return null;var s=vals.reduce(function(x,v){return x+dbU(v)},0);return vals.some(function(v){return v instanceof Dbl})?new Dbl(s):s}
+        case 'AVG':return vals.length?new Dbl(vals.reduce(function(x,v){return x+dbU(v)},0)/vals.length):null;
+        case 'MIN':return vals.length?vals.reduce(function(m,v){return dbU(v)<dbU(m)?v:m}):null;case 'MAX':return vals.length?vals.reduce(function(m,v){return dbU(v)>dbU(m)?v:m}):null}}
+    if(hasAgg||grp){var groups=[];if(grp){var mp={};rows.forEach(function(r){var k=JSON.stringify(grp.map(function(g){return dbU(g(r))}));if(!mp[k]){mp[k]=[];groups.push(mp[k])}mp[k].push(r)})}else groups=[rows];
+      out=groups.map(function(rs){var o={};items.forEach(function(it){o[it.al]=aggOf(it,rs)});return o})}
+    else out=rows.map(function(r){var o={};items.forEach(function(it){o[it.al]=it.e(r)});o.__r=r;return o});
+    if(q.eatKw('ORDER')){q.needKw('BY');var ob=[];do{var oe=q.expr(),ds=false;if(q.eatKw('DESC'))ds=true;else q.eatKw('ASC');ob.push([oe,ds])}while(q.eatP(','));
+      out.sort(function(a,b){for(var i=0;i<ob.length;i++){var ra=a.__r||a,rb=b.__r||b,x,y;try{x=dbU(ob[i][0](ra))}catch(e){x=dbU(ra[ob[i][0].name])}try{y=dbU(ob[i][0](rb))}catch(e){y=undefined}
+        if(x==null&&y!=null)return ob[i][1]?1:-1;if(y==null&&x!=null)return ob[i][1]?-1:1;if(x<y)return ob[i][1]?1:-1;if(x>y)return ob[i][1]?-1:1}return 0})}
+    var lim=null,off=0;if(q.eatKw('LIMIT')){lim=dbU(q.expr()({}));if(q.eatKw('OFFSET'))off=dbU(q.expr()({}))}
+    if(lim!=null)out=out.slice(off,off+lim);else if(off)out=out.slice(off);
+    return out.map(function(o){delete o.__r;return dbMapOf(o,items.map(function(it){return it.al}))})}
+  throw dbErr('comando SQL não suportado no simulador: '+kw,sql)}
+function whereStr(a){var w=a.where;return w?w:null}
+function dbMember(v,name,a){
+  var an=ARGN||[];ARGN=null;var pos=[],nm={};a.forEach(function(x,i){if(an[i])nm[an[i]]=x;else pos.push(x)});
+  var db=v.db;
+  function wargs(){return nm.whereArgs||[]}
+  switch(name){
+    case 'execute':sqlRun(db,show(pos[0]),pos[1]||[]);dbSave();return null;
+    case 'rawQuery':return sqlRun(db,show(pos[0]),pos[1]||[]);
+    case 'rawInsert':{var ri=sqlRun(db,show(pos[0]),pos[1]||[]);dbSave();return ri}
+    case 'rawUpdate':case 'rawDelete':{var ru=sqlRun(db,show(pos[0]),pos[1]||[]);dbSave();return ru}
+    case 'insert':{
+      var ks=[],vs=[];if(pos[1]&&pos[1].isMap)pos[1].m.forEach(function(x,k){if(x!=null){ks.push(k);vs.push(x)}});
+      var cf=nm.conflictAlgorithm?String(nm.conflictAlgorithm).replace('ConflictAlgorithm.',''):'abort';
+      var tb0=sqlTable(db,show(pos[0]));ks.forEach(function(k){if(!tb0.cols.some(function(c){return c.n===k}))throw dbErr('table '+show(pos[0])+' has no column named '+k)});
+      var r=sqlRun(db,'INSERT'+(cf==='abort'?'':' OR '+cf.toUpperCase())+' INTO '+show(pos[0])+' ('+ks.join(', ')+') VALUES ('+ks.map(function(){return '?'}).join(', ')+')',vs);dbSave();return r}
+    case 'query':{
+      var cols=nm.columns?nm.columns.map(show).join(', '):'*';
+      var s='SELECT '+(nm.distinct?'DISTINCT ':'')+cols+' FROM '+show(pos[0])+(nm.where?' WHERE '+nm.where:'')+(nm.groupBy?' GROUP BY '+nm.groupBy:'')+(nm.orderBy?' ORDER BY '+nm.orderBy:'')+(nm.limit!=null?' LIMIT '+nm.limit:'')+(nm.offset!=null?' OFFSET '+nm.offset:'');
+      return sqlRun(db,s,wargs())}
+    case 'update':{
+      var uk=[],uv=[];if(pos[1]&&pos[1].isMap)pos[1].m.forEach(function(x,k){uk.push(k);uv.push(x)});
+      var ur=sqlRun(db,'UPDATE '+show(pos[0])+' SET '+uk.map(function(k){return k+' = ?'}).join(', ')+(nm.where?' WHERE '+nm.where:''),uv.concat(wargs()));dbSave();return ur}
+    case 'delete':{var dr=sqlRun(db,'DELETE FROM '+show(pos[0])+(nm.where?' WHERE '+nm.where:''),wargs());dbSave();return dr}
+    case 'transaction':{var res=callLam(pos[0],[v]);dbSave();return res}
+    case 'batch':return{nat:'SqlBatch',f:{},db:db,ops:[]};
+    case 'close':return null;
+    case 'isOpen':return true;
+    case 'path':return v.path;
+    case 'getVersion':return db.version||0;
+    case 'setVersion':db.version=nn(pos[0]);dbSave();return null}
+  throw new Error('membro Database.'+name)}
+function sqlRunUpd(db,table,vals,where,wa){
+  var tb=sqlTable(db,table),q=new SQ('UPDATE '+table+' SET x WHERE '+(where||'1=1'),wa);
+  var wh=null;if(where){q=new SQ(where,wa);wh=q.expr()}
+  var cnt=0;tb.rows.forEach(function(r){if(!wh||wh(r)){Object.keys(vals).forEach(function(k){var c=tb.cols.filter(function(x){return x.n===k})[0];if(!c)throw dbErr('no such column: '+k);r[k]=sqlCoerce(c,vals[k])});cnt++}});return cnt}
+function dbOpen(pos,nm){
+  var path=show(pos[0]),d=DBP.dbs[path],fresh=false;
+  if(!d){d=DBP.dbs[path]={tables:{},version:0};fresh=true}
+  var h={nat:'SqlDb',f:{},db:d,path:path,src:'Database'};
+  var ver=nm.version!=null?nm.version:1;
+  if(fresh||d.version===0){d.version=ver;if(nm.onCreate)callLam(nm.onCreate,[h,ver]);dbSave()}
+  else if(nm.onUpgrade&&ver>d.version){var old=d.version;d.version=ver;callLam(nm.onUpgrade,[h,old,ver]);dbSave()}
+  return h}
+
 function natCtor(name,args){
   if(PAINTCT[name])return paintCtor(name,args);
   var pos=args.filter(function(a){return !a.name}).map(function(a){return nn(a.val)}),nm={};
@@ -3043,6 +3270,8 @@ function haversine(a,b,c,d){
 function natMember(v,name,args){
   var S=ST.sensors;
   if(PAINTM[v.nat])return paintMember(v,name,args);
+  if(v.nat==='Prefs')return prefsMember(v,name,args);
+  if(v.nat==='SqlDb')return dbMember(v,name,args);
   if(v.nat==='MathNS'){
     var ma=args.map(nn);
     switch(name){
@@ -3094,6 +3323,8 @@ function natMember(v,name,args){
   if(v.nat==='#class'){
     var c=v.name;
     if(ENUMS[c])return c+'.'+name;
+    if(c==='SharedPreferences'){if(name==='getInstance')return{nat:'Prefs',f:{},src:'SharedPreferences'};if(name==='setMockInitialValues'){DBP.prefs={};if(args[0]&&args[0].isMap)args[0].m.forEach(function(x,k){DBP.prefs[k]=x});return null}}
+    if(c==='Sqflite'&&name==='firstIntValue'){var fr=args[0]&&args[0][0];if(!fr)return null;var fv0=Array.from(fr.m.values())[0];return fv0===undefined?null:dbU(fv0)}
     if(c==='Curves')return mkCurve(name);
     if(c==='AnimationStatus')return 'AnimationStatus.'+name;
     if(c==='Offset'&&name==='zero')return mkOffset(0,0);
@@ -3432,8 +3663,8 @@ function matchBrace(text,open){
   return -1}
 var FIELD=/^(?:@\w+\s+)?(?:(?:static|late|final|const)\s+)*(int|double|num|bool|String|var|dynamic|[A-Z]\w*(?:<[^;=]*?>)?)\??\s+(\w+)\s*(?:=\s*([\s\S]+?))?;$/;
 var FIELD2=/^(?:@\w+\s+)?(?:static\s+)?(?:late\s+|final\s+)+(\w+)\s*=\s*([\s\S]+?);$/;
-var MARROW=/^(?:@\w+\s+)?(?:[\w<>?,]+\s+)?(\w+)\s*\(([^)]*)\)\s*(?:async\s*\*?\s*)?=>\s*([\s\S]+?);$/;
-var MBLOCK=/^(?:@\w+\s+)?(?:[\w<>?,]+\s+)?(\w+)\s*\(([^)]*)\)\s*(?:async\s*\*?\s*)?(\{[\s\S]*\})$/;
+var MARROW=/^(?:@\w+\s+)?(?:[\w?]+(?:<[\w<>?,\s]*>)?\??\s+)?(\w+)\s*\(([^)]*)\)\s*(?:async\s*\*?\s*)?=>\s*([\s\S]+?);$/;
+var MBLOCK=/^(?:@\w+\s+)?(?:[\w?]+(?:<[\w<>?,\s]*>)?\??\s+)?(\w+)\s*\(([^)]*)\)\s*(?:async\s*\*?\s*)?(\{[\s\S]*\})$/;
 var BUILD=/^(?:@\w+\s+)?Widget\s+build\s*\([^)]*\)\s*(?:async\s*)?(\{[\s\S]*\})$/;
 var LOCAL=/^(?:(?:final|var|const)\s+)?(?:(?:int|double|num|bool|String)\??\s+)?(\w+)\s*=\s*([\s\S]+);$/;
 function normType(t){t=t.replace(/\?$/,'');return /^List/.test(t)?'List':/^Map/.test(t)?'Map':/^Set/.test(t)?'Set':t.replace(/<.*$/,'')}
@@ -11269,7 +11500,15 @@ class _TelaState extends State<Tela> {
 {t:"x. JSON, classe modelo e map para cards",
  text:"Em apps reais os dados chegam como texto JSON (de uma API ou de um banco). O fluxo é sempre o mesmo: jsonDecode transforma o texto em List de Map, o construtor fromJson converte cada Map em um objeto Produto, e .map() transforma cada Produto em um Card. O .toList() no final é obrigatório, porque map devolve um Iterable. O operador ?? dá valor padrão quando a chave não existe, como no Tênis.",
  tryit:"Em ▶ Testar, veja os 3 cards. Acrescente um produto ao JSON, sem o campo favorito, e veja o card novo aparecer.",
- code:"import 'dart:convert';\nimport 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Lista()));\n\nclass Produto {\n  final String nome;\n  final double preco;\n  final bool favorito;\n  Produto({required this.nome, required this.preco, required this.favorito});\n\n  factory Produto.fromJson(Map<String, dynamic> j) {\n    return Produto(nome: j['nome'], preco: j['preco'].toDouble(), favorito: j['favorito'] ?? false);\n  }\n}\n\nconst dados = '''\n[\n  {\"nome\": \"Camiseta\", \"preco\": 49.9, \"favorito\": true},\n  {\"nome\": \"Tênis\", \"preco\": 199.0},\n  {\"nome\": \"Boné\", \"preco\": 35.5, \"favorito\": false}\n]\n''';\n\nclass Lista extends StatefulWidget {\n  const Lista({super.key});\n\n  @override\n  State<Lista> createState() => _ListaState();\n}\n\nclass _ListaState extends State<Lista> {\n  late List<Produto> produtos;\n\n  @override\n  void initState() {\n    super.initState();\n    final lista = jsonDecode(dados) as List;\n    produtos = lista.map((j) => Produto.fromJson(j)).toList();\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: Text('${produtos.length} produtos')),\n      body: ListView(\n        children: produtos.map((p) => Card(\n          child: ListTile(\n            title: Text(p.nome),\n            subtitle: Text('R\\$ ${p.preco.toStringAsFixed(2)}'),\n            trailing: Icon(p.favorito ? Icons.favorite : Icons.favorite_border),\n          ),\n        )).toList(),\n      ),\n    );\n  }\n}\n"}
+ code:"import 'dart:convert';\nimport 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Lista()));\n\nclass Produto {\n  final String nome;\n  final double preco;\n  final bool favorito;\n  Produto({required this.nome, required this.preco, required this.favorito});\n\n  factory Produto.fromJson(Map<String, dynamic> j) {\n    return Produto(nome: j['nome'], preco: j['preco'].toDouble(), favorito: j['favorito'] ?? false);\n  }\n}\n\nconst dados = '''\n[\n  {\"nome\": \"Camiseta\", \"preco\": 49.9, \"favorito\": true},\n  {\"nome\": \"Tênis\", \"preco\": 199.0},\n  {\"nome\": \"Boné\", \"preco\": 35.5, \"favorito\": false}\n]\n''';\n\nclass Lista extends StatefulWidget {\n  const Lista({super.key});\n\n  @override\n  State<Lista> createState() => _ListaState();\n}\n\nclass _ListaState extends State<Lista> {\n  late List<Produto> produtos;\n\n  @override\n  void initState() {\n    super.initState();\n    final lista = jsonDecode(dados) as List;\n    produtos = lista.map((j) => Produto.fromJson(j)).toList();\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: Text('${produtos.length} produtos')),\n      body: ListView(\n        children: produtos.map((p) => Card(\n          child: ListTile(\n            title: Text(p.nome),\n            subtitle: Text('R\\$ ${p.preco.toStringAsFixed(2)}'),\n            trailing: Icon(p.favorito ? Icons.favorite : Icons.favorite_border),\n          ),\n        )).toList(),\n      ),\n    );\n  }\n}\n"},
+{t:"x. shared_preferences: guardar preferências",
+ text:"O shared_preferences guarda pares chave/valor simples (String, int, double, bool e lista de String) no aparelho, e eles continuam lá quando o app fecha. Primeiro você pega a instância com await SharedPreferences.getInstance(). Depois usa setInt, setBool, setString para gravar e getInt, getBool, getString para ler. Como a chave pode não existir ainda, o ?? dá o valor inicial. Aqui o contador e o tema escuro voltam do jeito que ficaram. No simulador, o banco vale até você tocar em ↺ Reiniciar, que apaga tudo, como reinstalar o app.",
+ tryit:"Em ▶ Testar, some alguns cliques e ligue o tema escuro. Saia de ▶ Testar e entre de novo: os valores continuam. Depois toque em ↺ Reiniciar e veja tudo voltar a zero.",
+ code:"import 'package:flutter/material.dart';\nimport 'package:shared_preferences/shared_preferences.dart';\n\nvoid main() => runApp(const MaterialApp(home: Contador()));\n\nclass Contador extends StatefulWidget {\n  const Contador({super.key});\n\n  @override\n  State<Contador> createState() => _ContadorState();\n}\n\nclass _ContadorState extends State<Contador> {\n  int cont = 0;\n  bool escuro = false;\n\n  @override\n  void initState() {\n    super.initState();\n    carregar();\n  }\n\n  Future<void> carregar() async {\n    final prefs = await SharedPreferences.getInstance();\n    setState(() {\n      cont = prefs.getInt('cont') ?? 0;\n      escuro = prefs.getBool('escuro') ?? false;\n    });\n  }\n\n  Future<void> somar() async {\n    final prefs = await SharedPreferences.getInstance();\n    setState(() => cont++);\n    await prefs.setInt('cont', cont);\n  }\n\n  Future<void> trocarTema(bool v) async {\n    final prefs = await SharedPreferences.getInstance();\n    setState(() => escuro = v);\n    await prefs.setBool('escuro', v);\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      backgroundColor: escuro ? Colors.grey.shade900 : Colors.white,\n      appBar: AppBar(title: const Text('Preferências')),\n      body: Center(\n        child: Column(\n          mainAxisAlignment: MainAxisAlignment.center,\n          children: [\n            Text('Cliques: $cont', style: TextStyle(fontSize: 32, color: escuro ? Colors.white : Colors.black)),\n            const SizedBox(height: 16),\n            ElevatedButton(onPressed: somar, child: const Text('Somar')),\n            SwitchListTile(title: Text('Tema escuro', style: TextStyle(color: escuro ? Colors.white : Colors.black)), value: escuro, onChanged: trocarTema),\n          ],\n        ),\n      ),\n    );\n  }\n}\n"},
+{t:"x. sqflite: banco SQLite com CRUD",
+ text:"O sqflite é um banco SQL de verdade dentro do app. openDatabase abre (ou cria) o arquivo e roda o onCreate na primeira vez, onde o CREATE TABLE define as colunas. Depois vêm as quatro operações do CRUD: insert (criar), query (ler), update (alterar) e delete (apagar). O where usa ? como espaço para os valores de whereArgs, o que evita erros e injeção de SQL. Cada linha volta como Map, e o fromMap transforma o Map em objeto Tarefa; o toMap faz o caminho inverso. O SQLite não tem bool, por isso a coluna feita guarda 0 ou 1. O simulador entende CREATE, INSERT, SELECT (WHERE, ORDER BY, LIMIT, COUNT, SUM, AVG, GROUP BY), UPDATE e DELETE de uma tabela só; JOIN não.",
+ tryit:"Em ▶ Testar, adicione tarefas, marque o checkbox e apague uma. Acrescente depois uma coluna prioridade e um filtro para mostrar só as tarefas não feitas.",
+ code:"import 'package:flutter/material.dart';\nimport 'package:sqflite/sqflite.dart';\nimport 'package:path/path.dart';\n\nvoid main() => runApp(const MaterialApp(home: Tarefas()));\n\nclass Tarefa {\n  final int? id;\n  final String titulo;\n  final bool feita;\n  Tarefa({this.id, required this.titulo, this.feita = false});\n\n  Map<String, dynamic> toMap() => {'id': id, 'titulo': titulo, 'feita': feita ? 1 : 0};\n\n  factory Tarefa.fromMap(Map<String, dynamic> m) =>\n      Tarefa(id: m['id'], titulo: m['titulo'], feita: m['feita'] == 1);\n}\n\nclass Tarefas extends StatefulWidget {\n  const Tarefas({super.key});\n  @override\n  State<Tarefas> createState() => _TarefasState();\n}\n\nclass _TarefasState extends State<Tarefas> {\n  Database? db;\n  List<Tarefa> lista = [];\n  final controller = TextEditingController();\n\n  @override\n  void initState() {\n    super.initState();\n    abrir();\n  }\n\n  Future<void> abrir() async {\n    db = await openDatabase(\n      join(await getDatabasesPath(), 'tarefas.db'),\n      version: 1,\n      onCreate: (d, v) async {\n        await d.execute('CREATE TABLE tarefas(id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT, feita INTEGER)');\n      },\n    );\n    await carregar();\n  }\n\n  Future<void> carregar() async {\n    final linhas = await db!.query('tarefas', orderBy: 'id DESC');\n    setState(() {\n      lista = linhas.map((m) => Tarefa.fromMap(m)).toList();\n    });\n  }\n\n  Future<void> adicionar() async {\n    if (controller.text.isEmpty) return;\n    await db!.insert('tarefas', Tarefa(titulo: controller.text).toMap());\n    controller.clear();\n    await carregar();\n  }\n\n  Future<void> alternar(Tarefa t) async {\n    await db!.update('tarefas', {'feita': t.feita ? 0 : 1}, where: 'id = ?', whereArgs: [t.id]);\n    await carregar();\n  }\n\n  Future<void> remover(Tarefa t) async {\n    await db!.delete('tarefas', where: 'id = ?', whereArgs: [t.id]);\n    await carregar();\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: Text('Tarefas (${lista.length})')),\n      body: Column(\n        children: [\n          Padding(\n            padding: const EdgeInsets.all(8),\n            child: Row(\n              children: [\n                Expanded(child: TextField(controller: controller, decoration: const InputDecoration(hintText: 'Nova tarefa'))),\n                IconButton(icon: const Icon(Icons.add), onPressed: adicionar),\n              ],\n            ),\n          ),\n          Expanded(\n            child: ListView(\n              children: lista.map((t) => ListTile(\n                leading: Checkbox(value: t.feita, onChanged: (_) => alternar(t)),\n                title: Text(t.titulo),\n                trailing: IconButton(icon: const Icon(Icons.delete), onPressed: () => remover(t)),\n              )).toList(),\n            ),\n          ),\n        ],\n      ),\n    );\n  }\n}\n"}
 /*NL-END*/
 ];
 var base=LESSONS.filter(function(l){return !l.after}),placed=LESSONS.filter(function(l){return l.after});
@@ -11474,6 +11713,8 @@ add("CustomPaint: gráfico de pizza",[["Uma quarta fatia","Acrescente 10 em valo
 add("CustomPaint animado com AnimationController",[["Girar mais devagar (6 segundos)","Em Duration, troque seconds: 3 por seconds: 6.","seconds:\\s*6"],["Cinco círculos no radar","No laço, i <= 3 e raio * i / 3. Troque os dois 3 por 5.","i <= 5"],["Girar para o outro lado","Um sinal de menos antes de _c.value inverte o sentido.","Radar\\(-"]]);
 add("Aninhando Column e Row",[["Trocar o quadrado azul por laranja","O quadrado azul é o Container da Row de dentro. Troque Colors.blue por Colors.orange.","^(?![\\s\\S]*Colors\\.blue)"],["Segundo Container na primeira Column","Dentro de children da primeira Column, depois do vermelho, acrescente outro Container (por exemplo amarelo), com vírgula no final.","Colors\\.amber"],["Espalhar os blocos com spaceEvenly","Na Row de fora, logo antes de children, escreva mainAxisAlignment: MainAxisAlignment.spaceEvenly.","MainAxisAlignment\\.spaceEvenly"]]);
 add("JSON, classe modelo e map",[["Acrescentar um produto ao JSON","No fim da lista do JSON, depois do Boné, coloque uma vírgula e um novo objeto com nome Meia e preco 9.9.","\"Meia\""],["Preço sem centavos","No toStringAsFixed, troque o 2 por 0.","toStringAsFixed\\(0\\)"],["Pintar o coração de vermelho","No Icon, depois do operador ternário, acrescente color: Colors.red.","color:\\s*Colors\\.red"]]);
+add("shared_preferences: guardar",[["Somar de 5 em 5","Em somar, troque cont++ por cont += 5.","cont \\+= 5"],["Valor inicial 10","No carregar, troque o ?? 0 do contador por ?? 10.","'cont'\\) \\?\\? 10"],["Tema escuro começa ligado","No carregar, troque o ?? false do tema por ?? true.","'escuro'\\) \\?\\? true"]]);
+add("sqflite: banco SQLite",[["Ordem alfabética","No query, troque orderBy: id DESC por orderBy: titulo.","orderBy:\\s*'titulo'"],["Mostrar só as pendentes","No query, acrescente where: feita = 0 antes do orderBy.","where:\\s*'feita = 0'"],["Remover com ícone de lixeira diferente","No botão de apagar, troque Icons.delete por Icons.delete_outline.","Icons\\.delete_outline"]]);
 OF.EX=EX;
 OF.LESSONS.forEach(function(L){
   var st=null,k;
@@ -13248,7 +13489,7 @@ OF.LIMITS=[
  'ListView.custom e SliverList: SliverChildListDelegate e SliverChildBuilderDelegate (até 60 itens quando não há childCount). Image.file não existe.',
  'Draggable, LongPressDraggable e DragTarget funcionam com o mouse ou o dedo, mas a cópia que acompanha o ponteiro é um clone do widget, o offset em DragTargetDetails é Offset(0, 0) e onMove não é chamado.',
  'AnimationController roda no modo ▶ Testar; Tween e curvas são aproximados (veja Animações e gestos).',
- 'Banco de dados: não existem sqflite, shared_preferences, Hive, Isar, Firebase nem Supabase; import desses pacotes não executa. jsonDecode, fromJson, toJson, .map().toList() e http simulado (botão 📡) funcionam. Para treinar a lógica de um banco, guarde a lista em memória na classe de estado ou em uma classe Repositorio.',
+ 'Banco de dados: shared_preferences (get/set de String, int, double, bool e lista, remove, clear) e sqflite (openDatabase, execute, insert, query, update, delete, rawQuery, transaction) são simulados na memória do navegador. O SQL aceita uma tabela por comando: CREATE, INSERT, SELECT com WHERE, ORDER BY, LIMIT, GROUP BY, COUNT, SUM, AVG, MIN e MAX, UPDATE e DELETE. Não há JOIN, subconsulta, índice, batch nem chaves estrangeiras. ↺ Reiniciar apaga o banco. Hive, Isar, Firebase e Supabase não existem.',
  'Nenhum widget Cupertino existe (CupertinoButton, CupertinoAlertDialog, CupertinoSwitch e outros).'
  ]},
 {h:'Propriedades que o simulador ignora',
@@ -13617,7 +13858,7 @@ function renderStateBar(){
   bar.hidden=false;
   var tsc=topScope(),lst=runIn(tsc,function(){return ST.list()}),hasSt=runIn(tsc,function(){return ST.order.length});
   bar.innerHTML='<b>'+(hasSt?'Estado':'Modo interativo')+(tsc?' · '+esc(tsc.cls):'')+'</b>'+lst.map(function(v){return '<span class="sv"><i>'+esc(v.type)+'</i> '+esc(v.name)+' = <b>'+esc(v.text)+'</b></span>'}).join('')+
-    '<span class="sp"></span><button class="btn" data-a="sens" title="Simular GPS, bateria, rede e câmera">📡 Sensores</button><div class="seg" role="group" aria-label="Modo"><button data-a="test" aria-pressed="'+!!S.run+'">▶ Testar</button><button data-a="edit" aria-pressed="'+!S.run+'">✎ Editar</button></div><button class="btn" data-a="reset" title="Volta as variáveis aos valores iniciais">↺ Reiniciar</button>';
+    '<span class="sp"></span><button class="btn" data-a="sens" title="Simular GPS, bateria, rede e câmera">📡 Sensores</button><div class="seg" role="group" aria-label="Modo"><button data-a="test" aria-pressed="'+!!S.run+'">▶ Testar</button><button data-a="edit" aria-pressed="'+!S.run+'">✎ Editar</button></div><button class="btn" data-a="reset" title="Volta as variáveis aos valores iniciais e apaga o banco de dados simulado">↺ Reiniciar</button>';
 }
 function setRun(x){if(!x)clearFx();S.run=!!x&&ST.active;R.opts.run=S.run;renderStateBar();renderCanvas()}
 $('stBar').addEventListener('click',function(e){
@@ -13625,7 +13866,7 @@ $('stBar').addEventListener('click',function(e){
   if(b.dataset.a==='test')setRun(true);
   else if(b.dataset.a==='edit')setRun(false);
   else if(b.dataset.a==='sens'){toggleSens();return}
-  else if(b.dataset.a==='reset'){clearFx();R.opts.typed={};ST.reset();renderStateBar();renderCanvas()}
+  else if(b.dataset.a==='reset'){clearFx();R.opts.typed={};ST.dbClear();ST.reset();renderStateBar();renderCanvas()}
 });
 var timers=[];
 function clearFx(){R.opts.drawerOpen={};pk=null;fxGen++;R.opts.fut={};R.opts.futT.forEach(clearTimeout);R.opts.futT=[];R.opts.rf={};R.opts.str={};R.opts.iv={};R.opts.dss={};R.opts.ddm={};R.opts.acx={};R.opts.pdt={};R.opts.anim={};R.opts.sw={};R.opts.tw={};ST.menuOpen={};ST.search={};ST.mapView=null;R.opts.nav=[];R.opts.navSc=[];R.opts.navRes=[];R.opts.over=[];R.opts.tab={};R.opts.exp={};clearTimeout(snackT);timers.forEach(clearTimeout);timers=[]}
@@ -14096,7 +14337,7 @@ function loadLesson(i,fresh){
   var L=OF.LESSONS[i];S.lesson=i;S.sel=null;clearFx();S.loading=true;
   var saved=fresh?null:LS.get(lkey(L));
   if(fresh)LS.del(lkey(L));
-  A.setCode(saved&&saved!==L.code?saved:L.code);A.analyze();OF.ST.reset();S.loading=false;S.run=OF.ST.active;R.opts.typed={};goalsDone=false;
+  A.setCode(saved&&saved!==L.code?saved:L.code);A.analyze();OF.ST.dbClear();OF.ST.reset();S.loading=false;S.run=OF.ST.active;R.opts.typed={};goalsDone=false;
   $('lessonBox').innerHTML='<h1>'+esc(L.t)+'</h1><p>'+esc(L.text)+'</p><p class="try"><b>Experimente:</b> '+esc(L.tryit)+'</p>'+(L.demo?'<p class="demo">📱 Lição demonstrativa: o código é real e funciona no celular, mas o simulador não tem estes recursos (internet com http, sensores em tempo real, som, microfone, biometria, lanterna, QR). GPS, bateria, rede e câmera você simula pelo botão 📡 Sensores.</p>':'')+(L.setup?'<details class="setup"><summary>Como instalar e quais permissões pedir</summary><pre>'+esc(L.setup)+'</pre></details>':'')+(L.lim?'<p class="lim"><b>Limites do simulador:</b> '+esc(L.lim)+'</p>':'')+'<div id="goalBox" class="goals"></div>';
   applyFold();
   goalsDone=!!(L.goals&&doneSet().indexOf(L.t.replace(/^\d+\.\s*/,''))>=0);
