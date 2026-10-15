@@ -529,6 +529,8 @@ body:has(main[data-tab="ref"]) .lesson{display:none}
   body.fx .stage{min-height:0}
   body.fx #fxBtn{background:var(--accent);color:#fff;border-color:transparent}
 }
+.sld .dv{position:absolute;top:50%;width:4px;height:4px;margin:-2px 0 0 -2px;border-radius:50%;background:rgba(0,0,0,.35)}
+.screen .nd.tf textarea.tfi{font:16px Roboto,system-ui,sans-serif;color:#1D1B20;background:transparent;border:0;outline:0;box-sizing:border-box;width:100%;position:absolute;inset:0}
 </style>
 <header class="top">
   <div class="brand">
@@ -631,7 +633,7 @@ body:has(main[data-tab="ref"]) .lesson{display:none}
 /* ====== Esquema dos widgets ====== */
 var W={
  Scaffold:{cat:'struct',slots:{appBar:'one',body:'one',floatingActionButton:'one',drawer:'one',bottomNavigationBar:'one'},desc:'Esqueleto de uma tela Material. Reserva lugar para a appBar (topo), o body (conteúdo), o botão flutuante, o drawer (painel lateral) e a bottomNavigationBar (barra inferior).'},
- AppBar:{cat:'struct',slots:{title:'one',bottom:'one'},desc:'Barra superior da tela. O title costuma receber um Text e o bottom recebe uma TabBar.'},
+ AppBar:{cat:'struct',slots:{leading:'one',title:'one',actions:'many',bottom:'one'},desc:'Barra superior da tela. O title costuma receber um Text, leading é o widget antes do título (no lugar do botão de voltar ou do menu), actions é a lista de botões à direita (IconButton) e o bottom recebe uma TabBar.'},
  FloatingActionButton:{cat:'struct',slots:{child:'one'},desc:'Botão de ação principal, flutuando no canto da tela.'},
  PreferredSize:{cat:'box',slots:{child:'one'},desc:'Dá ao filho uma altura (ou tamanho) preferida. Serve para colocar um widget qualquer em Scaffold(appBar: ...), que exige um PreferredSizeWidget. preferredSize: Size.fromHeight(80).'},
 StatefulBuilder:{cat:'layout',slots:{},desc:'Cria um pedaço da tela que se redesenha sozinho: o builder recebe (context, setState). Muito usado dentro de showDialog para atualizar só o diálogo. No simulador, setState funciona como o da tela inteira, e o nome do segundo parâmetro precisa ser setState.'},
@@ -1988,7 +1990,7 @@ function member(v,name,args){
     var dm0=durMs(v);
     switch(name){case 'inDays':return Math.trunc(dm0/864e5);case 'inHours':return Math.trunc(dm0/36e5);case 'inMinutes':return Math.trunc(dm0/6e4);case 'inSeconds':return Math.trunc(dm0/1e3);case 'inMilliseconds':return Math.trunc(dm0);case 'inMicroseconds':return Math.trunc(dm0*1000);
       case 'isNegative':return dm0<0;case 'abs':return mkDur(Math.abs(dm0));case 'compareTo':{var o0=durMs(args[0]);return dm0<o0?-1:dm0>o0?1:0}}}
-  if(isRaw(v))return{raw:v.raw+'.'+name+(args.length?'('+args.map(lit).join(', ')+')':'')};
+  if(isRaw(v)){var rn=ARGN;return{raw:v.raw+'.'+name+(args.length?'('+args.map(function(x,i){return(rn&&rn[i]?rn[i]+': ':'')+lit(x)}).join(', ')+')':'')}}
   if(v&&v.ctl){if(name==='text')return v.text;if(name==='clear'){v.text='';mutated=true;return null}}
   if(v&&v.pc){
     switch(name){
@@ -4236,14 +4238,155 @@ function callParts(raw,name){
   return o;
 }
 function styleParts(raw){return callParts(raw,'TextStyle')}
+var TTH={displayLarge:[57,400],displayMedium:[45,400],displaySmall:[36,400],headlineLarge:[32,400],headlineMedium:[28,400],headlineSmall:[24,400],titleLarge:[22,400],titleMedium:[16,500],titleSmall:[14,500],bodyLarge:[16,400],bodyMedium:[14,400],bodySmall:[12,400],labelLarge:[14,500],labelMedium:[12,500],labelSmall:[11,500]};
 function textCss(raw){
-  var o=styleParts(raw).map,css='';
+  raw=raw==null?raw:String(raw).trim();
+  var css='',o;
+  var mt=/^Theme\.of\(\s*\w+\s*\)\s*\.\s*textTheme\s*\.\s*(\w+)\s*(?:[!?])?\s*(?:\.\s*copyWith\s*\(([\s\S]*)\))?$/.exec(raw||'');
+  if(mt&&TTH[mt[1]]){
+    css='font-size:'+TTH[mt[1]][0]+'px;font-weight:'+TTH[mt[1]][1]+';';
+    if(mt[2]==null)return css;
+    o=styleParts('TextStyle('+mt[2]+')').map;
+  }else{
+    var cw=/^([\s\S]+?)\.\s*copyWith\s*\(([\s\S]*)\)$/.exec(raw||'');
+    if(cw&&!/^TextStyle\(/.test(raw)){css=textCss(cw[1]);o=styleParts('TextStyle('+cw[2]+')').map}
+    else o=styleParts(raw).map;
+  }
   if(o.fontSize&&numVal(o.fontSize)!=null)css+='font-size:'+numVal(o.fontSize)+'px;';
   if(o.fontWeight){var w=/FontWeight\.(\w+)/.exec(o.fontWeight);if(w)css+='font-weight:'+(w[1]==='bold'?700:w[1]==='normal'?400:/^w(\d)00$/.test(w[1])?w[1][1]+'00':500)+';'}
   if(o.fontStyle&&/italic/.test(o.fontStyle))css+='font-style:italic;';
-  var col=colorVal(o.color);if(col)css+='color:'+col+';';
+  else if(o.fontStyle&&/normal/.test(o.fontStyle))css+='font-style:normal;';
+  if(o.color){var col=colorVal(o.color);if(!col&&/\.with|Color\.from|Color\(/.test(o.color))col=pcssColor(o.color);if(col)css+='color:'+col+';'}
   if(o.letterSpacing&&numVal(o.letterSpacing)!=null)css+='letter-spacing:'+numVal(o.letterSpacing)+'px;';
+  if(o.wordSpacing&&numVal(o.wordSpacing)!=null)css+='word-spacing:'+numVal(o.wordSpacing)+'px;';
+  if(o.height&&numVal(o.height)!=null)css+='line-height:'+numVal(o.height)+';';
+  if(o.decoration){var dd=[];if(/underline/.test(o.decoration))dd.push('underline');if(/lineThrough/.test(o.decoration))dd.push('line-through');if(/overline/.test(o.decoration))dd.push('overline');
+    css+='text-decoration:'+(dd.length?dd.join(' '):'none')+';';
+    if(o.decorationColor){var dc2=colorVal(o.decorationColor)||pcssColor(o.decorationColor);if(dc2)css+='text-decoration-color:'+dc2+';'}
+    var ds=/TextDecorationStyle\.(\w+)/.exec(o.decorationStyle||'');if(ds)css+='text-decoration-style:'+({solid:'solid',double:'double',dotted:'dotted',dashed:'dashed',wavy:'wavy'}[ds[1]]||'solid')+';';
+    if(o.decorationThickness&&numVal(o.decorationThickness)!=null)css+='text-decoration-thickness:'+numVal(o.decorationThickness)+'px;'}
+  if(o.fontFamily){var ff=String(o.fontFamily).trim().replace(/^['"]|['"]$/g,'');
+    css+='font-family:'+(/mono|courier|consolas/i.test(ff)?"'JetBrains Mono',ui-monospace,monospace":/serif/i.test(ff)&&!/sans/i.test(ff)||/georgia|times/i.test(ff)?'Georgia,serif':/cursive|pacifico|lobster|dancing/i.test(ff)?"'Brush Script MT',cursive":"'"+ff.replace(/'/g,'')+"',Roboto,system-ui,sans-serif")+';'}
+  if(o.backgroundColor){var bc=colorVal(o.backgroundColor)||pcssColor(o.backgroundColor);if(bc)css+='background:'+bc+';'}
+  if(o.shadows){var sh=[],re=/Shadow\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g,m;
+    while((m=re.exec(o.shadows))){var sp=styleParts('TextStyle('+m[1]+')').map,ox=0,oy=0,om=/Offset\(\s*(-?[\d.]+)\s*,\s*(-?[\d.]+)\s*\)/.exec(sp.offset||'');if(om){ox=+om[1];oy=+om[2]}
+      sh.push(ox+'px '+oy+'px '+(numVal(sp.blurRadius)||0)+'px '+((sp.color&&(colorVal(sp.color)||pcssColor(sp.color)))||'rgba(0,0,0,.5)'))}
+    if(sh.length)css+='text-shadow:'+sh.join(',')+';'}
   return css;
+}
+
+function textProps(d,n){
+  var ta=enumName(M.getProp(n,'textAlign')),ml=numVal(M.getProp(n,'maxLines')),ov=enumName(M.getProp(n,'overflow')),sw=(M.getProp(n,'softWrap')||'').trim();
+  if(ta&&/^(center|right|end|left|start|justify)$/.test(ta)){d.style.textAlign=ta==='end'?'right':ta==='start'?'left':ta;d.style.alignSelf='stretch'}
+  if(sw==='false'){d.style.maxWidth='100%';d.style.whiteSpace='nowrap';if(ov==='ellipsis'){d.style.overflow='hidden';d.style.textOverflow='ellipsis';d.style.minWidth='0'}else if(ov==='clip'||ov==='fade')d.style.overflow='hidden'}
+  if(ml!=null&&ml>=1){
+    d.style.minWidth='0';d.style.maxWidth='100%';
+    if(ml===1&&(ov==='ellipsis'||ov==='')){d.style.whiteSpace='nowrap';d.style.overflow='hidden';if(ov==='ellipsis')d.style.textOverflow='ellipsis'}
+    else if(ov==='ellipsis'||ov===''&&false){d.style.display='-webkit-box';d.style.webkitLineClamp=String(ml);d.style.webkitBoxOrient='vertical';d.style.overflow='hidden'}
+    else{d.style.overflow='hidden';d.style.maxHeight='calc('+ml+' * 1.25em)';if(ml===1)d.style.whiteSpace='nowrap'}
+    if(ov==='fade'){d.style.webkitMaskImage='linear-gradient(90deg,#000 80%,transparent)';d.style.maskImage=d.style.webkitMaskImage}
+  }else if(ov==='ellipsis'||ov==='clip'||ov==='fade'){d.style.overflow='hidden';d.style.minWidth='0';d.style.maxWidth='100%';if(ov==='ellipsis')d.style.textOverflow='ellipsis'}
+}
+
+/* ---- BoxDecoration completa: border, boxShadow, gradient, image, raios por canto ---- */
+function splitTop(s){var a=[],d=0,q=null,b=0,i,c;for(i=0;i<s.length;i++){c=s[i];if(q){if(c==='\\')i++;else if(c===q)q=null;continue}
+  if(c==="'"||c==='"'){q=c;continue}if('([{'.indexOf(c)>=0)d++;else if(')]}'.indexOf(c)>=0)d--;else if(c===','&&d===0){a.push(s.slice(b,i));b=i+1}}
+  a.push(s.slice(b));return a.map(function(x){return x.trim()}).filter(Boolean)}
+function listItems(t){t=String(t||'').trim().replace(/^const\s+/,'');if(t[0]==='['){var e=t.lastIndexOf(']');t=t.slice(1,e<0?undefined:e)}return splitTop(t)}
+function anyColor(t){if(t==null)return null;t=String(t).trim();return colorVal(t)||(/\.with|Color\.from|Color\(|Colors\.(black|white)\d/.test(t)?pcssColor(t):null)}
+function callMap(t){var c=t&&pv(String(t).trim().replace(/^const\s+/,''));if(!c||c.kind!=='call')return null;var m={};c.named.forEach(function(a){m[a.name]=ex(String(t).trim().replace(/^const\s+/,''),a.expr)});m.__pos=c.pos.map(function(p){return ex(String(t).trim().replace(/^const\s+/,''),p)});m.__name=c.name;return m}
+function radN(t){var m=/Radius\.circular\(\s*([\d.]+)\s*\)/.exec(t||'');return m?+m[1]:0}
+function radiusCss(t){
+  var m=callMap(t);if(!m)return null;var n=m.__name;
+  if(n==='BorderRadius.circular')return (numVal(m.__pos[0])||0)+'px';
+  if(n==='BorderRadius.all')return radN(m.__pos[0])+'px';
+  if(n==='BorderRadius.vertical')return [radN(m.top),radN(m.top),radN(m.bottom),radN(m.bottom)].map(function(v){return v+'px'}).join(' ');
+  if(n==='BorderRadius.horizontal')return [radN(m.left),radN(m.right),radN(m.right),radN(m.left)].map(function(v){return v+'px'}).join(' ');
+  if(n==='BorderRadius.only')return [radN(m.topLeft),radN(m.topRight),radN(m.bottomRight),radN(m.bottomLeft)].map(function(v){return v+'px'}).join(' ');
+  return null}
+function sideCss(t){
+  var m=callMap(t);if(!m||m.__name!=='BorderSide')return null;
+  if(/BorderStyle\.none/.test(m.style||''))return 'none';
+  var w=m.width!=null?numVal(m.width):1;return (w==null?1:w)+'px solid '+(anyColor(m.color)||'#000')}
+function borderCss(d,t){
+  var m=callMap(t);if(!m)return;
+  if(m.__name==='Border.all'){var c=sideCss('BorderSide('+(m.__raw||'')+')');
+    var mm=callMap(t);var args=splitTop(String(t).replace(/^[\s\S]*?Border\.all\(/,'').replace(/\)\s*$/,''));
+    var bs=callMap('BorderSide('+args.join(', ')+')');
+    if(bs){var w=bs.width!=null?numVal(bs.width):1;d.style.border=(w==null?1:w)+'px solid '+(anyColor(bs.color)||'#000')}}
+  else if(m.__name==='Border'){['top','right','bottom','left'].forEach(function(k){if(m[k]){var c=sideCss(m[k]);if(c)d.style['border'+k[0].toUpperCase()+k.slice(1)]=c}})}
+  else if(m.__name==='Border.symmetric'){if(m.vertical){var cv=sideCss(m.vertical);if(cv){d.style.borderTop=cv;d.style.borderBottom=cv}}if(m.horizontal){var ch=sideCss(m.horizontal);if(ch){d.style.borderLeft=ch;d.style.borderRight=ch}}}}
+function shadowCss(t){
+  return listItems(t).map(function(it){var m=callMap(it);if(!m||m.__name!=='BoxShadow')return null;
+    var ox=0,oy=0,om=/Offset\(\s*(-?[\d.]+)\s*,\s*(-?[\d.]+)\s*\)/.exec(m.offset||'');if(om){ox=+om[1];oy=+om[2]}
+    return ox+'px '+oy+'px '+(numVal(m.blurRadius)||0)+'px '+(numVal(m.spreadRadius)||0)+'px '+(anyColor(m.color)||'#000')}).filter(Boolean).join(',')}
+var ALNS={'Alignment.topLeft':[-1,-1],'Alignment.topCenter':[0,-1],'Alignment.topRight':[1,-1],'Alignment.centerLeft':[-1,0],'Alignment.center':[0,0],'Alignment.centerRight':[1,0],'Alignment.bottomLeft':[-1,1],'Alignment.bottomCenter':[0,1],'Alignment.bottomRight':[1,1]};
+function alnXY(t,def){t=String(t||'').trim().replace(/^const\s+/,'');if(ALNS[t])return ALNS[t];var m=/^Alignment\(\s*(-?[\d.]+)\s*,\s*(-?[\d.]+)\s*\)$/.exec(t);return m?[+m[1],+m[2]]:def}
+function gradientCss(t){
+  var m=callMap(t);if(!m)return null;
+  var cols=listItems(m.colors).map(anyColor).filter(Boolean);if(cols.length<2)return null;
+  var st=m.stops?listItems(m.stops).map(numVal):[],list=cols.map(function(c,i){return c+(st[i]!=null?' '+(st[i]*100)+'%':'')}).join(',');
+  if(m.__name==='LinearGradient'){
+    var b=alnXY(m.begin,[-1,0]),e=alnXY(m.end,[1,0]),dx=e[0]-b[0],dy=e[1]-b[1],ang=Math.round(Math.atan2(dx,-dy)*180/Math.PI);
+    return 'linear-gradient('+ang+'deg,'+list+')'}
+  if(m.__name==='RadialGradient'){var c=alnXY(m.center,[0,0]);return 'radial-gradient(circle at '+((c[0]+1)*50)+'% '+((c[1]+1)*50)+'%,'+list+')'}
+  if(m.__name==='SweepGradient'){var c2=alnXY(m.center,[0,0]);return 'conic-gradient(from 90deg at '+((c2[0]+1)*50)+'% '+((c2[1]+1)*50)+'%,'+list+')'}
+  return null}
+function decoImage(d,t){
+  var m=callMap(t);if(!m)return;var im=/(?:NetworkImage|AssetImage)\(\s*(['"])([\s\S]*?)\1/.exec(m.image||'');
+  if(!im)return;var url=im[2];if(!/^https?:/.test(url)){d.style.background=(d.style.background||'')+'';return}
+  var fit=/BoxFit\.(\w+)/.exec(m.fit||''),f=fit?fit[1]:'cover';
+  d.style.backgroundImage=(d.style.backgroundImage?d.style.backgroundImage+',':'')+'url("'+url.replace(/"/g,'')+'")';
+  d.style.backgroundSize=f==='contain'?'contain':f==='fill'?'100% 100%':f==='fitWidth'?'100% auto':f==='fitHeight'?'auto 100%':'cover';d.style.backgroundPosition='center';d.style.backgroundRepeat='no-repeat'}
+function decoExtra(d,dec){
+  var m=callMap(dec);if(!m||!/BoxDecoration$/.test(m.__name))return;
+  if(m.borderRadius){var rc=radiusCss(m.borderRadius);if(rc)d.style.borderRadius=rc}
+  if(m.border)borderCss(d,m.border);
+  if(m.boxShadow){var sc=shadowCss(m.boxShadow);if(sc)d.style.boxShadow=sc}
+  if(m.gradient){var gc=gradientCss(m.gradient);if(gc){d.style.backgroundImage=gc;d.style.backgroundColor=''}}
+  if(m.image)decoImage(d,m.image)}
+function shapeBorderCss(d,t){
+  var m=callMap(t);if(!m)return;
+  if(m.__name==='StadiumBorder')d.style.borderRadius='999px';
+  else if(m.__name==='CircleBorder')d.style.borderRadius='50%';
+  else if(m.__name==='RoundedRectangleBorder'){if(m.borderRadius){var rc=radiusCss(m.borderRadius);if(rc)d.style.borderRadius=rc}else d.style.borderRadius='0';if(m.side){var sc=sideCss(m.side);if(sc)d.style.border=sc}}
+  else if(m.__name==='BeveledRectangleBorder'||m.__name==='ContinuousRectangleBorder'){if(m.borderRadius){var rc2=radiusCss(m.borderRadius);if(rc2)d.style.borderRadius=rc2}}}
+function elevCss(e){var n=numVal(e);if(n==null)return null;return n<=0?'none':'0 '+(n/2)+'px '+n+'px rgba(0,0,0,'+Math.min(.35,.12+n*.02)+')'}
+function unwrapProp(t){t=String(t==null?'':t).trim();var m=/^(?:Widget|Material)State(?:Property)?(?:\.all|All)\(([\s\S]*)\)$/.exec(t)||/^(?:Widget|Material)StatePropertyAll\(([\s\S]*)\)$/.exec(t)||/^(?:Widget|Material)StateProperty\.all\(([\s\S]*)\)$/.exec(t);return m?m[1].trim():t}
+function btnStyle(d,n){
+  var raw=M.getProp(n,'style');if(!raw)return;
+  var m=callMap(raw);if(!m)return;
+  var sf=/\.styleFrom$/.test(m.__name);if(!sf&&m.__name!=='ButtonStyle')return;
+  var g=function(k){return sf?m[k]:(m[k]!=null?unwrapProp(m[k]):undefined)};
+  var bg=g('backgroundColor');if(bg){var bc=anyColor(bg);if(bc)d.style.background=bc}
+  var fg=g('foregroundColor');if(fg){var fc=anyColor(fg);if(fc)d.style.color=fc}
+  var pd=g('padding');if(pd){var pi=insets(pd);if(pi){d.style.padding=px(pi);d.style.height='auto';d.style.minHeight='40px'}}
+  var sh=g('shape');if(sh)shapeBorderCss(d,sh);
+  var sd=g('side');if(sd){var sc=sideCss(sd);if(sc)d.style.border=sc}
+  var ms=g('minimumSize')||g('fixedSize');if(ms){var sm=callMap(ms);if(sm){
+    if(sm.__name==='Size.fromHeight'){d.style.height=(numVal(sm.__pos[0])||40)+'px';d.style.alignSelf='stretch'}
+    else if(sm.__name==='Size'){var w=numVal(sm.__pos[0]),h=numVal(sm.__pos[1]);
+      if(g('fixedSize')){if(w!=null&&isFinite(w))d.style.width=w+'px';if(h!=null&&isFinite(h)){d.style.height=h+'px'}}
+      else{if(w!=null&&isFinite(w))d.style.minWidth=w+'px';if(h!=null&&isFinite(h)){d.style.minHeight=h+'px';d.style.height='auto'}}
+      if(/infinity/.test(sm.__pos[0]||''))d.style.alignSelf='stretch'}}}
+  var el=g('elevation');if(el!=null){var ec=elevCss(el);if(ec)d.style.boxShadow=ec}
+  var ts=g('textStyle');if(ts)d.style.cssText+=textCss(ts)
+}
+
+function layoutProps(d,n){
+  var t=ALIAS[n.type]||n.type,g=function(k){return (M.getProp(n,k)||'').trim()};
+  if(/^(ListView|ListView\.builder|ListView\.separated|ReorderableListView|ReorderableListView\.builder|SingleChildScrollView)$/.test(n.type)){
+    var horiz=/Axis\.horizontal/.test(g('scrollDirection')),rev=g('reverse')==='true';
+    if(horiz){d.style.flexDirection=rev?'row-reverse':'row';d.style.overflowX='auto';d.style.overflowY='hidden';d.style.alignItems='stretch';
+      [].forEach.call(d.children,function(c){if(!c.classList.contains('ph')){c.style.flex='none'}})}
+    else if(rev&&n.type!=='SingleChildScrollView')d.style.flexDirection='column-reverse'}
+  if(n.type==='Wrap'&&/Axis\.vertical/.test(g('direction'))){d.style.flexDirection='column';d.style.height=d.style.height||'100%';d.style.columnGap=(numVal(M.getProp(n,'runSpacing'))||0)+'px';d.style.rowGap=(numVal(M.getProp(n,'spacing'))||0)+'px'}
+  if(n.type==='Column'&&/VerticalDirection\.up/.test(g('verticalDirection')))d.style.flexDirection='column-reverse';
+  if(n.type==='Row'&&/TextDirection\.rtl/.test(g('textDirection')))d.style.flexDirection='row-reverse';
+  if(n.type==='Row'&&/VerticalDirection\.up/.test(g('verticalDirection'))){var ai=d.style.alignItems;if(ai==='flex-start')d.style.alignItems='flex-end';else if(ai==='flex-end')d.style.alignItems='flex-start'}
+  if(n.type==='GridView.count'){var car=numVal(M.getProp(n,'childAspectRatio'));if(car>0)[].forEach.call(d.children,function(c){if(!c.classList.contains('ph')){c.style.aspectRatio=String(car);c.style.alignSelf='start';c.style.minWidth='0';c.style.overflow='hidden'}})}
+  if(n.type==='Stack'&&/Clip\.none/.test(g('clipBehavior')))d.style.overflow='visible';
+  if(n.type==='Visibility'&&g('maintainSize')==='true'&&g('visible')==='false'){d.style.visibility='hidden'}
 }
 function enumName(raw){return raw?String(raw).trim().split('.').pop():''}
 var ICONS={star_border:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" fill="none"/>',check_circle_outline:'<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>',lightbulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>',refresh:'<path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/>',home:'<path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/>',add:'<path d="M12 5v14M5 12h14"/>',star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z" fill="currentColor"/>',favorite:'<path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/>',settings:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9L7 7M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>',search:'<circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l6 6"/>',person:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>',menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',check:'<path d="M5 12.5l4.5 4.5L19 7"/>',close:'<path d="M6 6l12 12M18 6L6 18"/>',arrow_back:'<path d="M20 12H5M11 5l-7 7 7 7"/>',email:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',phone:'<path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A15 15 0 013 6a2 2 0 012-2z"/>',shopping_cart:'<path d="M3 4h2l2.5 11h10L20 7H6.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/>',camera_alt:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',notifications:'<path d="M6 17v-6a6 6 0 0112 0v6l2 2H4z"/><path d="M10 21h4"/>',location_on:'<path d="M12 21s-7-6.5-7-12a7 7 0 0114 0c0 5.500-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/>'};
@@ -4527,10 +4670,13 @@ function build(n,path,pt,ppt,sel){
       var fg=colorVal(M.getProp(n,'foregroundColor'));if(fg)d.style.color=fg;
       var hasB=!!n.slots.bottom,row=d;
       if(hasB){d.style.height='auto';d.style.flexDirection='column';d.style.alignItems='stretch';d.style.padding='0';row=document.createElement('div');row.className='abrow';d.appendChild(row)}
-      if(R_opts.nav.length&&ppt!=='hasDrawer'){var bk=document.createElement('span');bk.className='bkb hh';bk.dataset.h='back';bk.textContent='←';bk.setAttribute('aria-label','Voltar');row.appendChild(bk)}
-      if(ppt==='hasDrawer'){var hb=document.createElement('span');hb.className='ham';hb.dataset.dk=R_opts.hamKey||'';hb.setAttribute('role','button');hb.setAttribute('aria-label','Abrir o menu lateral');hb.innerHTML='<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>';row.appendChild(hb)}
+      if(n.slots.leading){var ldg=child(n.slots.leading,'leading','#none');ldg.style.flex='none';row.appendChild(ldg)}
+      else if(R_opts.nav.length&&ppt!=='hasDrawer'){var bk=document.createElement('span');bk.className='bkb hh';bk.dataset.h='back';bk.textContent='←';bk.setAttribute('aria-label','Voltar');row.appendChild(bk)}
+      if(ppt==='hasDrawer'&&!n.slots.leading){var hb=document.createElement('span');hb.className='ham';hb.dataset.dk=R_opts.hamKey||'';hb.setAttribute('role','button');hb.setAttribute('aria-label','Abrir o menu lateral');hb.innerHTML='<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>';row.appendChild(hb)}
       if(/true/.test(M.getProp(n,'centerTitle')||''))row.style.justifyContent='center';
       if(n.slots.title)row.appendChild(child(n.slots.title,'title','#none'));
+      if(n.slots.actions&&n.slots.actions.length){var aw=document.createElement('div');aw.className='abact';aw.style.cssText='display:flex;align-items:center;gap:4px;margin-left:auto;flex:none';
+        n.slots.actions.forEach(function(c,i){aw.appendChild(child(c,'actions:'+i,'#none'))});row.appendChild(aw)}
       if(hasB)d.appendChild(child(n.slots.bottom,'bottom','#none'));
       break}
     case 'FloatingActionButton':{
@@ -4569,7 +4715,8 @@ function build(n,path,pt,ppt,sel){
       if(dc&&dc.kind==='call'){
         var dcol=named(dc,'color');if(dcol&&colorVal(ex(dec,dcol)))d.style.background=colorVal(ex(dec,dcol));
         var br=named(dc,'borderRadius');if(br){var bm=/circular\(\s*([\d.]+)/.exec(ex(dec,br));if(bm)d.style.borderRadius=bm[1]+'px'}
-        var sh=named(dc,'shape');if(sh&&/circle/.test(ex(dec,sh)))d.style.borderRadius='50%'}
+        var sh=named(dc,'shape');if(sh&&/circle/.test(ex(dec,sh)))d.style.borderRadius='50%';decoExtra(d,dec)}
+      if(/^Card/.test(n.type)){var cel=M.getProp(n,'elevation');if(cel!=null){var cec=elevCss(cel);if(cec)d.style.boxShadow=cec}var csh=M.getProp(n,'shape');if(csh)shapeBorderCss(d,csh);var csc=M.getProp(n,'shadowColor');if(csc&&d.style.boxShadow&&d.style.boxShadow!=='none'){var cc3=anyColor(csc);if(cc3)d.style.boxShadow=d.style.boxShadow.replace(/rgba?\([^)]*\)/,cc3)}}
       var al=ALIGN[enumName(M.getProp(n,'alignment'))];if(al){d.style.alignItems=al[0];d.style.justifyContent=al[1]}
       if(wv===Infinity)d.style.alignSelf='stretch';
       if(n.type==='SizedBox'&&n.slots.child&&(wv!=null||hv!=null))
@@ -4729,7 +4876,7 @@ function build(n,path,pt,ppt,sel){
     case 'Slider':{
       d.className+=' sld';var mn=numVal(M.getProp(n,'min')),mx=numVal(M.getProp(n,'max')),vv=numVal(M.getProp(n,'value'));mn=mn==null?0:mn;mx=mx==null?1:mx;vv=vv==null?mn:vv;
       var fr=mx>mn?Math.max(0,Math.min(1,(vv-mn)/(mx-mn))):0,acl=colorVal(M.getProp(n,'activeColor'));if(acl)d.style.setProperty('--act',acl);
-      d.innerHTML='<span class="tk"><span class="ac" style="width:'+(fr*100)+'%"></span><span class="thm" style="left:'+(fr*100)+'%"></span></span>';break}
+      d.innerHTML='<span class="tk"><span class="ac" style="width:'+(fr*100)+'%"></span><span class="thm" style="left:'+(fr*100)+'%"></span></span>';var dvn=numVal(M.getProp(n,'divisions'));if(dvn>0&&dvn<=100){var tkE=d.querySelector('.tk'),dvh='';for(var di=0;di<=dvn;di++)dvh+='<span class="dv" style="left:'+(di/dvn*100)+'%"></span>';tkE.insertAdjacentHTML('afterbegin',dvh)}break}
     case 'AspectRatio':{d.className+=' col';d.style.alignItems='stretch';var asr=numVal(M.getProp(n,'aspectRatio'));d.style.aspectRatio=String(asr>0?asr:1);d.style.width='100%';d.style.flex='none';single('child','#expanded','child: adicione um widget','Column');break}
     case 'ConstrainedBox':{
       d.className+=' col';d.style.alignItems='flex-start';var cbm=callParts(M.getProp(n,'constraints'),'BoxConstraints').map||{};
@@ -5242,7 +5389,7 @@ function build(n,path,pt,ppt,sel){
       break}
     case 'DragTarget':{d.className+=' col dgt';n._key=path.join('>')||'root';d.style.alignItems='flex-start';genKids('#single');if(R_opts.run){d.dataset.dt=n._key;d._n=n}break}
     case 'Text':{
-      d.className+=' txt';d.textContent=strVal(M.getProp(n,'data'));var dtt=R_opts.dts&&R_opts.dts[R_opts.dts.length-1];if(dtt)d.style.cssText+=textCss(dtt);d.style.cssText+=textCss(M.getProp(n,'style'));break}
+      d.className+=' txt';d.textContent=strVal(M.getProp(n,'data'));var dtt=R_opts.dts&&R_opts.dts[R_opts.dts.length-1];if(dtt)d.style.cssText+=textCss(dtt);d.style.cssText+=textCss(M.getProp(n,'style'));textProps(d,n);break}
     case 'Icon':{
       d.className+=' ico';var sz=numVal(M.getProp(n,'size'))||24;d.style.width=d.style.height=sz+'px';d.style.flex='none';
       d.style.color=colorVal(M.getProp(n,'color'))||'inherit';d.innerHTML=iconSvg(M.getProp(n,'icon'));break}
@@ -5279,9 +5426,10 @@ function build(n,path,pt,ppt,sel){
       d.appendChild(ubt);break}
     case 'BottomAppBar':{d.className+=' bab';var bbg=colorVal(M.getProp(n,'color'));if(bbg)d.style.background=bbg;single('child','#single','child: adicione uma Row');break}
     case 'ElevatedButton':case 'TextButton':case 'OutlinedButton':case 'FilledButton':{
-      d.className+=' btn'+(n.type==='TextButton'?' tbtn':n.type==='OutlinedButton'?' obtn':n.type==='FilledButton'?' fbtn':'');d.style.flex='none';if(n.type==='MaterialButton'||n.type==='RawMaterialButton'){var mbg=colorVal(M.getProp(n,n.type==='MaterialButton'?'color':'fillColor')),mfg=colorVal(M.getProp(n,'textColor'));if(mbg)d.style.background=mbg;if(mfg)d.style.color=mfg;if(/StadiumBorder|CircleBorder/.test(M.getProp(n,'shape')||''))d.style.borderRadius='999px'}if(n.slots.child){(R_opts.dts=R_opts.dts||[]).push(null);try{d.appendChild(child(n.slots.child,'child','#none'))}finally{R_opts.dts.pop()}}else d.appendChild(ph('child'));break}
+      d.className+=' btn'+(n.type==='TextButton'?' tbtn':n.type==='OutlinedButton'?' obtn':n.type==='FilledButton'?' fbtn':'');d.style.flex='none';if(n.type==='MaterialButton'||n.type==='RawMaterialButton'){var mbg=colorVal(M.getProp(n,n.type==='MaterialButton'?'color':'fillColor')),mfg=colorVal(M.getProp(n,'textColor'));if(mbg)d.style.background=mbg;if(mfg)d.style.color=mfg;if(/StadiumBorder|CircleBorder/.test(M.getProp(n,'shape')||''))d.style.borderRadius='999px'}if(n.slots.child){(R_opts.dts=R_opts.dts||[]).push(null);try{d.appendChild(child(n.slots.child,'child','#none'))}finally{R_opts.dts.pop()}}else d.appendChild(ph('child'));btnStyle(d,n);break}
   }
   if(R_opts.run&&ANIM[n.type]){d.dataset.an=durMs(M.getProp(n,'duration'));d.dataset.anc=curveCss(M.getProp(n,'curve'));d.dataset.ank=path.join('>');if(n.type==='AnimatedScale'||n.type==='AnimatedRotation')d.dataset.tf=d.style.transform}
+  layoutProps(d,n);
   lbl(d,n);
   if(pt&&pt!=='#none')place(d,n,pt,ppt);
   if(R_opts.run)bindRun(d,n);
@@ -5303,7 +5451,7 @@ var HANDLERS=['onPressed','onTap','onLongPress','onDoubleTap','onChanged','onSel
 function bindRun(d,n){
   if(n.type==='PopupMenuButton'||n.type==='SegmentedButton'||n.type==='Dismissible'||n.type==='BottomNavigationBar'||n.type==='ToggleButtons'||n.type==='DropdownMenu'||n.type==='Autocomplete'||n.type==='Stepper'||n.type==='ExpansionPanelList'||n.type==='MenuItemButton')return;
   if(n.type==='TextField'||n.type==='TextFormField'||n.type==='SearchBar'){
-    var key=d.dataset.path,inp=document.createElement('input');inp.className='tfi'+(d.querySelector('.tl')?' hl':'');inp.dataset.key=key;
+    var key=d.dataset.path,tml=numVal(M.getProp(n,'maxLines')),tmx=/^\s*null\s*$/.test(M.getProp(n,'maxLines')||'x'),inp=document.createElement((tml>1||tmx)?'textarea':'input');if(inp.tagName==='INPUT'&&/^\s*true\s*$/.test(M.getProp(n,'obscureText')||''))inp.type='password';if(inp.tagName==='TEXTAREA'){inp.rows=Math.max(2,tml||3);d.style.height='auto';d.style.minHeight=(24+Math.max(2,tml||3)*22)+'px';inp.style.resize='none';inp.style.paddingTop='16px'}if(/^\s*(?:\w+\.)?(?:TextInputType\.number|number)\s*$/.test((M.getProp(n,'keyboardType')||'')))inp.inputMode='numeric';inp.className='tfi'+(d.querySelector('.tl')?' hl':'');inp.dataset.key=key;
     var cr=M.rawProp(n,'controller'),cf=cr&&OF.ST.fields[cr.trim()];cf=cf&&cf.value&&cf.value.ctl?cf.value:null;d._ctl=cf;
     inp.value=cf?cf.text:(R_opts.typed[key]||'');inp.setAttribute('aria-label','Campo de texto');d.classList.toggle('typed',!!inp.value);d.appendChild(inp);d._n=n;d.classList.add('hh')}
   d._n=n;
@@ -5368,7 +5516,7 @@ function renderInner(root,selKey,screen){
     screen.appendChild(w)});
 }
 OF.R={wmerc:wmerc,popItems:popItems,lamArg:lamArg,opts:R_opts,renderScreen:renderScreen,colorVal:colorVal,numVal:numVal,strVal:strVal,enumName:enumName,SWATCH:SWATCH,ICONNAMES:ICONNAMES,styleParts:styleParts,callParts:callParts,insets:insets,pv:pv};
-OF.pcss=pcssColor;
+OF.pcss=pcssColor;OF.textCss=textCss;
 })();
 
 (function(){
@@ -11889,7 +12037,11 @@ class _TelaState extends State<Tela> {
 {t:"x. AlignTransition, DecoratedBoxTransition e SliverOpacity",
  text:"Além de ScaleTransition e SlideTransition, o Flutter tem transições para o alinhamento e para a decoração. O AlignTransition recebe alignment, uma Animation<Alignment> criada com AlignmentTween(begin: ..., end: ...).animate(controller). O DecoratedBoxTransition recebe decoration, criada com DecorationTween entre dois BoxDecoration. No simulador, durante a animação mudam a cor e o borderRadius.circular. O SliverOpacity faz o mesmo que o Opacity, mas para um sliver inteiro dentro do CustomScrollView. O ..repeat(reverse: true) no controller faz a animação ir e voltar sem parar.",
  tryit:"Em ▶ Testar, veja a estrela cruzar a faixa e a caixa mudar de cor e de cantos. Troque as cores do DecorationTween e a opacidade do SliverOpacity.",
- code:"import 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Tela()));\n\nclass Tela extends StatefulWidget {\n  const Tela({super.key});\n  @override\n  State<Tela> createState() => _TelaState();\n}\n\nclass _TelaState extends State<Tela> with SingleTickerProviderStateMixin {\n  late final AnimationController _c;\n  late final Animation<Alignment> _alinha;\n  late final Animation<Decoration> _deco;\n\n  @override\n  void initState() {\n    super.initState();\n    _c = AnimationController(vsync: this, duration: const Duration(seconds: 2))..repeat(reverse: true);\n    _alinha = AlignmentTween(begin: Alignment.topLeft, end: Alignment.bottomRight).animate(_c);\n    _deco = DecorationTween(\n      begin: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(0)),\n      end: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(40)),\n    ).animate(_c);\n  }\n\n  @override\n  void dispose() {\n    _c.dispose();\n    super.dispose();\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Mais transições')),\n      body: Column(children: [\n        SizedBox(\n          height: 120,\n          child: AlignTransition(alignment: _alinha, child: const Icon(Icons.star, size: 32)),\n        ),\n        DecoratedBoxTransition(\n          decoration: _deco,\n          child: const Padding(padding: EdgeInsets.all(24), child: Text('Animado')),\n        ),\n        Expanded(\n          child: CustomScrollView(slivers: [\n            SliverOpacity(\n              opacity: 0.4,\n              sliver: SliverFixedExtentList(\n                itemExtent: 40,\n                delegate: SliverChildBuilderDelegate((c, i) => ListTile(title: Text('Linha $i')), childCount: 3),\n              ),\n            ),\n          ]),\n        ),\n      ]),\n    );\n  }\n}\n"}
+ code:"import 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Tela()));\n\nclass Tela extends StatefulWidget {\n  const Tela({super.key});\n  @override\n  State<Tela> createState() => _TelaState();\n}\n\nclass _TelaState extends State<Tela> with SingleTickerProviderStateMixin {\n  late final AnimationController _c;\n  late final Animation<Alignment> _alinha;\n  late final Animation<Decoration> _deco;\n\n  @override\n  void initState() {\n    super.initState();\n    _c = AnimationController(vsync: this, duration: const Duration(seconds: 2))..repeat(reverse: true);\n    _alinha = AlignmentTween(begin: Alignment.topLeft, end: Alignment.bottomRight).animate(_c);\n    _deco = DecorationTween(\n      begin: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(0)),\n      end: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(40)),\n    ).animate(_c);\n  }\n\n  @override\n  void dispose() {\n    _c.dispose();\n    super.dispose();\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Mais transições')),\n      body: Column(children: [\n        SizedBox(\n          height: 120,\n          child: AlignTransition(alignment: _alinha, child: const Icon(Icons.star, size: 32)),\n        ),\n        DecoratedBoxTransition(\n          decoration: _deco,\n          child: const Padding(padding: EdgeInsets.all(24), child: Text('Animado')),\n        ),\n        Expanded(\n          child: CustomScrollView(slivers: [\n            SliverOpacity(\n              opacity: 0.4,\n              sliver: SliverFixedExtentList(\n                itemExtent: 40,\n                delegate: SliverChildBuilderDelegate((c, i) => ListTile(title: Text('Linha $i')), childCount: 3),\n              ),\n            ),\n          ]),\n        ),\n      ]),\n    );\n  }\n}\n"},
+{t:"x. Estilos: texto, botões e decoração",
+ text:"Quase todo o visual de um app vem de três lugares. No Text, o style (TextStyle) controla tamanho, peso, cor, altura da linha (height) e decoration; textAlign alinha, e maxLines com overflow: TextOverflow.ellipsis corta o excesso com reticências. Theme.of(context).textTheme.headlineMedium pega os estilos prontos do tema, e copyWith muda só o que você quiser. No Container, o BoxDecoration reúne color, gradient (LinearGradient), border (Border.all), borderRadius (BorderRadius.only dá cantos diferentes) e boxShadow. Nos botões, o ElevatedButton.styleFrom troca backgroundColor, foregroundColor, padding, shape e side. O Card aceita elevation e shape. O AppBar ganha leading (à esquerda) e actions (botões à direita).",
+ tryit:"Troque as cores do LinearGradient, aumente o blurRadius da sombra e mude o shape do botão Comprar para StadiumBorder().",
+ code:"import 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Vitrine()));\n\nclass Vitrine extends StatelessWidget {\n  const Vitrine({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(\n        leading: const Icon(Icons.menu),\n        title: const Text('Estilos'),\n        actions: [\n          IconButton(icon: const Icon(Icons.search), onPressed: () {}),\n        ],\n      ),\n      body: ListView(\n        padding: const EdgeInsets.all(16),\n        children: [\n          Text('Título do tema', style: Theme.of(context).textTheme.headlineMedium),\n          const Text(\n            'Texto longo que será cortado depois de duas linhas, com reticências no final do segundo trecho.',\n            maxLines: 2,\n            overflow: TextOverflow.ellipsis,\n            style: TextStyle(height: 1.5, decoration: TextDecoration.underline),\n          ),\n          const SizedBox(height: 12),\n          Container(\n            height: 90,\n            alignment: Alignment.center,\n            decoration: BoxDecoration(\n              gradient: const LinearGradient(\n                colors: [Colors.indigo, Colors.pink],\n                begin: Alignment.topLeft,\n                end: Alignment.bottomRight,\n              ),\n              borderRadius: BorderRadius.circular(16),\n              boxShadow: const [\n                BoxShadow(color: Colors.black26, blurRadius: 8, offset: Offset(0, 4)),\n              ],\n            ),\n            child: const Text(\n              'Promoção',\n              style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),\n            ),\n          ),\n          const SizedBox(height: 12),\n          Container(\n            padding: const EdgeInsets.all(16),\n            decoration: BoxDecoration(\n              color: Colors.amber.shade100,\n              border: Border.all(color: Colors.deepOrange, width: 2),\n              borderRadius: const BorderRadius.only(\n                topLeft: Radius.circular(24),\n                bottomRight: Radius.circular(24),\n              ),\n            ),\n            child: const Text('Borda e cantos diferentes'),\n          ),\n          const SizedBox(height: 12),\n          ElevatedButton(\n            onPressed: () {},\n            style: ElevatedButton.styleFrom(\n              backgroundColor: Colors.green,\n              foregroundColor: Colors.white,\n              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),\n              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),\n            ),\n            child: const Text('Comprar'),\n          ),\n          const SizedBox(height: 8),\n          OutlinedButton(\n            onPressed: () {},\n            style: OutlinedButton.styleFrom(\n              foregroundColor: Colors.red,\n              side: const BorderSide(color: Colors.red, width: 2),\n              shape: const StadiumBorder(),\n            ),\n            child: const Text('Cancelar'),\n          ),\n          Card(\n            elevation: 8,\n            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),\n            child: const Padding(\n              padding: EdgeInsets.all(16),\n              child: Text('Cartão com sombra e cantos redondos'),\n            ),\n          ),\n        ],\n      ),\n    );\n  }\n}\n"}
 /*NL-END*/
 ];
 var base=LESSONS.filter(function(l){return !l.after}),placed=LESSONS.filter(function(l){return l.after});
@@ -11899,7 +12051,7 @@ placed.forEach(function(l){var k=-1;base.forEach(function(b,i){if(b.t.indexOf(l.
   base.splice(k+1,0,l)});
 LESSONS=base;
 /*ORDER-BEGIN*/
-var ORDER=["Scaffold e AppBar", "Center, Padding e Container", "Column: empilhar na vertical", "Row e Expanded: lado a lado", "Aninhando Column e Row", "Align e Flexible", "Stack e Positioned", "Lista de tarefas", "Botões e TextField", "Grade, imagens e ListTile", "Wrap, Chip e CircleAvatar", "Projeto 1 · etapa 1: cabeçalho do cartão", "Projeto 1 · etapa 2: contatos", "Projeto 1 · etapa 3: habilidades e acabamento", "Rolagem, recorte e toque", "Drawer e barra inferior", "Abas com TabBar", "Abas que funcionam", "TabPageSelector: bolinhas de página", "MaterialBanner e Banner: avisos fixos", "Recortes e efeitos: ClipOval, DecoratedBox, ShaderMask e Material", "Estado com setState", "Toques: GestureDetector", "Checkbox, Switch e Slider", "Interruptor e controle deslizante", "Opacidade, recorte e controle em passos", "Condições na interface", "Listas e laços", "Gerando widgets com for", "Formulário: menu, rádio e interruptor", "Listas sob demanda com builder", "Tabelas, páginas e layout responsivo", "Seus próprios widgets", "Classes de dados", "Projeto 2 · etapa 1: a lista de tarefas", "Projeto 2 · etapa 2: adicionar tarefas", "Projeto 2 · etapa 3: marcar como feita", "Map e parâmetros do widget", "Lógica: switch, laços e try/catch", "Projeto 3 · etapa 1: o formulário do IMC", "Projeto 3 · etapa 2: calcular com segurança", "Projeto 3 · etapa 3: classificar e guardar o histórico", "Mensagem rápida: SnackBar", "Diálogo de confirmação: AlertDialog", "Projeto 2 · etapa 4: remover com confirmação", "Painel inferior: BottomSheet", "Navegando entre telas", "Passando dados para outra tela", "Projeto 4 · etapa 1: a pergunta do quiz", "Projeto 4 · etapa 2: várias perguntas e pontuação", "Projeto 4 · etapa 3: a tela de resultado", "Tema do app: ThemeData", "Ciclo de vida: initState", "Tela com estado próprio", "Esperando com Future e async", "Esperando a resposta de outra tela", "FutureBuilder: a tela que espera os dados", "StreamBuilder: dados que chegam ao longo do tempo", "RefreshIndicator: puxar para atualizar", "Chips, lista que expande e selo de aviso", "Navegação inferior, visibilidade e proporção", "Texto com vários estilos e transformações", "Menu de opções e escolha em segmentos", "Deslizar para apagar: Dismissible", "IndexedStack: abas que guardam o estado", "NavigationRail: menu lateral", "NavigationDrawer e BottomAppBar", "MenuAnchor: menu que abre ao lado", "SimpleDialog: escolher uma opção", "RangeSlider e ToggleButtons: filtros", "DropdownMenu: menu de escolha", "Autocomplete e SearchBar: busca com sugestões", "Stepper: passo a passo", "ExpansionPanelList: perguntas frequentes", "Botões modernos: FilledButton.tonal, IconButton.filled e FAB estendido", "Busca e calendário: SearchAnchor.bar e CalendarDatePicker", "SearchAnchor: busca com sugestões", "Layout avançado: OverflowBox, RotatedBox, Offstage e IgnorePointer", "Data e hora: showDatePicker e showTimePicker", "Cabeçalho que encolhe: SliverAppBar", "Slivers: CustomScrollView com SliverGrid e SliverPadding", "NestedScrollView e SliverPersistentHeader", "ListWheelScrollView e CarouselView", "PaginatedDataTable com DataTableSource", "ReorderableListView: arrastar para reordenar", "AnimatedList: itens que entram e saem", "DraggableScrollableSheet: painel que sobe e desce", "InteractiveViewer: zoom e arrastar", "Arrastar e soltar: Draggable e DragTarget", "Listener e MouseRegion: eventos de ponteiro e de mouse", "Hero: widget que voa entre duas telas", "AnimatedPositioned e AnimatedAlign: movimento suave", "AnimatedContainer, AnimatedOpacity, AnimatedScale e AnimatedRotation", "AnimatedSize e AnimatedPadding: painel que abre", "AnimatedSwitcher e AnimatedCrossFade: trocar conteúdo", "TweenAnimationBuilder: animar qualquer valor", "AnimationController: animação com Tween e Curves", "AlignTransition, DecoratedBoxTransition e SliverOpacity", "CustomPaint: Canvas, Paint e formas", "CustomPaint: gráfico de pizza com drawArc", "CustomPaint animado com AnimationController", "PreferredSize e ClipPath com CustomClipper", "ValueNotifier e ValueListenableBuilder: atualizar sem setState", "StatefulBuilder, OrientationBuilder e DefaultTextStyle", "JSON, classe modelo e map para cards", "shared_preferences: guardar preferências", "API, FutureBuilder e cache com shared_preferences", "sqflite: banco SQLite com CRUD", "sqflite com duas tabelas e JOIN", "Firebase Auth: login e cadastro", "Firestore: lista em tempo real", "Sensor: acelerômetro", "Sensor: giroscópio e bússola", "Sensor: pedômetro (passos)", "Sensor: barômetro e magnetômetro", "Bateria e rede: battery_plus e connectivity_plus", "Saída de som: tocar áudio", "Microfone: gravar áudio", "Localização: GPS", "Mapa com OpenStreetMap: flutter_map", "Mapa e GPS: você está aqui", "Endereço e rota: carro, bicicleta e a pé", "Câmera e vibração", "Biometria: impressão digital e rosto", "Lanterna: torch_light", "Leitor de QR code: mobile_scanner", "Abrir um link e compartilhar", "Projeto 5 · etapa 1: a vitrine", "Projeto 5 · etapa 2: carrinho e SnackBar", "Projeto 5 · etapa 3: abas Produtos e Carrinho", "Projeto 5 · etapa 4: tela de detalhes", "Projeto 5 · etapa 5: agite para limpar (sensor)"];
+var ORDER=["Scaffold e AppBar", "Center, Padding e Container", "Column: empilhar na vertical", "Row e Expanded: lado a lado", "Aninhando Column e Row", "Align e Flexible", "Stack e Positioned", "Lista de tarefas", "Botões e TextField", "Grade, imagens e ListTile", "Wrap, Chip e CircleAvatar", "Projeto 1 · etapa 1: cabeçalho do cartão", "Projeto 1 · etapa 2: contatos", "Projeto 1 · etapa 3: habilidades e acabamento", "Rolagem, recorte e toque", "Drawer e barra inferior", "Abas com TabBar", "Abas que funcionam", "TabPageSelector: bolinhas de página", "MaterialBanner e Banner: avisos fixos", "Recortes e efeitos: ClipOval, DecoratedBox, ShaderMask e Material","Estilos: texto, botões e decoração", "Estado com setState", "Toques: GestureDetector", "Checkbox, Switch e Slider", "Interruptor e controle deslizante", "Opacidade, recorte e controle em passos", "Condições na interface", "Listas e laços", "Gerando widgets com for", "Formulário: menu, rádio e interruptor", "Listas sob demanda com builder", "Tabelas, páginas e layout responsivo", "Seus próprios widgets", "Classes de dados", "Projeto 2 · etapa 1: a lista de tarefas", "Projeto 2 · etapa 2: adicionar tarefas", "Projeto 2 · etapa 3: marcar como feita", "Map e parâmetros do widget", "Lógica: switch, laços e try/catch", "Projeto 3 · etapa 1: o formulário do IMC", "Projeto 3 · etapa 2: calcular com segurança", "Projeto 3 · etapa 3: classificar e guardar o histórico", "Mensagem rápida: SnackBar", "Diálogo de confirmação: AlertDialog", "Projeto 2 · etapa 4: remover com confirmação", "Painel inferior: BottomSheet", "Navegando entre telas", "Passando dados para outra tela", "Projeto 4 · etapa 1: a pergunta do quiz", "Projeto 4 · etapa 2: várias perguntas e pontuação", "Projeto 4 · etapa 3: a tela de resultado", "Tema do app: ThemeData", "Ciclo de vida: initState", "Tela com estado próprio", "Esperando com Future e async", "Esperando a resposta de outra tela", "FutureBuilder: a tela que espera os dados", "StreamBuilder: dados que chegam ao longo do tempo", "RefreshIndicator: puxar para atualizar", "Chips, lista que expande e selo de aviso", "Navegação inferior, visibilidade e proporção", "Texto com vários estilos e transformações", "Menu de opções e escolha em segmentos", "Deslizar para apagar: Dismissible", "IndexedStack: abas que guardam o estado", "NavigationRail: menu lateral", "NavigationDrawer e BottomAppBar", "MenuAnchor: menu que abre ao lado", "SimpleDialog: escolher uma opção", "RangeSlider e ToggleButtons: filtros", "DropdownMenu: menu de escolha", "Autocomplete e SearchBar: busca com sugestões", "Stepper: passo a passo", "ExpansionPanelList: perguntas frequentes", "Botões modernos: FilledButton.tonal, IconButton.filled e FAB estendido", "Busca e calendário: SearchAnchor.bar e CalendarDatePicker", "SearchAnchor: busca com sugestões", "Layout avançado: OverflowBox, RotatedBox, Offstage e IgnorePointer", "Data e hora: showDatePicker e showTimePicker", "Cabeçalho que encolhe: SliverAppBar", "Slivers: CustomScrollView com SliverGrid e SliverPadding", "NestedScrollView e SliverPersistentHeader", "ListWheelScrollView e CarouselView", "PaginatedDataTable com DataTableSource", "ReorderableListView: arrastar para reordenar", "AnimatedList: itens que entram e saem", "DraggableScrollableSheet: painel que sobe e desce", "InteractiveViewer: zoom e arrastar", "Arrastar e soltar: Draggable e DragTarget", "Listener e MouseRegion: eventos de ponteiro e de mouse", "Hero: widget que voa entre duas telas", "AnimatedPositioned e AnimatedAlign: movimento suave", "AnimatedContainer, AnimatedOpacity, AnimatedScale e AnimatedRotation", "AnimatedSize e AnimatedPadding: painel que abre", "AnimatedSwitcher e AnimatedCrossFade: trocar conteúdo", "TweenAnimationBuilder: animar qualquer valor", "AnimationController: animação com Tween e Curves", "AlignTransition, DecoratedBoxTransition e SliverOpacity", "CustomPaint: Canvas, Paint e formas", "CustomPaint: gráfico de pizza com drawArc", "CustomPaint animado com AnimationController", "PreferredSize e ClipPath com CustomClipper", "ValueNotifier e ValueListenableBuilder: atualizar sem setState", "StatefulBuilder, OrientationBuilder e DefaultTextStyle", "JSON, classe modelo e map para cards", "shared_preferences: guardar preferências", "API, FutureBuilder e cache com shared_preferences", "sqflite: banco SQLite com CRUD", "sqflite com duas tabelas e JOIN", "Firebase Auth: login e cadastro", "Firestore: lista em tempo real", "Sensor: acelerômetro", "Sensor: giroscópio e bússola", "Sensor: pedômetro (passos)", "Sensor: barômetro e magnetômetro", "Bateria e rede: battery_plus e connectivity_plus", "Saída de som: tocar áudio", "Microfone: gravar áudio", "Localização: GPS", "Mapa com OpenStreetMap: flutter_map", "Mapa e GPS: você está aqui", "Endereço e rota: carro, bicicleta e a pé", "Câmera e vibração", "Biometria: impressão digital e rosto", "Lanterna: torch_light", "Leitor de QR code: mobile_scanner", "Abrir um link e compartilhar", "Projeto 5 · etapa 1: a vitrine", "Projeto 5 · etapa 2: carrinho e SnackBar", "Projeto 5 · etapa 3: abas Produtos e Carrinho", "Projeto 5 · etapa 4: tela de detalhes", "Projeto 5 · etapa 5: agite para limpar (sensor)"];
 (function(){var by={};LESSONS.forEach(function(l){by[l.t.replace(/^(?:\d+|x)\.\s*/,'')]=l});var out=[];ORDER.forEach(function(t){if(by[t]){out.push(by[t]);by[t]=null}});LESSONS.forEach(function(l){if(by[l.t.replace(/^(?:\d+|x)\.\s*/,'')])out.push(l)});LESSONS=out})();
 /*ORDER-END*/
 LESSONS.forEach(function(x,i){x.t=x.t.replace(/^(?:\d+|x)\./,(i+1)+'.')});
@@ -12112,6 +12264,7 @@ add("PreferredSize e ClipPath",[["Cabeçalho mais alto","No preferredSize, troqu
 add("StatefulBuilder, OrientationBuilder",[["Texto em verde","No DefaultTextStyle, troque Colors.indigo por Colors.green.","color: Colors\\.green,\\s*fontSize"],["Letras maiores","No DefaultTextStyle, troque fontSize: 20 por fontSize: 26.","fontSize: 26"],["Switch começa ligado","Troque bool ligado = false por bool ligado = true.","bool ligado = true"]]);
 add("Listener e MouseRegion",[["Caixa verde vira roxa","No MouseRegion, troque Colors.green por Colors.purple.","Colors\\.purple : Colors\\.grey"],["Texto do mouse","Troque Mouse em cima por Pode clicar.","Pode clicar"],["Contar ao encostar","No onPointerDown, troque setState(() => log = 'down') por setState(() { toques++; log = 'down'; }).","toques\\+\\+; log = 'down'"]]);
 add("AlignTransition, DecoratedBoxTransition",[["Caixa termina verde","No DecorationTween, troque Colors.blue por Colors.green.","color: Colors\\.green"],["Estrela mais rápida","Troque seconds: 2 por seconds: 1 no AnimationController.","seconds: 1\\b"],["Estrela vai para cima","No AlignmentTween, troque Alignment.bottomRight por Alignment.topRight.","end: Alignment\\.topRight"],["Lista mais apagada","No SliverOpacity, troque opacity: 0.4 por opacity: 0.2.","opacity: 0\\.2"]]);
+add("Estilos: texto, botões e decoração",[["Gradiente verde","No LinearGradient, troque Colors.pink por Colors.teal.","Colors\\.indigo, Colors\\.teal"],["Botão em pílula","No botão Comprar, troque RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)) por StadiumBorder().","shape: StadiumBorder\\(\\),\\s*\\),\\s*child: const Text\\('Comprar'\\)"],["Uma linha só","No texto longo, troque maxLines: 2 por maxLines: 1.","maxLines: 1"],["Sombra do cartão","No Card, troque elevation: 8 por elevation: 0.","elevation: 0"]]);
 OF.EX=EX;
 OF.LESSONS.forEach(function(L){
   var st=null,k;
@@ -13896,13 +14049,14 @@ OF.LIMITS=[
 {h:'Propriedades que o simulador ignora',
  p:'O widget aparece, mas estas propriedades não mudam o desenho.',
  li:[
- 'Text: textAlign, maxLines, overflow, softWrap, e no TextStyle tudo além de fontSize, fontWeight, fontStyle, color e letterSpacing (decoration, height e fontFamily não valem).',
- 'Botões (ElevatedButton, TextButton, OutlinedButton, FilledButton): style e styleFrom (cores, padding, forma, tamanho mínimo).',
- 'Card: elevation e shape. Container: boxShadow dentro do BoxDecoration. FittedBox: fit. Image: fit.',
- 'AppBar: actions e leading. Scaffold: floatingActionButtonLocation e bottomSheet.',
- 'ListView: scrollDirection horizontal e reverse. GridView.count: childAspectRatio. Wrap: direction. Column e Row: verticalDirection. Stack: clipBehavior. Flexible: fit. Visibility: maintainSize.',
- 'Slider e RangeSlider: divisions não desenha as marcas (só limita os passos do arrasto).',
- 'TextField: obscureText, keyboardType e maxLines não mudam o campo (a senha aparece como texto).'
+ 'Text: no TextStyle, shadows e decorationStyle valem só de forma aproximada; locale, textScaler, selectionColor e StrutStyle não valem. fontFamily usa só uma fonte parecida (monoespaçada, com serifa ou padrão), sem baixar a fonte.',
+ 'Botões: o style funciona com styleFrom e ButtonStyle (cores, padding, forma, borda, tamanho, elevação e textStyle) mas só para o estado normal; cores por estado (hovered, pressed, disabled) com resolveWith não são simuladas. IconButton.styleFrom não vale.',
+ 'Card e Container: elevation, shape, boxShadow, gradient, border e borderRadius valem. DecorationImage só carrega imagens da internet (NetworkImage). BoxDecoration.backgroundBlendMode e a decoração em foregroundDecoration não valem. Border.all com BorderStyle diferente de none e solid fica sólida.',
+ 'AppBar: leading e actions valem; flexibleSpace, toolbarHeight, shape e elevation ainda não. Scaffold: floatingActionButtonLocation e bottomSheet.',
+ 'ListView: horizontal e reverse valem; physics, shrinkWrap, cacheExtent e a rolagem por controller em outra direção não. GridView.count: childAspectRatio só vale quando informado (o padrão do Flutter, células quadradas, não é aplicado).',
+ 'Wrap: direction vertical vale, mas WrapAlignment e runAlignment nesse sentido são aproximados. Column e Row: verticalDirection e textDirection valem. Stack: clipBehavior vale só para Clip.none. Flexible: fit vale.',
+ 'Slider e RangeSlider: divisions desenha as marcas no Slider (o RangeSlider só limita os passos do arrasto).',
+ 'TextField: obscureText esconde o texto digitado, maxLines maior que 1 vira campo de várias linhas e keyboardType numérico muda o teclado do celular; inputFormatters, maxLength, textCapitalization e autofillHints não valem.'
  ]},
 {h:'Animações e gestos',
  p:'O que ainda é aproximado.',
