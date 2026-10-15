@@ -1406,13 +1406,19 @@ function capSrc(v){
   Object.keys(names).forEach(function(k){
     if((v.pn||[]).indexOf(k)>=0||!new RegExp('(^|[^\\w.$])'+k+'(?!\\w)|\\$'+k+'(?!\\w)').test(src))return;
     var val=lookup(names[k],k);
-    if(typeof val==='string'||typeof val==='number'||typeof val==='boolean'||isD(val))src=bindVar(src,k,val)});
+    if(typeof val==='string'||typeof val==='number'||typeof val==='boolean'||isD(val))src=bindVar(src,k,val);
+    else if(val&&typeof val==='object'&&(Array.isArray(val)||val.isMap||val.isSet||val.cls||(val.nat&&(FBNAT[val.nat]||val.nat==='SqlDb'||val.nat==='Prefs')))&&!val.lam&&!val.enumv){
+      var cv=ST.capVals=ST.capVals||{},id=null;Object.keys(cv).forEach(function(q){if(cv[q]===val)id=q});
+      if(!id){id='__cv'+(++CAPN);cv[id]=val}
+      src=src.replace(new RegExp('(^|[^\\w.$])'+k+'(?!\\w)','g'),function(m0,a0){return a0+id}).replace(new RegExp('\\$\\{'+k+'(?!\\w)','g'),'${'+id)}});
   return src}
+var CAPN=0;
 function lit(v){
   if(v===null||v===undefined)return 'null';
   if(typeof v==='string')return "'"+v.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\$/g,'\\$').replace(/\n/g,'\\n')+"'";
   if(isD(v))return v.v===Infinity?'double.infinity':dstr(v.v);
   if(isRaw(v))return v.raw;
+  if(v&&(v.ctl||v.pc)){var fk=null;Object.keys(ST.fields||{}).forEach(function(k){if(ST.fields[k].value===v)fk=k});if(fk)return fk}
   if(v&&v.ctl)return lit(v.text);if(v&&v.pc)return 'PageController';
   if(v&&v.lam)return v.cenv?capSrc(v):v.src;
   if(v&&(v.nat==='AnimCtl'||v.nat==='AnimView')){var avl=animRaw(v);return avl&&avl.nat==='Offset'?avl.src:lit(avl)}
@@ -1603,12 +1609,14 @@ function hasOwn(o,k){return Object.prototype.hasOwnProperty.call(o,k)}
 function exc(msg){var e=new Error(msg);e.dartExc=true;return e}
 var WIDGETOBJ={wid:true};
 function lookup(env,n){
+  if(n.indexOf('.')>0&&/^(FirebaseAuth|FirebaseFirestore)\./.test(n)){var sg=n.split('.'),ob=natMember({nat:'#class',name:sg[0]},sg[1],[]);for(var si=2;si<sg.length;si++)ob=member(ob,sg[si],null);return ob}
+  if(n.charCodeAt(0)===95&&n.indexOf('__cv')===0&&ST.capVals&&hasOwn(ST.capVals,n))return ST.capVals[n];
   if(env.params&&hasOwn(env.params,n))return env.params[n];
   if(env.locals&&hasOwn(env.locals,n))return env.locals[n];
   if(env.parent)return lookup(env.parent,n);
   if(env.self){
     if(hasOwn(env.self.f,n))return env.self.f[n];
-    var dg=ST.dataClasses[env.self.cls];if(dg&&dg.getters[n])return evalGetter(env.self,dg.getters[n])}
+    var dg=ST.dataClasses[env.self.cls];if(dg&&dg.getters[n])return evalGetter(env.self,dg.getters[n]);var sst0=staticOf(env.self.cls,n);if(sst0)return staticGet(sst0)}
   var scn=curCls(env);if(scn){var ssx=staticOf(scn,n);if(ssx)return staticGet(ssx)}
   if(ST.fields[n])return ST.fields[n].value;
   if(n==='widget')return WIDGETOBJ;
@@ -1775,7 +1783,10 @@ function ev(a,env){
       if(/^Duration\.zero(\.|$)/.test(a.name)){var dzc=mkDur(0),dzp=a.name.split('.').slice(2);dzp.forEach(function(x,ix){dzc=member(dzc,x,(ix===dzp.length-1&&a.args)?evalArgs(a,env).map(function(y){return y.val}):[])});return dzc}
       if(!a.args&&a.name.indexOf('.')>0){var pe=a.name.split('.');if(pe.length===2&&ENUMS[pe[0]])return a.name}
       if(a.args&&/^(NumberFormat|DateFormat)\.\w+$/.test(a.name))return intlStatic(a.name,evalArgs(a,env));
-      if(a.args&&a.name.indexOf('.')>0){var pre=a.name.split('.');if(pre.length===2&&(NATCLS[pre[0]]||ENUMS[pre[0]]))return natMember({nat:'#class',name:pre[0]},pre[1],evalArgs(a,env).filter(function(x){return !x.name}).map(function(x){return x.val}))}
+      if(!a.args&&/^(FirebaseAuth|FirebaseFirestore)\.\w+(\.\w+)*$/.test(a.name))return lookup(env,a.name);
+      if(a.args&&a.name.indexOf('.')>0){var pre=a.name.split('.');if(pre.length===2&&pre[0]==='http'&&/^(post|put|patch|delete)$/.test(pre[1])){var hea=evalArgs(a,env),hb=hea.filter(function(x){return x.name==='body'})[0];return natMember({nat:'#class',name:'http'},pre[1],[hea.filter(function(x){return !x.name})[0].val,hb?hb.val:null])}
+      if(pre.length>=3&&/^(FirebaseAuth|FirebaseFirestore)$/.test(pre[0])){var fo=natMember({nat:'#class',name:pre[0]},pre[1],[]);for(var fi=2;fi<pre.length-1;fi++)fo=member(fo,pre[fi],null);var fea=evalArgs(a,env);ARGN=fea.map(function(x){return x.name});try{return member(fo,pre[pre.length-1],fea.map(function(x){return x.val}))}finally{ARGN=null}}
+      if(pre.length===2&&(NATCLS[pre[0]]||ENUMS[pre[0]]))return natMember({nat:'#class',name:pre[0]},pre[1],evalArgs(a,env).filter(function(x){return !x.name}).map(function(x){return x.val}))}
       return{raw:a.name+(a.args?'('+a.args.map(function(x){return emitArg(x,env)}).join(', ')+')':'')}}
     case 'lam':{
       var cenv=env;
@@ -1821,6 +1832,7 @@ function ev(a,env){
       if(a.args)ARGN=a.args.map(function(x){return x.name});
       try{return member(mo,a.name,margs)}finally{ARGN=null}}
     case 'idx':{var ov=ev(a.o,env),iv0=ev(a.i,env);
+      if(ov&&ov.nat==='FsDoc')return member(ov,'get',[iv0]);
       if(ov&&ov.isMap){var mk=nn(iv0);return ov.m.has(mk)?ov.m.get(mk):null}
       var iv=nn(iv0);
       if(ov&&ov.nat==='Match'){var mg=ov.m[iv];return mg===undefined?null:mg}
@@ -2177,6 +2189,7 @@ function excMsg(v){
 function excMatches(err,tn){
   if(!tn||tn==='Object'||tn==='Exception')return true;
   if(err.val&&err.val.cls)return err.val.cls===tn;
+  if(err.val&&err.val.nat)return err.val.nat===tn||(tn==='FirebaseException'&&err.val.nat==='FirebaseAuthException');
   return (err.message||'').indexOf(tn)===0||tn==='Error'}
 function simple(p,env,run){
   var k=p.pk();
@@ -2638,8 +2651,8 @@ ST.value=function(raw){return ev(pTern(new Ps(raw)),mkEnv())};
 /* ---- objetos nativos simulados: DateTime, TimeOfDay, GPS, bateria, rede, câmera ---- */
 ST.sensors={osrm:'',http:'sim',gps:true,perm:'granted',lat:-8.0476,lon:-34.877,alt:4,battery:78,charging:false,net:'wifi',photo:'ok'};
 ST.resetSensors=function(){ST.sensors={http:'sim',gps:true,perm:'granted',lat:-8.0476,lon:-34.877,alt:4,battery:78,charging:false,net:'wifi',photo:'ok'}};
-var NATCLS={SharedPreferences:1,Sqflite:1,ConflictAlgorithm:1,Curves:1,AnimationStatus:1,Offset:1,IntTween:1,ColorTween:1,ValueNotifier:1,AnimationController:1,Tween:1,CurvedAnimation:1,DateFormat:1,NumberFormat:1,MenuCtl:1,SearchCtl:1,Size:1,RangeValues:1,Stream:1,StreamController:1,GlobalKey:1,http:1,Uri:1,LatLng:1,MapController:1,Geolocator:1,Battery:1,Connectivity:1,DateTime:1,TimeOfDay:1,Position:1,ImagePicker:1,HapticFeedback:1,Share:1};
-var NATCTOR={'Paint':1,'Size':1,'Size.square':1,'Size.fromWidth':1,'Size.fromHeight':1,'Rect.fromLTWH':1,'Rect.fromLTRB':1,'Rect.fromCircle':1,'Rect.fromCenter':1,'Radius.circular':1,'Radius.elliptical':1,'RRect.fromRectAndRadius':1,'RRect.fromLTRBR':1,'Path':1,'TextPainter':1,'Offset.fromDirection':1,AnimationController:1,Tween:1,IntTween:1,ColorTween:1,CurvedAnimation:1,Offset:1,ValueNotifier:1,RegExp:1,DateFormat:1,NumberFormat:1,RangeValues:1,StreamController:1,GlobalKey:1,LatLng:1,MapController:1,DateTime:1,TimeOfDay:1,Position:1,Battery:1,Connectivity:1,ImagePicker:1};
+var NATCLS={Firebase:1,FirebaseFirestore:1,FirebaseAuth:1,FieldValue:1,SharedPreferences:1,Sqflite:1,ConflictAlgorithm:1,Curves:1,AnimationStatus:1,Offset:1,IntTween:1,ColorTween:1,ValueNotifier:1,AnimationController:1,Tween:1,CurvedAnimation:1,DateFormat:1,NumberFormat:1,MenuCtl:1,SearchCtl:1,Size:1,RangeValues:1,Stream:1,StreamController:1,GlobalKey:1,http:1,Uri:1,LatLng:1,MapController:1,Geolocator:1,Battery:1,Connectivity:1,DateTime:1,TimeOfDay:1,Position:1,ImagePicker:1,HapticFeedback:1,Share:1};
+var NATCTOR={'SetOptions':1,'Paint':1,'Size':1,'Size.square':1,'Size.fromWidth':1,'Size.fromHeight':1,'Rect.fromLTWH':1,'Rect.fromLTRB':1,'Rect.fromCircle':1,'Rect.fromCenter':1,'Radius.circular':1,'Radius.elliptical':1,'RRect.fromRectAndRadius':1,'RRect.fromLTRBR':1,'Path':1,'TextPainter':1,'Offset.fromDirection':1,AnimationController:1,Tween:1,IntTween:1,ColorTween:1,CurvedAnimation:1,Offset:1,ValueNotifier:1,RegExp:1,DateFormat:1,NumberFormat:1,RangeValues:1,StreamController:1,GlobalKey:1,LatLng:1,MapController:1,DateTime:1,TimeOfDay:1,Position:1,Battery:1,Connectivity:1,ImagePicker:1};
 var ENUMS={ConflictAlgorithm:1,LocationPermission:1,ConnectionState:1,ConnectivityResult:1,BatteryState:1,ImageSource:1,LocationAccuracy:1};
 function p2(n){return (n<10?'0':'')+n}
 function mkDate(y,mo,d,h,mi,s){
@@ -2676,8 +2689,27 @@ function jsonDec(b){
   var t=show(b);
   try{return jsonConv(JSON.parse(t))}catch(e){throw exc('FormatException: Unexpected character (at character 1)')}}
 var SIMPLACES=[['marco zero',-8.0631,-34.8711,'Marco Zero, Recife Antigo, Recife, Pernambuco, Brasil'],['porto digital',-8.0589,-34.8709,'Porto Digital, Recife Antigo, Recife, Pernambuco, Brasil'],['recife antigo',-8.0626,-34.8721,'Recife Antigo, Recife, Pernambuco, Brasil'],['boa viagem',-8.1290,-34.9010,'Praia de Boa Viagem, Recife, Pernambuco, Brasil'],['aeroporto',-8.1265,-34.9236,'Aeroporto Internacional do Recife/Guararapes, Recife, Pernambuco, Brasil'],['shopping recife',-8.1190,-34.9055,'Shopping Recife, Boa Viagem, Recife, Pernambuco, Brasil'],['jaqueira',-8.0386,-34.9005,'Parque da Jaqueira, Recife, Pernambuco, Brasil'],['brennand',-8.0680,-34.9525,'Instituto Ricardo Brennand, Recife, Pernambuco, Brasil'],['ufpe',-8.0512,-34.9519,'Universidade Federal de Pernambuco, Recife, Pernambuco, Brasil']];
+var SIMAPI={users:null,posts:null,todos:null};
+function simApiInit(){if(SIMAPI.users)return;
+  var nomes=['Ana Souza','Bruno Lima','Carla Dias','Diego Alves','Elisa Rocha'],cid=['Recife','Olinda','Caruaru','Petrolina','Garanhuns'];
+  SIMAPI.users=nomes.map(function(n,i){return{id:i+1,name:n,username:n.split(' ')[0].toLowerCase(),email:n.split(' ')[0].toLowerCase()+'@exemplo.com',phone:'(81) 9999-000'+(i+1),address:{city:cid[i],street:'Rua '+(i+1)},company:{name:'Empresa '+(i+1)}}});
+  var tit=['Primeiros passos com Flutter','Widgets em árvore','Estado com setState','Listas com ListView','Navegação entre telas','Formulários e validação','Consumindo uma API','Guardando dados no aparelho','Animações simples','Publicando o app'];
+  SIMAPI.posts=tit.map(function(t,i){return{userId:(i%5)+1,id:i+1,title:t,body:'Texto do post '+(i+1)+': '+t.toLowerCase()+' explicado em poucas linhas para a turma.'}});
+  SIMAPI.todos=tit.map(function(t,i){return{userId:(i%5)+1,id:i+1,title:'Estudar: '+t.toLowerCase(),completed:i%3===0}})}
+function simHttpJson(url){
+  var m=/jsonplaceholder\.typicode\.com\/(users|posts|todos)(?:\/(\d+))?(?:\?(.*))?$/.exec(url);if(!m)return null;
+  simApiInit();var list=SIMAPI[m[1]];
+  if(m[2]){var it=list.filter(function(x){return x.id==m[2]})[0];return it?mkResp(200,JSON.stringify(it)):mkResp(404,'{}')}
+  if(m[3]){m[3].split('&').forEach(function(kv){var s=kv.split('=');list=list.filter(function(x){return String(x[s[0]])===decodeURIComponent(s[1]||'')})})}
+  return mkResp(200,JSON.stringify(list))}
+function simHttpWrite(url,method,obj){
+  if(!/jsonplaceholder\.typicode\.com/.test(url))return mkResp(404,'');
+  if(method==='post'){var o=Object.assign({},obj);o.id=101;return mkResp(201,JSON.stringify(o))}
+  if(method==='delete')return mkResp(200,'{}');
+  var o2=Object.assign({id:+(/\/(\d+)$/.exec(url)||[0,1])[1]},obj);return mkResp(200,JSON.stringify(o2))}
 function simHttp(url){
   var m;
+  var jj=simHttpJson(url);if(jj)return jj;
   if(/nominatim\.openstreetmap\.org\/search/.test(url)){
     var q=(/[?&]q=([^&]*)/.exec(url)||[])[1]||'';try{q=decodeURIComponent(q)}catch(e){}
     q=q.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
@@ -2698,6 +2730,8 @@ function simHttp(url){
     return mkResp(200,JSON.stringify({code:'Ok',routes:[{distance:Math.round(dist),duration:Math.round(dist/vel),geometry:{type:'LineString',coordinates:pts}}],waypoints:[]}))}
   return mkResp(404,'')}
 function natStr(v){
+  if(v.nat==='FirebaseAuthException'||v.nat==='FirebaseException')return v.src;
+  if(v.nat==='FbUser')return 'User(displayName: '+(v.f.displayName||'null')+', email: '+v.f.email+', uid: '+v.f.uid+')';
   if(v.nat==='#class')return v.name;
   if(v.nat==='AnimCtl'||v.nat==='AnimView'){var avs=animRaw(v);return avs&&avs.nat==='Offset'?avs.src:show(avs)}
   if(v.nat==='Offset')return v.src;
@@ -3101,8 +3135,8 @@ SQ.prototype={
        switch(fn){case 'LOWER':return u==null?null:String(u).toLowerCase();case 'UPPER':return u==null?null:String(u).toUpperCase();case 'LENGTH':return u==null?null:String(u).length;case 'ABS':return v[0] instanceof Dbl?new Dbl(Math.abs(u)):Math.abs(u);
         case 'ROUND':{var d=v[1]!=null?dbU(v[1]):0,f=Math.pow(10,d);return new Dbl(Math.round(u*f)/f)}
         default:for(var k=0;k<v.length;k++)if(dbU(v[k])!=null)return v[k];return null}}}
-   this.i++;var nm=x.v.replace(/^.*\./,'');
-   return function(w){if(!(nm in w))throw dbErr('no such column: '+nm,self.sql);return w[nm]}}
+   this.i++;var full=x.v,nm=x.v.replace(/^.*\./,'');
+   return function(w){if(full in w)return w[full];if(!(nm in w))throw dbErr('no such column: '+full,self.sql);return w[nm]}}
   throw dbErr('near "'+x.v+'": syntax error',this.sql)}
 };
 function sqlTable(db,name,sql){var t=db.tables[name];if(!t)throw dbErr('no such table: '+name,sql);return t}
@@ -3168,11 +3202,21 @@ function sqlRun(db,sql,args,mode){
   if(kw==='SELECT'){q.i++;q.eatKw('DISTINCT');var items=[],star=false;
     do{if(q.eatP('*')){star=true;continue}var st=q.i,ex=q.expr(),al=null;if(q.eatKw('AS'))al=q.ident();var txt=q.t.slice(st,q.i).map(function(t){return t.v instanceof Dbl?t.v.v:t.v}).join('');items.push({e:ex,al:al||txt.replace(/^.*\./,''),txt:txt})}while(q.eatP(','));
     var rows;
-    if(q.eatKw('FROM')){var sn=q.ident(),stb=sqlTable(db,sn,sql);if(q.pk()&&q.pk().k==='i'&&!/^(WHERE|ORDER|LIMIT|GROUP|AS|JOIN|INNER|LEFT)$/i.test(q.pk().v)&&!q.pk().q)q.i++;
-      if(q.kw('JOIN')||q.kw('INNER')||q.kw('LEFT'))throw dbErr('JOIN ainda não é simulado: use duas consultas',sql);
-      var sw=sqlWhere(q);rows=stb.rows.filter(function(r){return !sw||sw(r)});
-      var cn2=stb.cols.map(function(c){return c.n});
-      if(star){items=cn2.map(function(n){return{e:function(w){return w[n]},al:n}}).concat(items)}}
+    if(q.eatKw('FROM')){
+      var KW=/^(WHERE|ORDER|LIMIT|GROUP|AS|JOIN|INNER|LEFT|ON|OFFSET|CROSS|OUTER)$/i;
+      function tref(){var nm0=q.ident(),tb0=sqlTable(db,nm0,sql),al0=nm0;q.eatKw('AS');if(q.pk()&&q.pk().k==='i'&&!q.pk().q&&!KW.test(q.pk().v))al0=q.ident();return{name:nm0,alias:al0,tb:tb0}}
+      function wrapRow(r,tr){var w={};tr.tb.cols.forEach(function(c){var v=r?r[c.n]:null;w[tr.alias+'.'+c.n]=v;if(tr.alias!==tr.name)w[tr.name+'.'+c.n]=v;if(!(c.n in w))w[c.n]=v});return w}
+      var trs=[tref()];rows=trs[0].tb.rows.map(function(r){return wrapRow(r,trs[0])});
+      while(q.kw('JOIN')||q.kw('INNER')||q.kw('LEFT')||q.kw('CROSS')){
+        var left=false;if(q.eatKw('LEFT')){left=true;q.eatKw('OUTER')}else if(q.eatKw('INNER')){}else q.eatKw('CROSS');
+        q.needKw('JOIN');var jt=tref(),onf=null;if(q.eatKw('ON'))onf=q.expr();trs.push(jt);var nrows=[];
+        rows.forEach(function(lw){var hit=false;
+          jt.tb.rows.forEach(function(r){var m=Object.assign({},lw),rw=wrapRow(r,jt);Object.keys(rw).forEach(function(k){if(k.indexOf('.')>=0||!(k in m))m[k]=rw[k]});
+            if(!onf||onf(m)){nrows.push(m);hit=true}});
+          if(!hit&&left){var m2=Object.assign({},lw),rw2=wrapRow(null,jt);Object.keys(rw2).forEach(function(k){if(k.indexOf('.')>=0||!(k in m2))m2[k]=rw2[k]});nrows.push(m2)}});
+        rows=nrows}
+      var sw=sqlWhere(q);rows=rows.filter(function(r){return !sw||sw(r)});
+      if(star){var sitems=[];trs.forEach(function(tr){tr.tb.cols.forEach(function(c){sitems.push({e:(function(k){return function(w){return w[k]}})(tr.alias+'.'+c.n),al:c.n})})});items=sitems.concat(items)}}
     else rows=[{}];
     var hasAgg=items.some(function(it){return it.e&&it.e.agg}),grp=null;
     if(q.eatKw('GROUP')){q.needKw('BY');grp=[];do{grp.push(q.expr())}while(q.eatP(','))}
@@ -3234,8 +3278,148 @@ function dbOpen(pos,nm){
   if(fresh||d.version===0){d.version=ver;if(nm.onCreate)callLam(nm.onCreate,[h,ver]);dbSave()}
   else if(nm.onUpgrade&&ver>d.version){var old=d.version;d.version=ver;callLam(nm.onUpgrade,[h,old,ver]);dbSave()}
   return h}
+/* ===== Firebase simulado: cloud_firestore e firebase_auth ===== */
+if(!DBP.fs)DBP.fs={};if(!DBP.auth)DBP.auth={users:{},cur:null};
+var _dbClear0=ST.dbClear;
+ST.dbClear=function(){DBP.prefs={};DBP.dbs={};DBP.fs={};DBP.auth={users:{},cur:null};dbSave()};
+function fsPlain(v){
+  if(v==null||typeof v==='string'||typeof v==='number'||typeof v==='boolean')return v;
+  if(v instanceof Dbl)return{$D:v.v};
+  if(Array.isArray(v))return v.map(fsPlain);
+  if(v.isMap){var o={};v.m.forEach(function(x,k){o[String(k)]=fsPlain(x)});return o}
+  if(v.nat==='FieldValue')return v;
+  if(v.cls){var oc={};Object.keys(v.f).forEach(function(k){oc[k]=fsPlain(v.f[k])});return oc}
+  return show(v)}
+function fsBack(x){
+  if(x==null||typeof x!=='object')return x;
+  if(Array.isArray(x))return x.map(fsBack);
+  if(x.$D!==undefined)return new Dbl(x.$D);
+  if(x.$T!==undefined){var d=new Date(x.$T);return mkDate(d.getFullYear(),d.getMonth()+1,d.getDate(),d.getHours(),d.getMinutes(),d.getSeconds())}
+  var mp={isMap:true,m:new Map()};Object.keys(x).forEach(function(k){mp.m.set(k,fsBack(x[k]))});return mp}
+function fsU(x){return x&&typeof x==='object'&&x.$D!==undefined?x.$D:x&&typeof x==='object'&&x.$T!==undefined?x.$T:x}
+function fsGet(o,f){var p=String(f).split('.'),c=o;for(var i=0;i<p.length;i++){if(c==null||typeof c!=='object')return undefined;c=c[p[i]]}return c}
+function fsCol(path){return DBP.fs[path]=DBP.fs[path]||{}}
+function fsId(){var s='',c='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';for(var i=0;i<20;i++)s+=c[Math.floor(Math.random()*c.length)];return s}
+function fsColRef(path,q){return{nat:'FsCol',f:{id:path.split('/').pop(),path:path},path:path,q:q||{w:[],o:[],lim:null},src:'CollectionReference'}}
+function fsDocRef(path,id){return{nat:'FsRef',f:{id:id,path:path+'/'+id},path:path,id:id,src:'DocumentReference'}}
+function fsDocSnap(path,id){var raw=DBP.fs[path]&&DBP.fs[path][id];return{nat:'FsDoc',f:{id:id,exists:raw!==undefined,reference:fsDocRef(path,id)},path:path,id:id,src:'DocumentSnapshot'}}
+function fsRun(c){
+  var col=DBP.fs[c.path]||{},rows=Object.keys(col).map(function(id){return{id:id,d:JSON.parse(col[id])}});
+  c.q.w.forEach(function(w){rows=rows.filter(function(r){
+    var a=w.f==='__name__'?r.id:fsU(fsGet(r.d,w.f)),b=fsU(w.v);
+    switch(w.op){
+      case '==':return JSON.stringify(a)===JSON.stringify(b);
+      case '!=':return a!==undefined&&JSON.stringify(a)!==JSON.stringify(b);
+      case '>':return a!==undefined&&a>b;case '>=':return a!==undefined&&a>=b;case '<':return a!==undefined&&a<b;case '<=':return a!==undefined&&a<=b;
+      case 'in':return (w.v||[]).some(function(x){return JSON.stringify(fsU(x))===JSON.stringify(a)});
+      case 'contains':return Array.isArray(a)&&a.some(function(x){return JSON.stringify(fsU(x))===JSON.stringify(b)});
+      case 'null':return (a==null)===(b===true)}
+    return true})});
+  rows.sort(function(x,y){for(var i=0;i<c.q.o.length;i++){var o=c.q.o[i],a=fsU(fsGet(x.d,o.f)),b=fsU(fsGet(y.d,o.f));if(a<b)return o.desc?1:-1;if(a>b)return o.desc?-1:1}return x.id<y.id?-1:x.id>y.id?1:0});
+  if(c.q.lim!=null)rows=rows.slice(0,c.q.lim);return rows}
+function fsQuerySnap(c){var rows=fsRun(c),docs=rows.map(function(r){return fsDocSnap(c.path,r.id)});return{nat:'FsQuery',f:{docs:docs,size:docs.length,isEmpty:!docs.length,isNotEmpty:!!docs.length},src:'QuerySnapshot'}}
+function fsApply(old,data,merge){
+  var out=merge||old?Object.assign({},old||{}):{};
+  Object.keys(data).forEach(function(k){var v=data[k];
+    if(v&&v.nat==='FieldValue'){
+      if(v.kind==='ts')out[k]={$T:Date.now()};
+      else if(v.kind==='inc'){var cur=fsU(out[k]),n=nn(v.arg),isd=(out[k]&&out[k].$D!==undefined)||isD(v.arg);var r=(typeof cur==='number'?cur:0)+n;out[k]=isd?{$D:r}:r}
+      else if(v.kind==='del')delete out[k];
+      else if(v.kind==='union'){var a0=Array.isArray(out[k])?out[k].slice():[];(v.arg||[]).forEach(function(x){var px=fsPlain(x);if(!a0.some(function(y){return JSON.stringify(y)===JSON.stringify(px)}))a0.push(px)});out[k]=a0}
+      else if(v.kind==='remove'){var rm=(v.arg||[]).map(function(x){return JSON.stringify(fsPlain(x))});out[k]=(Array.isArray(out[k])?out[k]:[]).filter(function(y){return rm.indexOf(JSON.stringify(y))<0})}}
+    else if(merge&&v&&typeof v==='object'&&!Array.isArray(v)&&v.$D===undefined&&v.$T===undefined&&out[k]&&typeof out[k]==='object'&&!Array.isArray(out[k]))out[k]=fsApply(out[k],v,true);
+    else out[k]=v});
+  return out}
+function fsToPlainMap(m){var o={};if(m&&m.isMap)m.m.forEach(function(x,k){o[String(k)]=fsPlain(x)});return o}
+function fsErr(code,msg){var e=exc('[cloud_firestore/'+code+'] '+msg);e.val={nat:'FirebaseException',f:{code:code,message:msg,plugin:'cloud_firestore'},src:'[cloud_firestore/'+code+'] '+msg};return e}
+function fbAuthErr(code,msg){var e=exc('[firebase_auth/'+code+'] '+msg);e.val={nat:'FirebaseAuthException',f:{code:code,message:msg,plugin:'firebase_auth'},src:'[firebase_auth/'+code+'] '+msg};return e}
+function fbUser(email){var u=DBP.auth.users[email];if(!u)return null;return{nat:'FbUser',f:{uid:u.uid,email:u.anon?null:email,displayName:u.name||null,emailVerified:false,isAnonymous:!!u.anon,photoURL:null},email:email,src:'User'}}
+function fbCur(){return DBP.auth.cur?fbUser(DBP.auth.cur):null}
+function fbCred(email){return{nat:'FbCred',f:{user:fbUser(email)},src:'UserCredential'}}
+var FBNAT={FsCol:1,FsRef:1,FsDoc:1,FsQuery:1,FbAuth:1,FbUser:1,FbCred:1,FbFs:1,FieldValue:1,FirebaseException:1,FirebaseAuthException:1,SetOptions:1};
+function fbMember(v,name,a){
+  a=a||[];var an=ARGN||[];ARGN=null;var pos=[],nm={};a.forEach(function(x,i){if(an[i])nm[an[i]]=x;else pos.push(x)});
+  if(name==='toString'&&v.src)return natStr(v)||v.src;
+  if(v.nat==='FbFs'){
+    if(name==='collection')return fsColRef(show(pos[0]));
+    if(name==='doc'){var ps=show(pos[0]).split('/'),id=ps.pop();return fsDocRef(ps.join('/'),id)}
+    if(name==='runTransaction'||name==='batch'){if(name==='runTransaction')return callLam(pos[0],[v]);return{nat:'FsBatch',ops:[]}}
+    if(name==='enableNetwork'||name==='disableNetwork'||name==='clearPersistence')return null}
+  if(v.nat==='FsCol'){
+    var q=v.q;function cp(ch){var n2={w:q.w.slice(),o:q.o.slice(),lim:q.lim};ch(n2);return fsColRef(v.path,n2)}
+    switch(name){
+      case 'id':return v.f.id;case 'path':return v.f.path;
+      case 'doc':{var id2=pos.length?show(pos[0]):fsId();return fsDocRef(v.path,id2)}
+      case 'add':{var id3=fsId();fsCol(v.path)[id3]=JSON.stringify(fsApply(null,fsToPlainMap(pos[0]),false));dirty=true;dbSave();return fsDocRef(v.path,id3)}
+      case 'where':{var f0=show(pos[0]);var map={isEqualTo:'==',isNotEqualTo:'!=',isGreaterThan:'>',isGreaterThanOrEqualTo:'>=',isLessThan:'<',isLessThanOrEqualTo:'<=',whereIn:'in',arrayContains:'contains',isNull:'null'};
+        return cp(function(n2){Object.keys(nm).forEach(function(k){if(map[k]&&nm[k]!==undefined)n2.w.push({f:f0,op:map[k],v:k==='isNull'?nm[k]:fsPlain(nm[k])})})})}
+      case 'orderBy':return cp(function(n2){n2.o.push({f:show(pos[0]),desc:nm.descending===true})});
+      case 'limit':return cp(function(n2){n2.lim=nn(pos[0])});
+      case 'get':return fsQuerySnap(v);
+      case 'snapshots':return{nat:'Stream',kind:'live',ms:0,get:function(){return fsQuerySnap(v)},src:'Stream'}}}
+  if(v.nat==='FsRef'){
+    var col=function(){return fsCol(v.path)};
+    switch(name){
+      case 'id':return v.id;case 'path':return v.f.path;case 'parent':return fsColRef(v.path);
+      case 'collection':return fsColRef(v.path+'/'+v.id+'/'+show(pos[0]));
+      case 'set':{var merge=pos[1]&&pos[1].nat==='SetOptions'&&pos[1].f.merge;var old=col()[v.id]?JSON.parse(col()[v.id]):null;col()[v.id]=JSON.stringify(fsApply(merge?old:null,fsToPlainMap(pos[0]),merge));dirty=true;dbSave();return null}
+      case 'update':{if(col()[v.id]===undefined)throw fsErr('not-found','No document to update: '+v.f.path);
+        var upd={};if(pos[0]&&pos[0].isMap)pos[0].m.forEach(function(x,k){upd[String(k)]=fsPlain(x)});
+        var cur=JSON.parse(col()[v.id]);Object.keys(upd).forEach(function(k){if(k.indexOf('.')>0){var pp=k.split('.'),t=cur;for(var i=0;i<pp.length-1;i++){if(typeof t[pp[i]]!=='object'||t[pp[i]]===null)t[pp[i]]={};t=t[pp[i]]}t[pp[pp.length-1]]=upd[k];delete upd[k]}});
+        col()[v.id]=JSON.stringify(fsApply(cur,upd,false));dirty=true;dbSave();return null}
+      case 'delete':delete col()[v.id];dirty=true;dbSave();return null;
+      case 'get':return fsDocSnap(v.path,v.id);
+      case 'snapshots':return{nat:'Stream',kind:'live',ms:0,get:function(){return fsDocSnap(v.path,v.id)},src:'Stream'}}}
+  if(v.nat==='FsDoc'){
+    var raw=DBP.fs[v.path]&&DBP.fs[v.path][v.id];
+    switch(name){
+      case 'id':return v.id;case 'exists':return raw!==undefined;case 'reference':case 'ref':return fsDocRef(v.path,v.id);
+      case 'data':return raw===undefined?null:fsBack(JSON.parse(raw));
+      case 'get':{if(raw===undefined)return null;var gv=fsGet(JSON.parse(raw),show(pos[0]));return gv===undefined?null:fsBack(gv)}
+      case 'containsKey':return raw!==undefined&&fsGet(JSON.parse(raw),show(pos[0]))!==undefined}}
+  if(v.nat==='FsQuery'&&v.f[name]!==undefined)return v.f[name];
+  if(v.nat==='FsQuery'){if(name==='docChanges')return v.f.docs}
+  if(v.nat==='FsBatch'){
+    if(name==='commit'){v.ops.forEach(function(o){ARGN=o.an;fbMember(o.ref,o.name,o.args)});v.ops=[];return null}
+    v.ops.push({name:name,ref:pos[0],args:pos.slice(1),an:[]});return null}
+  if(v.nat==='FbAuth'){
+    var A=DBP.auth;
+    switch(name){
+      case 'currentUser':return fbCur();
+      case 'authStateChanges':case 'userChanges':case 'idTokenChanges':return{nat:'Stream',kind:'live',ms:0,get:fbCur,src:'Stream'};
+      case 'createUserWithEmailAndPassword':{var em=show(nm.email!==undefined?nm.email:pos[0]).trim(),pw=show(nm.password!==undefined?nm.password:pos[1]);
+        if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em))throw fbAuthErr('invalid-email','The email address is badly formatted.');
+        if(A.users[em])throw fbAuthErr('email-already-in-use','The email address is already in use by another account.');
+        if(pw.length<6)throw fbAuthErr('weak-password','Password should be at least 6 characters');
+        A.users[em]={uid:fsId()+'x',pass:pw,name:null};A.cur=em;dirty=true;dbSave();return fbCred(em)}
+      case 'signInWithEmailAndPassword':{var em2=show(nm.email!==undefined?nm.email:pos[0]).trim(),pw2=show(nm.password!==undefined?nm.password:pos[1]);
+        if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em2))throw fbAuthErr('invalid-email','The email address is badly formatted.');
+        if(!A.users[em2]||A.users[em2].pass!==pw2)throw fbAuthErr('invalid-credential','The supplied auth credential is incorrect, malformed or has expired.');
+        A.cur=em2;dirty=true;dbSave();return fbCred(em2)}
+      case 'signInAnonymously':{var an2='anon-'+fsId();A.users[an2]={uid:fsId()+'a',pass:'',anon:true};A.cur=an2;dirty=true;dbSave();return fbCred(an2)}
+      case 'signOut':A.cur=null;dirty=true;dbSave();return null;
+      case 'sendPasswordResetEmail':{var em3=show(nm.email!==undefined?nm.email:pos[0]).trim();if(!A.users[em3])throw fbAuthErr('user-not-found','There is no user record corresponding to this identifier. The user may have been deleted.');return null}}}
+  if(v.nat==='FbUser'){
+    if(v.f[name]!==undefined)return v.f[name];
+    var U=DBP.auth.users[v.email];
+    switch(name){
+      case 'updateDisplayName':if(U)U.name=pos[0]==null?null:show(pos[0]);dirty=true;dbSave();return null;
+      case 'delete':delete DBP.auth.users[v.email];if(DBP.auth.cur===v.email)DBP.auth.cur=null;dirty=true;dbSave();return null;
+      case 'reload':case 'sendEmailVerification':case 'updatePassword':return null;
+      case 'getIdToken':return 'token-simulado';
+      case 'displayName':return U&&U.name||null}}
+  if((v.nat==='FbCred'||v.nat==='FirebaseException'||v.nat==='FirebaseAuthException')&&v.f[name]!==undefined)return v.f[name];
+  if(v.nat==='FieldValue'||v.nat==='SetOptions')return v.f&&v.f[name];
+  throw new Error('membro '+(v.src||v.nat)+'.'+name)}
+function fbStatic(c,name,args){
+  if(c==='Firebase'){if(name==='initializeApp')return null}
+  if(c==='FirebaseFirestore'&&name==='instance')return{nat:'FbFs',f:{},src:'FirebaseFirestore'};
+  if(c==='FirebaseAuth'&&name==='instance')return{nat:'FbAuth',f:{},src:'FirebaseAuth'};
+  if(c==='FieldValue'){var k={serverTimestamp:'ts',increment:'inc',delete:'del',arrayUnion:'union',arrayRemove:'remove'}[name];if(k)return{nat:'FieldValue',f:{},kind:k,arg:args[0],src:'FieldValue.'+name+'()'}}
+  throw new Error('membro estático '+c+'.'+name)}
 
 function natCtor(name,args){
+  if(name==='SetOptions'){var so=args.filter(function(x){return x.name==='merge'})[0];return{nat:'SetOptions',f:{merge:!!(so&&so.val)},src:'SetOptions()'}}
   if(PAINTCT[name])return paintCtor(name,args);
   var pos=args.filter(function(a){return !a.name}).map(function(a){return nn(a.val)}),nm={};
   args.forEach(function(a){if(a.name)nm[a.name]=nn(a.val)});
@@ -3271,7 +3455,12 @@ function natMember(v,name,args){
   var S=ST.sensors;
   if(PAINTM[v.nat])return paintMember(v,name,args);
   if(v.nat==='Prefs')return prefsMember(v,name,args);
+  if(FBNAT[v.nat]||v.nat==='FbFs'||v.nat==='FbAuth'||v.nat==='FsBatch')return fbMember(v,name,args);
   if(v.nat==='SqlDb')return dbMember(v,name,args);
+  if(v.nat==='SqlBatch'){
+    if(name==='commit'){var rs=v.ops.map(function(o){ARGN=o.an;return dbMember({nat:'SqlDb',db:v.db,path:'',f:{}},o.name,o.args)});dbSave();v.ops=[];return rs}
+    if(name==='apply')return null;
+    v.ops.push({name:name,args:args.slice(),an:(ARGN||[]).slice()});ARGN=null;return null}
   if(v.nat==='MathNS'){
     var ma=args.map(nn);
     switch(name){
@@ -3323,6 +3512,7 @@ function natMember(v,name,args){
   if(v.nat==='#class'){
     var c=v.name;
     if(ENUMS[c])return c+'.'+name;
+    if(c==='Firebase'||c==='FirebaseFirestore'||c==='FirebaseAuth'||c==='FieldValue')return fbStatic(c,name,args);
     if(c==='SharedPreferences'){if(name==='getInstance')return{nat:'Prefs',f:{},src:'SharedPreferences'};if(name==='setMockInitialValues'){DBP.prefs={};if(args[0]&&args[0].isMap)args[0].m.forEach(function(x,k){DBP.prefs[k]=x});return null}}
     if(c==='Sqflite'&&name==='firstIntValue'){var fr=args[0]&&args[0][0];if(!fr)return null;var fv0=Array.from(fr.m.values())[0];return fv0===undefined?null:dbU(fv0)}
     if(c==='Curves')return mkCurve(name);
@@ -3356,6 +3546,13 @@ function natMember(v,name,args){
       if(name==='value')return{nat:'Stream',kind:'iter',items:[args[0]],ms:0,src:'Stream.value()'};
       if(name==='empty')return{nat:'Stream',kind:'iter',items:[],ms:0,src:'Stream.empty()'}}
     if(c==='StreamController'&&name==='broadcast')return natCtor('StreamController',[]);
+    if(c==='http'&&/^(post|put|patch|delete)$/.test(name)){
+      var url2=args[0]&&args[0].url?args[0].url:show(args[0]),bd=args[1],obj={};
+      if(typeof bd==='string'){try{obj=JSON.parse(bd)}catch(e){obj={}}}
+      else if(bd&&bd.isMap)bd.m.forEach(function(x,k){obj[k]=isD(x)?x.v:x});
+      var sim2=ST.sensors.http!=='real'?simHttpWrite(url2,name,obj):null;
+      if(ST.sync||!ST.fx)return sim2||mkResp(0,'');
+      var hf2={k:'http',url:url2,sim:sim2};ST.fx.push(hf2);lastSusp=hf2;return null}
     if(c==='http'&&name==='get'){
       var url=args[0]&&args[0].url?args[0].url:show(args[0]);
       var ow=/^https?:\/\/routing\.openstreetmap\.de\/routed-(car|bike|foot)(\/.*)$/.exec(url),own=(ST.sensors.osrm||'').trim().replace(/\/+$/,'');
@@ -3460,17 +3657,26 @@ function futInfo(fr){
       if(fx.cb){var lf=lamFull(fx.cb),e2=mkEnv({});stmt(new Ps('{'+lf.body+'}'),e2,true);data=e2.ret===undefined?null:e2.ret}}
     else if(/^Future\s*\.\s*value\s*\(/.test(t)){data=ev(pTern(new Ps(grabArg(t,t.indexOf('(')+1))),env)}
     else{
-      var m=/^(\w+)\s*\(/.exec(t),call=null;
-      if(m&&ST.methods[m[1]])call=t;
-      else if(/^\w+$/.test(t)){
+      var call=null,cbody=null;
+      function resolveCall(s){s=s.trim();var m1=/^(\w+)\s*\(/.exec(s);
+        if(m1&&ST.methods[m1[1]])return{call:s,body:ST.methods[m1[1]].body};
+        var m3=/^(\w+)\s*\.\s*(\w+)\s*\(/.exec(s);
+        if(m3){var ob=ST.fields[m3[1]],oc=ob&&ob.value&&ob.value.cls,dm=oc&&ST.dataClasses[oc]&&ST.dataClasses[oc].methods[m3[2]];if(dm)return{call:s,body:dm.body}}
+        return null}
+      var rc=resolveCall(t);
+      if(!rc&&/^\w+$/.test(t)){
         var fl=ST.fields[t],src=(ST.futExpr&&ST.futExpr[t])||(fl&&fl.init);
         if(!src&&ST.initState){var im=new RegExp('\\b'+t+'\\s*=\\s*([^;]+);').exec(ST.initState.body);if(im)src=im[1]}
-        var m2=src&&/^(\w+)\s*\(/.exec(src.trim());if(m2&&ST.methods[m2[1]])call=src.trim()}
-      if(call){
-        var mn=/^(\w+)/.exec(call)[1],body=ST.methods[mn].body,re=/Future\s*\.\s*delayed\s*\(/g,mm;
+        if(src)rc=resolveCall(src)}
+      if(rc){
+        var body=rc.body,re=/Future\s*\.\s*delayed\s*\(/g,mm;
         while((mm=re.exec(body))){var seg=grabCall(body.slice(mm.index),'Future\\s*\\.\\s*delayed');if(seg)ms+=mkDelay(seg,env).ms}
-        data=ev(pTern(new Ps(call)),env);if(data===undefined)data=null}
-      else ms=1500}
+        if(!ms&&/\bhttp\s*\.\s*(get|post|put|delete|patch)\b/.test(body))ms=800;
+        data=ev(pTern(new Ps(rc.call)),env);if(data===undefined)data=null}
+      else{var ex2=/^\w+$/.test(t)?((ST.futExpr&&ST.futExpr[t])||(ST.fields[t]&&ST.fields[t].init)||''):t;
+        if(!ex2&&/^\w+$/.test(t)&&ST.initState){var im2=new RegExp('\\b'+t+'\\s*=\\s*([^;]+);').exec(ST.initState.body);if(im2)ex2=im2[1]}
+        if(ex2&&/Firebase|\.collection\(|\.doc\(/.test(ex2)){ms=600;data=ev(pTern(new Ps(ex2.trim())),env);if(data===undefined)data=null}
+        else ms=1500}}
   }catch(e){if(e.dartExc)err=e.message;else{ST.sync=old;throw e}}
   ST.sync=old;return{ms:ms,data:data,err:err}}
 function futureTexts(n){
@@ -3494,7 +3700,8 @@ function streamTexts(n){
   function mk(state,has,data,err){return{nat:'AsyncSnapshot',f:{connectionState:'ConnectionState.'+state,hasData:has,hasError:!!err,data:has?data:null,error:err||null},src:'AsyncSnapshot()'}}
   function wait(){return init!==null?mk('waiting',true,init):mk('waiting',false,null)}
   var snap;
-  if(sv.kind==='ctl'){
+  if(sv.kind==='live'){var lv=sv.get();snap=mk('active',lv!==null&&lv!==undefined,lv)}
+  else if(sv.kind==='ctl'){
     var c=sv.ctl.st;
     snap=c.err?mk('active',false,null,c.err):c.has?mk(c.closed?'done':'active',true,c.last):c.closed?mk('done',false,null):wait()}
   else{
@@ -3662,7 +3869,7 @@ function matchBrace(text,open){
     i++}
   return -1}
 var FIELD=/^(?:@\w+\s+)?(?:(?:static|late|final|const)\s+)*(int|double|num|bool|String|var|dynamic|[A-Z]\w*(?:<[^;=]*?>)?)\??\s+(\w+)\s*(?:=\s*([\s\S]+?))?;$/;
-var FIELD2=/^(?:@\w+\s+)?(?:static\s+)?(?:late\s+|final\s+)+(\w+)\s*=\s*([\s\S]+?);$/;
+var FIELD2=/^(?:@\w+\s+)?(?:static\s+)?(?:late\s+|final\s+|const\s+)+(\w+)\s*=\s*([\s\S]+?);$/;
 var MARROW=/^(?:@\w+\s+)?(?:[\w?]+(?:<[\w<>?,\s]*>)?\??\s+)?(\w+)\s*\(([^)]*)\)\s*(?:async\s*\*?\s*)?=>\s*([\s\S]+?);$/;
 var MBLOCK=/^(?:@\w+\s+)?(?:[\w?]+(?:<[\w<>?,\s]*>)?\??\s+)?(\w+)\s*\(([^)]*)\)\s*(?:async\s*\*?\s*)?(\{[\s\S]*\})$/;
 var BUILD=/^(?:@\w+\s+)?Widget\s+build\s*\([^)]*\)\s*(?:async\s*)?(\{[\s\S]*\})$/;
@@ -11508,7 +11715,23 @@ class _TelaState extends State<Tela> {
 {t:"x. sqflite: banco SQLite com CRUD",
  text:"O sqflite é um banco SQL de verdade dentro do app. openDatabase abre (ou cria) o arquivo e roda o onCreate na primeira vez, onde o CREATE TABLE define as colunas. Depois vêm as quatro operações do CRUD: insert (criar), query (ler), update (alterar) e delete (apagar). O where usa ? como espaço para os valores de whereArgs, o que evita erros e injeção de SQL. Cada linha volta como Map, e o fromMap transforma o Map em objeto Tarefa; o toMap faz o caminho inverso. O SQLite não tem bool, por isso a coluna feita guarda 0 ou 1. O simulador entende CREATE, INSERT, SELECT (WHERE, ORDER BY, LIMIT, COUNT, SUM, AVG, GROUP BY), UPDATE e DELETE de uma tabela só; JOIN não.",
  tryit:"Em ▶ Testar, adicione tarefas, marque o checkbox e apague uma. Acrescente depois uma coluna prioridade e um filtro para mostrar só as tarefas não feitas.",
- code:"import 'package:flutter/material.dart';\nimport 'package:sqflite/sqflite.dart';\nimport 'package:path/path.dart';\n\nvoid main() => runApp(const MaterialApp(home: Tarefas()));\n\nclass Tarefa {\n  final int? id;\n  final String titulo;\n  final bool feita;\n  Tarefa({this.id, required this.titulo, this.feita = false});\n\n  Map<String, dynamic> toMap() => {'id': id, 'titulo': titulo, 'feita': feita ? 1 : 0};\n\n  factory Tarefa.fromMap(Map<String, dynamic> m) =>\n      Tarefa(id: m['id'], titulo: m['titulo'], feita: m['feita'] == 1);\n}\n\nclass Tarefas extends StatefulWidget {\n  const Tarefas({super.key});\n  @override\n  State<Tarefas> createState() => _TarefasState();\n}\n\nclass _TarefasState extends State<Tarefas> {\n  Database? db;\n  List<Tarefa> lista = [];\n  final controller = TextEditingController();\n\n  @override\n  void initState() {\n    super.initState();\n    abrir();\n  }\n\n  Future<void> abrir() async {\n    db = await openDatabase(\n      join(await getDatabasesPath(), 'tarefas.db'),\n      version: 1,\n      onCreate: (d, v) async {\n        await d.execute('CREATE TABLE tarefas(id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT, feita INTEGER)');\n      },\n    );\n    await carregar();\n  }\n\n  Future<void> carregar() async {\n    final linhas = await db!.query('tarefas', orderBy: 'id DESC');\n    setState(() {\n      lista = linhas.map((m) => Tarefa.fromMap(m)).toList();\n    });\n  }\n\n  Future<void> adicionar() async {\n    if (controller.text.isEmpty) return;\n    await db!.insert('tarefas', Tarefa(titulo: controller.text).toMap());\n    controller.clear();\n    await carregar();\n  }\n\n  Future<void> alternar(Tarefa t) async {\n    await db!.update('tarefas', {'feita': t.feita ? 0 : 1}, where: 'id = ?', whereArgs: [t.id]);\n    await carregar();\n  }\n\n  Future<void> remover(Tarefa t) async {\n    await db!.delete('tarefas', where: 'id = ?', whereArgs: [t.id]);\n    await carregar();\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: Text('Tarefas (${lista.length})')),\n      body: Column(\n        children: [\n          Padding(\n            padding: const EdgeInsets.all(8),\n            child: Row(\n              children: [\n                Expanded(child: TextField(controller: controller, decoration: const InputDecoration(hintText: 'Nova tarefa'))),\n                IconButton(icon: const Icon(Icons.add), onPressed: adicionar),\n              ],\n            ),\n          ),\n          Expanded(\n            child: ListView(\n              children: lista.map((t) => ListTile(\n                leading: Checkbox(value: t.feita, onChanged: (_) => alternar(t)),\n                title: Text(t.titulo),\n                trailing: IconButton(icon: const Icon(Icons.delete), onPressed: () => remover(t)),\n              )).toList(),\n            ),\n          ),\n        ],\n      ),\n    );\n  }\n}\n"}
+ code:"import 'package:flutter/material.dart';\nimport 'package:sqflite/sqflite.dart';\nimport 'package:path/path.dart';\n\nvoid main() => runApp(const MaterialApp(home: Tarefas()));\n\nclass Tarefa {\n  final int? id;\n  final String titulo;\n  final bool feita;\n  Tarefa({this.id, required this.titulo, this.feita = false});\n\n  Map<String, dynamic> toMap() => {'id': id, 'titulo': titulo, 'feita': feita ? 1 : 0};\n\n  factory Tarefa.fromMap(Map<String, dynamic> m) =>\n      Tarefa(id: m['id'], titulo: m['titulo'], feita: m['feita'] == 1);\n}\n\nclass Tarefas extends StatefulWidget {\n  const Tarefas({super.key});\n  @override\n  State<Tarefas> createState() => _TarefasState();\n}\n\nclass _TarefasState extends State<Tarefas> {\n  Database? db;\n  List<Tarefa> lista = [];\n  final controller = TextEditingController();\n\n  @override\n  void initState() {\n    super.initState();\n    abrir();\n  }\n\n  Future<void> abrir() async {\n    db = await openDatabase(\n      join(await getDatabasesPath(), 'tarefas.db'),\n      version: 1,\n      onCreate: (d, v) async {\n        await d.execute('CREATE TABLE tarefas(id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT, feita INTEGER)');\n      },\n    );\n    await carregar();\n  }\n\n  Future<void> carregar() async {\n    final linhas = await db!.query('tarefas', orderBy: 'id DESC');\n    setState(() {\n      lista = linhas.map((m) => Tarefa.fromMap(m)).toList();\n    });\n  }\n\n  Future<void> adicionar() async {\n    if (controller.text.isEmpty) return;\n    await db!.insert('tarefas', Tarefa(titulo: controller.text).toMap());\n    controller.clear();\n    await carregar();\n  }\n\n  Future<void> alternar(Tarefa t) async {\n    await db!.update('tarefas', {'feita': t.feita ? 0 : 1}, where: 'id = ?', whereArgs: [t.id]);\n    await carregar();\n  }\n\n  Future<void> remover(Tarefa t) async {\n    await db!.delete('tarefas', where: 'id = ?', whereArgs: [t.id]);\n    await carregar();\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: Text('Tarefas (${lista.length})')),\n      body: Column(\n        children: [\n          Padding(\n            padding: const EdgeInsets.all(8),\n            child: Row(\n              children: [\n                Expanded(child: TextField(controller: controller, decoration: const InputDecoration(hintText: 'Nova tarefa'))),\n                IconButton(icon: const Icon(Icons.add), onPressed: adicionar),\n              ],\n            ),\n          ),\n          Expanded(\n            child: ListView(\n              children: lista.map((t) => ListTile(\n                leading: Checkbox(value: t.feita, onChanged: (_) => alternar(t)),\n                title: Text(t.titulo),\n                trailing: IconButton(icon: const Icon(Icons.delete), onPressed: () => remover(t)),\n              )).toList(),\n            ),\n          ),\n        ],\n      ),\n    );\n  }\n}\n"},
+{t:"x. API, FutureBuilder e cache com shared_preferences",
+ text:"Este é o fluxo completo de um app que usa internet. O Repositorio busca os dados com http.get, confere o statusCode, guarda o corpo no shared_preferences e, se a rede falhar, devolve o último corpo guardado (o cache). jsonDecode e fromJson transformam o texto em uma List<Post>. A tela só precisa do FutureBuilder: enquanto não termina mostra o CircularProgressIndicator, se der erro mostra a mensagem, e quando termina desenha a lista. O botão de atualizar troca o futuro dentro do setState. No simulador, a API jsonplaceholder (posts, users e todos) responde com dados de exemplo.",
+ tryit:"Em ▶ Testar, espere a lista carregar. Toque em atualizar para ver o círculo de novo. Troque o endereço para /users e mude o fromJson para ler name e email.",
+ code:"import 'dart:convert';\nimport 'package:flutter/material.dart';\nimport 'package:http/http.dart' as http;\nimport 'package:shared_preferences/shared_preferences.dart';\n\nvoid main() => runApp(const MaterialApp(home: Posts()));\n\nclass Post {\n  final int id;\n  final String titulo;\n  final String texto;\n  Post({required this.id, required this.titulo, required this.texto});\n\n  factory Post.fromJson(Map<String, dynamic> j) =>\n      Post(id: j['id'], titulo: j['title'], texto: j['body']);\n}\n\nclass Repositorio {\n  static const url = 'https://jsonplaceholder.typicode.com/posts';\n\n  Future<List<Post>> buscar() async {\n    final prefs = await SharedPreferences.getInstance();\n    String corpo;\n    try {\n      final resposta = await http.get(Uri.parse(url));\n      if (resposta.statusCode != 200) throw Exception('Erro ${resposta.statusCode}');\n      corpo = resposta.body;\n      await prefs.setString('cache_posts', corpo);\n    } catch (e) {\n      final guardado = prefs.getString('cache_posts');\n      if (guardado == null) rethrow;\n      corpo = guardado;\n    }\n    final lista = jsonDecode(corpo) as List;\n    return lista.map((j) => Post.fromJson(j)).toList();\n  }\n}\n\nclass Posts extends StatefulWidget {\n  const Posts({super.key});\n\n  @override\n  State<Posts> createState() => _PostsState();\n}\n\nclass _PostsState extends State<Posts> {\n  final repo = Repositorio();\n  late Future<List<Post>> futuro;\n\n  @override\n  void initState() {\n    super.initState();\n    futuro = repo.buscar();\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(\n        title: const Text('Posts da API'),\n        actions: [\n          IconButton(\n            icon: const Icon(Icons.refresh),\n            onPressed: () => setState(() => futuro = repo.buscar()),\n          ),\n        ],\n      ),\n      body: FutureBuilder<List<Post>>(\n        future: futuro,\n        builder: (context, snap) {\n          if (snap.connectionState != ConnectionState.done) {\n            return const Center(child: CircularProgressIndicator());\n          }\n          if (snap.hasError) {\n            return Center(child: Text('Falhou: ${snap.error}'));\n          }\n          final posts = snap.data!;\n          return ListView.builder(\n            itemCount: posts.length,\n            itemBuilder: (context, i) => Card(\n              child: ListTile(\n                leading: CircleAvatar(child: Text('${posts[i].id}')),\n                title: Text(posts[i].titulo),\n                subtitle: Text(posts[i].texto, maxLines: 2),\n              ),\n            ),\n          );\n        },\n      ),\n    );\n  }\n}\n"},
+{t:"x. sqflite com duas tabelas e JOIN",
+ text:"Quando os dados se relacionam, cada coisa fica em sua tabela e o JOIN junta as duas na consulta. Aqui produtos guarda o categoria_id e categorias guarda o nome. O LEFT JOIN traz todos os produtos, mesmo os sem categoria (o nome vem null, e o fromMap troca por Sem categoria com ??). O INNER JOIN traria só os produtos que têm categoria. Os apelidos p e c encurtam o SQL, e o AS dá o nome da chave no Map que volta. Os dados iniciais entram dentro do onCreate.",
+ tryit:"Em ▶ Testar, toque no + algumas vezes. Troque LEFT JOIN por INNER JOIN e veja a Sacola sumir da lista.",
+ code:"import 'package:flutter/material.dart';\nimport 'package:sqflite/sqflite.dart';\n\nvoid main() => runApp(const MaterialApp(home: Loja()));\n\nclass Item {\n  final String produto;\n  final String categoria;\n  final double preco;\n  Item({required this.produto, required this.categoria, required this.preco});\n\n  factory Item.fromMap(Map<String, dynamic> m) => Item(\n        produto: m['produto'],\n        categoria: m['categoria'] ?? 'Sem categoria',\n        preco: m['preco'].toDouble(),\n      );\n}\n\nclass Loja extends StatefulWidget {\n  const Loja({super.key});\n\n  @override\n  State<Loja> createState() => _LojaState();\n}\n\nclass _LojaState extends State<Loja> {\n  late Database db;\n  List<Item> itens = [];\n  int contador = 0;\n\n  @override\n  void initState() {\n    super.initState();\n    abrir();\n  }\n\n  Future<void> abrir() async {\n    db = await openDatabase(\n      'loja.db',\n      version: 1,\n      onCreate: (d, v) async {\n        await d.execute('CREATE TABLE categorias(id INTEGER PRIMARY KEY, nome TEXT)');\n        await d.execute('CREATE TABLE produtos(id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, preco REAL, categoria_id INTEGER)');\n        await d.insert('categorias', {'id': 1, 'nome': 'Papelaria'});\n        await d.insert('categorias', {'id': 2, 'nome': 'Informática'});\n        await d.insert('produtos', {'nome': 'Caderno', 'preco': 18.9, 'categoria_id': 1});\n        await d.insert('produtos', {'nome': 'Mouse', 'preco': 59.0, 'categoria_id': 2});\n        await d.insert('produtos', {'nome': 'Sacola', 'preco': 2.5});\n      },\n    );\n    await carregar();\n  }\n\n  Future<void> carregar() async {\n    final linhas = await db.rawQuery('''\n      SELECT p.nome AS produto, p.preco AS preco, c.nome AS categoria\n      FROM produtos p\n      LEFT JOIN categorias c ON c.id = p.categoria_id\n      ORDER BY p.id\n    ''');\n    setState(() {\n      itens = linhas.map((m) => Item.fromMap(m)).toList();\n    });\n  }\n\n  Future<void> novo() async {\n    contador++;\n    await db.insert('produtos', {'nome': 'Produto $contador', 'preco': 10.0 * contador, 'categoria_id': 2});\n    await carregar();\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: Text('Loja (${itens.length} produtos)')),\n      floatingActionButton: FloatingActionButton(onPressed: novo, child: const Icon(Icons.add)),\n      body: ListView(\n        children: itens.map((i) => ListTile(\n          title: Text(i.produto),\n          subtitle: Text(i.categoria),\n          trailing: Text('R\\$ ${i.preco.toStringAsFixed(2)}'),\n        )).toList(),\n      ),\n    );\n  }\n}\n"},
+{t:"x. Firebase Auth: login e cadastro",
+ text:"O firebase_auth cuida de cadastro, login e sessão. createUserWithEmailAndPassword cria a conta, signInWithEmailAndPassword entra e signOut sai. Os erros chegam como FirebaseAuthException, e o e.code diz o motivo (weak-password, invalid-credential, email-already-in-use); a função traduzir transforma o código em uma frase para o usuário. O StreamBuilder escuta authStateChanges: quando há usuário, mostra a tela inicial; quando não há, mostra o login. Assim, entrar e sair trocam a tela sozinhos, sem Navigator. No simulador as contas ficam no navegador, e ↺ Reiniciar apaga todas.",
+ tryit:"Em ▶ Testar, tente criar uma conta com senha curta, depois com senha boa. Saia e entre com a senha errada, depois com a certa.",
+ code:"import 'package:flutter/material.dart';\nimport 'package:firebase_auth/firebase_auth.dart';\n\nvoid main() => runApp(const MaterialApp(home: App()));\n\nclass App extends StatefulWidget {\n  const App({super.key});\n\n  @override\n  State<App> createState() => _AppState();\n}\n\nclass _AppState extends State<App> {\n  final email = TextEditingController();\n  final senha = TextEditingController();\n  String? erro;\n\n  String traduzir(String codigo) {\n    switch (codigo) {\n      case 'invalid-email':\n        return 'E-mail inválido.';\n      case 'weak-password':\n        return 'A senha precisa de 6 caracteres ou mais.';\n      case 'email-already-in-use':\n        return 'Este e-mail já tem cadastro.';\n      case 'invalid-credential':\n        return 'E-mail ou senha incorretos.';\n      default:\n        return 'Erro: $codigo';\n    }\n  }\n\n  Future<void> entrar() async {\n    try {\n      await FirebaseAuth.instance.signInWithEmailAndPassword(email: email.text, password: senha.text);\n      setState(() => erro = null);\n    } on FirebaseAuthException catch (e) {\n      setState(() => erro = traduzir(e.code));\n    }\n  }\n\n  Future<void> cadastrar() async {\n    try {\n      await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email.text, password: senha.text);\n      setState(() => erro = null);\n    } on FirebaseAuthException catch (e) {\n      setState(() => erro = traduzir(e.code));\n    }\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return StreamBuilder<User?>(\n      stream: FirebaseAuth.instance.authStateChanges(),\n      builder: (context, snap) {\n        if (snap.hasData) {\n          return Scaffold(\n            appBar: AppBar(title: const Text('Início')),\n            body: Center(\n              child: Column(\n                mainAxisAlignment: MainAxisAlignment.center,\n                children: [\n                  const Icon(Icons.account_circle, size: 64),\n                  Text('Olá, ${snap.data!.email}'),\n                  const SizedBox(height: 12),\n                  ElevatedButton(onPressed: () => FirebaseAuth.instance.signOut(), child: const Text('Sair')),\n                ],\n              ),\n            ),\n          );\n        }\n        return Scaffold(\n          appBar: AppBar(title: const Text('Entrar')),\n          body: Padding(\n            padding: const EdgeInsets.all(16),\n            child: Column(\n              children: [\n                TextField(controller: email, decoration: const InputDecoration(labelText: 'E-mail')),\n                TextField(controller: senha, obscureText: true, decoration: const InputDecoration(labelText: 'Senha')),\n                const SizedBox(height: 12),\n                if (erro != null) Text(erro!, style: const TextStyle(color: Colors.red)),\n                Row(\n                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,\n                  children: [\n                    ElevatedButton(onPressed: entrar, child: const Text('Entrar')),\n                    OutlinedButton(onPressed: cadastrar, child: const Text('Criar conta')),\n                  ],\n                ),\n              ],\n            ),\n          ),\n        );\n      },\n    );\n  }\n}\n"},
+{t:"x. Firestore: lista em tempo real",
+ text:"O cloud_firestore guarda documentos (Maps) dentro de coleções. collection(...).add cria um documento com id automático; doc.update altera campos; doc.delete apaga. FieldValue.serverTimestamp guarda a hora do servidor e FieldValue.increment soma sem precisar ler o valor antes. O snapshots() devolve um Stream: o StreamBuilder redesenha a lista sozinho a cada mudança, sem recarregar à mão. Cada item do snap.data!.docs é um documento: d.data() traz o Map e d.reference aponta para ele, para alterar ou apagar. No simulador os dados ficam no navegador; ↺ Reiniciar apaga tudo.",
+ tryit:"Em ▶ Testar, publique dois recados, curta um e apague outro. Troque descending: true por false e veja a ordem inverter.",
+ code:"import 'package:flutter/material.dart';\nimport 'package:cloud_firestore/cloud_firestore.dart';\n\nvoid main() => runApp(const MaterialApp(home: Mural()));\n\nclass Mural extends StatefulWidget {\n  const Mural({super.key});\n\n  @override\n  State<Mural> createState() => _MuralState();\n}\n\nclass _MuralState extends State<Mural> {\n  final recados = FirebaseFirestore.instance.collection('recados');\n  final texto = TextEditingController();\n\n  Future<void> publicar() async {\n    if (texto.text.isEmpty) return;\n    await recados.add({'texto': texto.text, 'curtidas': 0, 'criado': FieldValue.serverTimestamp()});\n    texto.clear();\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Mural')),\n      body: Column(\n        children: [\n          Padding(\n            padding: const EdgeInsets.all(8),\n            child: Row(\n              children: [\n                Expanded(child: TextField(controller: texto, decoration: const InputDecoration(hintText: 'Escreva um recado'))),\n                IconButton(icon: const Icon(Icons.send), onPressed: publicar),\n              ],\n            ),\n          ),\n          Expanded(\n            child: StreamBuilder<QuerySnapshot>(\n              stream: recados.orderBy('criado', descending: true).snapshots(),\n              builder: (context, snap) {\n                if (!snap.hasData) return const Center(child: CircularProgressIndicator());\n                final docs = snap.data!.docs;\n                return ListView(\n                  children: docs.map((d) {\n                    final dados = d.data() as Map<String, dynamic>;\n                    return ListTile(\n                      title: Text(dados['texto']),\n                      subtitle: Text('${dados['curtidas']} curtidas'),\n                      leading: IconButton(\n                        icon: const Icon(Icons.favorite_border),\n                        onPressed: () => d.reference.update({'curtidas': FieldValue.increment(1)}),\n                      ),\n                      trailing: IconButton(icon: const Icon(Icons.delete), onPressed: () => d.reference.delete()),\n                    );\n                  }).toList(),\n                );\n              },\n            ),\n          ),\n        ],\n      ),\n    );\n  }\n}\n"}
 /*NL-END*/
 ];
 var base=LESSONS.filter(function(l){return !l.after}),placed=LESSONS.filter(function(l){return l.after});
@@ -11715,6 +11938,10 @@ add("Aninhando Column e Row",[["Trocar o quadrado azul por laranja","O quadrado 
 add("JSON, classe modelo e map",[["Acrescentar um produto ao JSON","No fim da lista do JSON, depois do Boné, coloque uma vírgula e um novo objeto com nome Meia e preco 9.9.","\"Meia\""],["Preço sem centavos","No toStringAsFixed, troque o 2 por 0.","toStringAsFixed\\(0\\)"],["Pintar o coração de vermelho","No Icon, depois do operador ternário, acrescente color: Colors.red.","color:\\s*Colors\\.red"]]);
 add("shared_preferences: guardar",[["Somar de 5 em 5","Em somar, troque cont++ por cont += 5.","cont \\+= 5"],["Valor inicial 10","No carregar, troque o ?? 0 do contador por ?? 10.","'cont'\\) \\?\\? 10"],["Tema escuro começa ligado","No carregar, troque o ?? false do tema por ?? true.","'escuro'\\) \\?\\? true"]]);
 add("sqflite: banco SQLite",[["Ordem alfabética","No query, troque orderBy: id DESC por orderBy: titulo.","orderBy:\\s*'titulo'"],["Mostrar só as pendentes","No query, acrescente where: feita = 0 antes do orderBy.","where:\\s*'feita = 0'"],["Remover com ícone de lixeira diferente","No botão de apagar, troque Icons.delete por Icons.delete_outline.","Icons\\.delete_outline"]]);
+add("API, FutureBuilder e cache",[["Mostrar só 5 posts","No ListView.builder, troque itemCount: posts.length por itemCount: 5.","itemCount:\\s*5"],["Título em negrito","No title do ListTile, acrescente style: const TextStyle(fontWeight: FontWeight.bold) depois do texto.","FontWeight\\.bold"],["Subtítulo com 3 linhas","No subtitle, troque maxLines: 2 por maxLines: 3.","maxLines:\\s*3"]]);
+add("sqflite com duas tabelas",[["INNER JOIN no lugar de LEFT JOIN","Na consulta do carregar, troque LEFT JOIN por INNER JOIN. A Sacola some, porque não tem categoria.","INNER JOIN"],["Ordenar pelo preço","No fim da consulta, troque ORDER BY p.id por ORDER BY p.preco DESC.","ORDER BY p\\.preco"],["Produto novo em Papelaria","No novo(), troque o categoria_id: 2 por categoria_id: 1.","contador,\\s*'categoria_id':\\s*1"]]);
+add("Firebase Auth: login",[["Ícone maior na tela inicial","No Icon account_circle, troque size: 64 por size: 96.","size:\\s*96"],["Texto do botão Sair","Troque o texto do botão Sair por Encerrar sessão.","Encerrar sessão"],["Nova mensagem de erro","Em traduzir, troque E-mail ou senha incorretos. por Confira seu e-mail e sua senha.","Confira seu e-mail"]]);
+add("Firestore: lista em tempo real",[["Mostrar só os 3 últimos","Depois do orderBy, acrescente .limit(3) antes do snapshots().","limit\\(3\\)"],["Recados do mais antigo para o mais novo","No orderBy, troque descending: true por descending: false.","descending:\\s*false"],["Curtir de 5 em 5","No update, troque FieldValue.increment(1) por FieldValue.increment(5).","increment\\(5\\)"]]);
 OF.EX=EX;
 OF.LESSONS.forEach(function(L){
   var st=null,k;
@@ -13489,7 +13716,9 @@ OF.LIMITS=[
  'ListView.custom e SliverList: SliverChildListDelegate e SliverChildBuilderDelegate (até 60 itens quando não há childCount). Image.file não existe.',
  'Draggable, LongPressDraggable e DragTarget funcionam com o mouse ou o dedo, mas a cópia que acompanha o ponteiro é um clone do widget, o offset em DragTargetDetails é Offset(0, 0) e onMove não é chamado.',
  'AnimationController roda no modo ▶ Testar; Tween e curvas são aproximados (veja Animações e gestos).',
- 'Banco de dados: shared_preferences (get/set de String, int, double, bool e lista, remove, clear) e sqflite (openDatabase, execute, insert, query, update, delete, rawQuery, transaction) são simulados na memória do navegador. O SQL aceita uma tabela por comando: CREATE, INSERT, SELECT com WHERE, ORDER BY, LIMIT, GROUP BY, COUNT, SUM, AVG, MIN e MAX, UPDATE e DELETE. Não há JOIN, subconsulta, índice, batch nem chaves estrangeiras. ↺ Reiniciar apaga o banco. Hive, Isar, Firebase e Supabase não existem.',
+ 'Banco de dados: shared_preferences, sqflite (openDatabase, execute, insert, query, update, delete, rawQuery, batch, transaction) e Firebase (cloud_firestore e firebase_auth) são simulados no navegador. O SQL aceita CREATE, INSERT, SELECT (WHERE, JOIN, LEFT JOIN, ORDER BY, LIMIT, GROUP BY, COUNT, SUM, AVG, MIN, MAX), UPDATE e DELETE; não há subconsulta, índice nem chave estrangeira com regra. ↺ Reiniciar apaga o banco, os documentos e as contas.',
+ 'Firestore simulado: collection, doc, add, set (com SetOptions merge), update, delete, get, snapshots, where (igual, diferente, maior, menor, in, arrayContains), orderBy, limit, FieldValue (serverTimestamp, increment, arrayUnion, arrayRemove, delete) e subcoleções. Não há transações reais, listen, consultas compostas com índice nem regras de segurança. Auth simulado: cadastro, login, signOut, login anônimo, recuperar senha, currentUser e authStateChanges; não há Google, telefone nem verificação de e-mail.',
+ 'API simulada: jsonplaceholder.typicode.com (users, posts e todos, com GET, POST, PUT e DELETE de exemplo). Qualquer outro endereço responde 404, a menos que você escolha o modo real em 📡 Sensores. Hive, Isar e Supabase não existem.',
  'Nenhum widget Cupertino existe (CupertinoButton, CupertinoAlertDialog, CupertinoSwitch e outros).'
  ]},
 {h:'Propriedades que o simulador ignora',
