@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Oficina Flutter</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -542,7 +543,38 @@ body:has(main[data-tab="ref"]) .lesson{display:none}
 .screen .nd.btn.selp:not(.dis):active{box-shadow:var(--el-p)!important}
 .screen .nd.btn.seld.dis{box-shadow:var(--el-d)!important}
 .screen .nd.tf .cnt{position:absolute;right:12px;bottom:-20px;font-size:12px;color:#49454F}
-.nd.appbar .nd.ibtn{color:inherit}
+ .nd.appbar .nd.ibtn{color:inherit}
+/* Cupertino */
+.nd.cnb{height:44px;background:rgba(249,249,249,.94);color:#000;box-shadow:none;border-bottom:.5px solid #C6C6C8;justify-content:center;font-size:17px;font-weight:600;padding:0 8px;position:relative}
+.nd.cnb .cnl{position:absolute;left:8px;color:#007AFF;font-weight:400;font-size:17px}
+.nd.cnb .cnt2{position:absolute;right:8px;color:#007AFF;font-weight:400}
+.nd.cnb .cnm{flex:none}
+.nd.cps{background:#fff}
+.nd.cbtn{background:transparent;color:#007AFF;box-shadow:none;border-radius:8px;padding:8px 16px;font-size:17px;height:auto;min-height:44px}
+.nd.cbtn.cfill{background:#007AFF;color:#fff;border-radius:8px}
+.nd.cbtn.dis{opacity:.4}
+.nd.csw{width:51px;height:31px;border:0;background:#E9E9EA;border-radius:16px}
+.nd.csw::after{left:2px;top:2px;margin-top:0;width:27px;height:27px;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.3)}
+.nd.csw.on{background:var(--act,#34C759);border:0}
+.nd.csw.on::after{left:22px;top:2px;margin-top:0;width:27px;height:27px;background:#fff}
+.nd.csl .tk{background:#E9E9EA;height:4px}
+.nd.csl .tk .ac{background:var(--act,#007AFF)}
+.nd.csl .thm{background:#fff;width:28px;height:28px;margin-left:-14px;margin-top:0;box-shadow:0 2px 6px rgba(0,0,0,.35);border:0}
+.nd.ctf{height:36px;background:#fff;border:1px solid #D1D1D6;border-radius:8px;padding:0 8px;justify-content:center;flex:none}
+.nd.ctf .th{color:#C7C7CC;font-size:17px}
+.nd.ctf.csr{background:#EEEEF0;border:0;padding-left:30px}
+.nd.ctf.csr::before{content:'\1F50D';position:absolute;left:8px;font-size:14px;opacity:.5}
+.screen .nd.ctf input.tfi{font:17px -apple-system,system-ui,sans-serif;color:#000;background:transparent;border:0;outline:0;box-sizing:border-box;width:100%;position:absolute;inset:0;padding:0 8px}
+.screen .nd.ctf.csr input.tfi{padding-left:30px}
+.nd.cact{border:2px solid #8E8E93;border-top-color:transparent;border-radius:50%;animation:dsp 1s linear infinite;box-sizing:border-box}
+.nd.cdlg{background:rgba(249,249,249,.97);color:#000;border-radius:14px;padding:18px 0 0;gap:4px;width:270px;align-self:center;align-items:center;text-align:center;overflow:hidden}
+.nd.cdlg>.nd:nth-child(1){font-size:17px;font-weight:600}
+.nd.cdlg>.nd:nth-child(2){font-size:13px;color:#000;padding:0 16px 14px}
+.nd.cdlg .cdact{width:100%;display:flex;flex-direction:row;justify-content:stretch;gap:0;margin:0;border-top:.5px solid #C6C6C8}
+.nd.cdlg .cdact .nd.cda{flex:1;min-height:44px;justify-content:center;background:transparent;color:#007AFF;font-size:17px;border-radius:0;box-shadow:none;padding:0}
+.nd.cdlg .cdact .nd.cda+.nd.cda{border-left:.5px solid #C6C6C8}
+.nd.cda.cdd{font-weight:600}
+.nd.cdlg .cdact .nd.cda.cdx{color:#FF3B30}
 </style>
 <header class="top">
   <div class="brand">
@@ -888,6 +920,20 @@ Drawer:{cat:'struct',slots:{child:'one'},desc:'Painel lateral que desliza da esq
  InkResponse:{cat:'struct',slots:{child:'one'},desc:'Como o InkWell, com mais controle da forma do efeito de toque. onTap define a ação.'},
  'Image.file':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem guardada em um arquivo do aparelho (File(path)). O simulador desenha um quadro no lugar.'},
  ValueListenableBuilder:{cat:'layout',slots:{child:'one'},desc:'Redesenha só o que está dentro quando um ValueNotifier muda, sem setState. valueListenable é o notifier e builder recebe (context, value, child). child é um pedaço fixo, que não precisa ser refeito.'},
+ ChangeNotifierProvider:{cat:'layout',slots:{child:'one'},desc:'Do pacote provider: cria um ChangeNotifier (create) e o deixa disponível para toda a árvore abaixo. Quem estiver abaixo lê com context.watch, context.read ou Consumer.'},
+ MultiProvider:{cat:'layout',slots:{child:'one'},desc:'Junta vários providers em um só, na lista providers, sem aninhar um dentro do outro.'},
+ Consumer:{cat:'layout',slots:{child:'one'},desc:'Do pacote provider: escuta o objeto do tipo indicado em <T> e refaz só o que está no builder quando ele chama notifyListeners(). builder recebe (context, valor, child).'},
+ CupertinoPageScaffold:{cat:'struct',slots:{navigationBar:'one',child:'one'},desc:'Esqueleto de uma tela no estilo iOS. navigationBar recebe uma CupertinoNavigationBar e child é o conteúdo da tela.'},
+ CupertinoNavigationBar:{cat:'struct',slots:{leading:'one',middle:'one',trailing:'one'},desc:'Barra superior no estilo iOS. middle é o título (centralizado), leading fica à esquerda e trailing à direita.'},
+ CupertinoButton:{cat:'content',slots:{child:'one'},desc:'Botão do iOS: só texto na cor de destaque. Use CupertinoButton.filled para o botão com fundo.'},
+ 'CupertinoButton.filled':{cat:'content',slots:{child:'one'},desc:'Botão do iOS com fundo colorido e texto branco.'},
+ CupertinoSwitch:{cat:'content',slots:{},desc:'Interruptor no estilo iOS (verde quando ligado). value indica o estado; onChanged recebe a mudança.'},
+ CupertinoSlider:{cat:'content',slots:{},desc:'Controle deslizante no estilo iOS. value fica entre min e max (0 a 1 por padrão).'},
+ CupertinoTextField:{cat:'content',slots:{},desc:'Campo de texto no estilo iOS, com borda arredondada. placeholder é o texto de dica; controller, onChanged, obscureText e maxLength funcionam como no TextField.'},
+ CupertinoSearchTextField:{cat:'content',slots:{},desc:'Campo de busca no estilo iOS, com lupa. placeholder muda o texto de dica.'},
+ CupertinoActivityIndicator:{cat:'content',slots:{},desc:'Indicador de carregamento do iOS (traços girando).'},
+ CupertinoAlertDialog:{cat:'box',slots:{title:'one',content:'one',actions:'many'},desc:'Diálogo no estilo iOS. Abra com showCupertinoDialog. actions recebe CupertinoDialogAction.'},
+ CupertinoDialogAction:{cat:'content',slots:{child:'one'},desc:'Botão de um CupertinoAlertDialog. isDefaultAction deixa em negrito e isDestructiveAction deixa vermelho.'},
  ListenableBuilder:{cat:'layout',slots:{child:'one'},desc:'Redesenha quando um ChangeNotifier chama notifyListeners(). listenable é o objeto e builder recebe (context, child). Sem setState.'},
  Draggable:{cat:'box',slots:{child:'one',feedback:'one',childWhenDragging:'one'},desc:'Faz o filho poder ser arrastado. data é o valor que viaja com ele, feedback é o que aparece sob o dedo e childWhenDragging é o que fica no lugar enquanto arrasta. Funciona com ▶ Testar.'},
  LongPressDraggable:{cat:'box',slots:{child:'one',feedback:'one',childWhenDragging:'one'},desc:'Igual ao Draggable, mas só começa a arrastar depois de segurar o dedo por um instante. Bom para listas que rolam.'},
@@ -899,7 +945,7 @@ Drawer:{cat:'struct',slots:{child:'one'},desc:'Painel lateral que desliza da esq
  'Image.network':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem baixada de uma URL. O canvas mostra a imagem real quando a URL carrega; sem internet, ou se a página bloquear imagens externas, ele desenha um quadro no lugar. fit controla como ela preenche o espaço.'},
  'Image.asset':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem guardada no projeto (pasta assets). O canvas mostra a imagem real quando a URL carrega; sem internet, ou se a página bloquear imagens externas, ele desenha um quadro no lugar.'}
 };
-var GROUPS=[['Estrutura',['Scaffold','AppBar','FloatingActionButton','Drawer','BottomNavigationBar','BottomNavigationBarItem','NavigationBar','NavigationDestination','NavigationRail','NavigationRailDestination','MenuAnchor','MenuItemButton','FloatingActionButton.extended','NavigationDrawer','NavigationDrawerDestination','DrawerHeader','UserAccountsDrawerHeader','BottomAppBar','PreferredSize']],['Abas',['DefaultTabController','TabBar','Tab','TabBarView','TabPageSelector']],['Layout',['ValueListenableBuilder','ListenableBuilder','AnimatedBuilder','Center','Align','Column','Row','Stack','Positioned','Expanded','Flexible','Spacer','Wrap','Form','ListView','GridView.count','SingleChildScrollView','SafeArea','PageView','IndexedStack','Stepper','Step','ExpansionPanelList','ExpansionPanel','DraggableScrollableSheet','TweenAnimationBuilder','LayoutBuilder','Builder','FutureBuilder','StreamBuilder','RefreshIndicator','CustomScrollView','SliverAppBar','SliverToBoxAdapter','SliverList.list','SliverList.builder','IntrinsicHeight','IntrinsicWidth','LimitedBox','UnconstrainedBox','OverflowBox','RotatedBox','Baseline','Flow','Offstage','IgnorePointer','AbsorbPointer','GridView.extent','NestedScrollView','Scrollbar','SliverGrid','SliverGrid.count','SliverPadding','SliverFillRemaining','SliverPersistentHeader','StatefulBuilder','OrientationBuilder','ListBody','OverflowBar']],['Listas e tabelas',['ListView.builder','ListView.separated','ReorderableListView','ReorderableListView.builder','AnimatedList','GridView.builder','Table','TableRow','DataTable','DataColumn','DataRow','DataCell','ListView.custom','SliverChildListDelegate','SliverChildBuilderDelegate','SliverList','SliverFixedExtentList','SliverPrototypeExtentList','SliverOpacity','SliverAnimatedList','FlexibleSpaceBar','ListWheelScrollView','CarouselView','PaginatedDataTable']],['Caixas',['Container','ColoredBox','Padding','SizedBox','AspectRatio','ConstrainedBox','FractionallySizedBox','FittedBox','Card','Divider','VerticalDivider','ClipRRect','Opacity','AnimatedOpacity','AnimatedContainer','AnimatedPositioned','AnimatedAlign','AnimatedPadding','AnimatedSize','AnimatedScale','AnimatedRotation','AnimatedSwitcher','AnimatedCrossFade','Visibility','Tooltip','Badge','Hero','FadeTransition','SizeTransition','InteractiveViewer','Transform.rotate','Transform.scale','Transform.translate','Dismissible','ScaleTransition','AlignTransition','DecoratedBoxTransition','RotationTransition','SlideTransition','ClipRect','ClipOval','DecoratedBox','Material','Placeholder','CustomPaint','BackdropFilter','ShaderMask','ColorFiltered','ImageFiltered','AnimatedDefaultTextStyle','Card.outlined','Card.filled','DefaultTextStyle','ClipPath','Ink']],['Conteúdo',['Text','Text.rich','RichText','Icon','Image.network','CircleAvatar','Chip','ChoiceChip','FilterChip','ActionChip','ListTile','ExpansionTile','Image.asset','CircularProgressIndicator','LinearProgressIndicator','SegmentedButton','ButtonSegment','PopupMenuButton','InputChip','SelectableText','Image.file','CalendarDatePicker','FadeInImage','FadeInImage.assetNetwork','ImageIcon','FlutterLogo']],['Botões e campos',['ElevatedButton','FilledButton','TextButton','OutlinedButton','IconButton','TextField','TextFormField','Checkbox','Switch','Slider','Radio','DropdownButton','DropdownMenuItem','SwitchListTile','CheckboxListTile','RadioListTile','RangeSlider','ToggleButtons','DropdownMenu','DropdownMenuEntry','Autocomplete','SearchBar','TextButton.icon','ElevatedButton.icon','OutlinedButton.icon','FilledButton.icon','FilledButton.tonal','IconButton.filled','IconButton.filledTonal','IconButton.outlined','SearchAnchor','SearchAnchor.bar','MaterialButton','RawMaterialButton']],['Interação',['GestureDetector','Draggable','LongPressDraggable','DragTarget','InkWell','InkResponse','Focus','Semantics','Listener','MouseRegion','FocusScope','ExcludeSemantics','MergeSemantics','PopScope','Theme','MediaQuery']],['Mapas (flutter_map)',['FlutterMap','TileLayer','MarkerLayer','Marker','CircleLayer','CircleMarker','PolylineLayer','Polyline','RichAttributionWidget']],['Janelas',['AlertDialog','SimpleDialog','SimpleDialogOption','SnackBar','SnackBarAction','MaterialBanner','Banner']]];
+var GROUPS=[['Estrutura',['Scaffold','AppBar','FloatingActionButton','Drawer','BottomNavigationBar','BottomNavigationBarItem','NavigationBar','NavigationDestination','NavigationRail','NavigationRailDestination','MenuAnchor','MenuItemButton','FloatingActionButton.extended','NavigationDrawer','NavigationDrawerDestination','DrawerHeader','UserAccountsDrawerHeader','BottomAppBar','PreferredSize']],['Abas',['DefaultTabController','TabBar','Tab','TabBarView','TabPageSelector']],['iOS (Cupertino)',['CupertinoPageScaffold','CupertinoNavigationBar','CupertinoButton','CupertinoButton.filled','CupertinoSwitch','CupertinoSlider','CupertinoTextField','CupertinoSearchTextField','CupertinoActivityIndicator','CupertinoAlertDialog','CupertinoDialogAction']],['Layout',['ValueListenableBuilder','ListenableBuilder','ChangeNotifierProvider','MultiProvider','Consumer','AnimatedBuilder','Center','Align','Column','Row','Stack','Positioned','Expanded','Flexible','Spacer','Wrap','Form','ListView','GridView.count','SingleChildScrollView','SafeArea','PageView','IndexedStack','Stepper','Step','ExpansionPanelList','ExpansionPanel','DraggableScrollableSheet','TweenAnimationBuilder','LayoutBuilder','Builder','FutureBuilder','StreamBuilder','RefreshIndicator','CustomScrollView','SliverAppBar','SliverToBoxAdapter','SliverList.list','SliverList.builder','IntrinsicHeight','IntrinsicWidth','LimitedBox','UnconstrainedBox','OverflowBox','RotatedBox','Baseline','Flow','Offstage','IgnorePointer','AbsorbPointer','GridView.extent','NestedScrollView','Scrollbar','SliverGrid','SliverGrid.count','SliverPadding','SliverFillRemaining','SliverPersistentHeader','StatefulBuilder','OrientationBuilder','ListBody','OverflowBar']],['Listas e tabelas',['ListView.builder','ListView.separated','ReorderableListView','ReorderableListView.builder','AnimatedList','GridView.builder','Table','TableRow','DataTable','DataColumn','DataRow','DataCell','ListView.custom','SliverChildListDelegate','SliverChildBuilderDelegate','SliverList','SliverFixedExtentList','SliverPrototypeExtentList','SliverOpacity','SliverAnimatedList','FlexibleSpaceBar','ListWheelScrollView','CarouselView','PaginatedDataTable']],['Caixas',['Container','ColoredBox','Padding','SizedBox','AspectRatio','ConstrainedBox','FractionallySizedBox','FittedBox','Card','Divider','VerticalDivider','ClipRRect','Opacity','AnimatedOpacity','AnimatedContainer','AnimatedPositioned','AnimatedAlign','AnimatedPadding','AnimatedSize','AnimatedScale','AnimatedRotation','AnimatedSwitcher','AnimatedCrossFade','Visibility','Tooltip','Badge','Hero','FadeTransition','SizeTransition','InteractiveViewer','Transform.rotate','Transform.scale','Transform.translate','Dismissible','ScaleTransition','AlignTransition','DecoratedBoxTransition','RotationTransition','SlideTransition','ClipRect','ClipOval','DecoratedBox','Material','Placeholder','CustomPaint','BackdropFilter','ShaderMask','ColorFiltered','ImageFiltered','AnimatedDefaultTextStyle','Card.outlined','Card.filled','DefaultTextStyle','ClipPath','Ink']],['Conteúdo',['Text','Text.rich','RichText','Icon','Image.network','CircleAvatar','Chip','ChoiceChip','FilterChip','ActionChip','ListTile','ExpansionTile','Image.asset','CircularProgressIndicator','LinearProgressIndicator','SegmentedButton','ButtonSegment','PopupMenuButton','InputChip','SelectableText','Image.file','CalendarDatePicker','FadeInImage','FadeInImage.assetNetwork','ImageIcon','FlutterLogo']],['Botões e campos',['ElevatedButton','FilledButton','TextButton','OutlinedButton','IconButton','TextField','TextFormField','Checkbox','Switch','Slider','Radio','DropdownButton','DropdownMenuItem','SwitchListTile','CheckboxListTile','RadioListTile','RangeSlider','ToggleButtons','DropdownMenu','DropdownMenuEntry','Autocomplete','SearchBar','TextButton.icon','ElevatedButton.icon','OutlinedButton.icon','FilledButton.icon','FilledButton.tonal','IconButton.filled','IconButton.filledTonal','IconButton.outlined','SearchAnchor','SearchAnchor.bar','MaterialButton','RawMaterialButton']],['Interação',['GestureDetector','Draggable','LongPressDraggable','DragTarget','InkWell','InkResponse','Focus','Semantics','Listener','MouseRegion','FocusScope','ExcludeSemantics','MergeSemantics','PopScope','Theme','MediaQuery']],['Mapas (flutter_map)',['FlutterMap','TileLayer','MarkerLayer','Marker','CircleLayer','CircleMarker','PolylineLayer','Polyline','RichAttributionWidget']],['Janelas',['AlertDialog','SimpleDialog','SimpleDialogOption','SnackBar','SnackBarAction','MaterialBanner','Banner']]];
 var CATVAR={struct:'var(--c-struct)',layout:'var(--c-layout)',box:'var(--c-box)',content:'var(--c-content)'};
 var warns=[];
 
@@ -1033,11 +1079,15 @@ function toNode(c,src){
   });
   return node;
 }
+function routeHome(src){
+  var im=/initialLocation\s*:\s*(['"])([^'"]*)\1/.exec(src),want=im?im[2]:'/',re=/GoRoute\s*\(\s*(?:name\s*:\s*(['"])[^'"]*\1\s*,\s*)?path\s*:\s*(['"])([^'"]*)\2[\s\S]{0,400}?builder\s*:\s*\([^)]*\)\s*(?:=>|\{[^}]*?return)\s*(?:const\s+)?(\w+)\s*\(/g,m,first=null;
+  while((m=re.exec(src))){if(!first)first=m[4];if(m[3]===want)return m[4]}
+  return first}
 function pickBuild(src,t){
   var cand=[];for(var x=0;x<t.length-1;x++)if(t[x].k==='id'&&t[x].v==='build'&&t[x+1].v==='(')cand.push(x);
   if(!cand.length)return -1;
   if(cand.length===1)return cand[0];
-  var hm=(/home:\s*(?:const\s+)?(\w+)\s*\(/.exec(src)||/runApp\(\s*(?:const\s+)?(?!MaterialApp|CupertinoApp)(\w+)\s*\(/.exec(src)||[]),home=hm[1]||hm[2],best=cand[0],bs=-1;
+  var hm=(/home:\s*(?:const\s+)?(\w+)\s*\(/.exec(src)||/runApp\(\s*(?:const\s+)?(?!MaterialApp|CupertinoApp)(\w+)\s*\(/.exec(src)||[]),home=(/home:\s*(?:const\s+)?(\w+)\s*\(/.test(src)?hm[1]:(routeHome(src)||hm[1]||hm[2])),best=cand[0],bs=-1;
   cand.forEach(function(x){
     var pos=t[x].s,re=/class\s+(\w+)(\s+extends\s+([\w<>]+))?/g,cm,last=null;
     while((cm=re.exec(src))&&cm.index<pos)last=cm;
@@ -1334,6 +1384,20 @@ var DEF={
  InkResponse:function(){return N('InkResponse',[A('onTap','() {}'),A('radius','32'),SL('child')],{child:N('Icon',[PO('icon','Icons.star')])})},
  'Image.file':function(){return N('Image.file',[PO('src',"File('/storage/foto.jpg')"),A('width','120'),A('height','80')])},
  ValueListenableBuilder:function(){return N('ValueListenableBuilder',[A('valueListenable','contador'),A('builder',"(context, value, child) => Text('Valor: $value')")])},
+ ChangeNotifierProvider:function(){return N('ChangeNotifierProvider',[A('create','(context) => Contador()'),SL('child')],{child:txt('Dentro do provider')})},
+ MultiProvider:function(){return N('MultiProvider',[A('providers','[]'),SL('child')],{child:txt('Dentro dos providers')})},
+ Consumer:function(){var n=N('Consumer',[A('builder',"(context, contador, child) => Text('Contador')")]);n.generic='Contador';return n},
+ CupertinoPageScaffold:function(){return N('CupertinoPageScaffold',[SL('navigationBar'),SL('child')],{navigationBar:N('CupertinoNavigationBar',[SL('middle')],{middle:txt('Título')}),child:N('Center',[SL('child')],{child:txt('Conteúdo')})})},
+ CupertinoNavigationBar:function(){return N('CupertinoNavigationBar',[SL('middle')],{middle:txt('Título')})},
+ CupertinoButton:function(){return N('CupertinoButton',[A('onPressed','() {}'),SL('child')],{child:txt('Botão')})},
+ 'CupertinoButton.filled':function(){return N('CupertinoButton.filled',[A('onPressed','() {}'),SL('child')],{child:txt('Botão')})},
+ CupertinoSwitch:function(){return N('CupertinoSwitch',[A('value','true'),A('onChanged','(v) {}')])},
+ CupertinoSlider:function(){return N('CupertinoSlider',[A('value','0.5'),A('onChanged','(v) {}')])},
+ CupertinoTextField:function(){return N('CupertinoTextField',[A('placeholder',"'Nome'")])},
+ CupertinoSearchTextField:function(){return N('CupertinoSearchTextField',[A('placeholder',"'Buscar'")])},
+ CupertinoActivityIndicator:function(){return N('CupertinoActivityIndicator',[])},
+ CupertinoAlertDialog:function(){return N('CupertinoAlertDialog',[SL('title'),SL('content'),SL('actions')],{title:txt('Título'),content:txt('Mensagem do diálogo'),actions:[N('CupertinoDialogAction',[A('onPressed','() {}'),SL('child')],{child:txt('OK')})]})},
+ CupertinoDialogAction:function(){return N('CupertinoDialogAction',[A('onPressed','() {}'),SL('child')],{child:txt('OK')})},
  ListenableBuilder:function(){return N('ListenableBuilder',[A('listenable','contador'),A('builder',"(context, child) => Text('Contador')")])},
  AnimatedBuilder:function(){return N('AnimatedBuilder',[A('animation','controle'),A('builder',"(context, child) => Opacity(opacity: 1.0, child: child)"),SL('child')],{child:txt('Animado')})},
  ScaleTransition:function(){return N('ScaleTransition',[A('scale','controle'),SL('child')],{child:N('Icon',[PO('icon','Icons.favorite'),A('size','48'),A('color','Colors.red')])})},
@@ -1557,7 +1621,12 @@ function lex(src){
   return t}
 
 /* ---- parser de expressões ---- */
-function Ps(src){this.src=src;this.t=lex(src);this.i=0}
+function provSub(s){
+  if(s.indexOf('context')<0&&s.indexOf('Provider')<0)return s;
+  return s.replace(/\bcontext\s*\.\s*(?:watch|read)\s*<\s*(\w+)\??\s*>\s*\(\s*\)/g,'_prov_$1')
+    .replace(/\bcontext\s*\.\s*select\s*<\s*(\w+)\s*,[^>]*>\s*\(\s*\(?\s*(\w+)\s*\)?\s*=>\s*\2\s*\.\s*([\w.]+)\s*\)/g,'_prov_$1.$3')
+    .replace(/\bProvider\s*\.\s*of\s*<\s*(\w+)\??\s*>\s*\(\s*\w+\s*(?:,\s*listen\s*:\s*\w+\s*)?\)/g,'_prov_$1')}
+function Ps(src){src=provSub(src);this.src=src;this.t=lex(src);this.i=0}
 Ps.prototype.pk=function(o){return this.t[this.i+(o||0)]};
 Ps.prototype.is=function(v,o){var k=this.pk(o);return !!k&&k.k==='p'&&k.v===v};
 Ps.prototype.isId=function(v){var k=this.pk();return !!k&&k.k==='id'&&k.v===v};
@@ -2142,7 +2211,7 @@ function skipToEnd(p){var d=0;while(p.pk()){var k=p.pk();if(k.k==='p'){if('([{'.
 
 /* ---- efeitos de navegação: Navigator, diálogos, SnackBar, BottomSheet ---- */
 ST.fx=[];
-var FXSTART={showDatePicker:1,showTimePicker:1,showDialog:1,showModalBottomSheet:1,showBottomSheet:1,Navigator:1,ScaffoldMessenger:1,Future:1};
+var FXSTART={showDatePicker:1,showTimePicker:1,showDialog:1,showCupertinoDialog:1,showModalBottomSheet:1,showBottomSheet:1,Navigator:1,context:1,GoRouter:1,ScaffoldMessenger:1,Future:1};
 var lastSusp=null;
 function clonePs(p){var q=new Ps('');q.src=p.src;q.t=p.t;q.i=p.i;return q}
 function bindDecl(env,name,val){
@@ -2180,7 +2249,7 @@ function awaitStmt(p,env,run,aw){
   if(hd==='Future'&&p.is('.',1)&&p.pk(2)&&p.pk(2).v==='delayed'){
     if(ST.sync)grabStmt(p);else{fx=mkDelay(grabStmt(p),env);fx.cb=null;ST.fx.push(fx)}}
   else if(hd==='showDatePicker'||hd==='showTimePicker'){fx=mkPicker(grabStmt(p),env,null);ST.fx.push(fx)}
-  else if(hd==='Navigator'||hd==='showDialog'||hd==='showModalBottomSheet'){
+  else if(hd==='Navigator'||hd==='showDialog'||hd==='showCupertinoDialog'||hd==='showModalBottomSheet'){
     var n0=ST.fx.length;fxStmt(p,env,true);var f=ST.fx[ST.fx.length-1];
     if(ST.fx.length>n0&&(f.k==='push'||f.k==='dialog'||f.k==='sheet')){fx=f;fx.cb=null}}
   else{var ast=pTern(p);p.eat(';');val=ev(ast,env);if(lastSusp)fx=lastSusp}
@@ -2236,6 +2305,39 @@ function bindEnv(src,env){
   for(var e=env;e;e=e.parent)[e.params,e.locals].forEach(function(o){
     if(o)Object.keys(o).forEach(function(k){var v=o[k];if(v===undefined||v===null||!/^[A-Za-z_]\w*$/.test(k))return;try{src=bindVar(src,k,v)}catch(x){}})});
   return src}
+function routeHomeName(src){
+  var im=/initialLocation\s*:\s*(['"])([^'"]*)\1/.exec(src),want=im?im[2]:'/',rs=ST.parseRoutes(src),f=null;
+  for(var i=0;i<rs.length;i++){var m=/^(?:const\s+)?(\w+)\s*\(/.exec(rs[i].body.trim());if(!m)continue;if(!f)f=m[1];if(rs[i].abs===want)return m[1]}
+  return f}
+ST.parseRoutes=function(src){
+  var out=[],re=/\bGoRoute\s*\(/g,m;
+  while((m=re.exec(src))){
+    var s0=m.index,i=s0+m[0].length,d=1,q=null;
+    for(;i<src.length;i++){var c=src[i];if(q){if(c==='\\'){i++;continue}if(c===q)q=null;continue}if(c==="'"||c==='"'){q=c;continue}if(c==='(')d++;else if(c===')'){d--;if(!d){i++;break}}}
+    var txt=src.slice(s0,i),inner=txt.slice(txt.indexOf('(')+1,txt.length-1),r={s:s0,e:i,path:null,name:null,body:null,abs:null};
+    splitTopStr(inner,',').forEach(function(a){
+      var am=/^\s*(\w+)\s*:\s*([\s\S]*)$/.exec(a);if(!am)return;
+      if(am[1]==='path'){var pm=/^\s*(['"])([\s\S]*)\1\s*$/.exec(am[2]);if(pm)r.path=pm[2]}
+      else if(am[1]==='name'){var nm=/^\s*(['"])([\s\S]*)\1\s*$/.exec(am[2]);if(nm)r.name=nm[2]}
+      else if(am[1]==='builder'){try{r.body=lambdaParts(am[2].trim()).body}catch(e){}}});
+    if(r.path!=null&&r.body)out.push(r)}
+  out.forEach(function(r){var par=null;out.forEach(function(o){if(o!==r&&o.s<r.s&&o.e>=r.e&&(!par||o.s>par.s))par=o});
+    r.abs=r.path.charAt(0)==='/'?r.path:((par&&par.abs!=='/'?par.abs:'')+'/'+r.path).replace(/\/+/g,'/')});
+  return out};
+function goTarget(loc,pathParams,extra){
+  var rs=ST.routes||[],q={},qi=loc.indexOf('?');
+  if(qi>=0){loc.slice(qi+1).split('&').forEach(function(kv){var a=kv.split('=');if(a[0])q[decodeURIComponent(a[0])]=decodeURIComponent(a[1]||'')});loc=loc.slice(0,qi)}
+  var segs=loc.split('/').filter(Boolean),hit=null,pp={};
+  for(var i=0;i<rs.length&&!hit;i++){
+    var rg=rs[i].abs.split('/').filter(Boolean);if(rg.length!==segs.length)continue;
+    var ok=true,pr={};rg.forEach(function(g,j){if(g.charAt(0)===':')pr[g.slice(1)]=segs[j];else if(g!==segs[j])ok=false});
+    if(ok){hit=rs[i];pp=pr}}
+  if(!hit)throw new Error('go_router: nenhuma rota combina com "'+loc+'"');
+  ST.lastHit=hit.abs;var body=hit.body;
+  body=body.replace(/state\s*\.\s*(?:pathParameters|params)\s*\[\s*(['"])(\w+)\1\s*\]\s*!?/g,function(m,qq,k){return lit(pp[k]!=null?pp[k]:(pathParams&&pathParams[k])||'')});
+  body=body.replace(/state\s*\.\s*uri\s*\.\s*queryParameters\s*\[\s*(['"])(\w+)\1\s*\]\s*!?/g,function(m,qq,k){return q[k]!=null?lit(q[k]):'null'});
+  if(extra!==undefined)body=body.replace(/state\s*\.\s*extra(?:\s+as\s+[\w<>?]+)?/g,function(){return lit(extra)});
+  return body}
 function fxStmt(p,env,run){
   var t=p.t,st=p.i,j=st,d=0;
   for(;j<t.length;j++){var v=t[j];
@@ -2250,13 +2352,30 @@ function fxStmt(p,env,run){
   if(/^Future\s*\.\s*delayed\b/.test(txt)){ST.fx.push(mkDelay(txt,env));return true}
   if(/^Future\b/.test(txt))return true;
   if(/^show(Date|Time)Picker\b/.test(txt)){ST.fx.push(mkPicker(txt,env,thenCb(txt)));return true}
-  if(/^showDialog\b/.test(txt)){ST.fx.push({k:'dialog',src:bindEnv(builderBody(txt),env),cb:thenCb(txt)});return true}
+  if(/^show(Cupertino)?Dialog\b/.test(txt)){ST.fx.push({k:'dialog',src:bindEnv(builderBody(txt),env),cb:thenCb(txt)});return true}
   if(/^show(Modal)?BottomSheet\b/.test(txt)){ST.fx.push({k:'sheet',src:bindEnv(builderBody(txt),env),cb:thenCb(txt)});return true}
   if(/^ScaffoldMessenger\b/.test(txt)){
     if(/\.showMaterialBanner\s*\(/.test(txt)){var mb=grabCall(txt,'MaterialBanner');if(!mb)throw new Error('showMaterialBanner sem MaterialBanner(...)');ST.fx.push({k:'banner',src:bindEnv(mb,env)});return true}
     if(/\.(hide|remove)CurrentMaterialBanner\s*\(|\.clearMaterialBanners\s*\(/.test(txt)){ST.fx.push({k:'hidebanner'});return true}
     if(/\.showSnackBar\s*\(/.test(txt)){var sb=grabCall(txt,'SnackBar');if(!sb)throw new Error('showSnackBar sem SnackBar(...)');ST.fx.push({k:'snack',src:bindEnv(sb,env)})}
     else ST.fx.push({k:'hidesnack'});
+    return true}
+  var gm=/^(?:context|GoRouter\s*\.\s*of\s*\(\s*\w+\s*\))\s*\.\s*(go|push|pushReplacement|replace|goNamed|pushNamed|pushReplacementNamed|pop)\s*\(/.exec(txt);
+  if(gm){
+    var gk=gm[1];
+    if(gk==='pop'){ST.fx.push({k:'pop',val:null});return true}
+    var ga=grabArg(txt,gm[0].length),gv=ev(pTern(new Ps(ga)),env),gloc=String(gv&&gv.val!==undefined?gv.val:gv),rest2=txt.slice(gm[0].length+ga.length);
+    var gnamed=/Named$/.test(gk);
+    function opt(nm){var om=new RegExp('\\b'+nm+'\\s*:').exec(rest2);return om?grabArg(rest2,om.index+om[0].length):null}
+    var pp=null,ex;
+    var pps=opt('pathParameters');if(pps){pp={};var pmm=/^\s*\{([\s\S]*)\}\s*$/.exec(pps);if(pmm)splitTopStr(pmm[1],',').forEach(function(kv){var a=/^\s*(['"])(\w+)\1\s*:\s*([\s\S]+)$/.exec(kv);if(a){var vv=ev(pTern(new Ps(a[3])),env);pp[a[2]]=String(vv&&vv.val!==undefined?vv.val:vv)}})}
+    var exs=opt('extra');if(exs!=null)ex=ev(pTern(new Ps(exs)),env);
+    if(gnamed){
+      var rt=(ST.routes||[]).filter(function(r){return r.name===gloc})[0];if(!rt)throw new Error('go_router: não existe rota com name "'+gloc+'"');
+      gloc=rt.abs.replace(/:(\w+)/g,function(m,k){return pp&&pp[k]!=null?pp[k]:''});
+      var qps=opt('queryParameters');if(qps){var qs=[],qmm=/^\s*\{([\s\S]*)\}\s*$/.exec(qps);if(qmm)splitTopStr(qmm[1],',').forEach(function(kv){var a=/^\s*(['"])(\w+)\1\s*:\s*([\s\S]+)$/.exec(kv);if(a){var vv=ev(pTern(new Ps(a[3])),env);qs.push(a[2]+'='+encodeURIComponent(String(vv&&vv.val!==undefined?vv.val:vv)))}});if(qs.length)gloc+='?'+qs.join('&')}}
+    var tgt=goTarget(gloc,pp,ex);
+    ST.fx.push({k:'push',replace:gk==='pushReplacement'||gk==='replace'||gk==='pushReplacementNamed',all:gk==='go'||gk==='goNamed',src:((gk==='go'||gk==='goNamed')&&ST.lastHit===ST.homeAbs)?null:bindEnv(tgt,env),cb:null});
     return true}
   if(/^Navigator\b/.test(txt)){
     if(/\.pop\s*\(/.test(txt)||/\.maybePop\s*\(/.test(txt)){
@@ -2282,7 +2401,7 @@ function excMatches(err,tn){
 function simple(p,env,run){
   var k=p.pk();
   if(k&&k.k==='id'){
-    if(FXSTART[k.v]&&fxStmt(p,env,run))return;
+    if(FXSTART[k.v]&&((k.v!=='context'&&k.v!=='GoRouter')||/^(?:context\s*\.|GoRouter\s*\.\s*of\s*\(\s*\w+\s*\)\s*\.)\s*(?:go|push|pushReplacement|replace|goNamed|pushNamed|pushReplacementNamed|pop)\s*\(/.test(p.src.slice(k.s,k.s+160)))&&fxStmt(p,env,run))return;
     if(k.v==='setState'&&p.is('(',1)){stmt(p,env,run);return}
     if(k.v==='await'){p.i++;simple(p,env,run);return}
     if(k.v==='throw'){p.i++;var te=pTern(p);if(run){var tv=ev(te,env),ex2=exc(excMsg(tv));if(tv&&tv.cls)ex2.val=tv;throw ex2}return}
@@ -2613,7 +2732,7 @@ ST.load=function(info){
   var old=ST.fields;ST.fields={};ST.order=[];ST.methods={};ST.locals={};ST.dataClasses={};ST.exts=[];ST.userWidgets={};ST.widgetVals={};cache={};ST.initState=null;ST.statefuls={};ST.funcs={};
   if(!info){ST.active=false;ST.re=null;return}
   (info.states||[]).forEach(function(sx){var wc=info.classes[sx.of];if(wc&&wc.kind==='StatefulWidget'&&sx.ci.build&&sx.ci.build.body){ST.statefuls[sx.of]={state:sx.ci,widget:wc.ci};ST.userWidgets[sx.of]={params:wc.ci.params,build:sx.ci.build,stateful:true}}});
-  ST.exts=info.exts||[];
+  ST.exts=info.exts||[];ST.routes=info.routes||[];ST.homeAbs=info.homeAbs||'/';
   info.funcs.forEach(function(f){ST.funcs[f.name]=f});
   (function(){var done={};function mg(n){var c=info.classes[n];if(!c||c.kind!=='data'||done[n])return;done[n]=1;var ci=c.ci,bases=[];
     if(ci.ext&&info.classes[ci.ext]&&info.classes[ci.ext].kind==='data'){mg(ci.ext);bases.push(info.classes[ci.ext].ci)}else ci.ext=null;
@@ -2631,15 +2750,16 @@ ST.load=function(info){
   info.methods.forEach(function(m){ST.methods[m.name]=m});
   ST.initState=info.initState;
   if(info.widgetCall&&info.widgetClass){try{var cp=pPrim(new Ps(info.widgetCall));ST.widgetVals=bindArgs(info.widgetClass.params,evalArgs(cp,mkEnv()))}catch(e){ST.widgetVals={}}}
-  if(!info.fields.length&&!Object.keys(info.locals).length){ST.active=false;ST.re=null;return}
+  var provG=Object.keys(ST.globals||{}).filter(function(k){return /^_prov_/.test(k)});
+  if(!info.fields.length&&!Object.keys(info.locals).length&&!provG.length){ST.active=false;ST.re=null;return}
   var fresh=false;
   info.fields.forEach(function(f){
     var o=old[f.name],fl={name:f.name,type:f.type,init:f.init,value:null};
     ST.fields[f.name]=fl;ST.order.push(f.name);
     if(o&&o.init===f.init&&o.type===f.type)fl.value=o.value;else{fl.value=initOf(fl);fresh=true}});
   ST.locals=info.locals||{};
-  var names=ST.order.concat(Object.keys(ST.locals)).map(function(n){return n.replace(/\$/g,'\\$')});
-  ST.active=ST.order.length>0;
+  var names=ST.order.concat(Object.keys(ST.locals)).concat(provG).map(function(n){return n.replace(/\$/g,'\\$')});
+  ST.active=ST.order.length>0||provG.length>0;
   ST.re=names.length?new RegExp('\\$|(?:^|[^\\w.$])(?:'+names.join('|')+')(?!\\w)'):null;
   if(fresh&&ST.initState)ST.runInit()};
 ST.runInit=function(){if(!ST.initState)return;steps=0;depth=0;try{runMethod(ST.initState,[],null)}catch(e){ST.initErr=e.message}};
@@ -3848,12 +3968,13 @@ function lambdaParts(raw){
     body=raw.slice(t[j+1].s,raw.lastIndexOf('}')).trim().replace(/;\s*$/,'')}
   else throw new Error('lambda');
   return{names:names,body:body}}
-var BUILDERS={SliverChildBuilderDelegate:1,DragTarget:1,StatefulBuilder:1,OrientationBuilder:1,ValueListenableBuilder:1,ListenableBuilder:1,AnimatedBuilder:1,TweenAnimationBuilder:1,AnimatedList:1,DraggableScrollableSheet:1,StreamBuilder:1,'ReorderableListView.builder':1,FutureBuilder:1,'SliverList.builder':1,'ListView.builder':1,'ListView.separated':1,'GridView.builder':1,'LayoutBuilder':1,Builder:1};
+function noBang(t,nm){return t.replace(new RegExp('\\b'+nm+'\\s*!(?!=)','g'),nm)}
+var BUILDERS={SliverChildBuilderDelegate:1,DragTarget:1,StatefulBuilder:1,OrientationBuilder:1,ValueListenableBuilder:1,ListenableBuilder:1,Consumer:1,AnimatedBuilder:1,TweenAnimationBuilder:1,AnimatedList:1,DraggableScrollableSheet:1,StreamBuilder:1,'ReorderableListView.builder':1,FutureBuilder:1,'SliverList.builder':1,'ListView.builder':1,'ListView.separated':1,'GridView.builder':1,'LayoutBuilder':1,Builder:1};
 ST.futureTexts=futureTexts;
 ST.isBuilder=function(n){return !!BUILDERS[n.type]};
 ST.builderTexts=function(n){
   var out=[];
-  function raw(k){var v=M.rawProp(n,k);return v==null?null:v.trim()}
+  function raw(k){var v=M.rawProp(n,k);if(v==null&&k==='child'&&n.slots&&n.slots.child&&!Array.isArray(n.slots.child)&&M.ser)v=M.ser(n.slots.child,'');return v==null?null:v.trim()}
   if(n.type==='FutureBuilder')return futureTexts(n);
   if(n.type==='StreamBuilder')return streamTexts(n);
   if(n.type==='ExpansionPanel'){
@@ -3867,7 +3988,7 @@ ST.builderTexts=function(n){
     var tms=mkDelay(raw('duration')||'',mkEnv({})).ms,tcv=raw('curve')||'',tcur=ST.twVal?ST.twVal(n,tb,te,tms,tcv):te;
     var tlp=lambdaParts(raw('builder')),tbody=tlp.body;
     if(tlp.names[1])tbody=bindVar(tbody,tlp.names[1],new Dbl(Math.round(tcur*1e4)/1e4));
-    var tch=raw('child');if(tlp.names[2]&&tch)tbody=bindVar(tbody,tlp.names[2],{raw:tch});
+    var tch=raw('child');if(tlp.names[2]&&tch)tbody=bindVar(noBang(tbody,tlp.names[2]),tlp.names[2],{raw:tch});
     expandText(tbody,out);return out}
   if(n.type==='DragTarget'){
     var dgp=lambdaParts(raw('builder')),dgb=dgp.body,dgh=ST.dragHover&&ST.dragHover.key===n._key;
@@ -3878,11 +3999,16 @@ ST.builderTexts=function(n){
     var vlr=raw('valueListenable'),vlo=null;try{vlo=ST.value(vlr||'null')}catch(e){vlo=null}
     var vlp=lambdaParts(raw('builder')),vbody=vlp.body,vlv=vlo&&vlo.nat==='ValueNotifier'?vlo.f.value:null;
     if(vlp.names[1])vbody=bindVar(vbody,vlp.names[1],vlv);
-    var vch=raw('child');if(vlp.names[2]&&vch)vbody=bindVar(vbody,vlp.names[2],{raw:vch});
+    var vch=raw('child');if(vlp.names[2]&&vch)vbody=bindVar(noBang(vbody,vlp.names[2]),vlp.names[2],{raw:vch});
     expandText(vbody,out);return out}
+  if(n.type==='Consumer'){
+    var cop=lambdaParts(raw('builder')),cob=cop.body,cog=(n.generic||'').replace(/[<>?\s]/g,''),coc=raw('child');
+    if(cop.names[1]&&cog)cob=bindVar(cob,cop.names[1],{raw:'_prov_'+cog});
+    if(cop.names[2]&&coc)cob=bindVar(noBang(cob,cop.names[2]),cop.names[2],{raw:coc});
+    expandText(cob,out);return out}
   if(n.type==='ListenableBuilder'||n.type==='AnimatedBuilder'){
     var lbp=lambdaParts(raw('builder')),lbb=lbp.body,lch=raw('child');
-    if(lbp.names[1]&&lch)lbb=bindVar(lbb,lbp.names[1],{raw:lch});
+    if(lbp.names[1]&&lch)lbb=bindVar(noBang(lbb,lbp.names[1]),lbp.names[1],{raw:lch});
     expandText(lbb,out);return out}
   if(n.type==='LayoutBuilder'||n.type==='Builder'||n.type==='StatefulBuilder'||n.type==='OrientationBuilder'||n.type==='DraggableScrollableSheet'){
     var lp=lambdaParts(raw('builder')),b=lp.body;
@@ -4088,11 +4214,22 @@ ST.extract=function(src){src=stripComments(src);var mal=/import\s+['"]dart:math[
     var a=MARROW.exec(ch);if(a){if(a[1]!=='main')info.funcs.push({name:a[1],params:a[2],body:a[3],arrow:true});return}
     var bl=MBLOCK.exec(ch);if(bl&&bl[1]!=='main'&&bl[1]!=='runApp')info.funcs.push({name:bl[1],params:bl[2],body:bl[3],arrow:false})});
   info.states=states;
-  var hm=(/home:\s*(?:const\s+)?(\w+)\s*\(/.exec(src)||/runApp\(\s*(?:const\s+)?(?!MaterialApp|CupertinoApp)(\w+)\s*\(/.exec(src)||[]),home=hm[1]||hm[2],pickS=states.filter(function(x){return x.of===home})[0]||states[0];
+  info.routes=ST.parseRoutes(src);info.homeAbs=(/initialLocation\s*:\s*(['"])([^'"]*)\1/.exec(src)||[0,0,'/'])[2];
+  (function(){
+    var re=/\b(?:ChangeNotifierProvider|ListenableProvider|Provider)\s*(?:<\s*(\w+)\??\s*>)?\s*\(\s*create\s*:\s*\(\s*\w*\s*(?:,\s*\w+\s*)?\)\s*=>\s*(?:const\s+|new\s+)?(\w+)\s*\(/g,m;
+    while((m=re.exec(src))){
+      var op=m.index+m[0].length-1,d=0,j=op;
+      for(;j<src.length;j++){var c=src[j];if(c==='(')d++;else if(c===')'){d--;if(d===0)break}}
+      var key=m[1]||m[2],init=src.slice(m.index+m[0].length-m[2].length-1,j+1);
+      if(!info.globals.some(function(g){return g.name==='_prov_'+key}))info.globals.push({name:'_prov_'+key,type:'var',init:init})}
+  })();
+  var hm=(/home:\s*(?:const\s+)?(\w+)\s*\(/.exec(src)||/runApp\(\s*(?:const\s+)?(?!MaterialApp|CupertinoApp)(\w+)\s*\(/.exec(src)||[]),home=(/home:\s*(?:const\s+)?(\w+)\s*\(/.test(src)?hm[1]:(routeHomeName(src)||hm[1]||hm[2])),pickS=states.filter(function(x){return x.of===home})[0]||states[0];
   if(pickS){
     var ci2=pickS.ci;info.stateOf=pickS.of;info.fields=ci2.fields;
     Object.keys(ci2.methods).forEach(function(k){if(k==='initState')info.initState=ci2.methods[k];else if(!/^(createState|dispose|build)$/.test(k))info.methods.push(ci2.methods[k])});
     if(ci2.build)ci2.build.locals.forEach(function(l){info.locals[l.name]=l.expr})}
+  else if(home&&info.classes[home]&&info.classes[home].kind==='StatelessWidget'&&info.classes[home].ci.build&&info.globals.some(function(g){return /^_prov_/.test(g.name)}))
+    info.classes[home].ci.build.locals.forEach(function(l){info.locals[l.name]=l.expr});
   if(info.stateOf&&info.classes[info.stateOf]){
     info.widgetClass=info.classes[info.stateOf].ci;
     var um=new RegExp('(?:home:|runApp\\(|builder:[^;]*?=>)\\s*(?:const\\s+)?('+info.stateOf+'\\s*\\()').exec(src);
@@ -4139,7 +4276,7 @@ ST.makeScope=function(src,old){
   inst.fresh=false;return inst};
 ST.fromSource=function(src){
   var info=null;try{info=ST.extract(src)}catch(e){info=null}
-  ST.load(info);ST.fxOn=/\b(Navigator|StreamBuilder|FutureBuilder|showDialog|showModalBottomSheet|ScaffoldMessenger|TabBar|MenuAnchor|TabPageSelector)\b/.test(src);if(ST.fxOn)ST.active=true;return ST.active};
+  ST.load(info);ST.fxOn=/\b(GoRouter|Navigator|StreamBuilder|FutureBuilder|showDialog|showCupertinoDialog|showModalBottomSheet|ScaffoldMessenger|TabBar|MenuAnchor|TabPageSelector)\b/.test(src);if(ST.fxOn)ST.active=true;return ST.active};
 
 /* getProp com valores de estado substituídos (só durante o desenho do Canvas) */
 var orig=M.getProp;
@@ -4451,7 +4588,7 @@ function layoutProps(d,n){
     if(car>0){var cells=[];(function walk(el){[].forEach.call(el.children,function(c){if(c.classList.contains('ph'))return;if(c.style.display==='contents')walk(c);else cells.push(c)})})(d);
       cells.forEach(function(c){c.style.aspectRatio=String(car);c.style.alignSelf='start';c.style.minWidth='0';c.style.overflow='hidden'})}}
   if(n.type==='Stack'&&/Clip\.none/.test(g('clipBehavior')))d.style.overflow='visible';
-  if(n.type==='TextField'||n.type==='TextFormField'){
+  if(n.type==='TextField'||n.type==='TextFormField'||n.type==='CupertinoTextField'){
     var mxl=numVal(M.getProp(n,'maxLength')),ctx=(callParts(M.getProp(n,'decoration'),'InputDecoration').map.counterText||'').trim();
     if(mxl>0&&ctx!=="''"&&ctx!=='""'){var cn=document.createElement('span');cn.className='cnt';cn.textContent='0/'+mxl;d.appendChild(cn);d.style.marginBottom='22px';d.dataset.max=String(mxl)}}
   if(n.type==='Visibility'&&g('maintainSize')==='true'&&g('visible')==='false'){d.style.visibility='hidden'}
@@ -4562,8 +4699,9 @@ visibility_outlined:'<circle cx="12" cy="12" r="3"/>'
 var ICONALIAS={favorite_outline:'favorite_border',keyboard_arrow_down:'expand_more',keyboard_arrow_up:'expand_less',keyboard_arrow_right:'chevron_right',keyboard_arrow_left:'chevron_left',navigate_next:'chevron_right',navigate_before:'chevron_left',access_time:'schedule',calendar_today:'event',mail:'email',mail_outline:'email',call:'phone',info_outline:'info',add_circle_outline:'add_circle',remove_circle_outline:'remove_circle',done:'check',delete_outline:'delete',delete_forever:'delete',light_mode:'wb_sunny',flash_on:'bolt',help_outline:'help',star_outline:'star_border',star_rate:'star',thumb_up_alt:'thumb_up',thumb_up_off_alt:'thumb_up',bookmark_outline:'bookmark_border',edit_note:'edit',mode_edit:'edit',create:'edit',keyboard_backspace:'arrow_back',person_outline:'person',notifications_none:'notifications',shopping_cart_outlined:'shopping_cart',photo:'image',insert_photo:'image',view_list:'list',dashboard:'grid_view',apps:'grid_view',sunny:'wb_sunny',payment:'credit_card',monetization_on:'attach_money',people:'group',cloud_download:'download',cloud_upload:'upload',file_download:'download',file_upload:'upload'};
 delete ICONS.visibility_outlined;
 var ICONNAMES=Object.keys(ICONS);
+var CUPI={heart:'favorite_border',heart_fill:'favorite',house:'home',house_fill:'home',search:'search',settings:'settings',gear:'settings',gear_solid:'settings',person:'person',person_fill:'person',plus:'add',add:'add',minus:'remove',check_mark:'check',xmark:'close',clear:'close',trash:'delete',share:'share',bell:'notifications',bell_fill:'notifications',star:'star_border',star_fill:'star',mail:'email',phone:'phone',camera:'camera_alt',info:'info',ellipsis:'more_horiz',back:'arrow_back_ios',forward:'arrow_forward_ios',right_chevron:'chevron_right',left_chevron:'chevron_left',cart:'shopping_cart',lock:'lock',calendar:'calendar_today',location:'location_on',play:'play_arrow',pause:'pause',refresh:'refresh',pencil:'edit',mic:'mic',bookmark:'bookmark_border',hand_thumbsup:'thumb_up',paperplane:'send',folder:'folder',photo:'image',cloud:'cloud',wifi:'wifi',chevron_forward:'chevron_right',chevron_back:'chevron_left',checkmark:'check',add_circled:'add_circle',home:'home'};
 function iconSvg(raw){
-  var nm=enumName(raw).replace(/_(outlined|rounded|sharp)$/,'');nm=ICONALIAS[nm]||nm;
+  var nm=enumName(raw).replace(/_(outlined|rounded|sharp)$/,'');nm=/CupertinoIcons/.test(raw||'')?(CUPI[nm]||nm):(ICONALIAS[nm]||nm);nm=ICONALIAS[nm]||nm;
   var inner=ICONS[nm]||'<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M9.500 9.500a2.500 2.500 0 115 0c0 1.500-2.500 2-2.500 4M12 17v.5"/>';
   return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+inner+'</svg>';
 }
@@ -4595,7 +4733,7 @@ function numExpr(raw){
 function llOf(raw){var m=/LatLng\s*\(\s*(-?[\d.]+)\s*,\s*(-?[\d.]+)\s*\)/.exec(raw||'');return m?[+m[1],+m[2]]:null}
 function lamArg(raw,key){var m=new RegExp('\\b'+key+'\\s*:\\s*').exec(raw||'');if(!m)return null;var s=raw.slice(m.index+m[0].length),d=0,q=null;for(var i=0;i<s.length;i++){var c=s[i];if(q){if(c==='\\')i++;else if(c===q)q=null;continue}if(c==="'"||c==='"'){q=c;continue}if('([{'.indexOf(c)>=0)d++;else if(')]}'.indexOf(c)>=0){if(d===0)return s.slice(0,i).trim();d--}else if(c===','&&d===0)return s.slice(0,i).trim()}return s.trim()}
 function wmerc(lat,lon,z){var sc=256*Math.pow(2,z),sn=Math.sin(lat*Math.PI/180);return[(lon+180)/360*sc,(0.5-Math.log((1+sn)/(1-sn))/(4*Math.PI))*sc]}
-var ALIAS={ListBody:'Column',OverflowBar:'Wrap',Ink:'Container',MaterialButton:'ElevatedButton',RawMaterialButton:'ElevatedButton',FadeInImage:'Image.network','FadeInImage.assetNetwork':'Image.network',DecoratedBox:'Container','Card.outlined':'Card','Card.filled':'Card',SelectableText:'Text',InputChip:'Chip',Flow:'Wrap','Image.file':'Image.asset','SliverGrid.count':'GridView.count','IntrinsicHeight':'SafeArea','IntrinsicWidth':'SafeArea',LimitedBox:'SafeArea',UnconstrainedBox:'SafeArea',Baseline:'SafeArea',Scrollbar:'SafeArea',MediaQuery:'SafeArea',Semantics:'SafeArea',Listener:'SafeArea',AlignTransition:'Align',DecoratedBoxTransition:'Container',SliverPrototypeExtentList:'SliverList',SliverAnimatedList:'AnimatedList',MouseRegion:'SafeArea',FocusScope:'SafeArea',ExcludeSemantics:'SafeArea',MergeSemantics:'SafeArea',SliverFixedExtentList:'SliverList',Focus:'SafeArea',PopScope:'SafeArea',InkResponse:'InkWell',ClipOval:'ClipRRect',ClipRect:'ClipRRect',AnimatedContainer:'Container',AnimatedPositioned:'Positioned',AnimatedPadding:'Padding',FadeTransition:'Opacity',SizeTransition:'Padding',Hero:'Padding',AnimatedOpacity:'Opacity'};
+var ALIAS={ChangeNotifierProvider:'Theme','ChangeNotifierProvider.value':'Theme',Provider:'Theme','Provider.value':'Theme',ListenableProvider:'Theme',MultiProvider:'Theme',ListBody:'Column',OverflowBar:'Wrap',Ink:'Container',MaterialButton:'ElevatedButton',RawMaterialButton:'ElevatedButton',FadeInImage:'Image.network','FadeInImage.assetNetwork':'Image.network',DecoratedBox:'Container','Card.outlined':'Card','Card.filled':'Card',SelectableText:'Text',InputChip:'Chip',Flow:'Wrap','Image.file':'Image.asset','SliverGrid.count':'GridView.count','IntrinsicHeight':'SafeArea','IntrinsicWidth':'SafeArea',LimitedBox:'SafeArea',UnconstrainedBox:'SafeArea',Baseline:'SafeArea',Scrollbar:'SafeArea',MediaQuery:'SafeArea',Semantics:'SafeArea',Listener:'SafeArea',AlignTransition:'Align',DecoratedBoxTransition:'Container',SliverPrototypeExtentList:'SliverList',SliverAnimatedList:'AnimatedList',MouseRegion:'SafeArea',FocusScope:'SafeArea',ExcludeSemantics:'SafeArea',MergeSemantics:'SafeArea',SliverFixedExtentList:'SliverList',Focus:'SafeArea',PopScope:'SafeArea',InkResponse:'InkWell',ClipOval:'ClipRRect',ClipRect:'ClipRRect',AnimatedContainer:'Container',AnimatedPositioned:'Positioned',AnimatedPadding:'Padding',FadeTransition:'Opacity',SizeTransition:'Padding',Hero:'Padding',AnimatedOpacity:'Opacity'};
 function dim(n,k){return numVal(M.getProp(n,k))}
 function sizeMin(n){return /MainAxisSize\.min/.test(M.getProp(n,'mainAxisSize')||'')}
 function stackFill(n){var ch=n.slots.children||[];return !ch.some(function(c){return c.type!=='Positioned'&&c.type!=='AnimatedPositioned'})||ch.some(function(c){return c.type==='DraggableScrollableSheet'})}
@@ -4876,7 +5014,7 @@ function build(n,path,pt,ppt,sel){
       d.className+=' gridv';var gdl=M.getProp(n,'gridDelegate')||'',cmm=/crossAxisCount:\s*(\d+)/.exec(gdl),msp=/mainAxisSpacing:\s*([\d.]+)/.exec(gdl),csp=/crossAxisSpacing:\s*([\d.]+)/.exec(gdl);
       d.style.gridTemplateColumns='repeat('+(cmm?Math.max(1,+cmm[1]):2)+',minmax(0,1fr))';d.style.rowGap=(msp?+msp[1]:0)+'px';d.style.columnGap=(csp?+csp[1]:0)+'px';
       var gp2=insets(M.getProp(n,'padding'));if(gp2)d.style.padding=px(gp2);genKids('GridView');break}
-    case 'LayoutBuilder':case 'Builder':case 'StatefulBuilder':case 'OrientationBuilder':case 'ValueListenableBuilder':case 'ListenableBuilder':case 'AnimatedBuilder':{d.className+=' col';d.style.alignItems='flex-start';genKids('#single');break}
+    case 'LayoutBuilder':case 'Builder':case 'StatefulBuilder':case 'OrientationBuilder':case 'ValueListenableBuilder':case 'ListenableBuilder':case 'Consumer':case 'AnimatedBuilder':{d.className+=' col';d.style.alignItems='flex-start';genKids('#single');var bk0=d.firstElementChild;if(bk0&&bk0.style.flex==='1 1 0px')bk0.style.flex='1 1 auto';break}
     case 'SwitchListTile':case 'CheckboxListTile':case 'RadioListTile':{
       d.className+=' tile';var sl3=n.slots,tp=n.type,ctl=document.createElement('div');
       if(tp==='RadioListTile'){var rv=M.getProp(n,'value'),rg=M.getProp(n,'groupValue');ctl.className='nd chkb';ctl.innerHTML='<span class="rdo'+(rv!=null&&rg!=null&&rv.trim()===rg.trim()?' on':'')+'"></span>'}
@@ -4941,6 +5079,41 @@ function build(n,path,pt,ppt,sel){
       var rad=numVal(M.getProp(n,'radius'));rad=rad==null?20:rad;d.className+=' cav';d.style.width=d.style.height=(2*rad)+'px';d.style.flex='none';
       d.style.background=colorVal(M.getProp(n,'backgroundColor'))||'#6750A4';d.style.color=colorVal(M.getProp(n,'foregroundColor'))||'#fff';d.style.fontSize=Math.round(rad*.7)+'px';
       if(n.slots.child)d.appendChild(child(n.slots.child,'child','#none'));break}
+    case 'CupertinoPageScaffold':{
+      d.className+=' scaf cps';var cbg=colorVal(M.getProp(n,'backgroundColor'));if(cbg)d.style.background=cbg;
+      if(n.slots.navigationBar)d.appendChild(child(n.slots.navigationBar,'navigationBar','#none'));
+      var cb=document.createElement('div');cb.className='body';
+      if(n.slots.child)cb.appendChild(child(n.slots.child,'child','#single'));else cb.appendChild(ph('child: adicione um widget aqui'));
+      d.appendChild(cb);break}
+    case 'CupertinoNavigationBar':{
+      d.className+=' appbar cnb';var cnbg=colorVal(M.getProp(n,'backgroundColor'));if(cnbg)d.style.background=cnbg;
+      if(n.slots.leading){var cl=child(n.slots.leading,'leading','#none');cl.classList.add('cnl');d.appendChild(cl)}
+      else if(R_opts.nav.length){var cbk=document.createElement('span');cbk.className='bkb hh cnl';cbk.dataset.h='back';cbk.textContent='\u2039 Voltar';cbk.setAttribute('aria-label','Voltar');d.appendChild(cbk)}
+      if(n.slots.middle){var cm=child(n.slots.middle,'middle','#none');cm.classList.add('cnm');d.appendChild(cm)}
+      if(n.slots.trailing){var ct=child(n.slots.trailing,'trailing','#none');ct.classList.add('cnt2');d.appendChild(ct)}
+      break}
+    case 'CupertinoButton':case 'CupertinoButton.filled':{
+      d.className+=' btn cbtn'+(n.type==='CupertinoButton.filled'?' cfill':'');d.style.flex='none';
+      var cbc=colorVal(M.getProp(n,'color'));if(cbc){if(n.type==='CupertinoButton.filled')d.style.background=cbc;else d.style.color=cbc}
+      if(n.slots.child){(R_opts.dts=R_opts.dts||[]).push(null);try{d.appendChild(child(n.slots.child,'child','#none'))}finally{R_opts.dts.pop()}}else d.appendChild(ph('child'));
+      if(/disabledColor/.test('')){}
+      break}
+    case 'CupertinoDialogAction':{
+      d.className+=' btn cda'+(/true/.test(M.getProp(n,'isDefaultAction')||'')?' cdd':'')+(/true/.test(M.getProp(n,'isDestructiveAction')||'')?' cdx':'');
+      if(n.slots.child){(R_opts.dts=R_opts.dts||[]).push(null);try{d.appendChild(child(n.slots.child,'child','#none'))}finally{R_opts.dts.pop()}}else d.appendChild(ph('child'));break}
+    case 'CupertinoAlertDialog':{
+      d.className+=' adlg cdlg';single('title','#none');single('content','#none');
+      var car2=document.createElement('div');car2.className='adact cdact';
+      (n.slots.actions||[]).forEach(function(c,i){car2.appendChild(child(c,'actions:'+i,'#none'))});d.appendChild(car2);break}
+    case 'CupertinoSwitch':{d.className+=' dsw csw'+(/true/.test(M.getProp(n,'value')||'')?' on':'');var cac=colorVal(M.getProp(n,'activeColor')||M.getProp(n,'activeTrackColor'));if(cac)d.style.setProperty('--act',cac);break}
+    case 'CupertinoSlider':{
+      d.className+=' sld csl';var cmn=numVal(M.getProp(n,'min')),cmx=numVal(M.getProp(n,'max')),cvv=numVal(M.getProp(n,'value'));cmn=cmn==null?0:cmn;cmx=cmx==null?1:cmx;cvv=cvv==null?cmn:cvv;
+      var cfr=cmx>cmn?Math.max(0,Math.min(1,(cvv-cmn)/(cmx-cmn))):0,cacl=colorVal(M.getProp(n,'activeColor'));if(cacl)d.style.setProperty('--act',cacl);
+      d.innerHTML='<span class="tk"><span class="ac" style="width:'+(cfr*100)+'%"></span><span class="thm" style="left:'+(cfr*100)+'%"></span></span>';break}
+    case 'CupertinoActivityIndicator':{d.className+=' cact';d.style.flex='none';var cz=numVal(M.getProp(n,'radius')),cs=(cz>0?cz:10)*2;d.style.width=d.style.height=cs+'px';var ccol=colorVal(M.getProp(n,'color'));if(ccol)d.style.setProperty('--act',ccol);break}
+    case 'CupertinoTextField':case 'CupertinoSearchTextField':{
+      d.className+=' tf ctf'+(n.type==='CupertinoSearchTextField'?' csr':'');var pl=M.getProp(n,'placeholder'),pt2=pl?strVal(pl):(n.type==='CupertinoSearchTextField'?'Search':'');
+      var l2=document.createElement('span');l2.className='th';l2.textContent=pt2;d.appendChild(l2);break}
     case 'AlertDialog':{
       d.className+=' adlg';single('title','#none');single('content','#none');
       var ar=document.createElement('div');ar.className='adact';
@@ -5541,7 +5714,7 @@ OF.ST.strTick=function(n,ms,max){
 var HANDLERS=['onPressed','onTap','onLongPress','onDoubleTap','onChanged','onSelected'];
 function bindRun(d,n){
   if(n.type==='PopupMenuButton'||n.type==='SegmentedButton'||n.type==='Dismissible'||n.type==='BottomNavigationBar'||n.type==='ToggleButtons'||n.type==='DropdownMenu'||n.type==='Autocomplete'||n.type==='Stepper'||n.type==='ExpansionPanelList'||n.type==='MenuItemButton')return;
-  if(n.type==='TextField'||n.type==='TextFormField'||n.type==='SearchBar'){
+  if(n.type==='TextField'||n.type==='TextFormField'||n.type==='SearchBar'||n.type==='CupertinoTextField'||n.type==='CupertinoSearchTextField'){
     var key=d.dataset.path,tml=numVal(M.getProp(n,'maxLines')),tmx=/^\s*null\s*$/.test(M.getProp(n,'maxLines')||'x'),inp=document.createElement((tml>1||tmx)?'textarea':'input');if(inp.tagName==='INPUT'&&/^\s*true\s*$/.test(M.getProp(n,'obscureText')||''))inp.type='password';if(inp.tagName==='TEXTAREA'){inp.rows=Math.max(2,tml||3);d.style.height='auto';d.style.minHeight=(24+Math.max(2,tml||3)*22)+'px';inp.style.resize='none';inp.style.paddingTop='16px'}if(/^\s*(?:\w+\.)?(?:TextInputType\.number|number)\s*$/.test((M.getProp(n,'keyboardType')||'')))inp.inputMode='numeric';inp._fmt=textFormatter(n);var tmax=numVal(M.getProp(n,'maxLength'));if(tmax>0){inp.dataset.max=String(tmax)}inp.className='tfi'+(d.querySelector('.tl')?' hl':'');inp.dataset.key=key;
     var cr=M.rawProp(n,'controller'),cf=cr&&OF.ST.fields[cr.trim()];cf=cf&&cf.value&&cf.value.ctl?cf.value:null;d._ctl=cf;
     inp.value=cf?cf.text:(R_opts.typed[key]||'');inp.setAttribute('aria-label','Campo de texto');d.classList.toggle('typed',!!inp.value);var cE=d.querySelector('.cnt');if(cE)cE.textContent=inp.value.length+'/'+(d.dataset.max||'');d.appendChild(inp);d._n=n;d.classList.add('hh')}
@@ -12136,7 +12309,19 @@ class _TelaState extends State<Tela> {
 {t:"x. Campos formatados, botões por estado e AppBar com fundo",
  text:"O TextField aceita inputFormatters para filtrar o que a pessoa digita: FilteringTextInputFormatter.digitsOnly deixa só números, allow e deny recebem um RegExp, e LengthLimitingTextInputFormatter limita o tamanho. O maxLength faz o mesmo e mostra o contador 0/8 embaixo do campo. O textCapitalization põe maiúsculas (characters, words ou sentences). Nos botões, o ButtonStyle aceita uma cor para cada estado com WidgetStateProperty.resolveWith: o parâmetro states diz se o botão está pressed, hovered ou disabled, e você devolve a cor de cada caso. O botão fica desativado quando o onPressed é null. No AppBar, flexibleSpace é um fundo que ocupa a barra toda (aqui, um gradiente) e toolbarHeight muda a altura. No simulador, hovered vale com o mouse em cima e pressed enquanto o botão está apertado.",
  tryit:"Em ▶ Testar, digite letras e números no CEP e veja só os números ficarem. Digite 8 dígitos e o nome para ativar o botão, e passe o mouse sobre ele.",
- code:"import 'package:flutter/material.dart';\nimport 'package:flutter/services.dart';\n\nvoid main() => runApp(const MaterialApp(home: Cadastro()));\n\nclass Cadastro extends StatefulWidget {\n  const Cadastro({super.key});\n  @override\n  State<Cadastro> createState() => _CadastroState();\n}\n\nclass _CadastroState extends State<Cadastro> {\n  String cep = '';\n  String nome = '';\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(\n        toolbarHeight: 80,\n        foregroundColor: Colors.white,\n        title: const Text('Cadastro'),\n        flexibleSpace: Container(\n          decoration: const BoxDecoration(\n            gradient: LinearGradient(colors: [Colors.indigo, Colors.purple]),\n          ),\n        ),\n      ),\n      body: Padding(\n        padding: const EdgeInsets.all(16),\n        child: Column(\n          children: [\n            TextField(\n              keyboardType: TextInputType.number,\n              maxLength: 8,\n              inputFormatters: [FilteringTextInputFormatter.digitsOnly],\n              decoration: const InputDecoration(\n                labelText: 'CEP (só números)',\n                border: OutlineInputBorder(),\n              ),\n              onChanged: (v) => setState(() => cep = v),\n            ),\n            const SizedBox(height: 8),\n            TextField(\n              textCapitalization: TextCapitalization.words,\n              decoration: const InputDecoration(\n                labelText: 'Nome completo',\n                border: OutlineInputBorder(),\n              ),\n              onChanged: (v) => setState(() => nome = v),\n            ),\n            const SizedBox(height: 16),\n            Text('CEP: $cep | Nome: $nome'),\n            const SizedBox(height: 16),\n            ElevatedButton(\n              onPressed: cep.length == 8 && nome.isNotEmpty ? () {} : null,\n              style: ButtonStyle(\n                backgroundColor: WidgetStateProperty.resolveWith((states) {\n                  if (states.contains(WidgetState.disabled)) return Colors.grey.shade300;\n                  if (states.contains(WidgetState.pressed)) return Colors.green.shade800;\n                  if (states.contains(WidgetState.hovered)) return Colors.green.shade600;\n                  return Colors.green;\n                }),\n                foregroundColor: WidgetStateProperty.all(Colors.white),\n              ),\n              child: const Text('Salvar'),\n            ),\n          ],\n        ),\n      ),\n    );\n  }\n}\n"}
+ code:"import 'package:flutter/material.dart';\nimport 'package:flutter/services.dart';\n\nvoid main() => runApp(const MaterialApp(home: Cadastro()));\n\nclass Cadastro extends StatefulWidget {\n  const Cadastro({super.key});\n  @override\n  State<Cadastro> createState() => _CadastroState();\n}\n\nclass _CadastroState extends State<Cadastro> {\n  String cep = '';\n  String nome = '';\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(\n        toolbarHeight: 80,\n        foregroundColor: Colors.white,\n        title: const Text('Cadastro'),\n        flexibleSpace: Container(\n          decoration: const BoxDecoration(\n            gradient: LinearGradient(colors: [Colors.indigo, Colors.purple]),\n          ),\n        ),\n      ),\n      body: Padding(\n        padding: const EdgeInsets.all(16),\n        child: Column(\n          children: [\n            TextField(\n              keyboardType: TextInputType.number,\n              maxLength: 8,\n              inputFormatters: [FilteringTextInputFormatter.digitsOnly],\n              decoration: const InputDecoration(\n                labelText: 'CEP (só números)',\n                border: OutlineInputBorder(),\n              ),\n              onChanged: (v) => setState(() => cep = v),\n            ),\n            const SizedBox(height: 8),\n            TextField(\n              textCapitalization: TextCapitalization.words,\n              decoration: const InputDecoration(\n                labelText: 'Nome completo',\n                border: OutlineInputBorder(),\n              ),\n              onChanged: (v) => setState(() => nome = v),\n            ),\n            const SizedBox(height: 16),\n            Text('CEP: $cep | Nome: $nome'),\n            const SizedBox(height: 16),\n            ElevatedButton(\n              onPressed: cep.length == 8 && nome.isNotEmpty ? () {} : null,\n              style: ButtonStyle(\n                backgroundColor: WidgetStateProperty.resolveWith((states) {\n                  if (states.contains(WidgetState.disabled)) return Colors.grey.shade300;\n                  if (states.contains(WidgetState.pressed)) return Colors.green.shade800;\n                  if (states.contains(WidgetState.hovered)) return Colors.green.shade600;\n                  return Colors.green;\n                }),\n                foregroundColor: WidgetStateProperty.all(Colors.white),\n              ),\n              child: const Text('Salvar'),\n            ),\n          ],\n        ),\n      ),\n    );\n  }\n}\n"},
+{t:"x. ChangeNotifier e Provider: estado compartilhado entre telas",
+ text:"Quando duas telas precisam do mesmo dado, como um carrinho de compras, o setState de uma não alcança a outra. A solução comum é o pacote provider. Você cria uma classe que estende ChangeNotifier, guarda os dados nela e chama notifyListeners() depois de cada mudança. O ChangeNotifierProvider, no topo do app, cria um objeto dessa classe no parâmetro create e o deixa disponível para todas as telas abaixo. Para usar o objeto, há três jeitos: context.watch<Carrinho>() lê e faz o widget se redesenhar quando algo mudar (use dentro do build); context.read<Carrinho>() só lê, sem escutar (use dentro de onPressed, para chamar métodos); e o Consumer<Carrinho> redesenha só o pedaço que está no builder, que recebe (context, carrinho, child). No simulador existe um objeto por tipo, criado a partir do create do provider, e MultiProvider (várias classes juntas) também funciona. Selector, ProxyProvider e Consumer2 não existem aqui.",
+ tryit:"Em ▶ Testar, toque nos dois carrinhos de compra, veja o número no ícone da barra mudar e abra o carrinho: a segunda tela mostra o mesmo total. Troque os preços e o nome dos produtos.",
+ code:"import 'package:flutter/material.dart';\nimport 'package:provider/provider.dart';\n\nclass Carrinho extends ChangeNotifier {\n  final List<String> itens = [];\n  double total = 0;\n\n  void adicionar(String nome, double preco) {\n    itens.add(nome);\n    total += preco;\n    notifyListeners();\n  }\n\n  void limpar() {\n    itens.clear();\n    total = 0;\n    notifyListeners();\n  }\n}\n\nvoid main() => runApp(\n      ChangeNotifierProvider(\n        create: (context) => Carrinho(),\n        child: const MaterialApp(home: Vitrine()),\n      ),\n    );\n\nclass Vitrine extends StatelessWidget {\n  const Vitrine({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(\n        title: const Text('Vitrine'),\n        actions: [\n          Consumer<Carrinho>(\n            builder: (context, carrinho, child) => TextButton.icon(\n              icon: const Icon(Icons.shopping_cart),\n              label: Text('${carrinho.itens.length}'),\n              onPressed: () => Navigator.push(\n                context,\n                MaterialPageRoute(builder: (context) => const TelaCarrinho()),\n              ),\n            ),\n          ),\n        ],\n      ),\n      body: ListView(\n        children: [\n          ListTile(\n            title: const Text('Camiseta'),\n            subtitle: const Text('R\\$ 40.00'),\n            trailing: IconButton(\n              icon: const Icon(Icons.add_shopping_cart),\n              onPressed: () => context.read<Carrinho>().adicionar('Camiseta', 40),\n            ),\n          ),\n          ListTile(\n            title: const Text('Caneca'),\n            subtitle: const Text('R\\$ 25.00'),\n            trailing: IconButton(\n              icon: const Icon(Icons.add_shopping_cart),\n              onPressed: () => context.read<Carrinho>().adicionar('Caneca', 25),\n            ),\n          ),\n        ],\n      ),\n    );\n  }\n}\n\nclass TelaCarrinho extends StatelessWidget {\n  const TelaCarrinho({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    final carrinho = context.watch<Carrinho>();\n    return Scaffold(\n      appBar: AppBar(title: const Text('Carrinho')),\n      body: Column(\n        children: [\n          Text('Itens: ${carrinho.itens.length}'),\n          Text('Total: R\\$ ${carrinho.total.toStringAsFixed(2)}'),\n          ElevatedButton(\n            onPressed: () => context.read<Carrinho>().limpar(),\n            child: const Text('Limpar carrinho'),\n          ),\n        ],\n      ),\n    );\n  }\n}\n"},
+{t:"x. go_router: telas por endereço com context.go e context.push",
+ text:"O Navigator empilha telas que você cria na hora. O pacote go_router faz diferente: você declara todas as telas num GoRouter, cada uma com um endereço (path), e navega pelo endereço, como num site. MaterialApp.router(routerConfig: _router) liga o app ao roteador. Em cada GoRoute, path é o endereço e builder devolve a tela; um pedaço com dois-pontos, como /produto/:id, é um parâmetro, lido com state.pathParameters['id']. O que vem depois do ? é lido com state.uri.queryParameters. context.go troca a pilha inteira pela nova tela, context.push empilha por cima (e context.pop volta), e context.pushNamed usa o name da rota com pathParameters. Rotas dentro de routes: ficam dentro do endereço da mãe (/sobre/equipe). No simulador, o go também mostra a seta ← na barra e ela volta para o início, e initialLocation define a primeira tela. ShellRoute, redirect e extra com classes não existem aqui.",
+ tryit:"Em ▶ Testar, toque em Item 1, Item 2 e Equipe e veja o título mudar com o parâmetro. Mude o id de Abrir produto 7 e o texto depois de ?q= no endereço da equipe.",
+ code:"import 'package:flutter/material.dart';\nimport 'package:go_router/go_router.dart';\n\nfinal _router = GoRouter(\n  initialLocation: '/',\n  routes: [\n    GoRoute(\n      path: '/',\n      builder: (context, state) => const Inicio(),\n    ),\n    GoRoute(\n      path: '/produto/:id',\n      name: 'produto',\n      builder: (context, state) =>\n          Detalhe(id: state.pathParameters['id']!),\n    ),\n    GoRoute(\n      path: '/sobre',\n      builder: (context, state) => const Sobre(),\n      routes: [\n        GoRoute(\n          path: 'equipe',\n          builder: (context, state) => Detalhe(id: state.uri.queryParameters['q'] ?? 'sem'),\n        ),\n      ],\n    ),\n  ],\n);\n\nvoid main() => runApp(const App());\n\nclass App extends StatelessWidget {\n  const App({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp.router(routerConfig: _router);\n  }\n}\n\nclass Inicio extends StatelessWidget {\n  const Inicio({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Início')),\n      body: Column(\n        children: [\n          for (final n in [1, 2])\n            TextButton(\n              onPressed: () => context.pushNamed('produto', pathParameters: {'id': '$n'}),\n              child: Text('Item $n'),\n            ),\n          TextButton(\n            onPressed: () => GoRouter.of(context).go('/sobre/equipe?q=ana'),\n            child: const Text('Equipe'),\n          ),\n          ElevatedButton(\n            onPressed: () => context.go('/produto/7'),\n            child: const Text('Abrir produto 7'),\n          ),\n          ElevatedButton(\n            onPressed: () => context.push('/sobre'),\n            child: const Text('Sobre'),\n          ),\n        ],\n      ),\n    );\n  }\n}\n\nclass Detalhe extends StatelessWidget {\n  final String id;\n  const Detalhe({super.key, required this.id});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: Text('Produto $id')),\n      body: Center(\n        child: ElevatedButton(\n          onPressed: () => context.go('/'),\n          child: const Text('Voltar ao início'),\n        ),\n      ),\n    );\n  }\n}\n\nclass Sobre extends StatelessWidget {\n  const Sobre({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Sobre')),\n      body: Center(\n        child: TextButton(\n          onPressed: () => context.pop(),\n          child: const Text('Fechar'),\n        ),\n      ),\n    );\n  }\n}\n"},
+{t:"x. Estilo iOS: widgets Cupertino",
+ text:"O Flutter também tem widgets com a cara do iOS, no pacote flutter/cupertino. O CupertinoApp e o CupertinoPageScaffold fazem o papel de MaterialApp e Scaffold, e a CupertinoNavigationBar (middle é o título, trailing fica à direita) faz o papel da AppBar. Os controles têm os mesmos parâmetros dos irmãos do Material: CupertinoSwitch (value e onChanged), CupertinoSlider, CupertinoTextField (placeholder em vez de decoration), CupertinoSearchTextField e CupertinoButton, que é só texto azul, ou CupertinoButton.filled, com fundo. O CupertinoActivityIndicator é o carregando do iOS e CupertinoIcons traz os ícones. Para um diálogo, use showCupertinoDialog com um CupertinoAlertDialog, cujas actions são CupertinoDialogAction (isDefaultAction deixa em negrito e isDestructiveAction deixa vermelho). No simulador não existem CupertinoTabScaffold, CupertinoTabBar, CupertinoPicker, CupertinoSegmentedControl e CupertinoActionSheet.",
+ tryit:"Em ▶ Testar, digite o nome, desligue o interruptor, arraste o volume e abra o diálogo Sair da conta. Troque o placeholder, a cor do botão e deixe Cancelar em negrito.",
+ code:"import 'package:flutter/cupertino.dart';\n\nvoid main() => runApp(const CupertinoApp(home: Ajustes()));\n\nclass Ajustes extends StatefulWidget {\n  const Ajustes({super.key});\n\n  @override\n  State<Ajustes> createState() => _AjustesState();\n}\n\nclass _AjustesState extends State<Ajustes> {\n  bool notificacoes = true;\n  double volume = 0.4;\n  String nome = '';\n\n  @override\n  Widget build(BuildContext context) {\n    return CupertinoPageScaffold(\n      navigationBar: const CupertinoNavigationBar(\n        middle: Text('Ajustes'),\n        trailing: Icon(CupertinoIcons.gear),\n      ),\n      child: SafeArea(\n        child: Padding(\n          padding: const EdgeInsets.all(16),\n          child: Column(\n            crossAxisAlignment: CrossAxisAlignment.stretch,\n            children: [\n              CupertinoSearchTextField(placeholder: 'Buscar ajuste'),\n              const SizedBox(height: 12),\n              CupertinoTextField(\n                placeholder: 'Seu nome',\n                onChanged: (v) => setState(() => nome = v),\n              ),\n              Text('Olá, $nome'),\n              Row(\n                mainAxisAlignment: MainAxisAlignment.spaceBetween,\n                children: [\n                  const Text('Notificações'),\n                  CupertinoSwitch(\n                    value: notificacoes,\n                    onChanged: (v) => setState(() => notificacoes = v),\n                  ),\n                ],\n              ),\n              CupertinoSlider(\n                value: volume,\n                onChanged: (v) => setState(() => volume = v),\n              ),\n              Text('Volume: ${(volume * 100).round()}%'),\n              CupertinoButton.filled(\n                onPressed: () {\n                  showCupertinoDialog(\n                    context: context,\n                    builder: (context) => CupertinoAlertDialog(\n                      title: const Text('Sair?'),\n                      content: const Text('Você será desconectado.'),\n                      actions: [\n                        CupertinoDialogAction(\n                          child: const Text('Cancelar'),\n                          onPressed: () => Navigator.pop(context),\n                        ),\n                        CupertinoDialogAction(\n                          isDestructiveAction: true,\n                          onPressed: () => Navigator.pop(context),\n                          child: const Text('Sair'),\n                        ),\n                      ],\n                    ),\n                  );\n                },\n                child: const Text('Sair da conta'),\n              ),\n              CupertinoButton(\n                onPressed: () {},\n                child: const Text('Cancelar'),\n              ),\n              const CupertinoActivityIndicator(),\n            ],\n          ),\n        ),\n      ),\n    );\n  }\n}\n"}
 /*NL-END*/
 ];
 var base=LESSONS.filter(function(l){return !l.after}),placed=LESSONS.filter(function(l){return l.after});
@@ -12146,7 +12331,7 @@ placed.forEach(function(l){var k=-1;base.forEach(function(b,i){if(b.t.indexOf(l.
   base.splice(k+1,0,l)});
 LESSONS=base;
 /*ORDER-BEGIN*/
-var ORDER=["Scaffold e AppBar", "Center, Padding e Container", "Column: empilhar na vertical", "Row e Expanded: lado a lado", "Aninhando Column e Row", "Align e Flexible", "Stack e Positioned", "Lista de tarefas", "Botões e TextField", "Grade, imagens e ListTile", "Wrap, Chip e CircleAvatar", "Projeto 1 · etapa 1: cabeçalho do cartão", "Projeto 1 · etapa 2: contatos", "Projeto 1 · etapa 3: habilidades e acabamento", "Rolagem, recorte e toque", "Drawer e barra inferior", "Abas com TabBar", "Abas que funcionam", "TabPageSelector: bolinhas de página", "MaterialBanner e Banner: avisos fixos", "Recortes e efeitos: ClipOval, DecoratedBox, ShaderMask e Material","Estilos: texto, botões e decoração", "Estado com setState", "Toques: GestureDetector", "Checkbox, Switch e Slider", "Interruptor e controle deslizante", "Opacidade, recorte e controle em passos", "Condições na interface", "Listas e laços", "Gerando widgets com for", "Formulário: menu, rádio e interruptor","Campos formatados, botões por estado e AppBar com fundo", "Listas sob demanda com builder", "Tabelas, páginas e layout responsivo", "Seus próprios widgets", "Classes de dados", "Projeto 2 · etapa 1: a lista de tarefas", "Projeto 2 · etapa 2: adicionar tarefas", "Projeto 2 · etapa 3: marcar como feita", "Map e parâmetros do widget", "Lógica: switch, laços e try/catch", "Projeto 3 · etapa 1: o formulário do IMC", "Projeto 3 · etapa 2: calcular com segurança", "Projeto 3 · etapa 3: classificar e guardar o histórico", "Mensagem rápida: SnackBar", "Diálogo de confirmação: AlertDialog", "Projeto 2 · etapa 4: remover com confirmação", "Painel inferior: BottomSheet", "Navegando entre telas", "Passando dados para outra tela", "Projeto 4 · etapa 1: a pergunta do quiz", "Projeto 4 · etapa 2: várias perguntas e pontuação", "Projeto 4 · etapa 3: a tela de resultado", "Tema do app: ThemeData", "Ciclo de vida: initState", "Tela com estado próprio", "Esperando com Future e async", "Esperando a resposta de outra tela", "FutureBuilder: a tela que espera os dados", "StreamBuilder: dados que chegam ao longo do tempo", "RefreshIndicator: puxar para atualizar", "Chips, lista que expande e selo de aviso", "Navegação inferior, visibilidade e proporção", "Texto com vários estilos e transformações", "Menu de opções e escolha em segmentos", "Deslizar para apagar: Dismissible", "IndexedStack: abas que guardam o estado", "NavigationRail: menu lateral", "NavigationDrawer e BottomAppBar", "MenuAnchor: menu que abre ao lado", "SimpleDialog: escolher uma opção", "RangeSlider e ToggleButtons: filtros", "DropdownMenu: menu de escolha", "Autocomplete e SearchBar: busca com sugestões", "Stepper: passo a passo", "ExpansionPanelList: perguntas frequentes", "Botões modernos: FilledButton.tonal, IconButton.filled e FAB estendido", "Busca e calendário: SearchAnchor.bar e CalendarDatePicker", "SearchAnchor: busca com sugestões", "Layout avançado: OverflowBox, RotatedBox, Offstage e IgnorePointer", "Data e hora: showDatePicker e showTimePicker", "Cabeçalho que encolhe: SliverAppBar", "Slivers: CustomScrollView com SliverGrid e SliverPadding", "NestedScrollView e SliverPersistentHeader", "ListWheelScrollView e CarouselView", "PaginatedDataTable com DataTableSource", "ReorderableListView: arrastar para reordenar", "AnimatedList: itens que entram e saem", "DraggableScrollableSheet: painel que sobe e desce", "InteractiveViewer: zoom e arrastar", "Arrastar e soltar: Draggable e DragTarget", "Listener e MouseRegion: eventos de ponteiro e de mouse", "Hero: widget que voa entre duas telas", "AnimatedPositioned e AnimatedAlign: movimento suave", "AnimatedContainer, AnimatedOpacity, AnimatedScale e AnimatedRotation", "AnimatedSize e AnimatedPadding: painel que abre", "AnimatedSwitcher e AnimatedCrossFade: trocar conteúdo", "TweenAnimationBuilder: animar qualquer valor", "AnimationController: animação com Tween e Curves", "AlignTransition, DecoratedBoxTransition e SliverOpacity", "CustomPaint: Canvas, Paint e formas", "CustomPaint: gráfico de pizza com drawArc", "CustomPaint animado com AnimationController", "PreferredSize e ClipPath com CustomClipper", "ValueNotifier e ValueListenableBuilder: atualizar sem setState", "StatefulBuilder, OrientationBuilder e DefaultTextStyle", "JSON, classe modelo e map para cards", "shared_preferences: guardar preferências", "API, FutureBuilder e cache com shared_preferences", "sqflite: banco SQLite com CRUD", "sqflite com duas tabelas e JOIN", "Firebase Auth: login e cadastro", "Firestore: lista em tempo real", "Sensor: acelerômetro", "Sensor: giroscópio e bússola", "Sensor: pedômetro (passos)", "Sensor: barômetro e magnetômetro", "Bateria e rede: battery_plus e connectivity_plus", "Saída de som: tocar áudio", "Microfone: gravar áudio", "Localização: GPS", "Mapa com OpenStreetMap: flutter_map", "Mapa e GPS: você está aqui", "Endereço e rota: carro, bicicleta e a pé", "Câmera e vibração", "Biometria: impressão digital e rosto", "Lanterna: torch_light", "Leitor de QR code: mobile_scanner", "Abrir um link e compartilhar", "Projeto 5 · etapa 1: a vitrine", "Projeto 5 · etapa 2: carrinho e SnackBar", "Projeto 5 · etapa 3: abas Produtos e Carrinho", "Projeto 5 · etapa 4: tela de detalhes", "Projeto 5 · etapa 5: agite para limpar (sensor)"];
+var ORDER=["Scaffold e AppBar", "Center, Padding e Container", "Column: empilhar na vertical", "Row e Expanded: lado a lado", "Aninhando Column e Row", "Align e Flexible", "Stack e Positioned", "Lista de tarefas", "Botões e TextField", "Grade, imagens e ListTile", "Wrap, Chip e CircleAvatar", "Projeto 1 · etapa 1: cabeçalho do cartão", "Projeto 1 · etapa 2: contatos", "Projeto 1 · etapa 3: habilidades e acabamento", "Rolagem, recorte e toque", "Drawer e barra inferior", "Abas com TabBar", "Abas que funcionam", "TabPageSelector: bolinhas de página", "MaterialBanner e Banner: avisos fixos", "Recortes e efeitos: ClipOval, DecoratedBox, ShaderMask e Material","Estilos: texto, botões e decoração", "Estado com setState", "Toques: GestureDetector", "Checkbox, Switch e Slider", "Interruptor e controle deslizante", "Opacidade, recorte e controle em passos", "Condições na interface", "Listas e laços", "Gerando widgets com for", "Formulário: menu, rádio e interruptor","Campos formatados, botões por estado e AppBar com fundo", "Listas sob demanda com builder", "Tabelas, páginas e layout responsivo", "Seus próprios widgets", "Classes de dados", "Projeto 2 · etapa 1: a lista de tarefas", "Projeto 2 · etapa 2: adicionar tarefas", "Projeto 2 · etapa 3: marcar como feita", "Map e parâmetros do widget", "Lógica: switch, laços e try/catch", "Projeto 3 · etapa 1: o formulário do IMC", "Projeto 3 · etapa 2: calcular com segurança", "Projeto 3 · etapa 3: classificar e guardar o histórico", "Mensagem rápida: SnackBar", "Diálogo de confirmação: AlertDialog", "Projeto 2 · etapa 4: remover com confirmação", "Painel inferior: BottomSheet", "Navegando entre telas", "Passando dados para outra tela", "Projeto 4 · etapa 1: a pergunta do quiz", "Projeto 4 · etapa 2: várias perguntas e pontuação", "Projeto 4 · etapa 3: a tela de resultado", "go_router: telas por endereço com context.go e context.push", "Tema do app: ThemeData", "Ciclo de vida: initState", "Tela com estado próprio", "Esperando com Future e async", "Esperando a resposta de outra tela", "FutureBuilder: a tela que espera os dados", "StreamBuilder: dados que chegam ao longo do tempo", "RefreshIndicator: puxar para atualizar", "Chips, lista que expande e selo de aviso", "Navegação inferior, visibilidade e proporção", "Texto com vários estilos e transformações", "Menu de opções e escolha em segmentos", "Deslizar para apagar: Dismissible", "IndexedStack: abas que guardam o estado", "NavigationRail: menu lateral", "NavigationDrawer e BottomAppBar", "MenuAnchor: menu que abre ao lado", "SimpleDialog: escolher uma opção", "RangeSlider e ToggleButtons: filtros", "DropdownMenu: menu de escolha", "Autocomplete e SearchBar: busca com sugestões", "Stepper: passo a passo", "ExpansionPanelList: perguntas frequentes", "Botões modernos: FilledButton.tonal, IconButton.filled e FAB estendido", "Busca e calendário: SearchAnchor.bar e CalendarDatePicker", "SearchAnchor: busca com sugestões", "Layout avançado: OverflowBox, RotatedBox, Offstage e IgnorePointer", "Data e hora: showDatePicker e showTimePicker", "Estilo iOS: widgets Cupertino", "Cabeçalho que encolhe: SliverAppBar", "Slivers: CustomScrollView com SliverGrid e SliverPadding", "NestedScrollView e SliverPersistentHeader", "ListWheelScrollView e CarouselView", "PaginatedDataTable com DataTableSource", "ReorderableListView: arrastar para reordenar", "AnimatedList: itens que entram e saem", "DraggableScrollableSheet: painel que sobe e desce", "InteractiveViewer: zoom e arrastar", "Arrastar e soltar: Draggable e DragTarget", "Listener e MouseRegion: eventos de ponteiro e de mouse", "Hero: widget que voa entre duas telas", "AnimatedPositioned e AnimatedAlign: movimento suave", "AnimatedContainer, AnimatedOpacity, AnimatedScale e AnimatedRotation", "AnimatedSize e AnimatedPadding: painel que abre", "AnimatedSwitcher e AnimatedCrossFade: trocar conteúdo", "TweenAnimationBuilder: animar qualquer valor", "AnimationController: animação com Tween e Curves", "AlignTransition, DecoratedBoxTransition e SliverOpacity", "CustomPaint: Canvas, Paint e formas", "CustomPaint: gráfico de pizza com drawArc", "CustomPaint animado com AnimationController", "PreferredSize e ClipPath com CustomClipper", "ValueNotifier e ValueListenableBuilder: atualizar sem setState", "StatefulBuilder, OrientationBuilder e DefaultTextStyle", "ChangeNotifier e Provider: estado compartilhado entre telas", "JSON, classe modelo e map para cards", "shared_preferences: guardar preferências", "API, FutureBuilder e cache com shared_preferences", "sqflite: banco SQLite com CRUD", "sqflite com duas tabelas e JOIN", "Firebase Auth: login e cadastro", "Firestore: lista em tempo real", "Sensor: acelerômetro", "Sensor: giroscópio e bússola", "Sensor: pedômetro (passos)", "Sensor: barômetro e magnetômetro", "Bateria e rede: battery_plus e connectivity_plus", "Saída de som: tocar áudio", "Microfone: gravar áudio", "Localização: GPS", "Mapa com OpenStreetMap: flutter_map", "Mapa e GPS: você está aqui", "Endereço e rota: carro, bicicleta e a pé", "Câmera e vibração", "Biometria: impressão digital e rosto", "Lanterna: torch_light", "Leitor de QR code: mobile_scanner", "Abrir um link e compartilhar", "Projeto 5 · etapa 1: a vitrine", "Projeto 5 · etapa 2: carrinho e SnackBar", "Projeto 5 · etapa 3: abas Produtos e Carrinho", "Projeto 5 · etapa 4: tela de detalhes", "Projeto 5 · etapa 5: agite para limpar (sensor)"];
 (function(){var by={};LESSONS.forEach(function(l){by[l.t.replace(/^(?:\d+|x)\.\s*/,'')]=l});var out=[];ORDER.forEach(function(t){if(by[t]){out.push(by[t]);by[t]=null}});LESSONS.forEach(function(l){if(by[l.t.replace(/^(?:\d+|x)\.\s*/,'')])out.push(l)});LESSONS=out})();
 /*ORDER-END*/
 LESSONS.forEach(function(x,i){x.t=x.t.replace(/^(?:\d+|x)\./,(i+1)+'.')});
@@ -12361,6 +12546,9 @@ add("Listener e MouseRegion",[["Caixa verde vira roxa","No MouseRegion, troque C
 add("AlignTransition, DecoratedBoxTransition",[["Caixa termina verde","No DecorationTween, troque Colors.blue por Colors.green.","color: Colors\\.green"],["Estrela mais rápida","Troque seconds: 2 por seconds: 1 no AnimationController.","seconds: 1\\b"],["Estrela vai para cima","No AlignmentTween, troque Alignment.bottomRight por Alignment.topRight.","end: Alignment\\.topRight"],["Lista mais apagada","No SliverOpacity, troque opacity: 0.4 por opacity: 0.2.","opacity: 0\\.2"]]);
 add("Estilos: texto, botões e decoração",[["Gradiente verde","No LinearGradient, troque Colors.pink por Colors.teal.","Colors\\.indigo, Colors\\.teal"],["Botão em pílula","No botão Comprar, troque RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)) por StadiumBorder().","shape: StadiumBorder\\(\\),\\s*\\),\\s*child: const Text\\('Comprar'\\)"],["Uma linha só","No texto longo, troque maxLines: 2 por maxLines: 1.","maxLines: 1"],["Sombra do cartão","No Card, troque elevation: 8 por elevation: 0.","elevation: 0"]]);
 add("Campos formatados, botões por estado",[["CEP com 5 dígitos","Troque maxLength: 8 por maxLength: 5.","maxLength: 5"],["Botão ativa com 5","Troque cep.length == 8 por cep.length == 5.","cep\\.length == 5"],["Botão azul","No resolveWith, troque a última cor Colors.green por Colors.blue (a do return final).","return Colors\\.blue;"],["Nomes em maiúsculas","Troque TextCapitalization.words por TextCapitalization.characters.","TextCapitalization\\.characters"],["Barra mais alta","Troque toolbarHeight: 80 por toolbarHeight: 110.","toolbarHeight: 110"]]);
+add("ChangeNotifier e Provider",[["Camiseta a 50","No botão da Camiseta, troque o preço 40 por 50 (o segundo argumento de adicionar).","adicionar\\('Camiseta', 50\\)"],["Caneca vira Copo","No botão da Caneca, troque o nome passado a adicionar por Copo.","adicionar\\('Copo', 25\\)"],["Total com 3 casas","Na TelaCarrinho, troque toStringAsFixed(2) por toStringAsFixed(3).","toStringAsFixed\\(3\\)"]]);
+add("go_router: telas por endereço",[["Produto 9","No botão Abrir produto, troque o endereço /produto/7 por /produto/9.","context\\.go\\('/produto/9'\\)"],["Equipe: bia","No endereço da equipe, troque q=ana por q=bia.","q=bia"],["Três itens","Na lista [1, 2], acrescente o número 3.","\\[1, 2, 3\\]"]]);
+add("Estilo iOS",[["Placeholder do nome","Troque o placeholder Seu nome por Como se chama?.","placeholder: 'Como se chama\\?'"],["Volume começa em 80%","Troque o volume inicial 0.4 por 0.8.","double volume = 0\\.8"],["Cancelar em negrito","No CupertinoDialogAction Cancelar, acrescente isDefaultAction: true, antes do child.","isDefaultAction: true"]]);
 OF.EX=EX;
 OF.LESSONS.forEach(function(L){
   var st=null,k;
@@ -14140,7 +14328,9 @@ OF.LIMITS=[
  'Internet: por padrão (modo automático) o app tenta a API real e, se falhar em até 5 segundos, usa dados de exemplo para jsonplaceholder.typicode.com (users, posts e todos), Nominatim, Photon e OSRM; a etiqueta na barra de estado mostra se os dados são 🌐 reais ou 🧪 simulados. Qualquer outro endereço sem rede responde 404. A API real depende de o serviço aceitar CORS no navegador. Hive, Isar e Supabase não existem.',
  'Widgets que não existem no simulador: Overlay e OverlayEntry (use showDialog ou SnackBar), PositionedTransition, RelativePositionedTransition, DefaultTextStyleTransition e CustomMultiChildLayout. FlutterLogo aparece como um símbolo de exemplo (nunca o logotipo real). StatefulBuilder e OrientationBuilder funcionam, mas o setState de dentro do builder deve ter o nome setState.',
  'Listener e MouseRegion: os eventos chegam sem o objeto do evento (posição, botão), então não dá para ler e.position. FocusScope, ExcludeSemantics e MergeSemantics só envolvem o filho, sem efeito visível. SliverFixedExtentList e SliverPrototypeExtentList ignoram itemExtent e prototypeItem. DecoratedBoxTransition só anima cor e borderRadius.circular; AlignTransition anima o alinhamento por inteiro.',
- 'Nenhum widget Cupertino existe (CupertinoButton, CupertinoAlertDialog, CupertinoSwitch e outros).'
+ 'Cupertino: existem CupertinoPageScaffold, CupertinoNavigationBar, CupertinoButton (e .filled), CupertinoSwitch, CupertinoSlider, CupertinoTextField, CupertinoSearchTextField, CupertinoActivityIndicator, CupertinoAlertDialog com CupertinoDialogAction e showCupertinoDialog, e os ícones de CupertinoIcons mais comuns. Não existem CupertinoTabScaffold, CupertinoTabBar, CupertinoPicker, CupertinoDatePicker, CupertinoSegmentedControl, CupertinoSlidingSegmentedControl, CupertinoActionSheet, CupertinoListSection e CupertinoSliverNavigationBar.',
+ 'Provider: ChangeNotifierProvider, Provider e MultiProvider (com create), Consumer<T>, context.watch<T>(), context.read<T>(), context.select e Provider.of<T>(context) funcionam, com um objeto por tipo, criado a partir do create. Selector, Consumer2, ProxyProvider, ChangeNotifierProvider.value e providers criados dentro de uma função não existem.',
+ 'go_router: GoRouter com initialLocation e GoRoute (path com :parâmetros, name e rotas filhas em routes), MaterialApp.router, context.go, push, pop, pushReplacement, goNamed e pushNamed (com pathParameters e queryParameters), state.pathParameters, state.uri.queryParameters e extra simples. O go também mostra a seta ← na barra. ShellRoute, StatefulShellRoute, redirect, errorBuilder e context.canPop não existem.'
  ]},
 {h:'Propriedades que o simulador ignora',
  p:'O widget aparece, mas estas propriedades não mudam o desenho.',
@@ -14560,6 +14750,7 @@ function applyFx(fx,sc,rf){
     else if(f.k==='hidesnack')R.opts.over=R.opts.over.filter(function(o){return o.k!=='snack'});
     else if(f.k==='push'){
       if(f.replace){var i0=topOverlay();if(i0>=0)R.opts.over.splice(i0,1);else if(R.opts.nav.length){R.opts.nav.pop();R.opts.navSc.pop();R.opts.navRes.pop()}}
+      if(f.all){R.opts.nav.length=0;R.opts.navSc.length=0;R.opts.navRes.length=0;R.opts.over=R.opts.over.filter(function(o){return o.k==='snack'||o.k==='banner'});if(f.src==null||f.src===''){return}}
       R.opts.nav.push(f.src);R.opts.navSc.push(ST.makeScope(f.src));R.opts.navRes.push(res);R.opts.over=R.opts.over.filter(function(o){return o.k==='snack'||o.k==='banner'})}
     else if(f.k==='delay'){var tm=setTimeout(function(){resolve(res,null);setTimeout(function(){},0)},Math.min(f.ms,8000));timers.push(tm)}
     else if(f.k==='toast')toast(f.msg);
@@ -14776,12 +14967,12 @@ function fire(t){
     return}
   if(t.dataset.h==='popup'){openPopup(t,t._pn);return}
   if(t.dataset.h==='navd'){var pn=t._pn,rawN=pn&&M.rawProp(pn,pn.type==='BottomNavigationBar'?'onTap':'onDestinationSelected');if(rawN&&rawN.trim()!=='null')afterRun(runAt(t,rawN,[+t.dataset.i]));return}
-  var n=t._n;if(!n||t.classList.contains('sld')||n.type==='TextField'||n.type==='TextFormField')return;
+  var n=t._n;if(!n||t.classList.contains('sld')||n.type==='TextField'||n.type==='TextFormField'||n.type==='CupertinoTextField'||n.type==='CupertinoSearchTextField')return;
   var h=t.dataset.h,raw=M.rawProp(n,h),args=[];
   if(h==='onSelected'){var curSel=runIn(scopeOfEl(t),function(){return /true/.test(M.evalProp(n,'selected')||'')});args=[n.type==='ChoiceChip'?true:!curSel]}
   else if(h==='onChanged'){
     if(n.type==='Checkbox')args=[!t.querySelector('.bx.on')];
-    else if(n.type==='Switch')args=[!t.classList.contains('on')];
+    else if(n.type==='Switch'||n.type==='CupertinoSwitch')args=[!t.classList.contains('on')];
     else if(n.type==='SwitchListTile'||n.type==='CheckboxListTile')args=[!(t.querySelector('.dsw.on,.bx.on'))];
     else if(n.type==='Radio'||n.type==='RadioListTile'){try{args=[valAt(t,M.rawProp(n,'value'))]}catch(e){return}}
     else if(n.type==='DropdownButton'){openMenu(t,n);return}
