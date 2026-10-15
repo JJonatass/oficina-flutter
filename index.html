@@ -4112,7 +4112,17 @@ function lambdaParts(raw){
   else if(p.is('{')){
     var j=p.i;while(j<t.length&&!(t[j].k==='id'&&t[j].v==='return'))j++;
     if(j>=t.length)throw new Error('sem return');
-    body=raw.slice(t[j+1].s,raw.lastIndexOf('}')).trim().replace(/;\s*$/,'')}
+    body=raw.slice(t[j+1].s,raw.lastIndexOf('}')).trim().replace(/;\s*$/,'');
+    var pre=raw.slice(t[p.i].e,t[j].s).trim();
+    if(pre){
+      var decs=[],okd=true;
+      splitTopStr(pre,';').forEach(function(sx){sx=sx.trim();if(!sx)return;
+        var dm=/^(?:final|var|const)\s+(?:[\w<>?,.\s]*?\s+)?(\w+)\s*=\s*([\s\S]+)$/.exec(sx);
+        if(dm)decs.push([dm[1],dm[2].trim()]);else okd=false});
+      if(okd)for(var di=decs.length-1;di>=0;di--){
+        var dn=decs[di][0],dx=decs[di][1];
+        body=body.replace(new RegExp('\\$'+dn+'(?!\\w)','g'),'${'+dn+'}');
+        try{body=bindVar(body,dn,{raw:'('+dx+')'})}catch(e){}}}}
   else throw new Error('lambda');
   return{names:names,body:body}}
 function noBang(t,nm){return t.replace(new RegExp('\\b'+nm+'\\s*!(?!=)','g'),nm)}
@@ -14629,7 +14639,7 @@ OF.LIMITS=[
  'Widgets que não existem no simulador: Overlay e OverlayEntry (use showDialog ou SnackBar), PositionedTransition, RelativePositionedTransition, DefaultTextStyleTransition e CustomMultiChildLayout. FlutterLogo aparece como um símbolo de exemplo (nunca o logotipo real). StatefulBuilder e OrientationBuilder funcionam, mas o setState de dentro do builder deve ter o nome setState.',
  'Listener e MouseRegion: os eventos chegam sem o objeto do evento (posição, botão), então não dá para ler e.position. FocusScope, ExcludeSemantics e MergeSemantics só envolvem o filho, sem efeito visível. SliverFixedExtentList e SliverPrototypeExtentList ignoram itemExtent e prototypeItem. DecoratedBoxTransition só anima cor e borderRadius.circular; AlignTransition anima o alinhamento por inteiro.',
  'Cupertino: existem CupertinoPageScaffold, CupertinoNavigationBar, CupertinoButton (e .filled), CupertinoSwitch, CupertinoSlider, CupertinoTextField, CupertinoSearchTextField, CupertinoActivityIndicator, CupertinoAlertDialog com CupertinoDialogAction e showCupertinoDialog, e os ícones de CupertinoIcons mais comuns. Também existem CupertinoTabScaffold com CupertinoTabBar (o CupertinoTabView só repassa a página, sem pilha própria), CupertinoSegmentedControl e CupertinoSlidingSegmentedControl (children com Text ou Icon), CupertinoPicker (children, itemExtent, onSelectedItemChanged e initialItem do FixedExtentScrollController; sem jumpToItem nem looping), CupertinoDatePicker (modos date, time, dateAndTime e monthYear, minuteInterval, use24hFormat, minimumYear e maximumYear; meses em inglês; minimumDate e maximumDate só limitam o ano) e CupertinoActionSheet com CupertinoActionSheetAction, aberto por showCupertinoModalPopup. Não existem CupertinoTimerPicker, CupertinoListSection e CupertinoSliverNavigationBar.',
- 'StatefulWidget dentro de outros widgets (numa Column, num tabBuilder, numa lista): cada um tem o seu State, que é guardado pela posição na tela e mantém o valor quando o pai redesenha. Como no Flutter sem key, se a ordem de itens mudar, o State fica no lugar e não acompanha o item. A barra de estado mostra só as variáveis da tela principal.',
+ 'StatefulWidget dentro de outros widgets (numa Column, num tabBuilder, numa lista): cada um tem o seu State, que é guardado pela posição na tela e mantém o valor quando o pai redesenha. Como no Flutter sem key, se a ordem de itens mudar, o State fica no lugar e não acompanha o item. A barra de estado mostra as variáveis da tela e, em ▶ Testar, as de cada widget aninhado (Contador #1, Contador #2).',
  'Provider: ChangeNotifierProvider, Provider e MultiProvider (com create), Consumer<T>, context.watch<T>(), context.read<T>(), context.select e Provider.of<T>(context) funcionam, com um objeto por tipo, criado a partir do create. Selector (que sempre redesenha, mesmo quando o valor escolhido não muda) e Consumer2 também funcionam. Consumer3, ProxyProvider, ChangeNotifierProvider.value e providers criados dentro de uma função não existem.',
  'go_router: GoRouter com initialLocation e GoRoute (path com :parâmetros, name e rotas filhas em routes), MaterialApp.router, context.go, push, pop, pushReplacement, goNamed e pushNamed (com pathParameters e queryParameters), state.pathParameters, state.uri.queryParameters e extra simples. ShellRoute e StatefulShellRoute.indexedStack funcionam só em ▶ Testar (o canvas mostra a página inicial sem a moldura): no StatefulShellRoute cada StatefulShellBranch guarda a sua posição e o State das suas páginas, com navigationShell.currentIndex e goBranch (com initialLocation). GoRouterState.of(context).uri.path indica a aba atual. O redirect (da GoRouter ou de uma GoRoute) roda ao abrir o app e a cada go, push e goNamed, com limite de 5 redirecionamentos. Um push dentro de uma aba abre por cima da moldura. O go não mostra mais a seta ← (a tela vira a base). Não existem refreshListenable, errorBuilder, context.canPop, navigatorContainerBuilder e StatefulShellRoute sem indexedStack.'
  ]},
@@ -14652,7 +14662,6 @@ OF.LIMITS=[
  'AnimatedList e Hero: não mostram a animação de entrada, saída ou voo.',
  'AnimatedSwitcher e AnimatedCrossFade: só a transição de esmaecer. TweenAnimationBuilder: só tween numérico.',
  'DraggableScrollableSheet: o painel só é arrastado pela alça.',
- 'AppBar(actions: [...]) não aparece, então um MenuAnchor ou PopupMenuButton ali não é visto no canvas. Coloque-o no corpo para testar.',
  'Stepper: controlsBuilder, StepState e isActive não são desenhados. Autocomplete: sem campo ou lista de opções personalizados.',
  'NavigationRail: só labelType (sem extended e trailing). MaterialBanner: sem forceActionsBelow. TabPageSelector: a bolinha só muda ao tocar nas abas.'
  ]}
@@ -15007,7 +15016,10 @@ function renderStateBar(){
     bar.innerHTML='<b>Sem estado</b><span class="sv">Esta tela não tem variáveis nem navegação, então não há o que testar.'+(/\b(Checkbox|Switch|Slider|RangeSlider|Radio|CheckboxListTile|SwitchListTile|RadioListTile|TextField|DropdownButton|ElevatedButton|TextButton|IconButton|FloatingActionButton)\(/.test(($('code')||{}).value||'')?' Os controles estão com valores fixos: guarde-os em variáveis de um StatefulWidget e use setState no onChanged/onPressed para o ▶ Testar ficar ativo.':' Com StatefulWidget e setState, os botões ficam ativos.')+'</span><span class="sp"></span><button class="btn" data-a="sens" title="Simular GPS, bateria, rede e câmera">📡 Sensores</button><div class="seg" role="group" aria-label="Modo"><button disabled aria-pressed="false">▶ Testar</button><button disabled aria-pressed="true">✎ Editar</button></div><button class="btn" disabled>↺ Reiniciar</button>';return}
   bar.hidden=false;
   var tsc=topScope(),lst=runIn(tsc,function(){return ST.list()}),hasSt=runIn(tsc,function(){return ST.order.length});
-  bar.innerHTML='<b>'+(hasSt?'Estado':'Modo interativo')+(tsc?' · '+esc(tsc.cls):'')+'</b>'+lst.map(function(v){return '<span class="sv"><i>'+esc(v.type)+'</i> '+esc(v.name)+' = <b>'+esc(v.text)+'</b></span>'}).join('')+
+  var nsx='',nsk=S.run?Object.keys(R.opts.nsc||{}):[],cnt={};
+  nsk.forEach(function(k){var inst=R.opts.nsc[k];if(!inst||inst===tsc)return;var l2=runIn(inst,function(){return ST.list()});if(!l2.length)return;cnt[inst.cls]=(cnt[inst.cls]||0)+1;
+    nsx+='<b>'+esc(inst.cls)+(nsk.filter(function(q){return R.opts.nsc[q]&&R.opts.nsc[q].cls===inst.cls}).length>1?' #'+cnt[inst.cls]:'')+'</b>'+l2.map(function(v){return '<span class="sv"><i>'+esc(v.type)+'</i> '+esc(v.name)+' = <b>'+esc(v.text)+'</b></span>'}).join('')});
+  bar.innerHTML='<b>'+(hasSt?'Estado':'Modo interativo')+(tsc?' · '+esc(tsc.cls):'')+'</b>'+lst.map(function(v){return '<span class="sv"><i>'+esc(v.type)+'</i> '+esc(v.name)+' = <b>'+esc(v.text)+'</b></span>'}).join('')+nsx+
     '<span class="sp"></span>'+httpChip()+'<button class="btn" data-a="sens" title="Simular GPS, bateria, rede e câmera">📡 Sensores</button><div class="seg" role="group" aria-label="Modo"><button data-a="test" aria-pressed="'+!!S.run+'">▶ Testar</button><button data-a="edit" aria-pressed="'+!S.run+'">✎ Editar</button></div><button class="btn" data-a="reset" title="Volta as variáveis aos valores iniciais e apaga o banco de dados simulado">↺ Reiniciar</button>';
 }
 function startRoute(){
