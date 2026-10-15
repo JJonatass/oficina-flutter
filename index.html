@@ -407,6 +407,26 @@ body:has(main[data-tab="ref"]) .lesson{display:none}
 .ovl.sht{left:0;right:0;bottom:0;max-height:70%;background:var(--d-surface);border-radius:28px 28px 0 0;padding:12px 0 8px;overflow:auto}
 .ovl.sht::before{content:'';width:32px;height:4px;border-radius:2px;background:rgba(0,0,0,.28);align-self:center;margin-bottom:8px;flex:none}
 .ovl.snw{left:8px;right:8px;bottom:10px}
+.ovl.pop{left:0;right:0;bottom:0;max-height:92%;background:transparent;overflow:auto}
+.nd.cpk{position:relative;align-self:stretch;flex:1 1 auto;min-height:132px;height:100%;overflow:hidden;background:transparent;display:block;padding:0}
+.nd.cdp{position:relative;align-self:stretch;flex:none;height:216px;max-height:100%;overflow:hidden;display:flex;flex-direction:row;background:transparent;padding:0 6px;gap:0}
+.cpkw{flex:1;min-width:0;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none;position:relative;height:100%;box-sizing:border-box;touch-action:none;-webkit-mask-image:linear-gradient(transparent 0,#000 32%,#000 68%,transparent 100%);mask-image:linear-gradient(transparent 0,#000 32%,#000 68%,transparent 100%)}
+.cpkw::-webkit-scrollbar{display:none}
+.nd.cpkd .cpkw{overflow:hidden;scroll-snap-type:none}
+.cpki{display:flex;align-items:center;justify-content:center;scroll-snap-align:center;font-size:21px;color:#000;white-space:nowrap;box-sizing:border-box;overflow:hidden;cursor:default}
+.cpki>.nd{align-self:center;flex:none}
+.cdp .cpkw[data-col=m]{flex:1.7}.cdp .cpkw[data-col=d]{flex:.8}.cdp .cpkw[data-col=y]{flex:1}.cdp .cpkw[data-col=off]{flex:3.2}.cdp .cpki{font-size:19px}.cdp .cpkw[data-col=ap]{flex:.9}
+.cpkb{position:absolute;left:8px;right:8px;background:rgba(120,120,128,.14);border-radius:8px;pointer-events:none;z-index:0}
+.cpkw{z-index:1}
+.nd.cas{display:flex;flex-direction:column;align-self:stretch;flex:none;background:transparent;gap:8px;padding:0 8px;margin-bottom:8px;box-shadow:none}
+.nd.cas .casg{background:rgba(249,249,249,.96);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;align-items:stretch;width:100%}
+.nd.cas .cast,.nd.cas .casm{align-self:stretch;text-align:center;font-size:13px;color:#8A8A8E;padding:14px 16px 6px;background:transparent;flex:none}
+.nd.cas .cast{font-weight:600}.nd.cas .casm{padding-top:0;padding-bottom:14px}
+.nd.cas .casa{min-height:56px;justify-content:center;align-items:center;background:transparent;color:#007AFF;font-size:20px;border-radius:0;border-top:.5px solid #C6C6C8;box-shadow:none;padding:0 16px;align-self:stretch;flex:none}
+.nd.cas .casg>.cast+.casm+.casa,.nd.cas .casg>.casa:first-child{border-top:0}
+.nd.cas .casa.cdd{font-weight:600}.nd.cas .casa.cdx{color:#FF3B30}
+.nd.cas .casc{background:#fff;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;align-items:stretch;width:100%}
+.nd.cas .casc .casa{border-top:0;font-weight:600}
 .ovl>.nd{align-self:stretch;flex:none}
 .nd.adlg{background:var(--d-surface);color:var(--d-on);border-radius:28px;padding:24px;flex-direction:column;align-items:stretch;gap:12px;box-shadow:0 6px 24px rgba(0,0,0,.35)}
 .nd.adlg>.nd:nth-child(1){font-size:22px}
@@ -950,6 +970,10 @@ Drawer:{cat:'struct',slots:{child:'one'},desc:'Painel lateral que desliza da esq
  CupertinoTabBar:{cat:'struct',slots:{items:'many'},desc:'Barra de abas do iOS, embaixo da tela. items recebe BottomNavigationBarItem.'},
  CupertinoSegmentedControl:{cat:'content',slots:{},desc:'Escolha entre poucas opções, estilo iOS (contorno azul). children é um mapa valor: widget, groupValue marca o escolhido e onValueChanged recebe o novo valor.'},
  CupertinoSlidingSegmentedControl:{cat:'content',slots:{},desc:'Escolha entre poucas opções, estilo iOS moderno (peça branca que desliza). Mesmos parâmetros do CupertinoSegmentedControl.'},
+ CupertinoPicker:{cat:'content',slots:{children:'many'},desc:'Roda de escolha do iOS: a pessoa gira e o item que para no centro é o escolhido. itemExtent é a altura de cada item, children são os itens e onSelectedItemChanged recebe o índice. Costuma ficar dentro de um SizedBox com altura, ou em showCupertinoModalPopup. Funciona com ▶ Testar.'},
+ CupertinoDatePicker:{cat:'content',slots:{},desc:'Rodas de data e hora do iOS. mode escolhe CupertinoDatePickerMode.date, time, dateAndTime ou monthYear; initialDateTime é o valor inicial e onDateTimeChanged recebe o DateTime escolhido. Funciona com ▶ Testar.'},
+ CupertinoActionSheet:{cat:'box',slots:{title:'one',message:'one',actions:'many',cancelButton:'one'},desc:'Menu de ações que sobe da parte de baixo, no estilo iOS. Abra com showCupertinoModalPopup. actions recebe CupertinoActionSheetAction e cancelButton é o botão separado, geralmente Cancelar.'},
+ CupertinoActionSheetAction:{cat:'content',slots:{child:'one'},desc:'Uma opção de um CupertinoActionSheet. isDefaultAction deixa em negrito e isDestructiveAction deixa vermelho. Use Navigator.pop(context) para fechar a folha.'},
  ListenableBuilder:{cat:'layout',slots:{child:'one'},desc:'Redesenha quando um ChangeNotifier chama notifyListeners(). listenable é o objeto e builder recebe (context, child). Sem setState.'},
  Draggable:{cat:'box',slots:{child:'one',feedback:'one',childWhenDragging:'one'},desc:'Faz o filho poder ser arrastado. data é o valor que viaja com ele, feedback é o que aparece sob o dedo e childWhenDragging é o que fica no lugar enquanto arrasta. Funciona com ▶ Testar.'},
  LongPressDraggable:{cat:'box',slots:{child:'one',feedback:'one',childWhenDragging:'one'},desc:'Igual ao Draggable, mas só começa a arrastar depois de segurar o dedo por um instante. Bom para listas que rolam.'},
@@ -961,7 +985,7 @@ Drawer:{cat:'struct',slots:{child:'one'},desc:'Painel lateral que desliza da esq
  'Image.network':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem baixada de uma URL. O canvas mostra a imagem real quando a URL carrega; sem internet, ou se a página bloquear imagens externas, ele desenha um quadro no lugar. fit controla como ela preenche o espaço.'},
  'Image.asset':{cat:'content',pos:['src'],slots:{},desc:'Mostra uma imagem guardada no projeto (pasta assets). O canvas mostra a imagem real quando a URL carrega; sem internet, ou se a página bloquear imagens externas, ele desenha um quadro no lugar.'}
 };
-var GROUPS=[['Estrutura',['Scaffold','AppBar','FloatingActionButton','Drawer','BottomNavigationBar','BottomNavigationBarItem','NavigationBar','NavigationDestination','NavigationRail','NavigationRailDestination','MenuAnchor','MenuItemButton','FloatingActionButton.extended','NavigationDrawer','NavigationDrawerDestination','DrawerHeader','UserAccountsDrawerHeader','BottomAppBar','PreferredSize']],['Abas',['DefaultTabController','TabBar','Tab','TabBarView','TabPageSelector']],['iOS (Cupertino)',['CupertinoPageScaffold','CupertinoNavigationBar','CupertinoButton','CupertinoButton.filled','CupertinoSwitch','CupertinoSlider','CupertinoTextField','CupertinoSearchTextField','CupertinoActivityIndicator','CupertinoAlertDialog','CupertinoDialogAction','CupertinoTabScaffold','CupertinoTabBar','CupertinoSegmentedControl','CupertinoSlidingSegmentedControl']],['Layout',['ValueListenableBuilder','ListenableBuilder','ChangeNotifierProvider','MultiProvider','Consumer','Consumer2','Selector','AnimatedBuilder','Center','Align','Column','Row','Stack','Positioned','Expanded','Flexible','Spacer','Wrap','Form','ListView','GridView.count','SingleChildScrollView','SafeArea','PageView','IndexedStack','Stepper','Step','ExpansionPanelList','ExpansionPanel','DraggableScrollableSheet','TweenAnimationBuilder','LayoutBuilder','Builder','FutureBuilder','StreamBuilder','RefreshIndicator','CustomScrollView','SliverAppBar','SliverToBoxAdapter','SliverList.list','SliverList.builder','IntrinsicHeight','IntrinsicWidth','LimitedBox','UnconstrainedBox','OverflowBox','RotatedBox','Baseline','Flow','Offstage','IgnorePointer','AbsorbPointer','GridView.extent','NestedScrollView','Scrollbar','SliverGrid','SliverGrid.count','SliverPadding','SliverFillRemaining','SliverPersistentHeader','StatefulBuilder','OrientationBuilder','ListBody','OverflowBar']],['Listas e tabelas',['ListView.builder','ListView.separated','ReorderableListView','ReorderableListView.builder','AnimatedList','GridView.builder','Table','TableRow','DataTable','DataColumn','DataRow','DataCell','ListView.custom','SliverChildListDelegate','SliverChildBuilderDelegate','SliverList','SliverFixedExtentList','SliverPrototypeExtentList','SliverOpacity','SliverAnimatedList','FlexibleSpaceBar','ListWheelScrollView','CarouselView','PaginatedDataTable']],['Caixas',['Container','ColoredBox','Padding','SizedBox','AspectRatio','ConstrainedBox','FractionallySizedBox','FittedBox','Card','Divider','VerticalDivider','ClipRRect','Opacity','AnimatedOpacity','AnimatedContainer','AnimatedPositioned','AnimatedAlign','AnimatedPadding','AnimatedSize','AnimatedScale','AnimatedRotation','AnimatedSwitcher','AnimatedCrossFade','Visibility','Tooltip','Badge','Hero','FadeTransition','SizeTransition','InteractiveViewer','Transform.rotate','Transform.scale','Transform.translate','Dismissible','ScaleTransition','AlignTransition','DecoratedBoxTransition','RotationTransition','SlideTransition','ClipRect','ClipOval','DecoratedBox','Material','Placeholder','CustomPaint','BackdropFilter','ShaderMask','ColorFiltered','ImageFiltered','AnimatedDefaultTextStyle','Card.outlined','Card.filled','DefaultTextStyle','ClipPath','Ink']],['Conteúdo',['Text','Text.rich','RichText','Icon','Image.network','CircleAvatar','Chip','ChoiceChip','FilterChip','ActionChip','ListTile','ExpansionTile','Image.asset','CircularProgressIndicator','LinearProgressIndicator','SegmentedButton','ButtonSegment','PopupMenuButton','InputChip','SelectableText','Image.file','CalendarDatePicker','FadeInImage','FadeInImage.assetNetwork','ImageIcon','FlutterLogo']],['Botões e campos',['ElevatedButton','FilledButton','TextButton','OutlinedButton','IconButton','TextField','TextFormField','Checkbox','Switch','Slider','Radio','DropdownButton','DropdownMenuItem','SwitchListTile','CheckboxListTile','RadioListTile','RangeSlider','ToggleButtons','DropdownMenu','DropdownMenuEntry','Autocomplete','SearchBar','TextButton.icon','ElevatedButton.icon','OutlinedButton.icon','FilledButton.icon','FilledButton.tonal','IconButton.filled','IconButton.filledTonal','IconButton.outlined','SearchAnchor','SearchAnchor.bar','MaterialButton','RawMaterialButton']],['Interação',['GestureDetector','Draggable','LongPressDraggable','DragTarget','InkWell','InkResponse','Focus','Semantics','Listener','MouseRegion','FocusScope','ExcludeSemantics','MergeSemantics','PopScope','Theme','MediaQuery']],['Mapas (flutter_map)',['FlutterMap','TileLayer','MarkerLayer','Marker','CircleLayer','CircleMarker','PolylineLayer','Polyline','RichAttributionWidget']],['Janelas',['AlertDialog','SimpleDialog','SimpleDialogOption','SnackBar','SnackBarAction','MaterialBanner','Banner']]];
+var GROUPS=[['Estrutura',['Scaffold','AppBar','FloatingActionButton','Drawer','BottomNavigationBar','BottomNavigationBarItem','NavigationBar','NavigationDestination','NavigationRail','NavigationRailDestination','MenuAnchor','MenuItemButton','FloatingActionButton.extended','NavigationDrawer','NavigationDrawerDestination','DrawerHeader','UserAccountsDrawerHeader','BottomAppBar','PreferredSize']],['Abas',['DefaultTabController','TabBar','Tab','TabBarView','TabPageSelector']],['iOS (Cupertino)',['CupertinoPageScaffold','CupertinoNavigationBar','CupertinoButton','CupertinoButton.filled','CupertinoSwitch','CupertinoSlider','CupertinoTextField','CupertinoSearchTextField','CupertinoActivityIndicator','CupertinoAlertDialog','CupertinoDialogAction','CupertinoTabScaffold','CupertinoTabBar','CupertinoSegmentedControl','CupertinoSlidingSegmentedControl','CupertinoPicker','CupertinoDatePicker','CupertinoActionSheet','CupertinoActionSheetAction']],['Layout',['ValueListenableBuilder','ListenableBuilder','ChangeNotifierProvider','MultiProvider','Consumer','Consumer2','Selector','AnimatedBuilder','Center','Align','Column','Row','Stack','Positioned','Expanded','Flexible','Spacer','Wrap','Form','ListView','GridView.count','SingleChildScrollView','SafeArea','PageView','IndexedStack','Stepper','Step','ExpansionPanelList','ExpansionPanel','DraggableScrollableSheet','TweenAnimationBuilder','LayoutBuilder','Builder','FutureBuilder','StreamBuilder','RefreshIndicator','CustomScrollView','SliverAppBar','SliverToBoxAdapter','SliverList.list','SliverList.builder','IntrinsicHeight','IntrinsicWidth','LimitedBox','UnconstrainedBox','OverflowBox','RotatedBox','Baseline','Flow','Offstage','IgnorePointer','AbsorbPointer','GridView.extent','NestedScrollView','Scrollbar','SliverGrid','SliverGrid.count','SliverPadding','SliverFillRemaining','SliverPersistentHeader','StatefulBuilder','OrientationBuilder','ListBody','OverflowBar']],['Listas e tabelas',['ListView.builder','ListView.separated','ReorderableListView','ReorderableListView.builder','AnimatedList','GridView.builder','Table','TableRow','DataTable','DataColumn','DataRow','DataCell','ListView.custom','SliverChildListDelegate','SliverChildBuilderDelegate','SliverList','SliverFixedExtentList','SliverPrototypeExtentList','SliverOpacity','SliverAnimatedList','FlexibleSpaceBar','ListWheelScrollView','CarouselView','PaginatedDataTable']],['Caixas',['Container','ColoredBox','Padding','SizedBox','AspectRatio','ConstrainedBox','FractionallySizedBox','FittedBox','Card','Divider','VerticalDivider','ClipRRect','Opacity','AnimatedOpacity','AnimatedContainer','AnimatedPositioned','AnimatedAlign','AnimatedPadding','AnimatedSize','AnimatedScale','AnimatedRotation','AnimatedSwitcher','AnimatedCrossFade','Visibility','Tooltip','Badge','Hero','FadeTransition','SizeTransition','InteractiveViewer','Transform.rotate','Transform.scale','Transform.translate','Dismissible','ScaleTransition','AlignTransition','DecoratedBoxTransition','RotationTransition','SlideTransition','ClipRect','ClipOval','DecoratedBox','Material','Placeholder','CustomPaint','BackdropFilter','ShaderMask','ColorFiltered','ImageFiltered','AnimatedDefaultTextStyle','Card.outlined','Card.filled','DefaultTextStyle','ClipPath','Ink']],['Conteúdo',['Text','Text.rich','RichText','Icon','Image.network','CircleAvatar','Chip','ChoiceChip','FilterChip','ActionChip','ListTile','ExpansionTile','Image.asset','CircularProgressIndicator','LinearProgressIndicator','SegmentedButton','ButtonSegment','PopupMenuButton','InputChip','SelectableText','Image.file','CalendarDatePicker','FadeInImage','FadeInImage.assetNetwork','ImageIcon','FlutterLogo']],['Botões e campos',['ElevatedButton','FilledButton','TextButton','OutlinedButton','IconButton','TextField','TextFormField','Checkbox','Switch','Slider','Radio','DropdownButton','DropdownMenuItem','SwitchListTile','CheckboxListTile','RadioListTile','RangeSlider','ToggleButtons','DropdownMenu','DropdownMenuEntry','Autocomplete','SearchBar','TextButton.icon','ElevatedButton.icon','OutlinedButton.icon','FilledButton.icon','FilledButton.tonal','IconButton.filled','IconButton.filledTonal','IconButton.outlined','SearchAnchor','SearchAnchor.bar','MaterialButton','RawMaterialButton']],['Interação',['GestureDetector','Draggable','LongPressDraggable','DragTarget','InkWell','InkResponse','Focus','Semantics','Listener','MouseRegion','FocusScope','ExcludeSemantics','MergeSemantics','PopScope','Theme','MediaQuery']],['Mapas (flutter_map)',['FlutterMap','TileLayer','MarkerLayer','Marker','CircleLayer','CircleMarker','PolylineLayer','Polyline','RichAttributionWidget']],['Janelas',['AlertDialog','SimpleDialog','SimpleDialogOption','SnackBar','SnackBarAction','MaterialBanner','Banner']]];
 var CATVAR={struct:'var(--c-struct)',layout:'var(--c-layout)',box:'var(--c-box)',content:'var(--c-content)'};
 var warns=[];
 
@@ -1420,6 +1444,10 @@ var DEF={
  CupertinoTabBar:function(){return N('CupertinoTabBar',[SL('items')],{items:[N('BottomNavigationBarItem',[A('icon','Icon(CupertinoIcons.home)'),A('label',"'Início'")]),N('BottomNavigationBarItem',[A('icon','Icon(CupertinoIcons.search)'),A('label',"'Busca'")])]})},
  CupertinoSegmentedControl:function(){return N('CupertinoSegmentedControl',[A('children',"{0: Text('Dia'), 1: Text('Semana')}"),A('groupValue','0'),A('onValueChanged','(v) {}')])},
  CupertinoSlidingSegmentedControl:function(){return N('CupertinoSlidingSegmentedControl',[A('children',"{0: Text('Dia'), 1: Text('Semana')}"),A('groupValue','0'),A('onValueChanged','(v) {}')])},
+ CupertinoPicker:function(){return N('CupertinoPicker',[A('itemExtent','32'),A('onSelectedItemChanged','(i) {}'),SL('children')],{children:[txt('Maçã'),txt('Banana'),txt('Laranja')]})},
+ CupertinoDatePicker:function(){return N('CupertinoDatePicker',[A('mode','CupertinoDatePickerMode.date'),A('initialDateTime','DateTime(2025, 1, 15)'),A('onDateTimeChanged','(d) {}')])},
+ CupertinoActionSheet:function(){return N('CupertinoActionSheet',[SL('title'),SL('message'),SL('actions'),SL('cancelButton')],{title:txt('Escolha uma opção'),message:txt('O que deseja fazer?'),actions:[N('CupertinoActionSheetAction',[A('onPressed','() {}'),SL('child')],{child:txt('Editar')}),N('CupertinoActionSheetAction',[A('isDestructiveAction','true'),A('onPressed','() {}'),SL('child')],{child:txt('Excluir')})],cancelButton:N('CupertinoActionSheetAction',[A('onPressed','() {}'),SL('child')],{child:txt('Cancelar')})})},
+ CupertinoActionSheetAction:function(){return N('CupertinoActionSheetAction',[A('onPressed','() {}'),SL('child')],{child:txt('Opção')})},
  ListenableBuilder:function(){return N('ListenableBuilder',[A('listenable','contador'),A('builder',"(context, child) => Text('Contador')")])},
  AnimatedBuilder:function(){return N('AnimatedBuilder',[A('animation','controle'),A('builder',"(context, child) => Opacity(opacity: 1.0, child: child)"),SL('child')],{child:txt('Animado')})},
  ScaleTransition:function(){return N('ScaleTransition',[A('scale','controle'),SL('child')],{child:N('Icon',[PO('icon','Icons.favorite'),A('size','48'),A('color','Colors.red')])})},
@@ -1644,6 +1672,7 @@ function lex(src){
 
 /* ---- parser de expressões ---- */
 function provSub(s){
+  if(ST.shellCur&&s.indexOf('currentIndex')+s.indexOf('goBranch')>-2){s=s.replace(ST.shellCur,function(){return String(ST.shellIdx||0)});s=s.replace(ST.shellTear,function(m,n){return '(__i) => NavShellMarker().goBranch(__i)'})}
   if(s.indexOf('context')<0&&s.indexOf('Provider')<0)return s;
   if(s.indexOf('GoRouterState')>=0)s=s.replace(/GoRouterState\s*\.\s*of\s*\(\s*\w+\s*\)\s*\.\s*(?:uri\s*\.\s*(?:path|toString\(\))|matchedLocation|location|fullPath)/g,function(){return "'"+(ST.shellLoc||ST.curLoc||ST.homeAbs||'/')+"'"});
   return s.replace(/\bcontext\s*\.\s*(?:watch|read)\s*<\s*(\w+)\??\s*>\s*\(\s*\)/g,'_prov_$1')
@@ -1854,7 +1883,7 @@ function userStatic(parts,argv,hasArgs,env){
   else throw new Error('membro '+cn+'.'+nm);
   for(var j=i;j<=last;j++)cur=member(cur,parts[j],(j===last&&hasArgs)?argv.map(function(x){return x.val}):[]);
   return cur}
-function globalVal(n){var g=ST.globals[n];if(!g.done){g.done=true;try{g.value=coerce(g.type,g.init!=null?ev(pTern(new Ps(g.init)),mkEnv()):null)}catch(e){g.value=null}}return g.value}
+function globalVal(n){var g=ST.globals[n];if(g.fixed)return g.value;if(!g.done){g.done=true;try{g.value=coerce(g.type,g.init!=null?ev(pTern(new Ps(g.init)),mkEnv()):null)}catch(e){g.value=null}}return g.value}
 function evalGetter(o,g){
   var env=mkEnv({});env.self=o;
   if(g.arrow)return ev(pTern(new Ps(g.body)),env);
@@ -2234,7 +2263,7 @@ function skipToEnd(p){var d=0;while(p.pk()){var k=p.pk();if(k.k==='p'){if('([{'.
 
 /* ---- efeitos de navegação: Navigator, diálogos, SnackBar, BottomSheet ---- */
 ST.fx=[];
-var FXSTART={showDatePicker:1,showTimePicker:1,showDialog:1,showCupertinoDialog:1,showModalBottomSheet:1,showBottomSheet:1,Navigator:1,context:1,GoRouter:1,ScaffoldMessenger:1,Future:1};
+var FXSTART={showDatePicker:1,showTimePicker:1,showDialog:1,showCupertinoDialog:1,showCupertinoModalPopup:1,showModalBottomSheet:1,showBottomSheet:1,Navigator:1,context:1,GoRouter:1,ScaffoldMessenger:1,Future:1};
 var lastSusp=null;
 function clonePs(p){var q=new Ps('');q.src=p.src;q.t=p.t;q.i=p.i;return q}
 function bindDecl(env,name,val){
@@ -2272,7 +2301,7 @@ function awaitStmt(p,env,run,aw){
   if(hd==='Future'&&p.is('.',1)&&p.pk(2)&&p.pk(2).v==='delayed'){
     if(ST.sync)grabStmt(p);else{fx=mkDelay(grabStmt(p),env);fx.cb=null;ST.fx.push(fx)}}
   else if(hd==='showDatePicker'||hd==='showTimePicker'){fx=mkPicker(grabStmt(p),env,null);ST.fx.push(fx)}
-  else if(hd==='Navigator'||hd==='showDialog'||hd==='showCupertinoDialog'||hd==='showModalBottomSheet'){
+  else if(hd==='Navigator'||hd==='showDialog'||hd==='showCupertinoDialog'||hd==='showCupertinoModalPopup'||hd==='showModalBottomSheet'){
     var n0=ST.fx.length;fxStmt(p,env,true);var f=ST.fx[ST.fx.length-1];
     if(ST.fx.length>n0&&(f.k==='push'||f.k==='dialog'||f.k==='sheet')){fx=f;fx.cb=null}}
   else{var ast=pTern(p);p.eat(';');val=ev(ast,env);if(lastSusp)fx=lastSusp}
@@ -2340,22 +2369,42 @@ function splitArgs(str){
     if(c===','&&d===0){out.push(cur);cur=''}else cur+=c;
     i++}
   out.push(cur);return out}
+function lambdaFull(raw){
+  var t=lex(raw),p=new Ps(raw);
+  if(!p.is('('))throw new Error('lambda');
+  p.i++;var st=p.i;while(!p.is(')')&&!p.end())p.i++;
+  var params=raw.slice(t[st]?t[st].s:0,t[p.i]?t[p.i].s:raw.length);
+  p.i++;if(p.isId('async'))p.i++;
+  if(p.eat('=>'))return{params:params,body:raw.slice(t[p.i].s).trim(),arrow:true};
+  if(p.is('{'))return{params:params,body:raw.slice(t[p.i].s).trim(),arrow:false};
+  throw new Error('lambda')}
 ST.parseRoutes=function(src){
-  var out=[],re=/\b(?:GoRoute|ShellRoute)\s*\(/g,m;
+  var out=[],brs=[],re=/\b(?:GoRoute|ShellRoute|StatefulShellRoute\s*\.\s*indexedStack|StatefulShellBranch)\s*\(/g,m,ranges=[];
   while((m=re.exec(src))){
     var s0=m.index,i=s0+m[0].length,d=1,q=null;
     for(;i<src.length;i++){var c=src[i];if(q){if(c==='\\'){i++;continue}if(c===q)q=null;continue}if(c==="'"||c==='"'){q=c;continue}if(c==='(')d++;else if(c===')'){d--;if(!d){i++;break}}}
-    var txt=src.slice(s0,i),inner=txt.slice(txt.indexOf('(')+1,txt.length-1),r={s:s0,e:i,path:null,name:null,body:null,abs:null,kind:/^ShellRoute/.test(txt)?'shell':'route',names:null,shell:null};
+    var txt=src.slice(s0,i),inner=txt.slice(txt.indexOf('(')+1,txt.length-1),kd=/^StatefulShellBranch/.test(txt)?'branch':/^(?:Stateful)?ShellRoute/.test(txt)?'shell':'route',
+      r={s:s0,e:i,path:null,name:null,body:null,abs:null,kind:kd,names:null,shell:null,stateful:/^StatefulShellRoute/.test(txt),redirect:null,par:null};
+    ranges.push([s0,i]);
     splitArgs(inner).forEach(function(a){
       var am=/^\s*(\w+)\s*:\s*([\s\S]*)$/.exec(a);if(!am)return;
       if(am[1]==='path'){var pm=/^\s*(['"])([\s\S]*)\1\s*$/.exec(am[2]);if(pm)r.path=pm[2]}
       else if(am[1]==='name'){var nm=/^\s*(['"])([\s\S]*)\1\s*$/.exec(am[2]);if(nm)r.name=nm[2]}
+      else if(am[1]==='redirect'){try{r.redirect=lambdaFull(am[2].trim())}catch(e){}}
       else if(am[1]==='builder'){try{var lpx=lambdaParts(am[2].trim());r.body=lpx.body;r.names=lpx.names}catch(e){}}});
+    if(kd==='branch'){brs.push(r);continue}
     if(r.kind==='shell')r.path='';
     if(r.path!=null&&r.body)out.push(r)}
-  out.forEach(function(r){var par=null,sh=null;out.forEach(function(o){if(o!==r&&o.s<r.s&&o.e>=r.e){if(o.kind!=='shell'&&(!par||o.s>par.s))par=o;if(o.kind==='shell'&&(!sh||o.s>sh.s))sh=o}});r.shell=sh;
+  out.forEach(function(r){var par=null,sh=null;out.forEach(function(o){if(o!==r&&o.s<r.s&&o.e>=r.e){if(o.kind!=='shell'&&(!par||o.s>par.s))par=o;if(o.kind==='shell'&&(!sh||o.s>sh.s))sh=o}});r.shell=sh;r.par=par;
     if(r.kind==='shell'){r.abs=null;return}
     r.abs=r.path.charAt(0)==='/'?r.path:((par&&par.abs!=='/'?par.abs:'')+'/'+r.path).replace(/\/+/g,'/')});
+  out.forEach(function(sh){if(sh.kind==='shell'&&sh.stateful)sh.branches=brs.filter(function(b){return b.s>sh.s&&b.e<=sh.e}).sort(function(x,y){return x.s-y.s})});
+  out.forEach(function(r){r.bidx=-1;if(r.kind!=='route'||!r.shell||!r.shell.stateful)return;r.shell.branches.forEach(function(b,j){if(b.s<r.s&&b.e>=r.e)r.bidx=j})});
+  out.forEach(function(sh){if(sh.kind==='shell'&&sh.stateful)sh.binit=sh.branches.map(function(b,j){var f=null;out.forEach(function(r){if(r.kind==='route'&&r.shell===sh&&r.bidx===j&&(!f||r.s<f.s))f=r});return f?f.abs:null})});
+  var rr=/\bredirect\s*:\s*/g,rm;out.top=null;
+  while((rm=rr.exec(src))){
+    var at=rm.index,inside=ranges.some(function(g){return at>g[0]&&at<g[1]});
+    if(!inside){try{out.top=lambdaFull(grabArg(src,at+rm[0].length).trim())}catch(e){}}}
   return out};
 function goTarget(loc,pathParams,extra){
   var rs=ST.routes||[],q={},qi=loc.indexOf('?');
@@ -2367,22 +2416,55 @@ function goTarget(loc,pathParams,extra){
     var ok=true,pr={};rg.forEach(function(g,j){if(g.charAt(0)===':')pr[g.slice(1)]=segs[j];else if(g!==segs[j])ok=false});
     if(ok){hit=rs[i];pp=pr}}
   if(!hit)throw new Error('go_router: nenhuma rota combina com "'+loc+'"');
-  ST.lastHit=hit.abs;ST.lastShell=hit.shell;ST.lastLoc=loc;var body=hit.body;
+  ST.lastHit=hit.abs;ST.lastShell=hit.shell;ST.lastBidx=hit.bidx;ST.lastLoc=loc;var body=hit.body;
   body=body.replace(/state\s*\.\s*(?:pathParameters|params)\s*\[\s*(['"])(\w+)\1\s*\]\s*!?/g,function(m,qq,k){return lit(pp[k]!=null?pp[k]:(pathParams&&pathParams[k])||'')});
   body=body.replace(/state\s*\.\s*uri\s*\.\s*queryParameters\s*\[\s*(['"])(\w+)\1\s*\]\s*!?/g,function(m,qq,k){return q[k]!=null?lit(q[k]):'null'});
   if(extra!==undefined)body=body.replace(/state\s*\.\s*extra(?:\s+as\s+[\w<>?]+)?/g,function(){return lit(extra)});
   return body}
-ST.shellLoc=null;
+ST.shellLoc=null;ST.shellIdx=0;ST.branchLoc=[];ST.sshell=false;ST.shellCur=null;ST.shellTear=null;
+function matchRoute(loc){
+  var qi=loc.indexOf('?');if(qi>=0)loc=loc.slice(0,qi);
+  var segs=loc.split('/').filter(Boolean),rs=ST.routes||[];
+  for(var i=0;i<rs.length;i++){
+    if(rs[i].kind==='shell')continue;
+    var rg=rs[i].abs.split('/').filter(Boolean);if(rg.length!==segs.length)continue;
+    var ok=true;rg.forEach(function(g,j){if(g.charAt(0)!==':'&&g!==segs[j])ok=false});
+    if(ok)return rs[i]}
+  return null}
+ST.redirectFor=function(loc){
+  var rs=ST.routes||[];
+  if(!rs.top&&!rs.some(function(r){return r.redirect}))return loc;
+  for(var n=0;n<6;n++){
+    var fns=[];if(rs.top)fns.push(rs.top);var hit=matchRoute(loc);if(hit&&hit.redirect)fns.push(hit.redirect);
+    var moved=null,cur=loc.split('?')[0];
+    for(var i=0;i<fns.length&&moved==null;i++){
+      var f=fns[i],body=f.body.replace(/\bstate\s*\.\s*(?:matchedLocation|fullPath|location|uri\s*\.\s*path|uri\s*\.\s*toString\s*\(\s*\))/g,function(){return "'"+cur+"'"});
+      var v=runMethod({params:f.params,body:body,arrow:f.arrow},[null,null],null),r=v&&v.val!==undefined?v.val:v;
+      if(typeof r==='string'&&r&&r!==cur)moved=r}
+    if(moved==null)return loc;
+    loc=moved}
+  throw new Error('go_router: redirect em laço (mais de 5 redirecionamentos seguidos)')};
+ST.goFx=function(loc){
+  var tgt=goTarget(loc);
+  if(ST.lastShell)return{k:'shell',loc:ST.lastLoc.replace(/\/+$/,'')||'/'};
+  return{k:'push',replace:false,all:true,src:ST.lastHit===ST.homeAbs?null:tgt,cb:null}};
+ST.initialLoc=function(){
+  if(!(ST.routes||[]).length)return null;
+  var want=ST.homeAbs||'/',tgt=ST.redirectFor(want);return tgt===want?null:tgt};
 ST.shellText=function(){
   var loc=ST.shellLoc;
   if(loc==null){
     var rs=ST.routes||[],hr=null;rs.forEach(function(r){if(r.kind!=='shell'&&r.abs===ST.homeAbs)hr=r});
     if(!hr||!hr.shell)return null;loc=ST.homeAbs}
   var old=ST.curLoc;ST.curLoc=loc;
-  try{var page=goTarget(loc),sh=ST.lastShell;if(!sh)return null;
-    var b=sh.body;if(sh.names&&sh.names[3])b=bindVar(b,sh.names[3],{raw:page});
-    else if(sh.names&&sh.names[2])b=bindVar(b,sh.names[2],{raw:page});
-    if(sh.names&&sh.names[2]&&sh.names[3])b=b.replace(new RegExp('\\b'+sh.names[2]+'\\s*\\.\\s*(?:uri\\s*\\.\\s*(?:path|toString\\(\\))|matchedLocation|fullPath)','g'),lit(loc));
+  try{var page=goTarget(loc),sh=ST.lastShell,cur=ST.lastBidx;if(!sh)return null;
+    if(sh.stateful){
+      cur=cur>=0?cur:0;ST.shellIdx=cur;ST.branchLoc[cur]=loc;
+      var pgs=sh.branches.map(function(b,j){var lj=j===cur?loc:(ST.branchLoc[j]||sh.binit[j]);if(!lj)return 'const SizedBox()';ST.curLoc=lj;return j===cur?page:goTarget(lj)});
+      ST.shellPage='IndexedStack(index: '+cur+', children: ['+pgs.join(', ')+'])'}
+    var b=sh.body,shv=sh.stateful?'NavShellMarker()':page;if(sh.names&&sh.names[3])b=bindVar(b,sh.names[3],{raw:shv});
+    else if(sh.names&&sh.names[2])b=bindVar(b,sh.names[2],{raw:shv});
+    if(!sh.stateful&&sh.names&&sh.names[2]&&sh.names[3])b=b.replace(new RegExp('\\b'+sh.names[2]+'\\s*\\.\\s*(?:uri\\s*\\.\\s*(?:path|toString\\(\\))|matchedLocation|fullPath)','g'),lit(loc));
     return b}
   finally{ST.curLoc=old}};
 function fxStmt(p,env,run){
@@ -2399,6 +2481,7 @@ function fxStmt(p,env,run){
   if(/^Future\s*\.\s*delayed\b/.test(txt)){ST.fx.push(mkDelay(txt,env));return true}
   if(/^Future\b/.test(txt))return true;
   if(/^show(Date|Time)Picker\b/.test(txt)){ST.fx.push(mkPicker(txt,env,thenCb(txt)));return true}
+  if(/^showCupertinoModalPopup\b/.test(txt)){ST.fx.push({k:'sheet',pop:true,src:bindEnv(builderBody(txt),env),cb:thenCb(txt)});return true}
   if(/^show(Cupertino)?Dialog\b/.test(txt)){ST.fx.push({k:'dialog',src:bindEnv(builderBody(txt),env),cb:thenCb(txt)});return true}
   if(/^show(Modal)?BottomSheet\b/.test(txt)){ST.fx.push({k:'sheet',src:bindEnv(builderBody(txt),env),cb:thenCb(txt)});return true}
   if(/^ScaffoldMessenger\b/.test(txt)){
@@ -2407,6 +2490,14 @@ function fxStmt(p,env,run){
     if(/\.showSnackBar\s*\(/.test(txt)){var sb=grabCall(txt,'SnackBar');if(!sb)throw new Error('showSnackBar sem SnackBar(...)');ST.fx.push({k:'snack',src:bindEnv(sb,env)})}
     else ST.fx.push({k:'hidesnack'});
     return true}
+  var bm=/^NavShellMarker\s*\(\s*\)\s*\.\s*goBranch\s*\(/.exec(txt);
+  if(bm){
+    var ba=grabArg(txt,bm[0].length),bv=ev(pTern(new Ps(ba)),env),bi=Math.trunc(Number(bv&&bv.val!==undefined?bv.val:bv))||0,rest3=txt.slice(bm[0].length+ba.length),imx=/\binitialLocation\s*:/.exec(rest3),initB=false,shx=null;
+    if(imx){var ivb=ev(pTern(new Ps(grabArg(rest3,imx.index+imx[0].length))),env);initB=(ivb&&ivb.val!==undefined?ivb.val:ivb)===true}
+    (ST.routes||[]).forEach(function(r){if(r.kind==='shell'&&r.stateful)shx=r});
+    var lb=shx&&(initB?shx.binit[bi]:(ST.branchLoc[bi]||shx.binit[bi]));
+    if(!lb)throw new Error('goBranch: não existe a aba número '+bi);
+    ST.fx.push({k:'shell',loc:lb});return true}
   var gm=/^(?:context|GoRouter\s*\.\s*of\s*\(\s*\w+\s*\))\s*\.\s*(go|push|pushReplacement|replace|goNamed|pushNamed|pushReplacementNamed|pop)\s*\(/.exec(txt);
   if(gm){
     var gk=gm[1];
@@ -2421,6 +2512,7 @@ function fxStmt(p,env,run){
       var rt=(ST.routes||[]).filter(function(r){return r.name===gloc})[0];if(!rt)throw new Error('go_router: não existe rota com name "'+gloc+'"');
       gloc=rt.abs.replace(/:(\w+)/g,function(m,k){return pp&&pp[k]!=null?pp[k]:''});
       var qps=opt('queryParameters');if(qps){var qs=[],qmm=/^\s*\{([\s\S]*)\}\s*$/.exec(qps);if(qmm)splitTopStr(qmm[1],',').forEach(function(kv){var a=/^\s*(['"])(\w+)\1\s*:\s*([\s\S]+)$/.exec(kv);if(a){var vv=ev(pTern(new Ps(a[3])),env);qs.push(a[2]+'='+encodeURIComponent(String(vv&&vv.val!==undefined?vv.val:vv)))}});if(qs.length)gloc+='?'+qs.join('&')}}
+    gloc=ST.redirectFor(gloc);
     var tgt=goTarget(gloc,pp,ex);
     if(ST.lastShell){ST.fx.push({k:'shell',loc:ST.lastLoc.replace(/\/+$/,'')||'/'});return true}
     ST.fx.push({k:'push',replace:gk==='pushReplacement'||gk==='replace'||gk==='pushReplacementNamed',all:gk==='go'||gk==='goNamed',src:((gk==='go'||gk==='goNamed')&&ST.lastHit===ST.homeAbs)?null:bindEnv(tgt,env),cb:null});
@@ -2449,6 +2541,7 @@ function excMatches(err,tn){
 function simple(p,env,run){
   var k=p.pk();
   if(k&&k.k==='id'){
+    if(k.v==='NavShellMarker'&&/^NavShellMarker\s*\(\s*\)\s*\.\s*goBranch\s*\(/.test(p.src.slice(k.s,k.s+80))&&fxStmt(p,env,run))return;
     if(FXSTART[k.v]&&((k.v!=='context'&&k.v!=='GoRouter')||/^(?:context\s*\.|GoRouter\s*\.\s*of\s*\(\s*\w+\s*\)\s*\.)\s*(?:go|push|pushReplacement|replace|goNamed|pushNamed|pushReplacementNamed|pop)\s*\(/.test(p.src.slice(k.s,k.s+160)))&&fxStmt(p,env,run))return;
     if(k.v==='setState'&&p.is('(',1)){stmt(p,env,run);return}
     if(k.v==='await'){p.i++;simple(p,env,run);return}
@@ -2769,6 +2862,8 @@ function initOf(f){
   var cm=f.init!=null&&/^TextEditingController\s*\(([\s\S]*)\)$/.exec(f.init);
   var pm=f.init!=null&&/^PageController\s*\(([\s\S]*)\)$/.exec(f.init);
   if(pm){var im=/initialPage:\s*(\d+)/.exec(pm[1]),ip=im?+im[1]:0;return{pc:true,page:ip,init:ip}}
+  var fxm=f.init!=null&&/^FixedExtentScrollController\s*\(([\s\S]*)\)$/.exec(f.init);
+  if(fxm){var fim=/initialItem:\s*(\d+)/.exec(fxm[1]),fip=fim?+fim[1]:0;return{pc:true,page:fip,init:fip}}
   if(cm){var tm=/text:\s*('[^']*'|"[^"]*")/.exec(cm[1]);return{ctl:true,text:tm?tm[1].slice(1,-1):''}}
   if(f.init!=null){try{v=ev(pTern(new Ps(f.init.replace(/^([A-Z]\w*)\s*<[^()]*>\s*\(/,'$1('))),mkEnv())}catch(e){v=null}}
   else v=null;
@@ -2780,7 +2875,9 @@ ST.load=function(info){
   var old=ST.fields;ST.fields={};ST.order=[];ST.methods={};ST.locals={};ST.dataClasses={};ST.exts=[];ST.userWidgets={};ST.widgetVals={};cache={};ST.initState=null;ST.statefuls={};ST.funcs={};
   if(!info){ST.active=false;ST.re=null;return}
   (info.states||[]).forEach(function(sx){var wc=info.classes[sx.of];if(wc&&wc.kind==='StatefulWidget'&&sx.ci.build&&sx.ci.build.body){ST.statefuls[sx.of]={state:sx.ci,widget:wc.ci};ST.userWidgets[sx.of]={params:wc.ci.params,build:sx.ci.build,stateful:true}}});
-  ST.exts=info.exts||[];ST.routes=info.routes||[];ST.homeAbs=info.homeAbs||'/';ST.shellLoc=null;
+  ST.exts=info.exts||[];ST.routes=info.routes||[];ST.homeAbs=info.homeAbs||'/';ST.shellLoc=null;ST.shellIdx=0;ST.branchLoc=[];
+  ST.shellPage=null;ST.sshell=(info.routes||[]).some(function(r){return r.kind==='shell'&&r.stateful});
+  ST.shellCur=ST.sshell?/\bNavShellMarker\s*\(\s*\)\s*\.\s*currentIndex\b/g:null;ST.shellTear=ST.sshell?/^\s*NavShellMarker\s*\(\s*\)\s*\.\s*goBranch\s*$/:null;
   info.funcs.forEach(function(f){ST.funcs[f.name]=f});
   (function(){var done={};function mg(n){var c=info.classes[n];if(!c||c.kind!=='data'||done[n])return;done[n]=1;var ci=c.ci,bases=[];
     if(ci.ext&&info.classes[ci.ext]&&info.classes[ci.ext].kind==='data'){mg(ci.ext);bases.push(info.classes[ci.ext].ci)}else ci.ext=null;
@@ -2799,15 +2896,17 @@ ST.load=function(info){
   ST.initState=info.initState;
   if(info.widgetCall&&info.widgetClass){try{var cp=pPrim(new Ps(info.widgetCall));ST.widgetVals=bindArgs(info.widgetClass.params,evalArgs(cp,mkEnv()))}catch(e){ST.widgetVals={}}}
   var provG=Object.keys(ST.globals||{}).filter(function(k){return /^_prov_/.test(k)});
-  if(!info.fields.length&&!Object.keys(info.locals).length&&!provG.length){ST.active=false;ST.re=null;return}
+  var rtOn=(info.routes||[]).length>0;
+  if(!info.fields.length&&!Object.keys(info.locals).length&&!provG.length&&!rtOn){ST.active=false;ST.re=null;return}
   var fresh=false;
   info.fields.forEach(function(f){
     var o=old[f.name],fl={name:f.name,type:f.type,init:f.init,value:null};
     ST.fields[f.name]=fl;ST.order.push(f.name);
     if(o&&o.init===f.init&&o.type===f.type)fl.value=o.value;else{fl.value=initOf(fl);fresh=true}});
   ST.locals=info.locals||{};
-  var names=ST.order.concat(Object.keys(ST.locals)).concat(provG).map(function(n){return n.replace(/\$/g,'\\$')});
-  ST.active=ST.order.length>0||provG.length>0;
+  var gnm=rtOn?Object.keys(ST.globals||{}).filter(function(k){return !/^_prov_/.test(k)&&k!=='_router'}):[];
+  var names=ST.order.concat(Object.keys(ST.locals)).concat(provG).concat(gnm).concat(ST.sshell?['NavShellMarker']:[]).map(function(n){return n.replace(/\$/g,'\\$')});
+  ST.active=ST.order.length>0||provG.length>0||rtOn;
   ST.re=names.length?new RegExp('\\$|(?:^|[^\\w.$])(?:'+names.join('|')+')(?!\\w)'):null;
   if(fresh&&ST.initState)ST.runInit()};
 ST.runInit=function(){if(!ST.initState)return;steps=0;depth=0;try{runMethod(ST.initState,[],null)}catch(e){ST.initErr=e.message}};
@@ -4280,7 +4379,8 @@ ST.extract=function(src){src=stripComments(src);var mal=/import\s+['"]dart:math[
     var a=MARROW.exec(ch);if(a){if(a[1]!=='main')info.funcs.push({name:a[1],params:a[2],body:a[3],arrow:true});return}
     var bl=MBLOCK.exec(ch);if(bl&&bl[1]!=='main'&&bl[1]!=='runApp')info.funcs.push({name:bl[1],params:bl[2],body:bl[3],arrow:false})});
   info.states=states;
-  info.routes=ST.parseRoutes(src);info.homeAbs=(/initialLocation\s*:\s*(['"])([^'"]*)\1/.exec(src)||[0,0,'/'])[2];
+  info.routes=ST.parseRoutes(src);
+info.homeAbs=(/initialLocation\s*:\s*(['"])([^'"]*)\1/.exec(src)||[0,0,'/'])[2];
   (function(){
     var re=/\b(?:ChangeNotifierProvider|ListenableProvider|Provider)\s*(?:<\s*(\w+)\??\s*>)?\s*\(\s*create\s*:\s*\(\s*\w*\s*(?:,\s*\w+\s*)?\)\s*=>\s*(?:const\s+|new\s+)?(\w+)\s*\(/g,m;
     while((m=re.exec(src))){
@@ -4342,7 +4442,7 @@ ST.makeScope=function(src,old){
   inst.fresh=false;return inst};
 ST.fromSource=function(src){
   var info=null;try{info=ST.extract(src)}catch(e){info=null}
-  ST.load(info);ST.fxOn=/\b(GoRouter|Navigator|StreamBuilder|FutureBuilder|showDialog|showCupertinoDialog|showModalBottomSheet|ScaffoldMessenger|TabBar|MenuAnchor|TabPageSelector)\b/.test(src);if(ST.fxOn)ST.active=true;return ST.active};
+  ST.load(info);ST.fxOn=/\b(GoRouter|Navigator|StreamBuilder|FutureBuilder|showDialog|showCupertinoDialog|showCupertinoModalPopup|showModalBottomSheet|ScaffoldMessenger|TabBar|MenuAnchor|TabPageSelector)\b/.test(src);if(ST.fxOn)ST.active=true;return ST.active};
 
 /* getProp com valores de estado substituídos (só durante o desenho do Canvas) */
 var orig=M.getProp;
@@ -4381,8 +4481,10 @@ var cache={};
 function esc2(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
 function pv(raw){if(raw in cache)return cache[raw];var r=null;try{r=new OF.Parser(raw,OF.tokenize(raw),0).expr()}catch(e){}cache[raw]=r;return r}
 function numVal(raw){if(raw==null)return null;raw=String(raw).trim();if(raw==='double.infinity')return Infinity;return /^-?\d*\.?\d+$/.test(raw)?parseFloat(raw):null}
+var CUPC={systemBlue:'#007AFF',activeBlue:'#007AFF',systemRed:'#FF3B30',destructiveRed:'#FF3B30',systemGreen:'#34C759',activeGreen:'#34C759',systemOrange:'#FF9500',activeOrange:'#FF9500',systemYellow:'#FFCC00',systemPink:'#FF2D55',systemPurple:'#AF52DE',systemTeal:'#5AC8FA',systemIndigo:'#5856D6',systemGrey:'#8E8E93',systemGrey2:'#AEAEB2',systemGrey3:'#C7C7CC',systemGrey4:'#D1D1D6',systemGrey5:'#E5E5EA',systemGrey6:'#F2F2F7',inactiveGray:'#999999',lightBackgroundGray:'#D1D1D6',extraLightBackgroundGray:'#EFEFF4',darkBackgroundGray:'#171717',white:'#FFFFFF',black:'#000000',systemBackground:'#FFFFFF',secondarySystemBackground:'#F2F2F7',tertiarySystemBackground:'#FFFFFF',systemGroupedBackground:'#F2F2F7',secondarySystemGroupedBackground:'#FFFFFF',label:'#000000',secondaryLabel:'#8A8A8E',tertiaryLabel:'#C4C4C7',separator:'#C6C6C8',opaqueSeparator:'#C6C6C8',placeholderText:'#C4C4C7',link:'#007AFF'};
 function colorVal(raw){
-  if(raw==null)return null;raw=raw.trim();
+  if(raw==null)return null;raw=raw.trim().replace(/\.resolveFrom\(\s*\w+\s*\)$/,'');
+  var cm=/^CupertinoColors\.(\w+)$/.exec(raw);if(cm&&CUPC[cm[1]])return CUPC[cm[1]];
   var m=/^Colors\.(\w+)(?:\.shade(\d+)|\[(\d+)\])?$/.exec(raw);
   if(m&&COL[m[1]]){var h=COL[m[1]];return h[0]==='#'?mix(h,m[2]||m[3]):h}
   m=/^Theme\.of\(\s*\w+\s*\)\.colorScheme\.(\w+)$/.exec(raw);
@@ -4911,6 +5013,29 @@ function lbl(d,n){
 var ALIGN={center:['center','center'],centerLeft:['flex-start','center'],centerRight:['flex-end','center'],topCenter:['center','flex-start'],bottomCenter:['center','flex-end'],topLeft:['flex-start','flex-start'],topRight:['flex-end','flex-start'],bottomLeft:['flex-start','flex-end'],bottomRight:['flex-end','flex-end']};
 
 function fixPaths(el,key){el.dataset.path=key;[].forEach.call(el.querySelectorAll('[data-path]'),function(x){x.dataset.path=key})}
+
+/* ---- rodas do iOS: CupertinoPicker e CupertinoDatePicker ---- */
+var MESES=['January','February','March','April','May','June','July','August','September','October','November','December'],MES3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],DSEM=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function wheelEl(els,ext,idx,kind,key,run){
+  var w=document.createElement('div');w.className='cpkw';w.dataset.ext=ext;w.dataset.k=kind;w.dataset.key=key;w.dataset.idx=idx;
+  els.forEach(function(e,i){var it=document.createElement('div');it.className='cpki'+(run?' hh':'');it.style.height=ext+'px';it.dataset.i=i;if(run)it.dataset.h='cpki';
+    if(typeof e==='string')it.textContent=e;else it.appendChild(e);w.appendChild(it)});
+  return w}
+function wheelFix(box){
+  var ws=box.querySelectorAll('.cpkw');if(!ws.length)return;
+  var H=box.clientHeight||216,ext=+ws[0].dataset.ext;
+  [].forEach.call(ws,function(w){var e=+w.dataset.ext,pad=Math.max(0,(H-e)/2);w.style.paddingTop=w.style.paddingBottom=pad+'px';w._lock=true;w.scrollTop=(+w.dataset.idx)*e;setTimeout(function(){w._lock=false},160)});
+  var band=box.querySelector('.cpkb');if(band){band.style.height=ext+'px';band.style.top=Math.max(0,(H-ext)/2)+'px'}}
+function mkBand(){var b=document.createElement('div');b.className='cpkb';return b}
+function pickerInit(n){
+  var raw=(M.rawProp(n,'scrollController')||'').trim(),m=/initialItem\s*:\s*([^,)]+)/.exec(raw);
+  if(!m&&/^\w+$/.test(raw)&&OF.ST.fields&&OF.ST.fields[raw]&&OF.ST.fields[raw].init)m=/initialItem\s*:\s*([^,)]+)/.exec(OF.ST.fields[raw].init);
+  if(!m)return 0;var v=numVal(OF.ST.subst(m[1].trim()));return v>0?Math.trunc(v):0}
+function dpInit(n){
+  var raw=(M.getProp(n,'initialDateTime')||'').trim(),now=new Date(),y=now.getFullYear(),mo=now.getMonth()+1,dd=now.getDate(),h=now.getHours(),mi=now.getMinutes();
+  var m=/^DateTime\(\s*(\d+)\s*(?:,\s*(\d+)\s*)?(?:,\s*(\d+)\s*)?(?:,\s*(\d+)\s*)?(?:,\s*(\d+)\s*)?/.exec(raw);
+  if(m){y=+m[1];mo=m[2]?+m[2]:1;dd=m[3]?+m[3]:1;h=m[4]?+m[4]:0;mi=m[5]?+m[5]:0}
+  return{y:y,m:mo,d:dd,h:h,mi:mi,by:y,bm:mo,bd:dd,off:0,src:raw}}
 function resolveCond(n,path,pt,ppt,sel){
   var texts;try{texts=OF.ST.pickAll(n.raw)}catch(e){return null}
   var key=path.join('>'),els=[];
@@ -4939,6 +5064,7 @@ function build(n,path,pt,ppt,sel){
     return out}
   function hasKids(n){if((n.slots.children||[]).length)return true;var rw=M.rawProp(n,'children');return !!(rw&&/\.map\s*\(/.test(rw))}
   function kids(slot,mode){var arr=n.slots[slot];if(!arr){var rw=M.rawProp(n,slot);if(rw&&/\.map\s*\(/.test(rw))arr=[{type:'expressão',unknown:true,raw:rw}]}(arr||[]).forEach(function(c,i){d.appendChild(child(c,slot+':'+i,mode))})}
+  if(n.unknown&&n.type==='NavShellMarker'&&OF.ST.shellPage){var snd=OF.parseWidgetText(OF.ST.shellPage);if(snd)return build(snd,path,pt,ppt,sel)}
   if(n.unknown&&n.type!=='expressão'&&OF.ST.userWidgets&&OF.ST.userWidgets[n.type]&&OF.ST.userWidgets[n.type].stateful&&!(OF.ST.cur&&OF.ST.cur.cls===n.type)&&R_opts.depth<40&&n.raw){
     var nsk=path.join('>')+'#'+n.type;R_opts.nsc=R_opts.nsc||{};
     var nsi=OF.ST.makeScope(n.raw,R_opts.nsc[nsk]);
@@ -5207,6 +5333,50 @@ function build(n,path,pt,ppt,sel){
         if(R_opts.run){seg.classList.add('hh');seg.dataset.h='csgsel';seg.dataset.vraw=kr;seg._pn=n}
         d.appendChild(seg)});
       if(!d.children.length)d.appendChild(ph('children: {0: Text(...)}'));break}
+    case 'CupertinoPicker':{
+      d.className+=' cpk'+(R_opts.run?'':' cpkd');
+      var Q_pkx=numVal(M.getProp(n,'itemExtent'));Q_pkx=Q_pkx>0?Q_pkx:32;
+      var Q_pks=expKids('children'),Q_pkk=path.join('>'),Q_pki=(R_opts.run&&R_opts.pks[Q_pkk]!=null)?R_opts.pks[Q_pkk]:pickerInit(n);
+      var Q_pke=Q_pks.map(function(x){return build(x.n,path.concat(x.p),'#none',null,null)});
+      if(!Q_pke.length){d.appendChild(ph('children: [ ] (os itens da roda)'));break}
+      Q_pki=Math.max(0,Math.min(Q_pke.length-1,Q_pki));
+      var Q_pkw=wheelEl(Q_pke,Q_pkx,Q_pki,'cpk',Q_pkk,R_opts.run);Q_pkw._pn=n;d.appendChild(Q_pkw);d.appendChild(mkBand());
+      R_opts.post.push(function(){wheelFix(d)});break}
+    case 'CupertinoDatePicker':{
+      d.className+=' cdp'+(R_opts.run?'':' cpkd');var dpk=path.join('>');d.dataset.key=dpk;
+      var Q_dmode=enumName(M.getProp(n,'mode'))||'dateAndTime',Q_h24=/true/.test(M.getProp(n,'use24hFormat')||''),Q_mint=numVal(M.getProp(n,'minuteInterval'));Q_mint=Q_mint>0?Math.trunc(Q_mint):1;
+      var Q_dini=dpInit(n),Q_dst=(R_opts.run&&R_opts.dps[dpk]&&R_opts.dps[dpk].src===Q_dini.src)?R_opts.dps[dpk]:Q_dini;
+      if(R_opts.run)R_opts.dps[dpk]=Q_dst;d.dataset.h24=Q_h24?'1':'';d.dataset.mode=Q_dmode;
+      function dcol(code,labels,idx,base,step){var w=wheelEl(labels,32,Math.max(0,Math.min(labels.length-1,idx)),'cdp',dpk,R_opts.run);w.dataset.col=code;if(base!=null)w.dataset.base=base;if(step)w.dataset.step=step;w._pn=n;d.appendChild(w)}
+      var Q_cy=Q_dst.y,Q_cm=Q_dst.m,Q_cd=Q_dst.d,Q_ch=Q_dst.h,Q_cmi=Q_dst.mi;
+      if(Q_dmode==='dateAndTime'){var Q_bs=new Date(Q_dst.by,Q_dst.bm-1,Q_dst.bd),Q_cur=new Date(),Q_tdy=new Date(Q_cur.getFullYear(),Q_cur.getMonth(),Q_cur.getDate()),Q_ls=[];
+        for(var Q_o=-150;Q_o<=150;Q_o++){var Q_dt0=new Date(Q_bs.getFullYear(),Q_bs.getMonth(),Q_bs.getDate()+Q_o);Q_ls.push(Q_dt0.getTime()===Q_tdy.getTime()?'Today':DSEM[Q_dt0.getDay()]+' '+MES3[Q_dt0.getMonth()]+' '+Q_dt0.getDate())}
+        dcol('off',Q_ls,150+(Q_dst.off||0),150);var Q_od=new Date(Q_bs.getFullYear(),Q_bs.getMonth(),Q_bs.getDate()+(Q_dst.off||0))}
+      if(Q_dmode==='date'||Q_dmode==='monthYear'){
+        var Q_yMin=numVal(M.getProp(n,'minimumYear')),Q_yMax=numVal(M.getProp(n,'maximumYear')),Q_mnd=/DateTime\(\s*(\d+)/.exec(M.getProp(n,'minimumDate')||''),Q_mxd=/DateTime\(\s*(\d+)/.exec(M.getProp(n,'maximumDate')||'');
+        Q_yMin=Q_yMin>0?Q_yMin:Math.max(1,Q_cy-100);Q_yMax=Q_yMax>0?Q_yMax:Q_cy+100;if(Q_mnd)Q_yMin=Math.max(Q_yMin,+Q_mnd[1]);if(Q_mxd)Q_yMax=Math.min(Q_yMax,+Q_mxd[1]);if(Q_yMax<Q_yMin)Q_yMax=Q_yMin;
+        var Q_yl=[];for(var Q_yy=Q_yMin;Q_yy<=Q_yMax;Q_yy++)Q_yl.push(String(Q_yy));
+        dcol('m',MESES,Q_cm-1);
+        if(Q_dmode==='date'){var Q_dim=new Date(Q_cy,Q_cm,0).getDate(),Q_dl=[];for(var Q_dd2=1;Q_dd2<=Q_dim;Q_dd2++)Q_dl.push(String(Q_dd2));dcol('d',Q_dl,Math.min(Q_cd,Q_dim)-1)}
+        dcol('y',Q_yl,Q_cy-Q_yMin,Q_yMin)}
+      if(Q_dmode==='time'||Q_dmode==='dateAndTime'){
+        var Q_hl=[];if(Q_h24){for(var Q_hh=0;Q_hh<24;Q_hh++)Q_hl.push(String(Q_hh));dcol('h',Q_hl,Q_ch)}
+        else{for(var Q_hh2=1;Q_hh2<=12;Q_hh2++)Q_hl.push(String(Q_hh2));dcol('h',Q_hl,(Q_ch%12===0?12:Q_ch%12)-1)}
+        var Q_ml=[];for(var Q_mm=0;Q_mm<60;Q_mm+=Q_mint)Q_ml.push((Q_mm<10?'0':'')+Q_mm);dcol('mi',Q_ml,Math.round(Q_cmi/Q_mint),null,Q_mint);
+        if(!Q_h24)dcol('ap',['AM','PM'],Q_ch>=12?1:0)}
+      d.appendChild(mkBand());R_opts.post.push(function(){wheelFix(d)});break}
+    case 'CupertinoActionSheetAction':{
+      d.className+=' btn casa'+(/true/.test(M.getProp(n,'isDefaultAction')||'')?' cdd':'')+(/true/.test(M.getProp(n,'isDestructiveAction')||'')?' cdx':'');
+      if(n.slots.child){(R_opts.dts=R_opts.dts||[]).push(null);try{d.appendChild(child(n.slots.child,'child','#none'))}finally{R_opts.dts.pop()}}else d.appendChild(ph('child'));break}
+    case 'CupertinoActionSheet':{
+      d.className+=' cas';var Q_casg=document.createElement('div');Q_casg.className='casg';
+      if(n.slots.title){var Q_cst=child(n.slots.title,'title','#none');Q_cst.classList.add('cast');Q_casg.appendChild(Q_cst)}
+      if(n.slots.message){var Q_csm=child(n.slots.message,'message','#none');Q_csm.classList.add('casm');Q_casg.appendChild(Q_csm)}
+      (n.slots.actions||[]).forEach(function(c,i){Q_casg.appendChild(child(c,'actions:'+i,'#none'))});
+      if(!Q_casg.children.length)Q_casg.appendChild(ph('actions: [ ]'));
+      d.appendChild(Q_casg);
+      if(n.slots.cancelButton){var Q_casc=document.createElement('div');Q_casc.className='casc';Q_casc.appendChild(child(n.slots.cancelButton,'cancelButton','#none'));d.appendChild(Q_casc)}
+      break}
     case 'AlertDialog':{
       d.className+=' adlg';single('title','#none');single('content','#none');
       var ar=document.createElement('div');ar.className='adact';
@@ -5792,7 +5962,7 @@ function build(n,path,pt,ppt,sel){
   if(R_opts.run)bindRun(d,n);
   return d;
 }
-var R_opts={nsc:{},pdt:{},lsel:{},lws:{},cal:{},drawerOpen:{},run:false,xray:false,typed:{},page:{},depth:0,nav:[],navSc:[],over:[],tab:{},tabCtl:null,exp:{},fut:{},futT:[],mapV:null,rf:{},str:{},iv:{},dss:{},ddm:{},acx:{},anim:{},sw:{},tw:{}};
+var R_opts={pks:{},dps:{},rootSrc:null,rootSc:null,nsc:{},pdt:{},lsel:{},lws:{},cal:{},drawerOpen:{},run:false,xray:false,typed:{},page:{},depth:0,nav:[],navSc:[],over:[],tab:{},tabCtl:null,exp:{},fut:{},futT:[],mapV:null,rf:{},str:{},iv:{},dss:{},ddm:{},acx:{},anim:{},sw:{},tw:{}};
 OF.ST.futPhase=function(n,ms){
   if(!R_opts.run||ms<=0)return 'done';
   var k=(n._key||'?')+'#'+(OF.ST.futGen||0),f=R_opts.fut[k];
@@ -5854,7 +6024,8 @@ function renderInner(root,selKey,screen){
   var sb=document.createElement('div');sb.className='sbar';sb.innerHTML='<span>9:41</span><span>●●● 100%</span>';screen.appendChild(sb);
   if(!root){var e=document.createElement('div');e.className='empty';e.textContent='Arraste um Scaffold da paleta para começar.';screen.appendChild(e);return}
   var nsc=null;
-  if(R_opts.run&&!R_opts.nav.length&&OF.ST.shellText){try{var shT=OF.ST.shellText();if(shT){var shN=OF.parseWidgetText(shT);if(shN){root=shN;selKey=null}}}catch(e){}}
+  if(R_opts.run&&!R_opts.nav.length&&R_opts.rootSrc){var rtN=OF.parseWidgetText(R_opts.rootSrc);if(rtN){root=rtN;selKey=null;nsc=R_opts.rootSc||null}}
+  else if(R_opts.run&&!R_opts.nav.length&&OF.ST.shellText){try{var shT=OF.ST.shellText();if(shT){var shN=OF.parseWidgetText(shT);if(shN){root=shN;selKey=null}}}catch(e){}}
   if(R_opts.nav.length){var top=OF.parseWidgetText(R_opts.nav[R_opts.nav.length-1]);if(top){root=top;selKey=null}nsc=(R_opts.navSc||[])[R_opts.nav.length-1]||null}
   var el;OF.ST.enter(nsc);
   try{el=build(root,[],null,null,selKey)}finally{OF.ST.leave()}
@@ -5867,7 +6038,7 @@ function renderInner(root,selKey,screen){
   R_opts.over.forEach(function(o,i){
     var nd=OF.parseWidgetText(o.src);if(!nd)return;
     if(o.k!=='snack'&&o.k!=='banner'){var sc=document.createElement('div');sc.className='ovs';screen.appendChild(sc)}
-    var w=document.createElement('div');w.className=o.k==='dialog'?'ovl dlg':o.k==='sheet'?'ovl sht':o.k==='banner'?'ovl bnw':'ovl snw';
+    var w=document.createElement('div');w.className=o.k==='dialog'?'ovl dlg':o.k==='sheet'?(o.pop?'ovl pop':'ovl sht'):o.k==='banner'?'ovl bnw':'ovl snw';
     var h=R_opts.depth;R_opts.depth=0;
     OF.ST.enter(o.sc||null);w.dataset.sc=o.sc?o.sc.id:'';
     try{w.appendChild(build(nd,['@ov'+i],null,null,null))}finally{R_opts.depth=h;OF.ST.leave()}
@@ -12409,7 +12580,7 @@ class _TelaState extends State<Tela> {
  tryit:"Em ▶ Testar, toque nos dois carrinhos de compra, veja o número no ícone da barra mudar e abra o carrinho: a segunda tela mostra o mesmo total. Troque os preços e o nome dos produtos.",
  code:"import 'package:flutter/material.dart';\nimport 'package:provider/provider.dart';\n\nclass Carrinho extends ChangeNotifier {\n  final List<String> itens = [];\n  double total = 0;\n\n  void adicionar(String nome, double preco) {\n    itens.add(nome);\n    total += preco;\n    notifyListeners();\n  }\n\n  void limpar() {\n    itens.clear();\n    total = 0;\n    notifyListeners();\n  }\n}\n\nvoid main() => runApp(\n      ChangeNotifierProvider(\n        create: (context) => Carrinho(),\n        child: const MaterialApp(home: Vitrine()),\n      ),\n    );\n\nclass Vitrine extends StatelessWidget {\n  const Vitrine({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(\n        title: const Text('Vitrine'),\n        actions: [\n          Consumer<Carrinho>(\n            builder: (context, carrinho, child) => TextButton.icon(\n              icon: const Icon(Icons.shopping_cart),\n              label: Text('${carrinho.itens.length}'),\n              onPressed: () => Navigator.push(\n                context,\n                MaterialPageRoute(builder: (context) => const TelaCarrinho()),\n              ),\n            ),\n          ),\n        ],\n      ),\n      body: ListView(\n        children: [\n          ListTile(\n            title: const Text('Camiseta'),\n            subtitle: const Text('R\\$ 40.00'),\n            trailing: IconButton(\n              icon: const Icon(Icons.add_shopping_cart),\n              onPressed: () => context.read<Carrinho>().adicionar('Camiseta', 40),\n            ),\n          ),\n          ListTile(\n            title: const Text('Caneca'),\n            subtitle: const Text('R\\$ 25.00'),\n            trailing: IconButton(\n              icon: const Icon(Icons.add_shopping_cart),\n              onPressed: () => context.read<Carrinho>().adicionar('Caneca', 25),\n            ),\n          ),\n        ],\n      ),\n    );\n  }\n}\n\nclass TelaCarrinho extends StatelessWidget {\n  const TelaCarrinho({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    final carrinho = context.watch<Carrinho>();\n    return Scaffold(\n      appBar: AppBar(title: const Text('Carrinho')),\n      body: Column(\n        children: [\n          Text('Itens: ${carrinho.itens.length}'),\n          Text('Total: R\\$ ${carrinho.total.toStringAsFixed(2)}'),\n          ElevatedButton(\n            onPressed: () => context.read<Carrinho>().limpar(),\n            child: const Text('Limpar carrinho'),\n          ),\n        ],\n      ),\n    );\n  }\n}\n"},
 {t:"x. go_router: telas por endereço com context.go e context.push",
- text:"O Navigator empilha telas que você cria na hora. O pacote go_router faz diferente: você declara todas as telas num GoRouter, cada uma com um endereço (path), e navega pelo endereço, como num site. MaterialApp.router(routerConfig: _router) liga o app ao roteador. Em cada GoRoute, path é o endereço e builder devolve a tela; um pedaço com dois-pontos, como /produto/:id, é um parâmetro, lido com state.pathParameters['id']. O que vem depois do ? é lido com state.uri.queryParameters. context.go troca a pilha inteira pela nova tela, context.push empilha por cima (e context.pop volta), e context.pushNamed usa o name da rota com pathParameters. Rotas dentro de routes: ficam dentro do endereço da mãe (/sobre/equipe). No simulador, o go também mostra a seta ← na barra e ela volta para o início, e initialLocation define a primeira tela. ShellRoute, redirect e extra com classes não existem aqui.",
+ text:"O Navigator empilha telas que você cria na hora. O pacote go_router faz diferente: você declara todas as telas num GoRouter, cada uma com um endereço (path), e navega pelo endereço, como num site. MaterialApp.router(routerConfig: _router) liga o app ao roteador. Em cada GoRoute, path é o endereço e builder devolve a tela; um pedaço com dois-pontos, como /produto/:id, é um parâmetro, lido com state.pathParameters['id']. O que vem depois do ? é lido com state.uri.queryParameters. context.go troca a pilha inteira pela nova tela, context.push empilha por cima (e context.pop volta), e context.pushNamed usa o name da rota com pathParameters. Rotas dentro de routes: ficam dentro do endereço da mãe (/sobre/equipe). No simulador, o go troca a tela inteira, sem seta ← (como no Flutter), e initialLocation define a primeira tela. ShellRoute, extra com classes não existe aqui; o redirect aparece na aula do login.",
  tryit:"Em ▶ Testar, toque em Item 1, Item 2 e Equipe e veja o título mudar com o parâmetro. Mude o id de Abrir produto 7 e o texto depois de ?q= no endereço da equipe.",
  code:"import 'package:flutter/material.dart';\nimport 'package:go_router/go_router.dart';\n\nfinal _router = GoRouter(\n  initialLocation: '/',\n  routes: [\n    GoRoute(\n      path: '/',\n      builder: (context, state) => const Inicio(),\n    ),\n    GoRoute(\n      path: '/produto/:id',\n      name: 'produto',\n      builder: (context, state) =>\n          Detalhe(id: state.pathParameters['id']!),\n    ),\n    GoRoute(\n      path: '/sobre',\n      builder: (context, state) => const Sobre(),\n      routes: [\n        GoRoute(\n          path: 'equipe',\n          builder: (context, state) => Detalhe(id: state.uri.queryParameters['q'] ?? 'sem'),\n        ),\n      ],\n    ),\n  ],\n);\n\nvoid main() => runApp(const App());\n\nclass App extends StatelessWidget {\n  const App({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp.router(routerConfig: _router);\n  }\n}\n\nclass Inicio extends StatelessWidget {\n  const Inicio({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Início')),\n      body: Column(\n        children: [\n          for (final n in [1, 2])\n            TextButton(\n              onPressed: () => context.pushNamed('produto', pathParameters: {'id': '$n'}),\n              child: Text('Item $n'),\n            ),\n          TextButton(\n            onPressed: () => GoRouter.of(context).go('/sobre/equipe?q=ana'),\n            child: const Text('Equipe'),\n          ),\n          ElevatedButton(\n            onPressed: () => context.go('/produto/7'),\n            child: const Text('Abrir produto 7'),\n          ),\n          ElevatedButton(\n            onPressed: () => context.push('/sobre'),\n            child: const Text('Sobre'),\n          ),\n        ],\n      ),\n    );\n  }\n}\n\nclass Detalhe extends StatelessWidget {\n  final String id;\n  const Detalhe({super.key, required this.id});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: Text('Produto $id')),\n      body: Center(\n        child: ElevatedButton(\n          onPressed: () => context.go('/'),\n          child: const Text('Voltar ao início'),\n        ),\n      ),\n    );\n  }\n}\n\nclass Sobre extends StatelessWidget {\n  const Sobre({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Sobre')),\n      body: Center(\n        child: TextButton(\n          onPressed: () => context.pop(),\n          child: const Text('Fechar'),\n        ),\n      ),\n    );\n  }\n}\n"},
 {t:"x. Estilo iOS: widgets Cupertino",
@@ -12425,13 +12596,25 @@ class _TelaState extends State<Tela> {
  tryit:"Em ▶ Testar, escolha Semana na primeira aba, vá para a segunda e volte: a escolha continua. Troque os rótulos e troque o segmento por CupertinoSegmentedControl.",
  code:"import 'package:flutter/cupertino.dart';\n\nvoid main() => runApp(const CupertinoApp(home: Abas()));\n\nclass Abas extends StatelessWidget {\n  const Abas({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return CupertinoTabScaffold(\n      tabBar: CupertinoTabBar(\n        items: const [\n          BottomNavigationBarItem(\n            icon: Icon(CupertinoIcons.home),\n            label: 'Início',\n          ),\n          BottomNavigationBarItem(\n            icon: Icon(CupertinoIcons.search),\n            label: 'Busca',\n          ),\n          BottomNavigationBarItem(\n            icon: Icon(CupertinoIcons.person),\n            label: 'Perfil',\n          ),\n        ],\n      ),\n      tabBuilder: (context, index) {\n        return CupertinoTabView(\n          builder: (context) => PaginaAba(indice: index),\n        );\n      },\n    );\n  }\n}\n\nclass PaginaAba extends StatefulWidget {\n  final int indice;\n  const PaginaAba({super.key, required this.indice});\n\n  @override\n  State<PaginaAba> createState() => _PaginaAbaState();\n}\n\nclass _PaginaAbaState extends State<PaginaAba> {\n  int periodo = 0;\n\n  @override\n  Widget build(BuildContext context) {\n    return CupertinoPageScaffold(\n      navigationBar: CupertinoNavigationBar(\n        middle: Text('Aba ${widget.indice + 1}'),\n      ),\n      child: Center(\n        child: Column(\n          mainAxisAlignment: MainAxisAlignment.center,\n          children: [\n            CupertinoSlidingSegmentedControl<int>(\n              groupValue: periodo,\n              children: const {\n                0: Text('Dia'),\n                1: Text('Semana'),\n                2: Text('Mês'),\n              },\n              onValueChanged: (v) => setState(() => periodo = v ?? 0),\n            ),\n            const SizedBox(height: 16),\n            Text('Período escolhido: $periodo'),\n          ],\n        ),\n      ),\n    );\n  }\n}\n"},
 {t:"x. go_router: ShellRoute com barra de navegação fixa",
- text:"Quando várias telas dividem a mesma moldura, como uma barra de navegação embaixo, o go_router usa o ShellRoute. O builder do ShellRoute recebe (context, state, child): child é a página da rota atual, e a moldura a desenha dentro dela, por exemplo Scaffold(body: child, bottomNavigationBar: ...). As GoRoute ficam dentro de routes do ShellRoute. Com context.go, só o child troca e a moldura continua no lugar. Para marcar a aba certa, a moldura lê o endereço atual com GoRouterState.of(context).uri.path. No simulador, a moldura só aparece em ▶ Testar. No modo de desenho, o canvas mostra só a página inicial, sem a moldura. StatefulShellRoute (que guarda o estado de cada aba) não existe aqui.",
+ text:"Quando várias telas dividem a mesma moldura, como uma barra de navegação embaixo, o go_router usa o ShellRoute. O builder do ShellRoute recebe (context, state, child): child é a página da rota atual, e a moldura a desenha dentro dela, por exemplo Scaffold(body: child, bottomNavigationBar: ...). As GoRoute ficam dentro de routes do ShellRoute. Com context.go, só o child troca e a moldura continua no lugar. Para marcar a aba certa, a moldura lê o endereço atual com GoRouterState.of(context).uri.path. No simulador, a moldura só aparece em ▶ Testar. No modo de desenho, o canvas mostra só a página inicial, sem a moldura. Para guardar o estado e a posição de cada aba, veja a aula do StatefulShellRoute.",
  tryit:"Em ▶ Testar, toque nas abas da barra e depois em Voltar ao início, no Perfil. Troque o rótulo da aba Busca e o título da barra.",
  code:"import 'package:flutter/material.dart';\nimport 'package:go_router/go_router.dart';\n\nfinal _router = GoRouter(\n  initialLocation: '/',\n  routes: [\n    ShellRoute(\n      builder: (context, state, child) => Casca(child: child),\n      routes: [\n        GoRoute(\n          path: '/',\n          builder: (context, state) => const PaginaInicio(),\n        ),\n        GoRoute(\n          path: '/busca',\n          builder: (context, state) => const PaginaBusca(),\n        ),\n        GoRoute(\n          path: '/perfil',\n          builder: (context, state) => const PaginaPerfil(),\n        ),\n      ],\n    ),\n  ],\n);\n\nvoid main() => runApp(MaterialApp.router(routerConfig: _router));\n\nclass Casca extends StatelessWidget {\n  final Widget child;\n  const Casca({super.key, required this.child});\n\n  @override\n  Widget build(BuildContext context) {\n    final local = GoRouterState.of(context).uri.path;\n    final indice = local == '/busca' ? 1 : local == '/perfil' ? 2 : 0;\n    return Scaffold(\n      appBar: AppBar(title: const Text('Meu app')),\n      body: child,\n      bottomNavigationBar: NavigationBar(\n        selectedIndex: indice,\n        onDestinationSelected: (i) {\n          if (i == 0) context.go('/');\n          if (i == 1) context.go('/busca');\n          if (i == 2) context.go('/perfil');\n        },\n        destinations: const [\n          NavigationDestination(icon: Icon(Icons.home), label: 'Início'),\n          NavigationDestination(icon: Icon(Icons.search), label: 'Busca'),\n          NavigationDestination(icon: Icon(Icons.person), label: 'Perfil'),\n        ],\n      ),\n    );\n  }\n}\n\nclass PaginaInicio extends StatelessWidget {\n  const PaginaInicio({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return const Center(child: Text('Página inicial'));\n  }\n}\n\nclass PaginaBusca extends StatelessWidget {\n  const PaginaBusca({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return const Center(child: Text('Página de busca'));\n  }\n}\n\nclass PaginaPerfil extends StatelessWidget {\n  const PaginaPerfil({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Center(\n      child: ElevatedButton(\n        onPressed: () => context.go('/'),\n        child: const Text('Voltar ao início'),\n      ),\n    );\n  }\n}\n"},
 {t:"x. Vários widgets com estado próprio: cada instância tem o seu State",
  text:"Um StatefulWidget é uma receita: cada vez que você o coloca na tela, o Flutter cria um objeto State novo, só dele. Por isso dois Contador na mesma Column contam separados: o Contador A e o Contador B têm cada um o seu total. O pai passa dados pelo construtor (nome e passo), e dentro do State você os lê com widget.nome e widget.passo. Quando o pai muda o passo com setState, os dois Contador recebem o valor novo, mas guardam o total que já tinham, porque o State continua o mesmo enquanto o widget fica no mesmo lugar da tela. Esse é o motivo de colocar o estado no menor widget que precisa dele, em vez de guardar tudo na tela inteira.",
  tryit:"Em ▶ Testar, some alguns cliques em A e B, aumente o Passo e continue somando. Acrescente um terceiro Contador e troque o valor inicial do total.",
- code:"import 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Pai()));\n\nclass Pai extends StatefulWidget {\n  const Pai({super.key});\n\n  @override\n  State<Pai> createState() => _PaiState();\n}\n\nclass _PaiState extends State<Pai> {\n  int passo = 1;\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Contadores')),\n      body: Column(\n        children: [\n          ElevatedButton(\n            onPressed: () => setState(() => passo++),\n            child: Text('Passo: $passo'),\n          ),\n          Contador(nome: 'A', passo: passo),\n          Contador(nome: 'B', passo: passo),\n        ],\n      ),\n    );\n  }\n}\n\nclass Contador extends StatefulWidget {\n  final String nome;\n  final int passo;\n  const Contador({super.key, required this.nome, required this.passo});\n\n  @override\n  State<Contador> createState() => _ContadorState();\n}\n\nclass _ContadorState extends State<Contador> {\n  int total = 0;\n\n  @override\n  Widget build(BuildContext context) {\n    return TextButton(\n      onPressed: () => setState(() => total += widget.passo),\n      child: Text('${widget.nome}: $total'),\n    );\n  }\n}\n"}
+ code:"import 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Pai()));\n\nclass Pai extends StatefulWidget {\n  const Pai({super.key});\n\n  @override\n  State<Pai> createState() => _PaiState();\n}\n\nclass _PaiState extends State<Pai> {\n  int passo = 1;\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Contadores')),\n      body: Column(\n        children: [\n          ElevatedButton(\n            onPressed: () => setState(() => passo++),\n            child: Text('Passo: $passo'),\n          ),\n          Contador(nome: 'A', passo: passo),\n          Contador(nome: 'B', passo: passo),\n        ],\n      ),\n    );\n  }\n}\n\nclass Contador extends StatefulWidget {\n  final String nome;\n  final int passo;\n  const Contador({super.key, required this.nome, required this.passo});\n\n  @override\n  State<Contador> createState() => _ContadorState();\n}\n\nclass _ContadorState extends State<Contador> {\n  int total = 0;\n\n  @override\n  Widget build(BuildContext context) {\n    return TextButton(\n      onPressed: () => setState(() => total += widget.passo),\n      child: Text('${widget.nome}: $total'),\n    );\n  }\n}\n"},
+{t:"x. go_router: StatefulShellRoute, cada aba com o seu estado e a sua pilha",
+ text:"O ShellRoute troca só o child, e cada aba começa do zero quando você volta a ela. O StatefulShellRoute.indexedStack resolve isso: cada aba é um StatefulShellBranch, com as suas próprias rotas, e o Flutter mantém todas vivas, como num IndexedStack. O builder recebe (context, state, navigationShell): navigationShell é o corpo da tela, a aba atual, então vai em body. navigationShell.currentIndex diz qual aba está aberta, para o selectedIndex da barra. Para trocar de aba, use navigationShell.goBranch(i). Com initialLocation: i == navigationShell.currentIndex, tocar de novo na aba atual volta ao começo dela, e tocar em outra aba retoma de onde você parou. Por isso o contador da primeira aba continua valendo depois de você visitar a Lista, e, se você abrir o Item 2 e trocar de aba, ao voltar ele ainda está no Item 2. No simulador isso só vale em ▶ Testar (o canvas mostra só a primeira página). Um context.push dentro da aba abre a tela por cima de tudo, com a seta ←; no Flutter de verdade ela abre dentro da aba, com a barra visível.",
+ tryit:"Em ▶ Testar, some cliques no Contador, vá para Lista, abra o Item 2, volte ao Contador e depois à Lista: tudo continua onde estava. Toque em Lista de novo, estando nela: ela volta ao começo.",
+ code:"import 'package:flutter/material.dart';\nimport 'package:go_router/go_router.dart';\n\nfinal _router = GoRouter(\n  initialLocation: '/',\n  routes: [\n    StatefulShellRoute.indexedStack(\n      builder: (context, state, navigationShell) =>\n          Casca(navigationShell: navigationShell),\n      branches: [\n        StatefulShellBranch(\n          routes: [\n            GoRoute(\n              path: '/',\n              builder: (context, state) => const PaginaContador(),\n            ),\n          ],\n        ),\n        StatefulShellBranch(\n          routes: [\n            GoRoute(\n              path: '/lista',\n              builder: (context, state) => const PaginaLista(),\n              routes: [\n                GoRoute(\n                  path: 'item/:id',\n                  builder: (context, state) =>\n                      PaginaItem(id: state.pathParameters['id']!),\n                ),\n              ],\n            ),\n          ],\n        ),\n      ],\n    ),\n  ],\n);\n\nvoid main() => runApp(MaterialApp.router(routerConfig: _router));\n\nclass Casca extends StatelessWidget {\n  final StatefulNavigationShell navigationShell;\n  const Casca({super.key, required this.navigationShell});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      body: navigationShell,\n      bottomNavigationBar: NavigationBar(\n        selectedIndex: navigationShell.currentIndex,\n        onDestinationSelected: (i) => navigationShell.goBranch(\n          i,\n          initialLocation: i == navigationShell.currentIndex,\n        ),\n        destinations: const [\n          NavigationDestination(icon: Icon(Icons.add), label: 'Contador'),\n          NavigationDestination(icon: Icon(Icons.list), label: 'Lista'),\n        ],\n      ),\n    );\n  }\n}\n\nclass PaginaContador extends StatefulWidget {\n  const PaginaContador({super.key});\n\n  @override\n  State<PaginaContador> createState() => _PaginaContadorState();\n}\n\nclass _PaginaContadorState extends State<PaginaContador> {\n  int _n = 0;\n\n  @override\n  Widget build(BuildContext context) {\n    return Center(\n      child: ElevatedButton(\n        onPressed: () => setState(() => _n++),\n        child: Text('Cliques: $_n'),\n      ),\n    );\n  }\n}\n\nclass PaginaLista extends StatelessWidget {\n  const PaginaLista({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return ListView(\n      children: [\n        ListTile(\n          title: const Text('Item 1'),\n          onTap: () => context.go('/lista/item/1'),\n        ),\n        ListTile(\n          title: const Text('Item 2'),\n          onTap: () => context.go('/lista/item/2'),\n        ),\n      ],\n    );\n  }\n}\n\nclass PaginaItem extends StatelessWidget {\n  final String id;\n  const PaginaItem({super.key, required this.id});\n\n  @override\n  Widget build(BuildContext context) {\n    return Center(\n      child: Column(\n        mainAxisSize: MainAxisSize.min,\n        children: [\n          Text('Detalhe do item $id'),\n          ElevatedButton(\n            onPressed: () => context.go('/lista'),\n            child: const Text('Voltar'),\n          ),\n        ],\n      ),\n    );\n  }\n}\n"},
+{t:"x. go_router: redirect e tela de login",
+ text:"O redirect do GoRouter é uma função (context, state) chamada a cada navegação. Ela devolve null para deixar passar, ou um endereço para mandar a pessoa para outro lugar. state.matchedLocation é o endereço para onde a pessoa está indo. O padrão do login: se não está logado e não está indo para /login, devolve /login; se está logado e foi para /login, devolve /. Assim as telas protegidas não precisam conferir nada. Aqui o login é a variável logado, fora das classes; num app de verdade ela viria de um serviço de autenticação, e o parâmetro refreshListenable faz o redirect rodar de novo quando esse serviço avisa que mudou. O redirect também pode ficar dentro de uma GoRoute, valendo só para aquela rota. Se um redirect levar a outro que volte ao primeiro, o go_router desiste depois de 5 voltas e mostra um erro. No simulador, o redirect roda ao abrir o app e a cada context.go, push ou goNamed; refreshListenable e redirectLimit não são simulados.",
+ tryit:"Em ▶ Testar, o app abre na tela de login. Toque em Entrar, em Ver perfil e em Sair. Depois troque logado para true e reinicie: o login é pulado.",
+ code:"import 'package:flutter/material.dart';\nimport 'package:go_router/go_router.dart';\n\nbool logado = false;\n\nfinal _router = GoRouter(\n  initialLocation: '/',\n  redirect: (context, state) {\n    final indo = state.matchedLocation;\n    if (!logado && indo != '/login') return '/login';\n    if (logado && indo == '/login') return '/';\n    return null;\n  },\n  routes: [\n    GoRoute(path: '/', builder: (context, state) => const PaginaInicio()),\n    GoRoute(path: '/perfil', builder: (context, state) => const PaginaPerfil()),\n    GoRoute(path: '/login', builder: (context, state) => const PaginaLogin()),\n  ],\n);\n\nvoid main() => runApp(MaterialApp.router(routerConfig: _router));\n\nclass PaginaInicio extends StatelessWidget {\n  const PaginaInicio({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Início')),\n      body: Center(\n        child: Column(\n          mainAxisSize: MainAxisSize.min,\n          children: [\n            const Text('Você está logado'),\n            ElevatedButton(\n              onPressed: () => context.go('/perfil'),\n              child: const Text('Ver perfil'),\n            ),\n          ],\n        ),\n      ),\n    );\n  }\n}\n\nclass PaginaPerfil extends StatelessWidget {\n  const PaginaPerfil({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Perfil')),\n      body: Center(\n        child: Column(\n          mainAxisSize: MainAxisSize.min,\n          children: [\n            const Text('Área só para quem entrou'),\n            ElevatedButton(\n              onPressed: () {\n                logado = false;\n                context.go('/');\n              },\n              child: const Text('Sair'),\n            ),\n          ],\n        ),\n      ),\n    );\n  }\n}\n\nclass PaginaLogin extends StatelessWidget {\n  const PaginaLogin({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('Entrar')),\n      body: Center(\n        child: ElevatedButton(\n          onPressed: () {\n            logado = true;\n            context.go('/');\n          },\n          child: const Text('Entrar'),\n        ),\n      ),\n    );\n  }\n}\n"},
+{t:"x. Rodas e menus do iOS: CupertinoPicker, CupertinoDatePicker e ActionSheet",
+ text:"O CupertinoPicker é a roda do iOS: itemExtent é a altura de cada item, children são os itens e onSelectedItemChanged recebe o índice do item que parou no centro. Dê uma altura a ele (um SizedBox) e guarde o FixedExtentScrollController num campo do State, não dentro do build, senão a roda volta ao início a cada setState; o initialItem do controller escolhe o item inicial. O CupertinoDatePicker tem as rodas de data e hora: mode escolhe date, time, dateAndTime ou monthYear, initialDateTime é o valor inicial e onDateTimeChanged recebe um DateTime a cada giro. O CupertinoActionSheet é o menu que sobe da parte de baixo: title, message, actions (CupertinoActionSheetAction, com isDestructiveAction para o vermelho) e um cancelButton separado. Ele abre com showCupertinoModalPopup e fecha com Navigator.pop(context), como um diálogo. Também dá para pôr uma roda dentro de um showCupertinoModalPopup, num Container com altura, para escolher sem ocupar a tela. No simulador as rodas giram com o mouse (arraste ou role) ou ao tocar num item, e os meses aparecem em inglês, como no Flutter sem tradução.",
+ tryit:"Em ▶ Testar, gire a roda de frutas e a de data, depois abra o menu e toque em Apagar. Mude o initialItem, troque o mode do date picker para dateAndTime e acrescente uma opção ao menu.",
+ code:"import 'package:flutter/cupertino.dart';\n\nvoid main() => runApp(const CupertinoApp(home: Rodas()));\n\nclass Rodas extends StatefulWidget {\n  const Rodas({super.key});\n\n  @override\n  State<Rodas> createState() => _RodasState();\n}\n\nclass _RodasState extends State<Rodas> {\n  final frutas = ['Maçã', 'Banana', 'Laranja', 'Uva', 'Manga'];\n  final _ctl = FixedExtentScrollController(initialItem: 1);\n  int _fruta = 1;\n  DateTime _data = DateTime(2025, 3, 20);\n  String _acao = 'nenhuma';\n\n  void _abrirMenu() {\n    showCupertinoModalPopup(\n      context: context,\n      builder: (context) => CupertinoActionSheet(\n        title: const Text('Foto'),\n        message: const Text('O que deseja fazer?'),\n        actions: [\n          CupertinoActionSheetAction(\n            onPressed: () {\n              setState(() => _acao = 'tirar');\n              Navigator.pop(context);\n            },\n            child: const Text('Tirar foto'),\n          ),\n          CupertinoActionSheetAction(\n            isDestructiveAction: true,\n            onPressed: () {\n              setState(() => _acao = 'apagar');\n              Navigator.pop(context);\n            },\n            child: const Text('Apagar'),\n          ),\n        ],\n        cancelButton: CupertinoActionSheetAction(\n          onPressed: () => Navigator.pop(context),\n          child: const Text('Cancelar'),\n        ),\n      ),\n    );\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return CupertinoPageScaffold(\n      navigationBar: const CupertinoNavigationBar(middle: Text('Rodas')),\n      child: SafeArea(\n        child: Column(\n          children: [\n            const SizedBox(height: 8),\n            Text('Fruta: ${frutas[_fruta]}'),\n            SizedBox(\n              height: 130,\n              child: CupertinoPicker(\n                itemExtent: 32,\n                scrollController: _ctl,\n                onSelectedItemChanged: (i) => setState(() => _fruta = i),\n                children: [for (final f in frutas) Text(f)],\n              ),\n            ),\n            Text('Data: ${_data.day}/${_data.month}/${_data.year}'),\n            SizedBox(\n              height: 150,\n              child: CupertinoDatePicker(\n                mode: CupertinoDatePickerMode.date,\n                initialDateTime: DateTime(2025, 3, 20),\n                onDateTimeChanged: (d) => setState(() => _data = d),\n              ),\n            ),\n            CupertinoButton.filled(\n              onPressed: _abrirMenu,\n              child: const Text('Abrir menu'),\n            ),\n            Text('Ação: $_acao'),\n          ],\n        ),\n      ),\n    );\n  }\n}\n"}
 /*NL-END*/
 ];
 var base=LESSONS.filter(function(l){return !l.after}),placed=LESSONS.filter(function(l){return l.after});
@@ -12441,7 +12624,7 @@ placed.forEach(function(l){var k=-1;base.forEach(function(b,i){if(b.t.indexOf(l.
   base.splice(k+1,0,l)});
 LESSONS=base;
 /*ORDER-BEGIN*/
-var ORDER=["Scaffold e AppBar", "Center, Padding e Container", "Column: empilhar na vertical", "Row e Expanded: lado a lado", "Aninhando Column e Row", "Align e Flexible", "Stack e Positioned", "Lista de tarefas", "Botões e TextField", "Grade, imagens e ListTile", "Wrap, Chip e CircleAvatar", "Projeto 1 · etapa 1: cabeçalho do cartão", "Projeto 1 · etapa 2: contatos", "Projeto 1 · etapa 3: habilidades e acabamento", "Rolagem, recorte e toque", "Drawer e barra inferior", "Abas com TabBar", "Abas que funcionam", "TabPageSelector: bolinhas de página", "MaterialBanner e Banner: avisos fixos", "Recortes e efeitos: ClipOval, DecoratedBox, ShaderMask e Material", "Estilos: texto, botões e decoração", "Tema do app: ThemeData", "Estado com setState", "Toques: GestureDetector", "Checkbox, Switch e Slider", "Interruptor e controle deslizante", "Opacidade, recorte e controle em passos", "Condições na interface", "Listas e laços", "Gerando widgets com for", "Formulário: menu, rádio e interruptor", "Campos formatados, botões por estado e AppBar com fundo", "Listas sob demanda com builder", "Tabelas, páginas e layout responsivo", "Seus próprios widgets", "Vários widgets com estado próprio: cada instância tem o seu State", "Classes de dados", "Projeto 2 · etapa 1: a lista de tarefas", "Projeto 2 · etapa 2: adicionar tarefas", "Projeto 2 · etapa 3: marcar como feita", "Map e parâmetros do widget", "Lógica: switch, laços e try/catch", "Projeto 3 · etapa 1: o formulário do IMC", "Projeto 3 · etapa 2: calcular com segurança", "Projeto 3 · etapa 3: classificar e guardar o histórico", "Mensagem rápida: SnackBar", "Diálogo de confirmação: AlertDialog", "Projeto 2 · etapa 4: remover com confirmação", "Painel inferior: BottomSheet", "Navegando entre telas", "Passando dados para outra tela", "Projeto 4 · etapa 1: a pergunta do quiz", "Projeto 4 · etapa 2: várias perguntas e pontuação", "Projeto 4 · etapa 3: a tela de resultado", "go_router: telas por endereço com context.go e context.push", "go_router: ShellRoute com barra de navegação fixa", "Ciclo de vida: initState", "Tela com estado próprio", "Esperando com Future e async", "Esperando a resposta de outra tela", "FutureBuilder: a tela que espera os dados", "StreamBuilder: dados que chegam ao longo do tempo", "RefreshIndicator: puxar para atualizar", "ValueNotifier e ValueListenableBuilder: atualizar sem setState", "StatefulBuilder, OrientationBuilder e DefaultTextStyle", "ChangeNotifier e Provider: estado compartilhado entre telas", "Provider: Selector, Consumer2 e MultiProvider", "Chips, lista que expande e selo de aviso", "Texto com vários estilos e transformações", "Botões modernos: FilledButton.tonal, IconButton.filled e FAB estendido", "Layout avançado: OverflowBox, RotatedBox, Offstage e IgnorePointer", "Deslizar para apagar: Dismissible", "ExpansionPanelList: perguntas frequentes", "Stepper: passo a passo", "Estilo iOS: widgets Cupertino", "Abas e segmentos no iOS: CupertinoTabScaffold e SlidingSegmentedControl", "Navegação inferior, visibilidade e proporção", "IndexedStack: abas que guardam o estado", "NavigationRail: menu lateral", "NavigationDrawer e BottomAppBar", "Menu de opções e escolha em segmentos", "MenuAnchor: menu que abre ao lado", "SimpleDialog: escolher uma opção", "DropdownMenu: menu de escolha", "RangeSlider e ToggleButtons: filtros", "Autocomplete e SearchBar: busca com sugestões", "Busca e calendário: SearchAnchor.bar e CalendarDatePicker", "SearchAnchor: busca com sugestões", "Data e hora: showDatePicker e showTimePicker", "Cabeçalho que encolhe: SliverAppBar", "Slivers: CustomScrollView com SliverGrid e SliverPadding", "NestedScrollView e SliverPersistentHeader", "ListWheelScrollView e CarouselView", "PaginatedDataTable com DataTableSource", "ReorderableListView: arrastar para reordenar", "AnimatedList: itens que entram e saem", "DraggableScrollableSheet: painel que sobe e desce", "InteractiveViewer: zoom e arrastar", "Arrastar e soltar: Draggable e DragTarget", "Listener e MouseRegion: eventos de ponteiro e de mouse", "AnimatedPositioned e AnimatedAlign: movimento suave", "AnimatedContainer, AnimatedOpacity, AnimatedScale e AnimatedRotation", "AnimatedSize e AnimatedPadding: painel que abre", "AnimatedSwitcher e AnimatedCrossFade: trocar conteúdo", "TweenAnimationBuilder: animar qualquer valor", "AnimationController: animação com Tween e Curves", "AlignTransition, DecoratedBoxTransition e SliverOpacity", "Hero: widget que voa entre duas telas", "CustomPaint: Canvas, Paint e formas", "CustomPaint: gráfico de pizza com drawArc", "CustomPaint animado com AnimationController", "PreferredSize e ClipPath com CustomClipper", "JSON, classe modelo e map para cards", "shared_preferences: guardar preferências", "API, FutureBuilder e cache com shared_preferences", "sqflite: banco SQLite com CRUD", "sqflite com duas tabelas e JOIN", "Firebase Auth: login e cadastro", "Firestore: lista em tempo real", "Sensor: acelerômetro", "Sensor: giroscópio e bússola", "Sensor: pedômetro (passos)", "Sensor: barômetro e magnetômetro", "Bateria e rede: battery_plus e connectivity_plus", "Saída de som: tocar áudio", "Microfone: gravar áudio", "Localização: GPS", "Mapa com OpenStreetMap: flutter_map", "Mapa e GPS: você está aqui", "Endereço e rota: carro, bicicleta e a pé", "Câmera e vibração", "Biometria: impressão digital e rosto", "Lanterna: torch_light", "Leitor de QR code: mobile_scanner", "Abrir um link e compartilhar", "Projeto 5 · etapa 1: a vitrine", "Projeto 5 · etapa 2: carrinho e SnackBar", "Projeto 5 · etapa 3: abas Produtos e Carrinho", "Projeto 5 · etapa 4: tela de detalhes", "Projeto 5 · etapa 5: agite para limpar (sensor)"];
+var ORDER=["Scaffold e AppBar", "Center, Padding e Container", "Column: empilhar na vertical", "Row e Expanded: lado a lado", "Aninhando Column e Row", "Align e Flexible", "Stack e Positioned", "Lista de tarefas", "Botões e TextField", "Grade, imagens e ListTile", "Wrap, Chip e CircleAvatar", "Projeto 1 · etapa 1: cabeçalho do cartão", "Projeto 1 · etapa 2: contatos", "Projeto 1 · etapa 3: habilidades e acabamento", "Rolagem, recorte e toque", "Drawer e barra inferior", "Abas com TabBar", "Abas que funcionam", "TabPageSelector: bolinhas de página", "MaterialBanner e Banner: avisos fixos", "Recortes e efeitos: ClipOval, DecoratedBox, ShaderMask e Material", "Estilos: texto, botões e decoração", "Tema do app: ThemeData", "Estado com setState", "Toques: GestureDetector", "Checkbox, Switch e Slider", "Interruptor e controle deslizante", "Opacidade, recorte e controle em passos", "Condições na interface", "Listas e laços", "Gerando widgets com for", "Formulário: menu, rádio e interruptor", "Campos formatados, botões por estado e AppBar com fundo", "Listas sob demanda com builder", "Tabelas, páginas e layout responsivo", "Seus próprios widgets", "Vários widgets com estado próprio: cada instância tem o seu State", "Classes de dados", "Projeto 2 · etapa 1: a lista de tarefas", "Projeto 2 · etapa 2: adicionar tarefas", "Projeto 2 · etapa 3: marcar como feita", "Map e parâmetros do widget", "Lógica: switch, laços e try/catch", "Projeto 3 · etapa 1: o formulário do IMC", "Projeto 3 · etapa 2: calcular com segurança", "Projeto 3 · etapa 3: classificar e guardar o histórico", "Mensagem rápida: SnackBar", "Diálogo de confirmação: AlertDialog", "Projeto 2 · etapa 4: remover com confirmação", "Painel inferior: BottomSheet", "Navegando entre telas", "Passando dados para outra tela", "Projeto 4 · etapa 1: a pergunta do quiz", "Projeto 4 · etapa 2: várias perguntas e pontuação", "Projeto 4 · etapa 3: a tela de resultado", "go_router: telas por endereço com context.go e context.push", "go_router: ShellRoute com barra de navegação fixa", "go_router: StatefulShellRoute, cada aba com o seu estado e a sua pilha", "go_router: redirect e tela de login", "Ciclo de vida: initState", "Tela com estado próprio", "Esperando com Future e async", "Esperando a resposta de outra tela", "FutureBuilder: a tela que espera os dados", "StreamBuilder: dados que chegam ao longo do tempo", "RefreshIndicator: puxar para atualizar", "ValueNotifier e ValueListenableBuilder: atualizar sem setState", "StatefulBuilder, OrientationBuilder e DefaultTextStyle", "ChangeNotifier e Provider: estado compartilhado entre telas", "Provider: Selector, Consumer2 e MultiProvider", "Chips, lista que expande e selo de aviso", "Texto com vários estilos e transformações", "Botões modernos: FilledButton.tonal, IconButton.filled e FAB estendido", "Layout avançado: OverflowBox, RotatedBox, Offstage e IgnorePointer", "Deslizar para apagar: Dismissible", "ExpansionPanelList: perguntas frequentes", "Stepper: passo a passo", "Estilo iOS: widgets Cupertino", "Abas e segmentos no iOS: CupertinoTabScaffold e SlidingSegmentedControl", "Rodas e menus do iOS: CupertinoPicker, CupertinoDatePicker e ActionSheet", "Navegação inferior, visibilidade e proporção", "IndexedStack: abas que guardam o estado", "NavigationRail: menu lateral", "NavigationDrawer e BottomAppBar", "Menu de opções e escolha em segmentos", "MenuAnchor: menu que abre ao lado", "SimpleDialog: escolher uma opção", "DropdownMenu: menu de escolha", "RangeSlider e ToggleButtons: filtros", "Autocomplete e SearchBar: busca com sugestões", "Busca e calendário: SearchAnchor.bar e CalendarDatePicker", "SearchAnchor: busca com sugestões", "Data e hora: showDatePicker e showTimePicker", "Cabeçalho que encolhe: SliverAppBar", "Slivers: CustomScrollView com SliverGrid e SliverPadding", "NestedScrollView e SliverPersistentHeader", "ListWheelScrollView e CarouselView", "PaginatedDataTable com DataTableSource", "ReorderableListView: arrastar para reordenar", "AnimatedList: itens que entram e saem", "DraggableScrollableSheet: painel que sobe e desce", "InteractiveViewer: zoom e arrastar", "Arrastar e soltar: Draggable e DragTarget", "Listener e MouseRegion: eventos de ponteiro e de mouse", "AnimatedPositioned e AnimatedAlign: movimento suave", "AnimatedContainer, AnimatedOpacity, AnimatedScale e AnimatedRotation", "AnimatedSize e AnimatedPadding: painel que abre", "AnimatedSwitcher e AnimatedCrossFade: trocar conteúdo", "TweenAnimationBuilder: animar qualquer valor", "AnimationController: animação com Tween e Curves", "AlignTransition, DecoratedBoxTransition e SliverOpacity", "Hero: widget que voa entre duas telas", "CustomPaint: Canvas, Paint e formas", "CustomPaint: gráfico de pizza com drawArc", "CustomPaint animado com AnimationController", "PreferredSize e ClipPath com CustomClipper", "JSON, classe modelo e map para cards", "shared_preferences: guardar preferências", "API, FutureBuilder e cache com shared_preferences", "sqflite: banco SQLite com CRUD", "sqflite com duas tabelas e JOIN", "Firebase Auth: login e cadastro", "Firestore: lista em tempo real", "Sensor: acelerômetro", "Sensor: giroscópio e bússola", "Sensor: pedômetro (passos)", "Sensor: barômetro e magnetômetro", "Bateria e rede: battery_plus e connectivity_plus", "Saída de som: tocar áudio", "Microfone: gravar áudio", "Localização: GPS", "Mapa com OpenStreetMap: flutter_map", "Mapa e GPS: você está aqui", "Endereço e rota: carro, bicicleta e a pé", "Câmera e vibração", "Biometria: impressão digital e rosto", "Lanterna: torch_light", "Leitor de QR code: mobile_scanner", "Abrir um link e compartilhar", "Projeto 5 · etapa 1: a vitrine", "Projeto 5 · etapa 2: carrinho e SnackBar", "Projeto 5 · etapa 3: abas Produtos e Carrinho", "Projeto 5 · etapa 4: tela de detalhes", "Projeto 5 · etapa 5: agite para limpar (sensor)"];
 (function(){var by={};LESSONS.forEach(function(l){by[l.t.replace(/^(?:\d+|x)\.\s*/,'')]=l});var out=[];ORDER.forEach(function(t){if(by[t]){out.push(by[t]);by[t]=null}});LESSONS.forEach(function(l){if(by[l.t.replace(/^(?:\d+|x)\.\s*/,'')])out.push(l)});LESSONS=out})();
 /*ORDER-END*/
 LESSONS.forEach(function(x,i){x.t=x.t.replace(/^(?:\d+|x)\./,(i+1)+'.')});
@@ -12663,6 +12846,9 @@ add("Provider: Selector, Consumer2",[["Tema escuro desde o início","Troque bool
 add("Abas e segmentos no iOS",[["Começar em Semana","Troque int periodo = 0 por 1.","int periodo = 1"],["Aba Explorar","Troque o label Busca por Explorar.","label: 'Explorar'"],["Visual antigo","Troque CupertinoSlidingSegmentedControl por CupertinoSegmentedControl.","CupertinoSegmentedControl<int>\\("]]);
 add("go_router: ShellRoute",[["Aba Explorar","Na NavigationDestination, troque o label Busca por Explorar.","label: 'Explorar'"],["Título Minha loja","Troque o título Meu app por Minha loja.","Text\\('Minha loja'\\)"],["Perfil leva à busca","No botão do Perfil, troque context.go('/') por context.go('/busca').","onPressed: \\(\\) => context\\.go\\('/busca'\\)"]]);
 add("Vários widgets com estado próprio",[["Terceiro contador","Depois do Contador B, acrescente Contador(nome: 'C', passo: passo).","Contador\\(nome: 'C', passo: passo\\)"],["Passo começa em 5","Troque int passo = 1 por 5.","int passo = 5"],["Total começa em 10","No _ContadorState, troque int total = 0 por 10.","int total = 10"]]);
+add("go_router: StatefulShellRoute",[["Aba Tarefas","Na NavigationDestination da lista, troque o label Lista por Tarefas.","label: 'Tarefas'"],["Cliques começam em 5","No _PaginaContadorState, troque int _n = 0 por 5.","int _n = 5"],["Voltar leva ao contador","No botão Voltar do detalhe, troque context.go('/lista') por context.go('/').","onPressed: \\(\\) => context\\.go\\('/'\\)"]]);
+add("go_router: redirect",[["Começa logado","Troque bool logado = false por true.","bool logado = true"],["Título Acesso","Na tela de login, troque o título Entrar por Acesso.","title: const Text\\('Acesso'\\)"],["Login leva ao perfil","No redirect, devolva '/perfil' em vez de '/' quando a pessoa já está logada e vai para /login.","return '/perfil'"]]);
+add("Rodas e menus do iOS",[["Começa na Uva","No controller, troque initialItem: 1 por 3.","initialItem: 3"],["Data e hora","Troque CupertinoDatePickerMode.date por CupertinoDatePickerMode.dateAndTime.","CupertinoDatePickerMode\\.dateAndTime"],["Botão Voltar","No cancelButton, troque o texto Cancelar por Voltar.","const Text\\('Voltar'\\)"]]);
 OF.EX=EX;
 OF.LESSONS.forEach(function(L){
   var st=null,k;
@@ -14442,10 +14628,10 @@ OF.LIMITS=[
  'Internet: por padrão (modo automático) o app tenta a API real e, se falhar em até 5 segundos, usa dados de exemplo para jsonplaceholder.typicode.com (users, posts e todos), Nominatim, Photon e OSRM; a etiqueta na barra de estado mostra se os dados são 🌐 reais ou 🧪 simulados. Qualquer outro endereço sem rede responde 404. A API real depende de o serviço aceitar CORS no navegador. Hive, Isar e Supabase não existem.',
  'Widgets que não existem no simulador: Overlay e OverlayEntry (use showDialog ou SnackBar), PositionedTransition, RelativePositionedTransition, DefaultTextStyleTransition e CustomMultiChildLayout. FlutterLogo aparece como um símbolo de exemplo (nunca o logotipo real). StatefulBuilder e OrientationBuilder funcionam, mas o setState de dentro do builder deve ter o nome setState.',
  'Listener e MouseRegion: os eventos chegam sem o objeto do evento (posição, botão), então não dá para ler e.position. FocusScope, ExcludeSemantics e MergeSemantics só envolvem o filho, sem efeito visível. SliverFixedExtentList e SliverPrototypeExtentList ignoram itemExtent e prototypeItem. DecoratedBoxTransition só anima cor e borderRadius.circular; AlignTransition anima o alinhamento por inteiro.',
- 'Cupertino: existem CupertinoPageScaffold, CupertinoNavigationBar, CupertinoButton (e .filled), CupertinoSwitch, CupertinoSlider, CupertinoTextField, CupertinoSearchTextField, CupertinoActivityIndicator, CupertinoAlertDialog com CupertinoDialogAction e showCupertinoDialog, e os ícones de CupertinoIcons mais comuns. Também existem CupertinoTabScaffold com CupertinoTabBar (o CupertinoTabView só repassa a página, sem pilha própria) e CupertinoSegmentedControl e CupertinoSlidingSegmentedControl (children com Text ou Icon). Não existem CupertinoPicker, CupertinoDatePicker, CupertinoActionSheet, CupertinoListSection e CupertinoSliverNavigationBar.',
+ 'Cupertino: existem CupertinoPageScaffold, CupertinoNavigationBar, CupertinoButton (e .filled), CupertinoSwitch, CupertinoSlider, CupertinoTextField, CupertinoSearchTextField, CupertinoActivityIndicator, CupertinoAlertDialog com CupertinoDialogAction e showCupertinoDialog, e os ícones de CupertinoIcons mais comuns. Também existem CupertinoTabScaffold com CupertinoTabBar (o CupertinoTabView só repassa a página, sem pilha própria), CupertinoSegmentedControl e CupertinoSlidingSegmentedControl (children com Text ou Icon), CupertinoPicker (children, itemExtent, onSelectedItemChanged e initialItem do FixedExtentScrollController; sem jumpToItem nem looping), CupertinoDatePicker (modos date, time, dateAndTime e monthYear, minuteInterval, use24hFormat, minimumYear e maximumYear; meses em inglês; minimumDate e maximumDate só limitam o ano) e CupertinoActionSheet com CupertinoActionSheetAction, aberto por showCupertinoModalPopup. Não existem CupertinoTimerPicker, CupertinoListSection e CupertinoSliverNavigationBar.',
  'StatefulWidget dentro de outros widgets (numa Column, num tabBuilder, numa lista): cada um tem o seu State, que é guardado pela posição na tela e mantém o valor quando o pai redesenha. Como no Flutter sem key, se a ordem de itens mudar, o State fica no lugar e não acompanha o item. A barra de estado mostra só as variáveis da tela principal.',
  'Provider: ChangeNotifierProvider, Provider e MultiProvider (com create), Consumer<T>, context.watch<T>(), context.read<T>(), context.select e Provider.of<T>(context) funcionam, com um objeto por tipo, criado a partir do create. Selector (que sempre redesenha, mesmo quando o valor escolhido não muda) e Consumer2 também funcionam. Consumer3, ProxyProvider, ChangeNotifierProvider.value e providers criados dentro de uma função não existem.',
- 'go_router: GoRouter com initialLocation e GoRoute (path com :parâmetros, name e rotas filhas em routes), MaterialApp.router, context.go, push, pop, pushReplacement, goNamed e pushNamed (com pathParameters e queryParameters), state.pathParameters, state.uri.queryParameters e extra simples. O go também mostra a seta ← na barra. ShellRoute funciona só em ▶ Testar (o canvas mostra a página inicial sem a moldura) e GoRouterState.of(context).uri.path indica a aba atual. StatefulShellRoute, redirect, errorBuilder e context.canPop não existem.'
+ 'go_router: GoRouter com initialLocation e GoRoute (path com :parâmetros, name e rotas filhas em routes), MaterialApp.router, context.go, push, pop, pushReplacement, goNamed e pushNamed (com pathParameters e queryParameters), state.pathParameters, state.uri.queryParameters e extra simples. ShellRoute e StatefulShellRoute.indexedStack funcionam só em ▶ Testar (o canvas mostra a página inicial sem a moldura): no StatefulShellRoute cada StatefulShellBranch guarda a sua posição e o State das suas páginas, com navigationShell.currentIndex e goBranch (com initialLocation). GoRouterState.of(context).uri.path indica a aba atual. O redirect (da GoRouter ou de uma GoRoute) roda ao abrir o app e a cada go, push e goNamed, com limite de 5 redirecionamentos. Um push dentro de uma aba abre por cima da moldura. O go não mostra mais a seta ← (a tela vira a base). Não existem refreshListenable, errorBuilder, context.canPop, navigatorContainerBuilder e StatefulShellRoute sem indexedStack.'
  ]},
 {h:'Propriedades que o simulador ignora',
  p:'O widget aparece, mas estas propriedades não mudam o desenho.',
@@ -14824,23 +15010,55 @@ function renderStateBar(){
   bar.innerHTML='<b>'+(hasSt?'Estado':'Modo interativo')+(tsc?' · '+esc(tsc.cls):'')+'</b>'+lst.map(function(v){return '<span class="sv"><i>'+esc(v.type)+'</i> '+esc(v.name)+' = <b>'+esc(v.text)+'</b></span>'}).join('')+
     '<span class="sp"></span>'+httpChip()+'<button class="btn" data-a="sens" title="Simular GPS, bateria, rede e câmera">📡 Sensores</button><div class="seg" role="group" aria-label="Modo"><button data-a="test" aria-pressed="'+!!S.run+'">▶ Testar</button><button data-a="edit" aria-pressed="'+!S.run+'">✎ Editar</button></div><button class="btn" data-a="reset" title="Volta as variáveis aos valores iniciais e apaga o banco de dados simulado">↺ Reiniciar</button>';
 }
-function setRun(x){if(!x)clearFx();S.run=!!x&&ST.active;R.opts.run=S.run;renderStateBar();renderCanvas()}
+function startRoute(){
+  R.opts.rootSrc=null;R.opts.rootSc=null;ST.shellLoc=null;ST.branchLoc=[];
+  if(!S.run)return;
+  try{var t=ST.initialLoc();if(t)applyFx([ST.goFx(t)],null)}catch(e){}}
+function setRun(x){if(!x)clearFx();S.run=!!x&&ST.active;R.opts.run=S.run;if(S.run)startRoute();renderStateBar();renderCanvas()}
 $('stBar').addEventListener('click',function(e){
   var b=e.target.closest('button');if(!b)return;
   if(b.dataset.a==='test')setRun(true);
   else if(b.dataset.a==='edit')setRun(false);
   else if(b.dataset.a==='sens'){toggleSens();return}
-  else if(b.dataset.a==='reset'){clearFx();R.opts.typed={};ST.dbClear();ST.reset();renderStateBar();renderCanvas()}
+  else if(b.dataset.a==='reset'){clearFx();R.opts.typed={};ST.dbClear();ST.reset();startRoute();renderStateBar();renderCanvas()}
 });
 var timers=[];
-function clearFx(){ST.httpUsed={};R.opts.drawerOpen={};pk=null;fxGen++;R.opts.fut={};R.opts.futT.forEach(clearTimeout);R.opts.futT=[];R.opts.rf={};R.opts.str={};R.opts.iv={};R.opts.dss={};R.opts.ddm={};R.opts.acx={};R.opts.pdt={};R.opts.anim={};R.opts.sw={};R.opts.tw={};ST.menuOpen={};ST.search={};ST.mapView=null;R.opts.nav=[];R.opts.navSc=[];R.opts.navRes=[];R.opts.nsc={};R.opts.over=[];R.opts.tab={};R.opts.exp={};clearTimeout(snackT);timers.forEach(clearTimeout);timers=[]}
+function clearFx(){ST.httpUsed={};R.opts.drawerOpen={};pk=null;fxGen++;R.opts.fut={};R.opts.futT.forEach(clearTimeout);R.opts.futT=[];R.opts.rf={};R.opts.str={};R.opts.iv={};R.opts.dss={};R.opts.ddm={};R.opts.acx={};R.opts.pdt={};R.opts.anim={};R.opts.sw={};R.opts.tw={};ST.menuOpen={};ST.search={};ST.mapView=null;R.opts.nav=[];R.opts.navSc=[];R.opts.navRes=[];R.opts.nsc={};R.opts.pks={};R.opts.dps={};R.opts.rootSrc=null;R.opts.rootSc=null;ST.shellLoc=null;ST.branchLoc=[];R.opts.over=[];R.opts.tab={};R.opts.exp={};clearTimeout(snackT);timers.forEach(clearTimeout);timers=[]}
 var snackT=null;
 function runIn(inst,fn){if(!inst)return fn();ST.enter(inst);try{return fn()}finally{ST.leave()}}
-function scopeOfEl(el){var h=el&&el.closest&&el.closest('[data-sc]');if(!h||!h.dataset.sc)return null;var all=R.opts.navSc.concat(R.opts.over.map(function(o){return o.sc})).concat(Object.keys(R.opts.nsc||{}).map(function(k){return R.opts.nsc[k]}));for(var i=0;i<all.length;i++)if(all[i]&&all[i].id===h.dataset.sc)return all[i];return null}
+function scopeOfEl(el){var h=el&&el.closest&&el.closest('[data-sc]');if(!h||!h.dataset.sc)return null;var all=R.opts.navSc.concat([R.opts.rootSc]).concat(R.opts.over.map(function(o){return o.sc})).concat(Object.keys(R.opts.nsc||{}).map(function(k){return R.opts.nsc[k]}));for(var i=0;i<all.length;i++)if(all[i]&&all[i].id===h.dataset.sc)return all[i];return null}
 function runAt(el,raw,args){var inst=scopeOfEl(el),r=runIn(inst,function(){return ST.run(raw,args)});r.sc=inst;return r}
 function valAt(el,raw){return runIn(scopeOfEl(el),function(){return ST.value(raw)})}
+function wheelIdx(w){var ext=+w.dataset.ext,n=w.children.length,i=Math.round(w.scrollTop/ext);return Math.max(0,Math.min(n-1,i))}
+function wheelSettle(w){
+  if(!w.isConnected||w._lock||!R.opts.run)return;
+  if(w.dataset.k==='cpk'){
+    var key=w.dataset.key,i=wheelIdx(w);if(R.opts.pks[key]===i)return;
+    R.opts.pks[key]=i;var raw=M.rawProp(w._pn,'onSelectedItemChanged');
+    if(raw&&raw.trim()!=='null')afterRun(runAt(w,raw,[i]));
+    return}
+  var box=w.closest('.cdp');if(!box)return;
+  var st=Object.assign({},R.opts.dps[box.dataset.key]||{}),hv=null,ap=0,h24=box.dataset.h24==='1';
+  [].forEach.call(box.querySelectorAll('.cpkw'),function(x){var c=x.dataset.col,j=wheelIdx(x);
+    if(c==='m')st.m=j+1;else if(c==='d')st.d=j+1;else if(c==='y')st.y=+x.dataset.base+j;
+    else if(c==='off')st.off=j-(+x.dataset.base);
+    else if(c==='h')hv=j;else if(c==='mi')st.mi=j*(+x.dataset.step||1);else if(c==='ap')ap=j});
+  if(hv!=null)st.h=h24?hv:((hv+1)%12)+(ap?12:0);
+  if(box.dataset.mode==='dateAndTime'){var bd=new Date(st.by,st.bm-1,st.bd+(st.off||0));st.y=bd.getFullYear();st.m=bd.getMonth()+1;st.d=bd.getDate()}
+  var dim=new Date(st.y,st.m,0).getDate();if(st.d>dim)st.d=dim;
+  R.opts.dps[box.dataset.key]=st;
+  var raw2=M.rawProp(w._pn,'onDateTimeChanged');
+  if(raw2&&raw2.trim()!=='null')afterRun(runAt(w,raw2,[ST.mkDate(st.y,st.m,st.d,st.h||0,st.mi||0,0)]));
+  renderCanvas()}
+(function(){
+  var dr=null,sup=false;
+  $('screen').addEventListener('scroll',function(e){var w=e.target;if(!w||!w.classList||!w.classList.contains('cpkw')||w._lock)return;clearTimeout(w._tm);w._tm=setTimeout(function(){wheelSettle(w)},120)},true);
+  $('screen').addEventListener('pointerdown',function(e){var w=e.target.closest&&e.target.closest('.cpkw');if(!w||!R.opts.run||e.button!==0)return;dr={w:w,y:e.clientY,t:w.scrollTop,m:false};w.style.scrollSnapType='none'},true);
+  document.addEventListener('pointermove',function(e){if(!dr)return;var dy=e.clientY-dr.y;if(Math.abs(dy)>4)dr.m=true;if(dr.m)dr.w.scrollTop=dr.t-dy});
+  document.addEventListener('pointerup',function(){if(!dr)return;var w=dr.w,m=dr.m;dr=null;w.style.scrollSnapType='';if(m){sup=true;setTimeout(function(){sup=false},0);var ext=+w.dataset.ext;w.scrollTo({top:Math.round(w.scrollTop/ext)*ext,behavior:'smooth'})}});
+  $('screen').addEventListener('click',function(e){if(sup){e.stopPropagation();e.preventDefault()}},true)})();
 function topOverlay(){for(var i=R.opts.over.length-1;i>=0;i--)if(R.opts.over[i].k!=='snack'&&R.opts.over[i].k!=='banner')return i;return -1}
-function topScope(){var i=topOverlay();if(i>=0)return R.opts.over[i].sc||null;var n=R.opts.nav.length;return n?(R.opts.navSc[n-1]||null):null}
+function topScope(){var i=topOverlay();if(i>=0)return R.opts.over[i].sc||null;var n=R.opts.nav.length;return n?(R.opts.navSc[n-1]||null):(R.opts.rootSrc?(R.opts.rootSc||null):null)}
 function resolve(res,val){
   if(!res||!res.fx||!(res.fx.cont||res.fx.cb))return;
   setTimeout(function(){
@@ -14856,17 +15074,17 @@ function applyFx(fx,sc,rf){
   sc=sc||null;
   fx.forEach(function(f){
     var res={fx:f,sc:sc,rf:rf};
-    if(f.k==='dialog'||f.k==='sheet')R.opts.over.push({k:f.k,src:f.src,sc:sc,res:res});
+    if(f.k==='dialog'||f.k==='sheet')R.opts.over.push({k:f.k,src:f.src,sc:sc,res:res,pop:!!f.pop});
     else if(f.k==='snack'){
       R.opts.over=R.opts.over.filter(function(o){return o.k!=='snack'});R.opts.over.push({k:'snack',src:f.src,sc:sc});
       clearTimeout(snackT);snackT=setTimeout(function(){R.opts.over=R.opts.over.filter(function(o){return o.k!=='snack'});renderCanvas()},4000)}
     else if(f.k==='banner'){R.opts.over=R.opts.over.filter(function(o){return o.k!=='banner'});R.opts.over.push({k:'banner',src:f.src,sc:sc})}
     else if(f.k==='hidebanner')R.opts.over=R.opts.over.filter(function(o){return o.k!=='banner'});
     else if(f.k==='hidesnack')R.opts.over=R.opts.over.filter(function(o){return o.k!=='snack'});
-    else if(f.k==='shell'){R.opts.nav.length=0;R.opts.navSc.length=0;R.opts.navRes.length=0;R.opts.over=R.opts.over.filter(function(o){return o.k==='snack'||o.k==='banner'});ST.shellLoc=f.loc}
+    else if(f.k==='shell'){R.opts.nav.length=0;R.opts.navSc.length=0;R.opts.navRes.length=0;R.opts.rootSrc=null;R.opts.rootSc=null;R.opts.over=R.opts.over.filter(function(o){return o.k==='snack'||o.k==='banner'});ST.shellLoc=f.loc}
     else if(f.k==='push'){
       if(f.replace){var i0=topOverlay();if(i0>=0)R.opts.over.splice(i0,1);else if(R.opts.nav.length){R.opts.nav.pop();R.opts.navSc.pop();R.opts.navRes.pop()}}
-      if(f.all){R.opts.nav.length=0;R.opts.navSc.length=0;R.opts.navRes.length=0;R.opts.over=R.opts.over.filter(function(o){return o.k==='snack'||o.k==='banner'});if(f.src==null||f.src===''){return}}
+      if(f.all){R.opts.nav.length=0;R.opts.navSc.length=0;R.opts.navRes.length=0;R.opts.rootSrc=null;R.opts.rootSc=null;ST.shellLoc=null;R.opts.over=R.opts.over.filter(function(o){return o.k==='snack'||o.k==='banner'});if(f.src==null||f.src===''){return}R.opts.rootSrc=f.src;R.opts.rootSc=ST.makeScope(f.src);return}
       R.opts.nav.push(f.src);R.opts.navSc.push(ST.makeScope(f.src));R.opts.navRes.push(res);R.opts.over=R.opts.over.filter(function(o){return o.k==='snack'||o.k==='banner'})}
     else if(f.k==='delay'){var tm=setTimeout(function(){resolve(res,null);setTimeout(function(){},0)},Math.min(f.ms,8000));timers.push(tm)}
     else if(f.k==='toast')toast(f.msg);
@@ -15081,6 +15299,7 @@ function fire(t){
         var ix=cs.indexOf(v0);if(ix>=0)cs.splice(ix,1);else cs.push(v0);arr=cs}
       afterRun(runAt(t,rs,[arr]))}
     return}
+  if(t.dataset.h==='cpki'){var cw=t.parentElement;cw.scrollTo({top:(+t.dataset.i)*(+cw.dataset.ext),behavior:'smooth'});return}
   if(t.dataset.h==='csgsel'){var cps=t._pn,crs=cps&&M.rawProp(cps,'onValueChanged');if(crs&&crs.trim()!=='null')afterRun(runAt(t,crs,[valAt(t,t.dataset.vraw)]));return}
   if(t.dataset.h==='popup'){openPopup(t,t._pn);return}
   if(t.dataset.h==='navd'){var pn=t._pn,rawN=pn&&M.rawProp(pn,pn.type==='BottomNavigationBar'?'onTap':'onDestinationSelected');if(rawN&&rawN.trim()!=='null')afterRun(runAt(t,rawN,[+t.dataset.i]));return}
@@ -15329,6 +15548,7 @@ document.addEventListener('keydown',function(e){
   else if((k==='z'&&e.shiftKey)||k==='y'){e.preventDefault();histGo(1)}});
 A.onChange=function(){
   if(R.opts.navSc&&R.opts.navSc.length)R.opts.navSc=R.opts.navSc.map(function(sc,i){return sc?(ST.makeScope(R.opts.nav[i],sc)||null):null});
+  if(R.opts.rootSrc)R.opts.rootSc=ST.makeScope(R.opts.rootSrc,R.opts.rootSc)||null;
   var L=OF.LESSONS[S.lesson];if(!L||S.loading)return;
   histPush();
   if(S.src===L.code)LS.del(lkey(L));else LS.set(lkey(L),S.src);
