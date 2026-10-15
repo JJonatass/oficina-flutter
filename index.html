@@ -3736,9 +3736,66 @@ check_circle:'<circle cx="12" cy="12" r="9" fill="currentColor" stroke="none"/><
 radio_button_unchecked:'<circle cx="12" cy="12" r="9"/>',
 emoji_events:'<path d="M8 4h8v6a4 4 0 01-8 0zM8 6H4v1a4 4 0 004 4M16 6h4v1a4 4 0 01-4 4M12 14v4M8 21h8M10 18h4"/>',
 sentiment_satisfied:'<circle cx="12" cy="12" r="9"/><path d="M8 14a5 5 0 008 0M9 9.5v.5M15 9.5v.5"/>'});
+Object.assign(ICONS,{
+favorite:'<path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z" fill="currentColor"/>',
+favorite_border:'<path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/>',
+edit:'<path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4"/>',
+remove:'<path d="M5 12h14"/>',
+add_circle:'<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',
+remove_circle:'<circle cx="12" cy="12" r="9"/><path d="M8 12h8"/>',
+cancel:'<circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/>',
+info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.5"/>',
+help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 115 0c0 1.5-2.5 2-2.5 4M12 17v.5"/>',
+warning:'<path d="M12 3l10 18H2L12 3zM12 10v5M12 18v.5"/>',
+error:'<circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16v.5"/>',
+done_all:'<path d="M2 13l4 4L14 8M10 17l1 1L22 8"/>',
+visibility:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+visibility_off:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/>',
+share:'<circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 11l7.6-4M8.2 13l7.6 4"/>',
+more_vert:'<circle cx="12" cy="5" r="1.4" fill="currentColor"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/><circle cx="12" cy="19" r="1.4" fill="currentColor"/>',
+more_horiz:'<circle cx="5" cy="12" r="1.4" fill="currentColor"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/><circle cx="19" cy="12" r="1.4" fill="currentColor"/>',
+arrow_forward:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+arrow_upward:'<path d="M12 19V5M6 11l6-6 6 6"/>',
+arrow_downward:'<path d="M12 5v14M6 13l6 6 6-6"/>',
+chevron_left:'<path d="M15 6l-6 6 6 6"/>',
+expand_more:'<path d="M6 9l6 6 6-6"/>',
+expand_less:'<path d="M6 15l6-6 6 6"/>',
+arrow_drop_down:'<path d="M7 10l5 5 5-5z" fill="currentColor"/>',
+arrow_drop_up:'<path d="M7 14l5-5 5 5z" fill="currentColor"/>',
+thumb_up:'<path d="M7 11v9H3v-9h4zM7 11l4-8c1.5 0 2.5 1.2 2 3l-.7 3H19a2 2 0 012 2.3l-1.2 6A2 2 0 0118 20H7"/>',
+bookmark:'<path d="M6 3h12v18l-6-4-6 4V3z" fill="currentColor"/>',
+bookmark_border:'<path d="M6 3h12v18l-6-4-6 4V3z"/>',
+send:'<path d="M3 11l18-8-8 18-2-8-8-2z"/>',
+account_circle:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3"/><path d="M6 18c1.5-2.500 4-3 6-3s4.500.5 6 3"/>',
+save:'<path d="M5 3h11l3 3v15H5V3zM8 3v6h7V3M8 21v-7h8v7"/>',
+image:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.500"/><path d="M4 18l5-5 4 4 3-3 4 4"/>',
+play_arrow:'<path d="M7 5l12 7-12 7V5z" fill="currentColor"/>',
+pause:'<path d="M8 5v14M16 5v14" stroke-width="3.500"/>',
+stop:'<rect x="6" y="6" width="12" height="12" fill="currentColor"/>',
+filter_list:'<path d="M4 6h16M7 12h10M10 18h4"/>',
+sort:'<path d="M4 6h16M4 12h10M4 18h6"/>',
+content_copy:'<rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a1 1 0 00-1-1H5a1 1 0 00-1 1v11a1 1 0 001 1h3"/>',
+list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.5M3 12h.5M3 18h.5"/>',
+grid_view:'<rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/>',
+credit_card:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>',
+wifi:'<path d="M2 9a15 15 0 0120 0M5 12.500a10 10 0 0114 0M8.500 16a5 5 0 017 0M12 19.500v.5"/>',
+cloud:'<path d="M7 18a4 4 0 010-8 5 5 0 019.600-1A4.500 4.500 0 0117 18H7z"/>',
+download:'<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>',
+upload:'<path d="M12 16V5M7 9l5-5 5 5M5 20h14"/>',
+wb_sunny:'<circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>',
+dark_mode:'<path d="M20 14A8 8 0 0110 4a8 8 0 1010 10z"/>',
+school:'<path d="M2 9l10-5 10 5-10 5L2 9zM6 11v5c3 2.500 9 2.500 12 0v-5"/>',
+local_cafe:'<path d="M5 8h12v6a5 5 0 01-5 5h-2a5 5 0 01-5-5V8zM17 9h2a2 2 0 010 5h-2M7 3v2M11 3v2M15 3v2"/>',
+group:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><circle cx="17" cy="9" r="2.300"/><path d="M17 14c2.500 0 4.500 1.700 4.500 4"/>',
+attach_money:'<path d="M12 3v18M16 7.500c0-1.700-1.800-3-4-3s-4 1.100-4 3 1.800 2.500 4 3 4 1.200 4 3-1.800 3-4 3-4-1.300-4-3"/>',
+bolt:'<path d="M13 2L5 14h6l-1 8 8-12h-6l1-8z" fill="currentColor"/>',
+visibility_outlined:'<circle cx="12" cy="12" r="3"/>'
+});
+var ICONALIAS={favorite_outline:'favorite_border',keyboard_arrow_down:'expand_more',keyboard_arrow_up:'expand_less',keyboard_arrow_right:'chevron_right',keyboard_arrow_left:'chevron_left',navigate_next:'chevron_right',navigate_before:'chevron_left',access_time:'schedule',calendar_today:'event',mail:'email',mail_outline:'email',call:'phone',info_outline:'info',add_circle_outline:'add_circle',remove_circle_outline:'remove_circle',done:'check',delete_outline:'delete',delete_forever:'delete',light_mode:'wb_sunny',flash_on:'bolt',help_outline:'help',star_outline:'star_border',star_rate:'star',thumb_up_alt:'thumb_up',thumb_up_off_alt:'thumb_up',bookmark_outline:'bookmark_border',edit_note:'edit',mode_edit:'edit',create:'edit',keyboard_backspace:'arrow_back',person_outline:'person',notifications_none:'notifications',shopping_cart_outlined:'shopping_cart',photo:'image',insert_photo:'image',view_list:'list',dashboard:'grid_view',apps:'grid_view',sunny:'wb_sunny',payment:'credit_card',monetization_on:'attach_money',people:'group',cloud_download:'download',cloud_upload:'upload',file_download:'download',file_upload:'upload'};
+delete ICONS.visibility_outlined;
 var ICONNAMES=Object.keys(ICONS);
 function iconSvg(raw){
-  var nm=enumName(raw).replace(/_(outlined|rounded|sharp)$/,'');
+  var nm=enumName(raw).replace(/_(outlined|rounded|sharp)$/,'');nm=ICONALIAS[nm]||nm;
   var inner=ICONS[nm]||'<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M9.500 9.500a2.500 2.500 0 115 0c0 1.500-2.500 2-2.500 4M12 17v.5"/>';
   return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+inner+'</svg>';
 }
@@ -3908,6 +3965,7 @@ function build(n,path,pt,ppt,sel){
         tx.forEach(function(t,j){var nd=OF.parseWidgetText(t);if(nd)out.push({n:nd,p:slot+':'+ci+'>@'+j})})}
       else out.push({n:c,p:slot+':'+ci})});
     return out}
+  function hasKids(n){if((n.slots.children||[]).length)return true;var rw=M.rawProp(n,'children');return !!(rw&&/\.map\s*\(/.test(rw))}
   function kids(slot,mode){var arr=n.slots[slot];if(!arr){var rw=M.rawProp(n,slot);if(rw&&/\.map\s*\(/.test(rw))arr=[{type:'expressão',unknown:true,raw:rw}]}(arr||[]).forEach(function(c,i){d.appendChild(child(c,slot+':'+i,mode))})}
   if(n.unknown&&(n.type==='expressão'||(OF.ST.userWidgets&&OF.ST.userWidgets[n.type]&&(!OF.ST.userWidgets[n.type].stateful||(OF.ST.cur&&OF.ST.cur.cls===n.type))))&&R_opts.depth<40){R_opts.depth++;var rc;try{rc=resolveCond(n,path,pt,ppt,sel)}finally{R_opts.depth--}if(rc)return rc}
   if(n.unknown){d.className+=' unk';d.textContent=n.type==='expressão'?'{ '+n.raw.replace(/\s+/g,' ').slice(0,40)+' }':n.type+'(…)';lbl(d,n);d.dataset.path=path.join('>');place(d,n,pt,ppt);return d}
@@ -3940,7 +3998,7 @@ function build(n,path,pt,ppt,sel){
       if(n.slots.child){var ch=child(n.slots.child,'child','#none');d.appendChild(ch)}break}
     case 'Center':d.className+=' col';d.style.alignItems='center';d.style.justifyContent='center';single('child','#single','child: adicione um widget');break;
     case 'Align':{d.className+=' col';var aa=ALIGN[enumName(M.getProp(n,'alignment'))]||ALIGN.center;d.style.alignItems=aa[0];d.style.justifyContent=aa[1];single('child','#single','child: adicione um widget');break}
-    case 'Stack':{d.className+=' stack';var sa=ALIGN[enumName(M.getProp(n,'alignment'))]||ALIGN.topLeft;d.style.justifyItems=sa[0];d.style.alignItems=sa[1];if(!(n.slots.children||[]).length)d.appendChild(ph('children: [ ] — adicione widgets'));kids('children','Stack');break}
+    case 'Stack':{d.className+=' stack';var sa=ALIGN[enumName(M.getProp(n,'alignment'))]||ALIGN.topLeft;d.style.justifyItems=sa[0];d.style.alignItems=sa[1];if(!hasKids(n))d.appendChild(ph('children: [ ] — adicione widgets'));kids('children','Stack');break}
     case 'Positioned':d.className+=' col';d.style.alignItems='flex-start';single('child','#single','child: adicione um widget');break;
     case 'Flexible':{d.className+=' col';d.style.alignItems='flex-start';var tight=/tight/.test(M.getProp(n,'fit')||'');single('child',tight?'#expanded':'#single','child: adicione um widget',pt);break}
     case 'GridView.count':{
@@ -3948,15 +4006,15 @@ function build(n,path,pt,ppt,sel){
       d.style.gridTemplateColumns='repeat('+cnt+',minmax(0,1fr))';
       d.style.rowGap=(numVal(M.getProp(n,'mainAxisSpacing'))||0)+'px';d.style.columnGap=(numVal(M.getProp(n,'crossAxisSpacing'))||0)+'px';
       var gp=insets(M.getProp(n,'padding'));if(gp)d.style.padding=px(gp);
-      if(!(n.slots.children||[]).length)d.appendChild(ph('children: [ ]'));kids('children','GridView');break}
+      if(!hasKids(n))d.appendChild(ph('children: [ ]'));kids('children','GridView');break}
     case 'Column':case 'Row':{
       var isC=n.type==='Column';d.className+=isC?' col':' row';
       d.style.justifyContent=MAIN[enumName(M.getProp(n,'mainAxisAlignment'))]||'flex-start';
       d.style.alignItems=CROSS[enumName(M.getProp(n,'crossAxisAlignment'))]||'center';
       if(sizeMin(n)){d.style.flex='none'}
-      if(!(n.slots.children||[]).length)d.appendChild(ph('children: [ ] — adicione widgets'));
+      if(!hasKids(n))d.appendChild(ph('children: [ ] — adicione widgets'));
       kids('children',n.type);break}
-    case 'ListView':{d.className+=' list';var lp=insets(M.getProp(n,'padding'));if(lp)d.style.padding=px(lp);if(!(n.slots.children||[]).length)d.appendChild(ph('children: [ ]'));kids('children','ListView');break}
+    case 'ListView':{d.className+=' list';var lp=insets(M.getProp(n,'padding'));if(lp)d.style.padding=px(lp);if(!hasKids(n))d.appendChild(ph('children: [ ]'));kids('children','ListView');break}
     case 'Expanded':d.className+=' col';d.style.alignItems='flex-start';single('child','#expanded','child: adicione um widget',pt);break;
     case 'Spacer':d.style.minHeight='0';break;
     case 'Container':case 'Padding':case 'SizedBox':case 'Card':case 'ColoredBox':{
@@ -4096,7 +4154,7 @@ function build(n,path,pt,ppt,sel){
       d.className+=' wrapf';d.style.flexWrap='wrap';d.style.alignItems='flex-start';d.style.alignContent='flex-start';
       d.style.columnGap=(numVal(M.getProp(n,'spacing'))||0)+'px';d.style.rowGap=(numVal(M.getProp(n,'runSpacing'))||0)+'px';
       d.style.justifyContent=MAIN[enumName(M.getProp(n,'alignment'))]||'flex-start';
-      if(!(n.slots.children||[]).length)d.appendChild(ph('children: [ ]'));kids('children','Wrap');break}
+      if(!hasKids(n))d.appendChild(ph('children: [ ]'));kids('children','Wrap');break}
     case 'SingleChildScrollView':{
       d.className+=' col clp';d.style.overflow='auto';d.style.alignItems='flex-start';var hz=/horizontal/.test(M.getProp(n,'scrollDirection')||'');
       if(hz)d.style.flexDirection='row';var sp4=insets(M.getProp(n,'padding'));if(sp4)d.style.padding=px(sp4);
@@ -4379,7 +4437,7 @@ function build(n,path,pt,ppt,sel){
       break}
     case 'ReorderableListView':case 'ReorderableListView.builder':{
       d.className+=' list rlv';
-      if(n.type==='ReorderableListView'){var rlp=insets(M.getProp(n,'padding'));if(rlp)d.style.padding=px(rlp);if(!(n.slots.children||[]).length)d.appendChild(ph('children: [ ] (cada filho com uma key)'));kids('children','ListView')}
+      if(n.type==='ReorderableListView'){var rlp=insets(M.getProp(n,'padding'));if(rlp)d.style.padding=px(rlp);if(!hasKids(n))d.appendChild(ph('children: [ ] (cada filho com uma key)'));kids('children','ListView')}
       else genKids('ListView');
       rlvItems(d).forEach(function(it){it.classList.add('rli');var hd=document.createElement('span');hd.className='rdh';hd.textContent='\u2807';hd.setAttribute('aria-label','Arrastar para reordenar');it.appendChild(hd)});
       if(R_opts.run){d.dataset.rl='1';d._n=n}
@@ -4413,7 +4471,7 @@ function build(n,path,pt,ppt,sel){
       d.dataset.lat=mla;d.dataset.lon=mlo;d.dataset.z=mzz;
       var otp=lamArg(mo,'onTap');if(otp&&R_opts.run){d.dataset.ontap=otp;d.classList.add('mtap');d._pn=n}
       var prevM=R_opts.mapV;R_opts.mapV=mctx;try{kids('children','#none')}finally{R_opts.mapV=prevM}
-      if(!(n.slots.children||[]).length)d.appendChild(ph('children: [ TileLayer(...) ]'));break}
+      if(!hasKids(n))d.appendChild(ph('children: [ TileLayer(...) ]'));break}
     case 'TileLayer':{
       d.className+=' mly';var mx=R_opts.mapV;
       if(mx){
@@ -4532,7 +4590,7 @@ function build(n,path,pt,ppt,sel){
       d.style.gridTemplateColumns='repeat('+gcn+',minmax(0,1fr))';
       d.style.rowGap=(numVal(M.getProp(n,'mainAxisSpacing'))||0)+'px';d.style.columnGap=(numVal(M.getProp(n,'crossAxisSpacing'))||0)+'px';
       if(insets(M.getProp(n,'padding')))d.style.padding=px(gpx2);
-      if(!(n.slots.children||[]).length)d.appendChild(ph('children: [ ]'));kids('children','GridView');break}
+      if(!hasKids(n))d.appendChild(ph('children: [ ]'));kids('children','GridView');break}
     case 'ListView.custom':{d.className+=' list';single('childrenDelegate','ListView','childrenDelegate: SliverChildListDelegate([...])');break}
     case 'SliverChildListDelegate':{d.style.display='contents';kids('children',pt==='GridView'?'GridView':'ListView');break}
     case 'NestedScrollView':{
@@ -11207,7 +11265,11 @@ class _TelaState extends State<Tela> {
  after:"Row e Expanded",
  text:"Column e Row podem ficar uma dentro da outra, em qualquer profundidade. Aqui uma Column guarda uma Row, e a Row guarda duas Column e outra Row, cada uma com um Container. A regra é sempre a mesma: quem tem children recebe uma lista, e cada filho é um widget completo. Leia de fora para dentro: a Column de fora empilha, a Row de dentro alinha lado a lado.",
  tryit:"Olhe a árvore de widgets e compare com o código. Acrescente um segundo Container na primeira Column e veja o quadrado novo aparecer embaixo do vermelho.",
- code:"import 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Tela()));\n\nclass Tela extends StatelessWidget {\n  const Tela({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      body: Column(\n        children: [\n          Row(\n            children: [\n              Column(\n                children: [\n                  Container(width: 80, height: 80, color: Colors.red),\n                ],\n              ),\n              Column(\n                children: [\n                  Container(width: 80, height: 80, color: Colors.green),\n                ],\n              ),\n              Row(\n                children: [\n                  Container(width: 80, height: 80, color: Colors.blue),\n                ],\n              ),\n            ],\n          ),\n        ],\n      ),\n    );\n  }\n}\n"}
+ code:"import 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Tela()));\n\nclass Tela extends StatelessWidget {\n  const Tela({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      body: Column(\n        children: [\n          Row(\n            children: [\n              Column(\n                children: [\n                  Container(width: 80, height: 80, color: Colors.red),\n                ],\n              ),\n              Column(\n                children: [\n                  Container(width: 80, height: 80, color: Colors.green),\n                ],\n              ),\n              Row(\n                children: [\n                  Container(width: 80, height: 80, color: Colors.blue),\n                ],\n              ),\n            ],\n          ),\n        ],\n      ),\n    );\n  }\n}\n"},
+{t:"x. JSON, classe modelo e map para cards",
+ text:"Em apps reais os dados chegam como texto JSON (de uma API ou de um banco). O fluxo é sempre o mesmo: jsonDecode transforma o texto em List de Map, o construtor fromJson converte cada Map em um objeto Produto, e .map() transforma cada Produto em um Card. O .toList() no final é obrigatório, porque map devolve um Iterable. O operador ?? dá valor padrão quando a chave não existe, como no Tênis.",
+ tryit:"Em ▶ Testar, veja os 3 cards. Acrescente um produto ao JSON, sem o campo favorito, e veja o card novo aparecer.",
+ code:"import 'dart:convert';\nimport 'package:flutter/material.dart';\n\nvoid main() => runApp(const MaterialApp(home: Lista()));\n\nclass Produto {\n  final String nome;\n  final double preco;\n  final bool favorito;\n  Produto({required this.nome, required this.preco, required this.favorito});\n\n  factory Produto.fromJson(Map<String, dynamic> j) {\n    return Produto(nome: j['nome'], preco: j['preco'].toDouble(), favorito: j['favorito'] ?? false);\n  }\n}\n\nconst dados = '''\n[\n  {\"nome\": \"Camiseta\", \"preco\": 49.9, \"favorito\": true},\n  {\"nome\": \"Tênis\", \"preco\": 199.0},\n  {\"nome\": \"Boné\", \"preco\": 35.5, \"favorito\": false}\n]\n''';\n\nclass Lista extends StatefulWidget {\n  const Lista({super.key});\n\n  @override\n  State<Lista> createState() => _ListaState();\n}\n\nclass _ListaState extends State<Lista> {\n  late List<Produto> produtos;\n\n  @override\n  void initState() {\n    super.initState();\n    final lista = jsonDecode(dados) as List;\n    produtos = lista.map((j) => Produto.fromJson(j)).toList();\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: Text('${produtos.length} produtos')),\n      body: ListView(\n        children: produtos.map((p) => Card(\n          child: ListTile(\n            title: Text(p.nome),\n            subtitle: Text('R\\$ ${p.preco.toStringAsFixed(2)}'),\n            trailing: Icon(p.favorito ? Icons.favorite : Icons.favorite_border),\n          ),\n        )).toList(),\n      ),\n    );\n  }\n}\n"}
 /*NL-END*/
 ];
 var base=LESSONS.filter(function(l){return !l.after}),placed=LESSONS.filter(function(l){return l.after});
@@ -11411,6 +11473,7 @@ add("CustomPaint: Canvas, Paint e formas",[["Pintar o rosto de azul-claro","Em r
 add("CustomPaint: gráfico de pizza",[["Uma quarta fatia","Acrescente 10 em valores e Colors.pink em cores (a lista de cores tem de ter o mesmo tamanho).","^(?=[\\s\\S]*\\[40, 30, 20, 10\\])(?=[\\s\\S]*Colors\\.teal, Colors\\.pink)"],["Furo menor (size.width / 6)","O círculo branco do meio usa size.width / 4. Use / 6.","size\\.width\\s*/\\s*6"],["Começar a pizza à direita","A variável inicio começa em -math.pi / 2 (no topo). Use 0.","double inicio\\s*=\\s*0;"]]);
 add("CustomPaint animado com AnimationController",[["Girar mais devagar (6 segundos)","Em Duration, troque seconds: 3 por seconds: 6.","seconds:\\s*6"],["Cinco círculos no radar","No laço, i <= 3 e raio * i / 3. Troque os dois 3 por 5.","i <= 5"],["Girar para o outro lado","Um sinal de menos antes de _c.value inverte o sentido.","Radar\\(-"]]);
 add("Aninhando Column e Row",[["Trocar o quadrado azul por laranja","O quadrado azul é o Container da Row de dentro. Troque Colors.blue por Colors.orange.","^(?![\\s\\S]*Colors\\.blue)"],["Segundo Container na primeira Column","Dentro de children da primeira Column, depois do vermelho, acrescente outro Container (por exemplo amarelo), com vírgula no final.","Colors\\.amber"],["Espalhar os blocos com spaceEvenly","Na Row de fora, logo antes de children, escreva mainAxisAlignment: MainAxisAlignment.spaceEvenly.","MainAxisAlignment\\.spaceEvenly"]]);
+add("JSON, classe modelo e map",[["Acrescentar um produto ao JSON","No fim da lista do JSON, depois do Boné, coloque uma vírgula e um novo objeto com nome Meia e preco 9.9.","\"Meia\""],["Preço sem centavos","No toStringAsFixed, troque o 2 por 0.","toStringAsFixed\\(0\\)"],["Pintar o coração de vermelho","No Icon, depois do operador ternário, acrescente color: Colors.red.","color:\\s*Colors\\.red"]]);
 OF.EX=EX;
 OF.LESSONS.forEach(function(L){
   var st=null,k;
@@ -13185,6 +13248,7 @@ OF.LIMITS=[
  'ListView.custom e SliverList: SliverChildListDelegate e SliverChildBuilderDelegate (até 60 itens quando não há childCount). Image.file não existe.',
  'Draggable, LongPressDraggable e DragTarget funcionam com o mouse ou o dedo, mas a cópia que acompanha o ponteiro é um clone do widget, o offset em DragTargetDetails é Offset(0, 0) e onMove não é chamado.',
  'AnimationController roda no modo ▶ Testar; Tween e curvas são aproximados (veja Animações e gestos).',
+ 'Banco de dados: não existem sqflite, shared_preferences, Hive, Isar, Firebase nem Supabase; import desses pacotes não executa. jsonDecode, fromJson, toJson, .map().toList() e http simulado (botão 📡) funcionam. Para treinar a lógica de um banco, guarde a lista em memória na classe de estado ou em uma classe Repositorio.',
  'Nenhum widget Cupertino existe (CupertinoButton, CupertinoAlertDialog, CupertinoSwitch e outros).'
  ]},
 {h:'Propriedades que o simulador ignora',
