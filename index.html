@@ -516,7 +516,20 @@ body:has(main[data-tab="ref"]) .lesson{display:none}
 .screen .nd.mpl{position:absolute;left:0;top:0;right:0;bottom:0;pointer-events:none}
 .screen .nd.mattr{position:absolute;right:0;bottom:0;font-size:10px;background:rgba(255,255,255,.8);padding:2px 5px;color:#333;z-index:4;pointer-events:none}
 .drgb{cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none}.dfl{opacity:.92;filter:drop-shadow(0 6px 10px rgba(0,0,0,.3))}.dfl *{pointer-events:none}.dgt{align-self:flex-start}
-.hchip{font-size:12px;padding:3px 9px;border-radius:12px;border:1px solid var(--bd,#888);white-space:nowrap;cursor:help}.hchip.real{background:#d7f5dd;color:#14532d;border-color:#7bc98a}.hchip.sim{background:#fff3cd;color:#664d03;border-color:#e0c46c}.nd.ndd{display:flex;flex-direction:row;align-items:center;gap:12px;margin:0 12px;padding:0 16px;height:56px;border-radius:28px;flex:none}.nd.ndd.on{background:#E8DEF8}.nd.ndd.hh{cursor:pointer}.nd.ndr{padding-top:12px}.nd.bab{display:flex;flex-direction:row;align-items:center;min-height:64px;padding:0 8px;background:#F3EDF7;flex:none;align-self:stretch}.nd.bab>.nd{flex:1}.nd.flogo{display:flex;align-items:center;justify-content:center;border:2px dashed #7aa7d6;border-radius:6px;color:#4a78a8;background:#eaf3fb;box-sizing:border-box}.nd.dhdr .tl{color:inherit}.nd.cpe{outline:2px solid #c0392b}</style>
+.hchip{font-size:12px;padding:3px 9px;border-radius:12px;border:1px solid var(--bd,#888);white-space:nowrap;cursor:help}.hchip.real{background:#d7f5dd;color:#14532d;border-color:#7bc98a}.hchip.sim{background:#fff3cd;color:#664d03;border-color:#e0c46c}.nd.ndd{display:flex;flex-direction:row;align-items:center;gap:12px;margin:0 12px;padding:0 16px;height:56px;border-radius:28px;flex:none}.nd.ndd.on{background:#E8DEF8}.nd.ndd.hh{cursor:pointer}.nd.ndr{padding-top:12px}.nd.bab{display:flex;flex-direction:row;align-items:center;min-height:64px;padding:0 8px;background:#F3EDF7;flex:none;align-self:stretch}.nd.bab>.nd{flex:1}.nd.flogo{display:flex;align-items:center;justify-content:center;border:2px dashed #7aa7d6;border-radius:6px;color:#4a78a8;background:#eaf3fb;box-sizing:border-box}.nd.dhdr .tl{color:inherit}.nd.cpe{outline:2px solid #c0392b}
+/* modo foco: só o código e o aparelho, lado a lado */
+#fxBtn{white-space:nowrap}
+@media (max-width:900px){#fxBtn{display:none}}
+@media (min-width:901px){
+  body.fx .lesson,body.fx #paneRef,body.fx .palette,body.fx .insp{display:none}
+  body.fx main{display:grid;grid-template-columns:minmax(0,1fr) auto;height:max(620px,calc(100vh - 96px))}
+  body.fx #paneCode{order:1}
+  body.fx #paneCanvas{order:2}
+  body.fx .cbody{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
+  body.fx .stage{min-height:0}
+  body.fx #fxBtn{background:var(--accent);color:#fff;border-color:transparent}
+}
+</style>
 <header class="top">
   <div class="brand">
     <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect x="2" y="2" width="24" height="24" rx="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="7" y="7" width="14" height="5" rx="1.5" fill="var(--c-struct)"/><rect x="7" y="14" width="6" height="7" rx="1.5" fill="var(--c-layout)"/><rect x="15" y="14" width="6" height="7" rx="1.5" fill="var(--c-box)"/></svg>
@@ -566,6 +579,7 @@ body:has(main[data-tab="ref"]) .lesson{display:none}
       <h2>Código Dart</h2>
       <span style="color:var(--ink2);font-size:12.5px">edite aqui e o canvas acompanha</span>
       <div class="sp"></div>
+      <button class="btn" id="fxBtn" aria-pressed="false" title="Expandir: mostra só o código e o aparelho, lado a lado">⛶ Expandir</button>
       <button class="btn" id="resetBtn">Restaurar aula</button>
       <button class="btn pri" id="copyBtn">Copiar código</button>
     </div>
@@ -14156,6 +14170,12 @@ function select(key,reveal){
 
 /* ====== Canvas ====== */
 function fit(){
+  var pc=$('paneCanvas');
+  if(document.body.classList.contains('fx')&&matchMedia('(min-width:901px)').matches){
+    var mm=$('main');mm.style.height=Math.max(560,innerHeight-(mm.getBoundingClientRect().top+scrollY)-12)+'px';
+    pc.style.width='420px';
+    var hh=stage.getBoundingClientRect().height,s0=Math.max(.3,Math.min((hh-24)/672,1.1));
+    pc.style.width=Math.max(380,Math.ceil(376*s0+26))+'px'}else{if(pc.style.width)pc.style.width='';var m2=$('main');if(m2.style.height)m2.style.height=''}
   var r=stage.getBoundingClientRect(),s=Math.min((r.width-24)/376,(r.height-24)/672);
   s=Math.max(.3,Math.min(s,1.1));wrapEl.style.width=(376*s)+'px';wrapEl.style.height=(672*s)+'px';phone.style.transform='scale('+s+')';
 }
@@ -14824,6 +14844,17 @@ function tab(which){
   $('main').dataset.tab=which;$('tabCanvas').setAttribute('aria-selected',which==='canvas');$('tabCode').setAttribute('aria-selected',which==='code');$('refBtn').setAttribute('aria-pressed',which==='ref');
   setTimeout(fit,0);
 }
+function setFx(on){
+  document.body.classList.toggle('fx',!!on);var b=$('fxBtn');b.setAttribute('aria-pressed',!!on);
+  b.textContent=on?'⤡ Voltar ao layout':'⛶ Expandir';
+  b.title=on?'Voltar ao layout original (Esc)':'Expandir: mostra só o código e o aparelho, lado a lado';
+  if(on&&$('main').dataset.tab==='ref')tab('canvas');
+  try{LS.set('oficina.fx',on?'1':'0')}catch(e){}
+  setTimeout(fit,0);setTimeout(fit,120)}
+$('fxBtn').addEventListener('click',function(){setFx(!document.body.classList.contains('fx'))});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!e.defaultPrevented&&document.body.classList.contains('fx')&&!document.querySelector('dialog[open],.modal:not([hidden])'))setFx(false)});
+$('refBtn').addEventListener('click',function(){if(document.body.classList.contains('fx'))setFx(false)},true);
+try{if(LS.get('oficina.fx')==='1')setFx(true)}catch(e){}
 $('tabCanvas').addEventListener('click',function(){tab('canvas')});
 $('tabCode').addEventListener('click',function(){tab('code')});
 $('themeBtn').addEventListener('click',function(){
